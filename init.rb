@@ -1,8 +1,8 @@
 Redmine::Plugin.register :redmine_gtt do
-  name 'Redmine Gtt plugin'
-  author 'Author name'
-  description 'This is a plugin for Redmine'
+  name 'Redmine GTT plugin'
+  author 'Georepublic'
+  description 'This is a plugin for location-based task management in Redmine'
   version '0.0.1'
-  url 'http://example.com/path/to/plugin'
-  author_url 'http://example.com/about'
+  # url 'http://example.com/path/to/plugin'
+  author_url 'https://georepublic.info'
 end
