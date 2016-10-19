@@ -13,6 +13,4 @@ Redmine::Plugin.register :redmine_gtt do
     # This tells the Redmine version's controller to include the module from the file above.
     WelcomeController.send(:include, HomePageRedirector::HomePageRedirector)
   end
-
-  # Map Custom Field
 end
