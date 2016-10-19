@@ -21,9 +21,10 @@ Redmine::Plugin.register :redmine_gtt do
 			'default_map_center_latitude' => 35.689524,
 			'default_map_zoom_level' => 8
 		},
-		:partial => 'settings/gtt/gtt'
+		:partial => 'settings/gtt_settings'
 	)
 end
 
-# Home Page Redirector
+# Dependencies
 require_dependency 'home_page_redirector'
+require 'redmine_gtt'

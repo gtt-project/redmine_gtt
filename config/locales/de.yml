@@ -9,9 +9,9 @@ de:
   label_user_map: "Benutzerkarte"
   label_nearby: "nah(lat,lng)"
 
-  #gtt_label_geometry: "API Schlüssel"
-  #gtt_text_settings_help: "Geben Sie hier den API Schlüssel an. Falls nicht erforderlich, bitte leer lassen."
-  #gtt_text_settings_geometry_example: "2747491302261fbc47967ba62621af22"
+  gtt_label_geometry: "API Schlüssel"
+  gtt_text_settings_help: "Geben Sie hier den API Schlüssel an. Falls nicht erforderlich, bitte leer lassen."
+  gtt_text_settings_geometry_example: "2747491302261fbc47967ba62621af22"
 
   gtt_settings_default_map_center_longitude: "Standard-Längengrad Kartenmitte"
   gtt_settings_default_map_center_latitude: "Standard-Breitengrad Kartenmitte"

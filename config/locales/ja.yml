@@ -9,9 +9,9 @@ ja:
   label_user_map: "ユーザ 地図"
   label_nearby: "近く(lat,lng)"
 
-  #gtt_label_geometry: "API Key"
-  #gtt_text_settings_help: "Enter the API key. Leave empty if no key is required."
-  #gtt_text_settings_geometry_example: "2747491302261fbc47967ba62621af22"
+  gtt_label_geometry: "API Key"
+  gtt_text_settings_help: "Enter the API key. Leave empty if no key is required."
+  gtt_text_settings_geometry_example: "2747491302261fbc47967ba62621af22"
 
   gtt_settings_default_map_center_longitude: "既定の地図中心経度"
   gtt_settings_default_map_center_latitude: "既定の地図中心緯度"
