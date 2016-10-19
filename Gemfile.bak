@@ -1,0 +1,24 @@
+source 'https://rubygems.org'
+
+gem "rgeo"
+gem "rgeo-geojson"
+
+if File.exist?(database_file)
+  database_config = YAML::load(ERB.new(IO.read(database_file)).result)
+  adapters = database_config.values.map {|c| c['adapter']}.compact.uniq
+  if adapters.any?
+    adapters.each do |adapter|
+      case adapter
+      when /postgresql/
+        gem 'activerecord-postgis-adapter'
+      else
+        warn("GTT doesn't support `#{adapter}` found in config/database.yml,
+              use Gemfile.local to load your own database gems")
+      end
+    end
+  else
+    warn("No adapter found in config/database.yml, please configure it first")
+  end
+else
+  warn("Please configure your config/database.yml first")
+end
