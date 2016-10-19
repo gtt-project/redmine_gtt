@@ -1,6 +1,10 @@
+Rails.configuration.to_prepare do
+  WelcomeController.send(:include, HomePageRedirector::MyPage)
+end
+
 # Source: https://github.com/jmlagace/redmine_home_page_redirector
 module HomePageRedirector
-  module HomePageRedirector
+  module MyPage
     def self.included(base)
       base.class_eval do
         # Insert overrides here, for example:
