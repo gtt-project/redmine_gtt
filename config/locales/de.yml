@@ -1,0 +1,18 @@
+# German strings go here for Rails i18n
+de:
+  field_geometry: "Geometrie"
+  field_location: "Position"
+  field_geom: "Geometrie"
+
+  label_geotask_map: "Geotask Karte"
+  label_project_map: "Projektkarte"
+  label_user_map: "Benutzerkarte"
+  label_nearby: "nah(lat,lng)"
+
+  #gtt_label_geometry: "API Schlüssel"
+  #gtt_text_settings_help: "Geben Sie hier den API Schlüssel an. Falls nicht erforderlich, bitte leer lassen."
+  #gtt_text_settings_geometry_example: "2747491302261fbc47967ba62621af22"
+
+  gtt_settings_default_map_center_longitude: "Standard-Längengrad Kartenmitte"
+  gtt_settings_default_map_center_latitude: "Standard-Breitengrad Kartenmitte"
+  gtt_settings_default_map_zoom_level: "Standard Zoomstufe"
