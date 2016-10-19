@@ -26,5 +26,5 @@ Redmine::Plugin.register :redmine_gtt do
 end
 
 # Dependencies
-require_dependency 'home_page_redirector'
+# require_dependency 'home_page_redirector'
 require 'redmine_gtt'
