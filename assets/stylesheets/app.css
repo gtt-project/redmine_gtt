@@ -1,0 +1,9 @@
+/**
+ * Application Styles
+ */
+
+.map {
+  width: 100%;
+  height: 300px;
+  border: 1px solid #E4E4E4;
+}
