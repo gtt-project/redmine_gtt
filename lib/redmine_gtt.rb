@@ -3,10 +3,10 @@ Rails.configuration.to_prepare do
   require 'redmine_gtt/hooks/view/layouts/base_html_head_hook'
 
   # Issue Hooks
-  # require 'redmine_gtt/hooks/view/issues/index_bottom_hook'
-  # require 'redmine_gtt/hooks/view/issues/form_details_bottom_hook'
-  # require 'redmine_gtt/hooks/view/issues/show_description_bottom_hook'
-  # require 'redmine_gtt/hooks/controller/issues/edit_before_save_hook'
+  require 'redmine_gtt/hooks/view/issues/index_bottom_hook'
+  require 'redmine_gtt/hooks/view/issues/form_details_bottom_hook'
+  require 'redmine_gtt/hooks/view/issues/show_description_bottom_hook'
+  require 'redmine_gtt/hooks/controller/issues/edit_before_save_hook'
 
   # User Hooks
   require 'redmine_gtt/hooks/view/users/form_hook.rb'
