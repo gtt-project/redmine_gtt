@@ -22,7 +22,6 @@ module RedmineGtt
           :lat => Setting.plugin_redmine_gtt['default_map_center_latitude'],
           :zoom => Setting.plugin_redmine_gtt['default_map_zoom_level'],
           :bounds => context[:project].geom,
-          :type => 'POINT LINESTRING POLYGON'
         }, :id => 'olmap', :class => 'map')
 
         context[:issues].each do |issue|

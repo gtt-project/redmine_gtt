@@ -29,7 +29,7 @@ module RedmineGtt
           :zoom => Setting.plugin_redmine_gtt['default_map_zoom_level'],
           :geom => context[:issue].geom,
           :bounds => context[:project].geom,
-          :type => 'POINT LINESTRING POLYGON'
+          :edit => 'Point LineString Polygon'
         }, :id => 'olmap', :class => 'map')
 
         return section.join("\n")

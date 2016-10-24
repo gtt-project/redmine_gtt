@@ -12,7 +12,7 @@ module RedmineGtt
           :lat => Setting.plugin_redmine_gtt['default_map_center_latitude'],
           :zoom => Setting.plugin_redmine_gtt['default_map_zoom_level'],
           :geom => context[:project].geom,
-          :type => 'POLYGON'
+          :edit => 'Polygon'
         }, :id => 'olmap', :class => 'map')
 
         return section.join("\n")

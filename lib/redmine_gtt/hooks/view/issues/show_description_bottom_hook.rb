@@ -21,7 +21,6 @@ module RedmineGtt
           :zoom => Setting.plugin_redmine_gtt['default_map_zoom_level'],
           :geom => context[:issue].geom,
           :bounds => context[:project].geom,
-          :type => 'POINT LINESTRING POLYGON'
         }, :id => 'olmap', :class => 'map')
 
         # TODO: Try not to use html_safe
