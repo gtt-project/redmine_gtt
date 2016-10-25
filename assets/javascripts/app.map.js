@@ -39,22 +39,17 @@ App.map = (function ($, publ) {
       })
     });
 
-    // (vector.getSource()).on('addfeature', function(evt) {
-    //   console.log(evt);
-    // });
+    var tiles = new ol.layer.Tile({
+      source: new ol.source.OSM({
+        url: "https://tile.mierune.co.jp/mierune_mono/{z}/{x}/{y}.png",
+        attributions: "Maptiles by <a href='http://mierune.co.jp/' target='_blank'>MIERUNE</a>, under CC BY. Data by <a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors, under ODbL.",
+        crossOrigin: null
+      })
+    });
 
     map = new ol.Map({
       target: 'olmap',
-      layers: [
-        new ol.layer.Tile({
-          source: new ol.source.OSM({
-            url: "https://tile.mierune.co.jp/mierune_mono/{z}/{x}/{y}.png",
-            attributions: "Maptiles by <a href='http://mierune.co.jp/' target='_blank'>MIERUNE</a>, under CC BY. Data by <a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors, under ODbL.",
-            crossOrigin: null
-          })
-        }),
-        vector
-      ],
+      layers: [tiles,vector],
       controls: ol.control.defaults({
         attributionOptions: ({
           collapsible: false
@@ -106,7 +101,7 @@ App.map = (function ($, publ) {
 
     var editbar = new ol.control.Bar({
       toggleOne: true,	// one control active at the same time
-			group: true			// group controls together
+			group: true			  // group controls together
 		});
 		mainbar.addControl(editbar);
 
@@ -138,12 +133,11 @@ App.map = (function ($, publ) {
    */
   publ.updateForm = function (features) {
     var writer = new ol.format.GeoJSON();
-    var geojson = writer.writeFeatures(features, {
+    var geojson = JSON.parse(writer.writeFeatures(features, {
       featureProjection: 'EPSG:3857',
       dataProjection: 'EPSG:4326'
-    });
-    $("#user_geom").val(geojson);
-    console.log(geojson);
+    }));
+    $("#geom").val(JSON.stringify(geojson.features[0]));
   };
 
   /**

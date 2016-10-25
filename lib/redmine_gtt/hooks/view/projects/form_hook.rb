@@ -4,8 +4,7 @@ module RedmineGtt
       def view_projects_form(context = {})
         section = [];
         section << context[:form].hidden_field(:geom,
-          :value => context[:project].geom,
-          :readonly => true)
+          :value => '', :id => 'geom')
 
         section << tag(:div, :data => {
           :lon => Setting.plugin_redmine_gtt['default_map_center_longitude'],
