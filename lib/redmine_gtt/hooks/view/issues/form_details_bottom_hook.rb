@@ -20,8 +20,7 @@ module RedmineGtt
 
         section = [];
         section << context[:form].hidden_field(:geom,
-          :value => context[:issue].geom,
-          :readonly => true)
+          :value => '', :id => 'geom')
 
         section << tag(:div, :data => {
           :lon => Setting.plugin_redmine_gtt['default_map_center_longitude'],
