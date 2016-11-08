@@ -9,7 +9,7 @@ module RedmineGtt
           :lon => Setting.plugin_redmine_gtt['default_map_center_longitude'],
           :lat => Setting.plugin_redmine_gtt['default_map_center_latitude'],
           :zoom => Setting.plugin_redmine_gtt['default_map_zoom_level'],
-          :geom => context[:user].geom,
+          :geom => User.get_geojson(context[:user].geom),
         }, :id => 'olmap', :class => 'map')
 
         return section.join("\n")

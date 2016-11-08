@@ -5,9 +5,29 @@ Description goes here
 
 = Requirements
 
-Requirements go here
+Creating a PostGIS-enabled database
 
+createdb -U postgres -O redmine redmine
+psql -U postgres -d redmine -c "CREATE EXTENSION postgis;"
+psql -U redmine -d redmine -c "CREATE SCHEMA app;"
+psql -U redmine -d redmine -c "CREATE SCHEMA dev;"
 
 = Installation
 
 Installation goes here
+
+cd path/to/project
+bundle install --without test
+
+RAILS_ENV=production bundle exec rake db:migrate
+RAILS_ENV=production bundle exec rake redmine:plugins:migrate
+RAILS_ENV=production bundle exec rake redmine:load_default_data
+
+RAILS_ENV=development bundle exec rake db:migrate
+RAILS_ENV=development bundle exec rake redmine:plugins:migrate
+RAILS_ENV=development bundle exec rake redmine:load_default_data
+
+Running test server
+
+bundle exec rails server webrick -e production
+bundle exec rails server webrick -e development

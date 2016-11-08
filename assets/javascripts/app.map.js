@@ -14,13 +14,29 @@ App.map = (function ($, publ) {
   publ.init = function (options) {
 
     defaults = $("#olmap").data();
-    feature = new ol.Feature();
+
+    if (defaults.geom === null) {
+      features = [
+        new ol.Feature()
+      ]
+    }
+    else {
+      features = new ol.format.GeoJSON().readFeatures(
+        defaults.geom, {
+          featureProjection: 'EPSG:3857'
+        }
+      );
+    }
+
+    // TODO: this is only necessary because setting the initial form value
+    //  through the template causes encoding problems
+    publ.updateForm(features);
 
     // Layer for editing vector features
     vector = new ol.layer.Vector({
       source: new ol.source.Vector({
-        features: [feature],
-        useSpatialIndex: false
+        "features": features,
+        "useSpatialIndex": false
       }),
       style: new ol.style.Style({
         fill: new ol.style.Fill({
