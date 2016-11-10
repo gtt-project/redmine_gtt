@@ -14,6 +14,17 @@ module RedmineGtt
         # end
 
         section = [];
+
+        # context[:issues].each do |issue|
+        #   section << content_tag(:span, issue.geom, :data => {
+        #     :target => issue.id,
+        #     :status => issue.status,
+        #     :subject => issue.subject,
+        #     :tracker => issue.tracker,
+        #     :priority => issue.priority
+        #   }, :href => "/issues/#{issue.id}", :class => 'geojson')
+        # end
+
         section << content_tag(:legend, l(:field_location),
           :onclick => 'toggleFieldset(this);')
 
@@ -21,18 +32,9 @@ module RedmineGtt
           :lon => Setting.plugin_redmine_gtt['default_map_center_longitude'],
           :lat => Setting.plugin_redmine_gtt['default_map_center_latitude'],
           :zoom => Setting.plugin_redmine_gtt['default_map_zoom_level'],
-          :bounds => context[:project].geom,
+          :geom => Project.get_geojson(context[:project].geom),
+          :bounds => Project.get_geojson(context[:project].geom),
         }, :id => 'olmap', :class => 'map')
-
-        context[:issues].each do |issue|
-          section << content_tag(:span, issue.geom, :data => {
-            :target => issue.id,
-            :status => issue.status,
-            :subject => issue.subject,
-            :tracker => issue.tracker,
-            :priority => issue.priority
-          }, :href => "/issues/#{issue.id}", :class => 'geojson')
-        end
 
         # TODO: Try not to use html_safe
         return content_tag(:fieldset, section.join("\n").html_safe,

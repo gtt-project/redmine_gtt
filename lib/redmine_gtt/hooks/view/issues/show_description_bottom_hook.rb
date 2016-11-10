@@ -13,14 +13,14 @@ module RedmineGtt
         # end
 
         section = [];
-        section << content_tag(:p, content_tag(:strong, l(:field_location)))
+        # section << content_tag(:p, content_tag(:strong, l(:field_location)))
 
         section << tag(:div, :data => {
           :lon => Setting.plugin_redmine_gtt['default_map_center_longitude'],
           :lat => Setting.plugin_redmine_gtt['default_map_center_latitude'],
           :zoom => Setting.plugin_redmine_gtt['default_map_zoom_level'],
-          :geom => context[:issue].geom,
-          :bounds => context[:project].geom,
+          :geom => Issue.get_geojson(context[:issue].geom),
+          :bounds => Project.get_geojson(context[:project].geom),
         }, :id => 'olmap', :class => 'map')
 
         # TODO: Try not to use html_safe

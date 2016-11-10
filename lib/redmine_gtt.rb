@@ -6,7 +6,6 @@ require 'redmine_gtt/patches/issue_patch.rb'
 require 'redmine_gtt/hooks/view/issues/index_bottom_hook'
 require 'redmine_gtt/hooks/view/issues/form_details_bottom_hook'
 require 'redmine_gtt/hooks/view/issues/show_description_bottom_hook'
-require 'redmine_gtt/hooks/controller/issues/edit_before_save_hook'
 
 # User Hooks
 require 'redmine_gtt/patches/user_patch.rb'

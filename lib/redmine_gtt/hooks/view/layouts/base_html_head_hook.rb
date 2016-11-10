@@ -10,7 +10,6 @@ module RedmineGtt
         tags << javascript_include_tag('ol-debug.js', :plugin => 'redmine_gtt')
         tags << javascript_include_tag('filter.js', :plugin => 'redmine_gtt')
         tags << javascript_include_tag('maskfilter.js', :plugin => 'redmine_gtt')
-        tags << javascript_include_tag('cropfilter.js', :plugin => 'redmine_gtt')
         tags << javascript_include_tag('controlbar.js', :plugin => 'redmine_gtt')
         tags << javascript_include_tag('togglecontrol.js', :plugin => 'redmine_gtt')
         tags << javascript_include_tag('app.js', :plugin => 'redmine_gtt')

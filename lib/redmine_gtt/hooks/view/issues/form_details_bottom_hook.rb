@@ -20,14 +20,14 @@ module RedmineGtt
 
         section = [];
         section << context[:form].hidden_field(:geom,
-          :value => '', :id => 'geom')
+          :value => Issue.get_geojson(context[:issue].geom), :id => 'geom')
 
         section << tag(:div, :data => {
           :lon => Setting.plugin_redmine_gtt['default_map_center_longitude'],
           :lat => Setting.plugin_redmine_gtt['default_map_center_latitude'],
           :zoom => Setting.plugin_redmine_gtt['default_map_zoom_level'],
-          :geom => context[:issue].geom,
-          :bounds => context[:project].geom,
+          :geom => Issue.get_geojson(context[:issue].geom),
+          :bounds => Project.get_geojson(context[:project].geom),
           :edit => 'Point LineString Polygon'
         }, :id => 'olmap', :class => 'map')
 
