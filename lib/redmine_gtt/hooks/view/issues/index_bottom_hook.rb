@@ -34,7 +34,7 @@ module RedmineGtt
           :zoom => Setting.plugin_redmine_gtt['default_map_zoom_level'],
           :geom => Project.get_geojson(context[:project].geom),
           :bounds => Project.get_geojson(context[:project].geom),
-        }, :id => 'olmap', :class => 'map')
+        }, :id => 'olmap', :class => 'ol-map')
 
         # TODO: Try not to use html_safe
         return content_tag(:fieldset, section.join("\n").html_safe,

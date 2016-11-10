@@ -29,7 +29,7 @@ module RedmineGtt
           :geom => Issue.get_geojson(context[:issue].geom),
           :bounds => Project.get_geojson(context[:project].geom),
           :edit => 'Point LineString Polygon'
-        }, :id => 'olmap', :class => 'map')
+        }, :id => 'olmap', :class => 'ol-map')
 
         return section.join("\n")
       end

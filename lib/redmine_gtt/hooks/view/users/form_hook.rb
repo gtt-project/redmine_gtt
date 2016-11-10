@@ -12,7 +12,7 @@ module RedmineGtt
           :zoom => Setting.plugin_redmine_gtt['default_map_zoom_level'],
           :geom => User.get_geojson(context[:user].geom),
           :edit => 'Point'
-        }, :id => 'olmap', :class => 'map')
+        }, :id => 'olmap', :class => 'ol-map')
 
         return section.join("\n")
       end

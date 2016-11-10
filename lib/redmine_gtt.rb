@@ -15,8 +15,8 @@ require 'redmine_gtt/hooks/view/account/hook.rb'
 
 # Project Hooks
 require 'redmine_gtt/patches/project_patch.rb'
-require 'redmine_gtt/hooks/view/projects/form_hook.rb'
 require 'redmine_gtt/hooks/view/projects/show_hook.rb'
+require 'redmine_gtt/hooks/view/projects/form_hook.rb'
 
 module RedmineGtt
 
