@@ -1,0 +1,12 @@
+<% checklist_tabs = []
+  checklist_tabs.push({:name => 'general',
+                       :partial => 'settings/gtt/general',
+                       :label => :label_tab_general})
+  checklist_tabs.push({:name => 'map',
+                       :partial => 'settings/gtt/map',
+                       :label => :label_tab_map})
+%>
+
+<%= render_tabs checklist_tabs %>
+
+<% html_title(l(:label_settings), l(:label_gtt)) -%>

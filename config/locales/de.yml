@@ -13,6 +13,12 @@ de:
   gtt_text_settings_help: "Geben Sie hier den API Schlüssel an. Falls nicht erforderlich, bitte leer lassen."
   gtt_text_settings_geometry_example: "2747491302261fbc47967ba62621af22"
 
-  gtt_settings_default_map_center_longitude: "Standard-Längengrad Kartenmitte"
-  gtt_settings_default_map_center_latitude: "Standard-Breitengrad Kartenmitte"
-  gtt_settings_default_map_zoom_level: "Standard Zoomstufe"
+  label_gtt: "GTT"
+  label_tab_general: "General"
+  label_tab_map: "Basemap"
+
+  gtt_settings_general_center_lon: "Standard-Längengrad Kartenmitte"
+  gtt_settings_general_center_lat: "Standard-Breitengrad Kartenmitte"
+  gtt_settings_general_zoom_level: "Standard Zoomstufe"
+
+  gtt_settings_map_maxzoom_level: "Maximale Zoomstufe"

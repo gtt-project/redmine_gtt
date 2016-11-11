@@ -1,0 +1,28 @@
+<p>
+  <h3>TODO: Configure map defaults with map</h3>
+  <%= content_tag(:div, "", :data => {
+        #:geom => "TODO: Configure map defaults with map",
+        :edit => 'Point'
+      }, :id => 'olmap', :class => 'ol-map') %>
+</p>
+<p>
+  <%= content_tag(:label, l(:gtt_settings_general_center_lon)) %>
+  <%= text_field_tag('settings[default_map_center_longitude]',
+      @settings['default_map_center_longitude'],
+      :readonly => true,
+      :size => 10) %>
+</p>
+<p>
+  <%= content_tag(:label, l(:gtt_settings_general_center_lat)) %>
+  <%= text_field_tag('settings[default_map_center_latitude]',
+      @settings['default_map_center_latitude'],
+      :readonly => true,
+      :size => 10) %>
+</p>
+<p>
+  <%= content_tag(:label, l(:gtt_settings_general_zoom_level)) %>
+  <%= text_field_tag('settings[default_map_zoom_level]',
+      @settings['default_map_zoom_level'],
+      :readonly => true,
+      :size => 5) %>
+</p>

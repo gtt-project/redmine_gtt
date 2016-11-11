@@ -3,6 +3,7 @@ require 'redmine_gtt/hooks/view/layouts/base_html_head_hook'
 
 # Issue Hooks
 require 'redmine_gtt/patches/issue_patch.rb'
+require 'redmine_gtt/patches/issues_helper_patch.rb'
 require 'redmine_gtt/hooks/view/issues/index_bottom_hook'
 require 'redmine_gtt/hooks/view/issues/form_details_bottom_hook'
 require 'redmine_gtt/hooks/view/issues/show_description_bottom_hook'

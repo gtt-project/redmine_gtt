@@ -13,6 +13,12 @@ en:
   gtt_text_settings_help: "Enter the API key. Leave empty if no key is required."
   gtt_text_settings_geometry_example: "2747491302261fbc47967ba62621af22"
 
-  gtt_settings_default_map_center_longitude: "Default map center longitude"
-  gtt_settings_default_map_center_latitude: "Default map center latitude"
-  gtt_settings_default_map_zoom_level: "Default map zoom level"
+  label_gtt: "GTT"
+  label_tab_general: "General"
+  label_tab_map: "Basemap"
+
+  gtt_settings_general_center_lon: "Default map center longitude"
+  gtt_settings_general_center_lat: "Default map center latitude"
+  gtt_settings_general_zoom_level: "Default map zoom level"
+
+  gtt_settings_map_maxzoom_level: "Maximum map zoom level"

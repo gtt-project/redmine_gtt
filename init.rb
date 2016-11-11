@@ -16,12 +16,12 @@ Redmine::Plugin.register :redmine_gtt do
 
 	settings(
 		:default => {
-			'map_projection'=>'EPSG:4326',
-			'default_map_center_longitude' => 139.691706,
-			'default_map_center_latitude' => 35.689524,
-			'default_map_zoom_level' => 8
+			'map_center_longitude' => 139.691706,
+			'map_center_latitude' => 35.689524,
+			'map_zoom_level' => 8,
+			'map_maxzoom_level' => 18
 		},
-		:partial => 'settings/gtt_settings'
+		:partial => 'settings/gtt/main'
 	)
 end
 

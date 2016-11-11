@@ -11,21 +11,11 @@ module RedmineGtt
           return '' unless User.current.allowed_to?(:edit_issues, context[:issue].project)
         end
 
-        # if !context[:project].geometry.blank?
-        #   # TODO:error handling
-        #   project_geom = RGeo::GeoJSON.decode(context[:project].geom, :json_parser => :json)
-        #   extent_json = RGeo::GeoJSON.encode(project_geom).to_json
-        #   inner_section << content_tag(:span, extent_json, :class => 'extent')
-        # end
-
         section = [];
         section << context[:form].hidden_field(:geom,
           :value => Issue.get_geojson(context[:issue].geom), :id => 'geom')
 
         section << tag(:div, :data => {
-          :lon => Setting.plugin_redmine_gtt['default_map_center_longitude'],
-          :lat => Setting.plugin_redmine_gtt['default_map_center_latitude'],
-          :zoom => Setting.plugin_redmine_gtt['default_map_zoom_level'],
           :geom => Issue.get_geojson(context[:issue].geom),
           :bounds => Project.get_geojson(context[:project].geom),
           :edit => 'Point LineString Polygon'
