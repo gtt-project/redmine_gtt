@@ -12,17 +12,18 @@ module RedmineGtt
       end
 
       module ClassMethods
-        def get_geojson(geom)
-          unless geom.nil?
+        def get_geojson(user)
+          unless user.geom.nil?
+            factory = RGeo::GeoJSON::EntityFactory.instance
             wkb = RGeo::WKRep::WKBParser.new(
               :support_ewkb => true,
               :default_srid => 4326
-            ).parse(geom)
-
-            # TODO: maybe we can add feature properties here
-            factory = RGeo::GeoJSON::EntityFactory.instance
-            feature = factory.feature(wkb, nil, {})
-            RGeo::GeoJSON.encode feature
+            ).parse(user.geom)
+            properties = user.as_json({except: [
+              :hashed_password, :hashed_password, :salt, :must_change_passwd,
+              :passwd_changed_on, :auth_source_id
+            ]})
+            RGeo::GeoJSON.encode factory.feature(wkb, user.id, properties)
           else
             nil
           end

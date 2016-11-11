@@ -1,6 +1,7 @@
 module RedmineGtt
   module Hooks
     class ViewLayoutsBaseHtmlHeadHook < Redmine::Hook::ViewListener
+
       def view_layouts_base_html_head(context={})
         tags = [];
         tags << stylesheet_link_tag("ol.css", :plugin => "redmine_gtt", :media => "all")
@@ -16,6 +17,7 @@ module RedmineGtt
         tags << javascript_include_tag('app.map.js', :plugin => 'redmine_gtt')
         return tags.join("\n")
       end
+
       def view_layouts_base_body_bottom(context={})
         tags = [];
         tags << tag(:div, :data => {
@@ -26,6 +28,7 @@ module RedmineGtt
         }, :id => 'ol-defaults', :style => 'display:none')
         return tags.join("\n")
       end
+
     end
   end
 end

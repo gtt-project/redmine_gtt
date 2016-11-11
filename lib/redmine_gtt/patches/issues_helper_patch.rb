@@ -1,9 +1,3 @@
-require 'rgeo'
-require 'rgeo/geo_json'
-require_dependency 'issue'
-
-require 'pp'
-
 module RedmineGtt
   module Patches
 
@@ -26,9 +20,7 @@ module RedmineGtt
                 :support_ewkb => true,
                 :default_srid => 4326
               ).parse(issue.geom)
-
-              # TODO: maybe we can add feature properties here
-              features << factory.feature(wkb, issue.id, {})
+              features << factory.feature(wkb, issue.id, issue.as_json)
             end
             RGeo::GeoJSON.encode factory.feature_collection(features)
           else

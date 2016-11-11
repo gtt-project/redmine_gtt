@@ -11,7 +11,7 @@ module RedmineGtt
 
         section << tag(:div, :data => {
           :geom => IssuesHelper.get_geojson(context[:issues]),
-          :bounds => Project.get_geojson(context[:project].geom)
+          :bounds => Project.get_geojson(context[:project])
         }, :id => 'olmap', :class => 'ol-map')
 
         # TODO: Try not to use html_safe

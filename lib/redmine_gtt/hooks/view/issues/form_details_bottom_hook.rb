@@ -13,11 +13,11 @@ module RedmineGtt
 
         section = [];
         section << context[:form].hidden_field(:geom,
-          :value => Issue.get_geojson(context[:issue].geom), :id => 'geom')
+          :value => Issue.get_geojson(context[:issue]), :id => 'geom')
 
         section << tag(:div, :data => {
-          :geom => Issue.get_geojson(context[:issue].geom),
-          :bounds => Project.get_geojson(context[:project].geom),
+          :geom => Issue.get_geojson(context[:issue]),
+          :bounds => Project.get_geojson(context[:project]),
           :edit => 'Point LineString Polygon'
         }, :id => 'olmap', :class => 'ol-map')
 

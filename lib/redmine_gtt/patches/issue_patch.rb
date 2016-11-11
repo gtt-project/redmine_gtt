@@ -1,7 +1,3 @@
-require 'rgeo'
-require 'rgeo/geo_json'
-require_dependency 'issue'
-
 module RedmineGtt
   module Patches
 
@@ -16,17 +12,14 @@ module RedmineGtt
       end
 
       module ClassMethods
-        def get_geojson(geom)
-          unless geom.nil?
+        def get_geojson(issue)
+          unless issue.geom.nil?
+            factory = RGeo::GeoJSON::EntityFactory.instance
             wkb = RGeo::WKRep::WKBParser.new(
               :support_ewkb => true,
               :default_srid => 4326
-            ).parse(geom)
-
-            # TODO: maybe we can add feature properties here
-            factory = RGeo::GeoJSON::EntityFactory.instance
-            feature = factory.feature(wkb, nil, {})
-            RGeo::GeoJSON.encode feature
+            ).parse(issue.geom)
+            RGeo::GeoJSON.encode factory.feature(wkb, issue.id, issue.as_json)
           else
             nil
           end
