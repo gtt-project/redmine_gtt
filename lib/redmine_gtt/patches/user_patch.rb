@@ -12,25 +12,26 @@ module RedmineGtt
       end
 
       module ClassMethods
-        def get_geojson(user)
-          unless user.geom.nil?
+      end
+
+      module InstanceMethods
+        def geojson
+          unless self.geom.nil?
             factory = RGeo::GeoJSON::EntityFactory.instance
             wkb = RGeo::WKRep::WKBParser.new(
               :support_ewkb => true,
               :default_srid => 4326
-            ).parse(user.geom)
-            properties = user.as_json({except: [
+            ).parse(self.geom)
+            properties = self.as_json({except: [
               :hashed_password, :hashed_password, :salt, :must_change_passwd,
               :passwd_changed_on, :auth_source_id
             ]})
-            RGeo::GeoJSON.encode factory.feature(wkb, user.id, properties)
+            RGeo::GeoJSON.encode factory.feature(wkb, self.id, properties)
           else
             nil
           end
         end
-      end
 
-      module InstanceMethods
         def geom=(g)
           # Turn geometry attribute into WKB for database use
           if (g.present?)

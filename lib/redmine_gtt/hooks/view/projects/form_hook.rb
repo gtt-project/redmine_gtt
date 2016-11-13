@@ -4,10 +4,10 @@ module RedmineGtt
       def view_projects_form(context = {})
         section = [];
         section << context[:form].hidden_field(:geom,
-          :value => Project.get_geojson(context[:project]), :id => 'geom')
+          :value => context[:project].geojson, :id => 'geom')
 
         section << content_tag(:div, "", :data => {
-          :geom => Project.get_geojson(context[:project]),
+          :geom => context[:project].geojson,
           :edit => 'Polygon'
         }, :id => 'olmap', :class => 'ol-map')
 

@@ -10,8 +10,9 @@ module RedmineGtt
           :onclick => 'toggleFieldset(this);')
 
         section << tag(:div, :data => {
+          # TODO: Don't know where to extend "Issues"
           :geom => IssuesHelper.get_geojson(context[:issues]),
-          :bounds => Project.get_geojson(context[:project])
+          :bounds => context[:project].geojson
         }, :id => 'olmap', :class => 'ol-map')
 
         # TODO: Try not to use html_safe

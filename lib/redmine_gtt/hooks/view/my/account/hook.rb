@@ -4,10 +4,10 @@ module RedmineGtt
       def view_my_account(context = {})
         section = [];
         section << context[:form].hidden_field(:geom,
-          :value => User.get_geojson(context[:user]), :id => 'geom')
+          :value => context[:user].geojson, :id => 'geom')
 
         section << tag(:div, :data => {
-          :geom => User.get_geojson(context[:user]),
+          :geom => context[:user].geojson,
           :edit => 'Point',
         }, :id => 'olmap', :class => 'ol-map')
 

@@ -9,8 +9,8 @@ module RedmineGtt
         # section << content_tag(:h3, l(:label_user_map))
 
         section << tag(:div, :data => {
-          :geom => Project.get_geojson(context[:project]),
-          :bounds => Project.get_geojson(context[:project]),
+          :geom => context[:project].geojson,
+          :bounds => context[:project].geojson,
         }, :id => 'olmap', :class => 'ol-map')
 
         return section.join("\n")

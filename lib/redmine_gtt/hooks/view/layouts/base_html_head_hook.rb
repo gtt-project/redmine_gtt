@@ -19,14 +19,17 @@ module RedmineGtt
       end
 
       def view_layouts_base_body_bottom(context={})
-        tags = [];
-        tags << tag(:div, :data => {
+        tag(:div, :data => {
           :lon => Setting.plugin_redmine_gtt['default_map_center_longitude'],
           :lat => Setting.plugin_redmine_gtt['default_map_center_latitude'],
           :zoom => Setting.plugin_redmine_gtt['default_map_zoom_level'],
           :maxzoom => Setting.plugin_redmine_gtt['default_map_maxzoom_level'],
         }, :id => 'ol-defaults', :style => 'display:none')
-        return tags.join("\n")
+
+        # content_tag :div, :id => "popup", :class => "ol-popup" do
+        #   tag(:a, :href => "#", :id => "popup-closer", :class => "ol-popup-closer")
+        #     + tag(:div, :id => "popup-content")
+        # end
       end
 
     end
