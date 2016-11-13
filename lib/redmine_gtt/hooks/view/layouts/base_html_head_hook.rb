@@ -2,6 +2,8 @@ module RedmineGtt
   module Hooks
     class ViewLayoutsBaseHtmlHeadHook < Redmine::Hook::ViewListener
 
+      include ActionView::Context
+
       def view_layouts_base_html_head(context={})
         tags = [];
         tags << stylesheet_link_tag("ol.css", :plugin => "redmine_gtt", :media => "all")
@@ -19,17 +21,20 @@ module RedmineGtt
       end
 
       def view_layouts_base_body_bottom(context={})
-        tag(:div, :data => {
+        tags = [];
+        tags << tag(:div, :data => {
           :lon => Setting.plugin_redmine_gtt['default_map_center_longitude'],
           :lat => Setting.plugin_redmine_gtt['default_map_center_latitude'],
           :zoom => Setting.plugin_redmine_gtt['default_map_zoom_level'],
           :maxzoom => Setting.plugin_redmine_gtt['default_map_maxzoom_level'],
         }, :id => 'ol-defaults', :style => 'display:none')
 
-        # content_tag :div, :id => "popup", :class => "ol-popup" do
-        #   tag(:a, :href => "#", :id => "popup-closer", :class => "ol-popup-closer")
-        #     + tag(:div, :id => "popup-content")
-        # end
+        tags << content_tag(:div, :id => "popup", :class => "ol-popup") do
+          concat content_tag(:a, "", :href => "#", :id => "popup-closer", :class => "ol-popup-closer")
+          concat content_tag(:div, "", :id => "popup-content")
+        end
+
+        return tags.join("\n")
       end
 
     end

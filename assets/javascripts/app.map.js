@@ -114,6 +114,9 @@ App.map = (function ($, publ) {
     if (contents.edit) {
       this.setControls(contents.edit.split(' '));
     }
+    else {
+      this.setPopover();
+    }
     return;
   };
 
@@ -197,6 +200,63 @@ App.map = (function ($, publ) {
 
     var controls = editbar.getControls();
     controls[0].setActive(true);
+  };
+
+  /**
+   *
+   */
+  publ.setPopover = function () {
+
+    var container = document.getElementById('popup');
+    var content = document.getElementById('popup-content');
+    var closer = document.getElementById('popup-closer');
+
+    var overlay = new ol.Overlay({
+      element: container,
+      autoPan: true,
+      autoPanAnimation: {
+        duration: 250
+      }
+    });
+    map.addOverlay(overlay);
+
+    closer.onclick = function() {
+      publ.unsetPopover(overlay,closer);
+    };
+
+    // display popup on click
+    map.on('singleclick', function(evt) {
+      var feature = map.forEachFeatureAtPixel(evt.pixel,
+        function(feature, layer) {
+          return feature;
+        }, null, function (layer) {
+          // Only return fatures from layer "vector"
+          return layer === vector;
+        }
+      );
+
+      if (feature) {
+        content.innerHTML = '<span> CONTENT </span>';
+        overlay.setPosition(evt.coordinate);
+      } else {
+        publ.unsetPopover(overlay,closer);
+      }
+    });
+
+    // change mouse cursor when over marker
+    map.on('pointermove', function(evt) {
+      if (evt.dragging) return;
+      var hit = map.hasFeatureAtPixel(evt.pixel, function(layer) {
+        return layer === vector;
+      });
+      map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+    });
+  };
+
+  publ.unsetPopover = function (layer,close) {
+    layer.setPosition(undefined);
+    close.blur();
+    return false;
   };
 
   /**
