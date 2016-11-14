@@ -12,7 +12,10 @@ module RedmineGtt
         section << tag(:div, :data => {
           # TODO: Don't know where to extend "Issues"
           :geom => IssuesHelper.get_geojson(context[:issues]),
-          :bounds => context[:project].geojson
+          :bounds => context[:project].geojson,
+          :popup => {
+            :href => '/issues/[id]'
+          }
         }, :id => 'olmap', :class => 'ol-map')
 
         # TODO: Try not to use html_safe

@@ -22,3 +22,10 @@ var App = (function ($, publ) {
   return publ;
 
 })(jQuery, App || {});
+
+/**
+ * When DOM is ready, initialize the application
+ */
+$(document).ready(function(){
+  App.init({});
+});

@@ -16,8 +16,6 @@ App.map = (function ($, publ) {
 
     contents = $("#olmap").data();
     defaults = $("#ol-defaults").data();
-    console.log(contents);
-    console.log(defaults);
 
     if (contents.geom && contents.geom !== null) {
       features = new ol.format.GeoJSON().readFeatures(
@@ -114,7 +112,7 @@ App.map = (function ($, publ) {
     if (contents.edit) {
       this.setControls(contents.edit.split(' '));
     }
-    else {
+    else if (contents.popup) {
       this.setPopover();
     }
     return;
@@ -207,12 +205,8 @@ App.map = (function ($, publ) {
    */
   publ.setPopover = function () {
 
-    var container = document.getElementById('popup');
-    var content = document.getElementById('popup-content');
-    var closer = document.getElementById('popup-closer');
-
     var overlay = new ol.Overlay({
-      element: container,
+      element: document.getElementById('popup'),
       autoPan: true,
       autoPanAnimation: {
         duration: 250
@@ -220,9 +214,9 @@ App.map = (function ($, publ) {
     });
     map.addOverlay(overlay);
 
-    closer.onclick = function() {
-      publ.unsetPopover(overlay,closer);
-    };
+    $('#popup-closer').bind('click', function(evt) {
+      publ.unsetPopover(overlay,this);
+    });
 
     // display popup on click
     map.on('singleclick', function(evt) {
@@ -236,10 +230,13 @@ App.map = (function ($, publ) {
       );
 
       if (feature) {
-        content.innerHTML = '<span> CONTENT </span>';
+        // TODO: Localize the popup and make it look better
+        var url = contents.popup.href.replace(/\[(.+?)\]/g, feature.get('id'))
+        $('#popup-content').html('<a href="' + url + '">Edit</a>');
         overlay.setPosition(evt.coordinate);
-      } else {
-        publ.unsetPopover(overlay,closer);
+      }
+      else {
+        publ.unsetPopover(overlay,$('#popup-closer'));
       }
     });
 
@@ -277,10 +274,3 @@ App.map = (function ($, publ) {
   return publ;
 
 })(jQuery, App.map || {});
-
-/**
- * When DOM is ready, initialize the application
- */
-$(document).ready(function(){
-  App.init({});
-});
