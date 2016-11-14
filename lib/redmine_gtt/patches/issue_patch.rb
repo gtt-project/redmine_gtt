@@ -30,16 +30,22 @@ module RedmineGtt
 
         def geom=(g)
           # Turn geometry attribute into WKB for database use
+          pp g
           if (g.present?)
-            geojson = JSON.parse(g)
-            feature = RGeo::GeoJSON.decode(geojson, json_parser: :json)
+            begin
+              geojson = JSON.parse(g)
+              feature = RGeo::GeoJSON.decode(geojson, json_parser: :json)
 
-            ewkb = RGeo::WKRep::WKBGenerator.new(
-              :type_format => :ewkb,
-              :emit_ewkb_srid => true,
-              :hex_format => true
-            )
-            self[:geom] = ewkb.generate(feature.geometry)
+              ewkb = RGeo::WKRep::WKBGenerator.new(
+                :type_format => :ewkb,
+                :emit_ewkb_srid => true,
+                :hex_format => true
+              )
+              self[:geom] = ewkb.generate(feature.geometry)
+            rescue
+              # The Gemetry is likely to be already in WKB format
+              self[:geom] = g
+            end
           else
             self[:geom] = nil
           end
