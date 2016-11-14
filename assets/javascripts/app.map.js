@@ -115,6 +115,14 @@ App.map = (function ($, publ) {
     else if (contents.popup) {
       this.setPopover();
     }
+
+    // When one or more issues is selected, zoom to selected map features
+    $("table.issues tbody tr").on('click', function (evt) {
+      var id = $(this).attr("id").split('-')[1];
+      var feature = vector.getSource().getFeatureById(id);
+      map.getView().fit(feature.getGeometry(), map.getSize());
+    });
+
     return;
   };
 
