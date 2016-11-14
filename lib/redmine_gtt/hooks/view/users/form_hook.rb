@@ -9,7 +9,7 @@ module RedmineGtt
         section << tag(:div, :data => {
           :geom => context[:user].geojson,
           :edit => 'Point'
-        }, :id => 'olmap', :class => 'ol-map')
+        }, :id => 'ol-' + rand(36**8).to_s(36), :class => 'ol-map')
 
         return section.join("\n")
       end

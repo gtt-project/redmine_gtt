@@ -5,16 +5,13 @@ module RedmineGtt
         return '' if context[:issue].project.nil?
         return '' unless User.current.allowed_to?(:view_issues, context[:issue].project)
 
-        section = [];
-        # section << content_tag(:p, content_tag(:strong, l(:field_location)))
-
-        section << tag(:div, :data => {
+        content = [];
+        content << content_tag(:div, "", :data => {
           :geom => context[:issue].geojson,
           :bounds => context[:project].geojson,
-        }, :id => 'olmap', :class => 'ol-map')
+        }, :id => 'ol-' + rand(36**8).to_s(36), :class => 'ol-map')
 
-        # TODO: Try not to use html_safe
-        return content_tag(:div, section.join("\n").html_safe)
+        return content.join("\n")
       end
     end
   end

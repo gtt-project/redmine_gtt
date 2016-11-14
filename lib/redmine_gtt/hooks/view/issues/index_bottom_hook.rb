@@ -16,7 +16,7 @@ module RedmineGtt
           :popup => {
             :href => '/issues/[id]'
           }
-        }, :id => 'olmap', :class => 'ol-map')
+        }, :id => 'ol-' + rand(36**8).to_s(36), :class => 'ol-map')
 
         # TODO: Try not to use html_safe
         return content_tag(:fieldset, section.join("\n").html_safe,

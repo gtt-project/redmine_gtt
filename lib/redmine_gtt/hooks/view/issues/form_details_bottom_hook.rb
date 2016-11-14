@@ -19,7 +19,7 @@ module RedmineGtt
           :geom => context[:issue].geojson,
           :bounds => context[:project].geojson,
           :edit => 'Point LineString Polygon'
-        }, :id => 'olmap', :class => 'ol-map')
+        }, :id => 'ol-' + rand(36**8).to_s(36), :class => 'ol-map')
 
         return section.join("\n")
       end

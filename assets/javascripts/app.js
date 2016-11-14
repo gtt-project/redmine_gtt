@@ -9,9 +9,9 @@ var App = (function ($, publ) {
   publ.init = function (options) {
 
     // Init Map module
-    if ($("#olmap").length) {
-      this.map.init();
-    }
+    this.map.init({
+      target: options.target
+    });
 
     return;
   };
@@ -24,8 +24,13 @@ var App = (function ($, publ) {
 })(jQuery, App || {});
 
 /**
- * When DOM is ready, initialize the application
+ * When DOM is ready, initialize map plugin
  */
 $(document).ready(function(){
-  App.init({});
+  // A page may contain more than one map
+  $("div.ol-map").each(function(idx) {
+    App.init({
+      target: this
+    });
+  });
 });

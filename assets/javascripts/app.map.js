@@ -14,7 +14,7 @@ App.map = (function ($, publ) {
    */
   publ.init = function (options) {
 
-    contents = $("#olmap").data();
+    contents = $(options.target).data();
     defaults = $("#ol-defaults").data();
 
     if (contents.geom && contents.geom !== null) {
@@ -97,7 +97,7 @@ App.map = (function ($, publ) {
     }
 
     map = new ol.Map({
-      target: 'olmap',
+      target: options.target,
       layers: [tiles,bounds,vector],
       controls: ol.control.defaults({
         attributionOptions: ({
