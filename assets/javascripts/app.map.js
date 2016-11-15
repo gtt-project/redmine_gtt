@@ -123,6 +123,15 @@ App.map = (function ($, publ) {
       map.getView().fit(feature.getGeometry(), map.getSize());
     });
 
+    // Need to update size of an invisible map, when the editable form is made
+    // visible. This doesn't look like a good way to do it, but this is more of
+    // a Redmine problem
+    $("div.contextual a.icon-edit").on('click', function (evt) {
+      setTimeout( function() {
+        map.updateSize();
+      }, 200);
+    });
+
     return;
   };
 
