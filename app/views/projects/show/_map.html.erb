@@ -1,0 +1,9 @@
+<div class="usermap box">
+  <h3><%= l(:label_user_map) %></h3>
+
+  <%= content_tag(:div, "",:data => {
+      :geom => @project.geojson,
+      :bounds => @project.geojson
+    }, :id => 'ol-' + rand(36**8).to_s(36), :class => 'ol-map')
+  %>
+</div>

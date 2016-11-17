@@ -1,0 +1,8 @@
+<% return '' if @issue.project.nil? %>
+<% return '' unless User.current.allowed_to?(:view_issues, @issue.project) %>
+
+<%= content_tag(:div, "", :data => {
+    :geom => @issue.geojson,
+    :bounds => @project.geojson,
+  }, :id => 'ol-' + rand(36**8).to_s(36), :class => 'ol-map')
+%>

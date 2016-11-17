@@ -1,0 +1,16 @@
+<% return '' if @project.nil? %>
+<% return '' unless User.current.allowed_to?(:view_issues, @project) %>
+
+<fieldset id="location" class="collapsible">
+  <legend onclick="toggleFieldset(this);"><%= l(:field_location) %></legend>
+
+  <%= tag(:div, :data => {
+      # TODO: Don't know where to extend "Issues"
+      :geom => IssuesHelper.get_geojson(@issues),
+      :bounds => @project.geojson,
+      :popup => {
+        :href => '/issues/[id]'
+      }
+    }, :id => 'ol-' + rand(36**8).to_s(36), :class => 'ol-map')
+  %>
+</fieldset>

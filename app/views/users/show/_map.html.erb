@@ -1,0 +1,6 @@
+<h3><%= l(:label_user_map) %></h3>
+
+<%= content_tag(:div, "",:data => {
+    :geom => @user.geojson,
+  }, :id => 'ol-' + rand(36**8).to_s(36), :class => 'ol-map')
+%>

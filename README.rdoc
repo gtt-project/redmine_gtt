@@ -31,3 +31,9 @@ Running test server
 
 bundle exec rails server webrick -e production
 bundle exec rails server webrick -e development
+
+= Notes
+
+This plugin uses "deface" Gem to allow more flexibility in view manipulation:
+- https://github.com/spree/deface
+- http://jbbarth.com/posts/2015-05-24-redmine-plugins-hooking-anywhere-in-views.html

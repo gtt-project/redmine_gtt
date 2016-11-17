@@ -1,8 +1,9 @@
 source 'https://rubygems.org'
 
+gem 'deface'
 gem "rgeo"
 gem "rgeo-geojson"
-gem 'rgeo-activerecord'
+gem "rgeo-activerecord"
 
 # TODO: the following path variable requires to run bundler from application
 # Eventually there is a way to do this directory independent, so bundler can
