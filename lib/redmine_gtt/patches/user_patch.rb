@@ -24,7 +24,7 @@ module RedmineGtt
             ).parse(self.geom)
             properties = self.as_json({except: [
               :hashed_password, :hashed_password, :salt, :must_change_passwd,
-              :passwd_changed_on, :auth_source_id
+              :passwd_changed_on, :auth_source_id, :geom
             ]})
             RGeo::GeoJSON.encode factory.feature(wkb, self.id, properties)
           else

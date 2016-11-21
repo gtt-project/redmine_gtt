@@ -1,5 +1,6 @@
 Rails.logger.info 'Starting GeoTask plugin for RedMine'
 
+require 'pp'
 require 'redmine'
 
 GTT_VERSION_NUMBER = '0.1.0'

@@ -1,1 +1,4 @@
-<span><%= link_to 'GeoJSON' %></span>
+<%=
+  Redmine::Views::OtherFormatsBuilder.new(self).link_to("GeoJSON",
+      :url => params.merge({:format => 'geojson'}))
+%>

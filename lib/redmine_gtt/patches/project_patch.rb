@@ -22,7 +22,8 @@ module RedmineGtt
               :support_ewkb => true,
               :default_srid => 4326
             ).parse(self.geom)
-            RGeo::GeoJSON.encode factory.feature(wkb, self.id, self.as_json)
+            properties = self.as_json({except: [ :geom ]})
+            RGeo::GeoJSON.encode factory.feature(wkb, self.id, properties)
           else
             nil
           end
