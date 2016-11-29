@@ -6,8 +6,16 @@
  */
 App.map = (function ($, publ) {
 
-  var map, vector, bounds, defaults, contents = null;
+  var map, vector, bounds, contents = null;
   var features = [];
+
+  // Quick hack
+  var quick_hack = {
+    lon: 135.1955,
+    lat: 34.6901,
+    zoom: 13,
+    maxzoom: 18
+  };
 
   /**
    *
@@ -16,6 +24,11 @@ App.map = (function ($, publ) {
 
     contents = $(options.target).data();
     defaults = $("#ol-defaults").data();
+
+    if (defaults.lon === null) defaults.lon = quick_hack.lon
+    if (defaults.lat === null) defaults.lat = quick_hack.lat
+    if (defaults.zoom === null) defaults.zoom = quick_hack.zoom
+    if (defaults.maxzoom === null) defaults.maxzoom = quick_hack.maxzoom
 
     if (contents.geom && contents.geom !== null) {
       features = new ol.format.GeoJSON().readFeatures(
