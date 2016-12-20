@@ -80,12 +80,17 @@ App.map = (function ($, publ) {
     });
 
     var tiles = new ol.layer.Tile({
+      // source: new ol.source.OSM({
+      //   url: "https://tile.mierune.co.jp/mierune_mono/{z}/{x}/{y}.png",
+      //   attributions: "Maptiles by <a href='http://mierune.co.jp/' " +
+      //     "target='_blank'>MIERUNE</a>, under CC BY. Data by <a " +
+      //     "href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> " +
+      //     "contributors, under ODbL.",
+      //   crossOrigin: null
+      // })
       source: new ol.source.OSM({
-        url: "https://tile.mierune.co.jp/mierune_mono/{z}/{x}/{y}.png",
-        attributions: "Maptiles by <a href='http://mierune.co.jp/' " +
-          "target='_blank'>MIERUNE</a>, under CC BY. Data by <a " +
-          "href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> " +
-          "contributors, under ODbL.",
+        url: "http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
+        attributions: '<a href="http://portal.cyberjapan.jp/help/termsofuse.html" target="_blank">国土地理院</a>',
         crossOrigin: null
       })
     });
