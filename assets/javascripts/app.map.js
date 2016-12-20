@@ -89,8 +89,8 @@ App.map = (function ($, publ) {
       //   crossOrigin: null
       // })
       source: new ol.source.OSM({
-        url: "http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
-        attributions: '<a href="http://portal.cyberjapan.jp/help/termsofuse.html" target="_blank">国土地理院</a>',
+        url: "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
+        attributions: '<a href="https://portal.cyberjapan.jp/help/termsofuse.html" target="_blank">国土地理院</a>',
         crossOrigin: null
       })
     });
