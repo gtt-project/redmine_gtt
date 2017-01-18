@@ -6,7 +6,7 @@
  */
 App.map = (function ($, publ) {
 
-  var map, vector, bounds, contents, geolocation = null;
+  var map, vector, bounds, contents, toolbar, geolocation = null;
   var features = [];
 
   // Quick hack
@@ -124,9 +124,24 @@ App.map = (function ($, publ) {
       })
     });
 
+    // Add Toolbar
+    toolbar = new ol.control.Bar();
+    toolbar.setPosition("bottom-left");
+    map.addControl(toolbar);
+
     this.setView();
     this.setGeolocation();
     this.zoomToExtent();
+
+    // Control button
+    var maximizeCtrl = new ol.control.Button({
+      html: '<i class="icon-maximize" ></i>',
+      title: "Maximize",
+      handleClick: function () {
+        publ.zoomToExtent();
+      }
+    });
+    toolbar.addControl(maximizeCtrl);
 
     if (contents.edit) {
       this.setControls(contents.edit.split(' '));
@@ -239,14 +254,28 @@ App.map = (function ($, publ) {
       positionFeature.setGeometry(position ? new ol.geom.Point(position) : null);
     });
 
-    map.addLayer(
-      new ol.layer.Vector({
-        map: map,
-        source: new ol.source.Vector({
-          features: [accuracyFeature, positionFeature]
-        })
+    var geolocationLayer = new ol.layer.Vector({
+      map: map,
+      source: new ol.source.Vector({
+        features: [accuracyFeature, positionFeature]
       })
-    );
+    });
+    map.addLayer(geolocationLayer);
+
+    // Control button
+    var geolocationCtrl = new ol.control.Toggle({
+      html: '<i class="icon-compass" ></i>',
+      title: "Geolocation",
+      active: true,
+      onToggle: function (active) {
+        geolocation.setTracking(active);
+        geolocationLayer.setVisible(active);
+        if (active) {
+          map.getView().setCenter(geolocation.getPosition());
+        }
+      }
+    });
+    toolbar.addControl(geolocationCtrl);
   };
 
   /**
