@@ -6,7 +6,7 @@
  */
 App.map = (function ($, publ) {
 
-  var map, vector, bounds, contents = null;
+  var map, vector, bounds, contents, geolocation = null;
   var features = [];
 
   // Quick hack
@@ -125,6 +125,7 @@ App.map = (function ($, publ) {
     });
 
     this.setView();
+    this.setGeolocation();
     this.zoomToExtent();
 
     if (contents.edit) {
@@ -183,6 +184,69 @@ App.map = (function ($, publ) {
     else if (bounds.getSource().getFeatures().length > 0) {
       map.getView().fit(bounds.getSource().getExtent(), map.getSize());
     }
+    else if (geolocation) {
+      geolocation.once('change:position', function (error) {
+        map.getView().setCenter(geolocation.getPosition());
+      });
+    }
+  };
+
+  /**
+   * Add Geolocation functionality
+   */
+  publ.setGeolocation = function (){
+
+    geolocation = new ol.Geolocation({
+      tracking: true,
+      projection: map.getView().getProjection()
+    });
+
+    geolocation.on('change', function() {
+      // console.log({
+      //   accuracy: geolocation.getAccuracy(),
+      //   altitude: geolocation.getAltitude(),
+      //   altitudeAccuracy: geolocation.getAltitudeAccuracy(),
+      //   heading: geolocation.getHeading(),
+      //   speed: geolocation.getSpeed()
+      // });
+    });
+
+    geolocation.on('error', function (error) {
+      // TBD
+    });
+
+    var accuracyFeature = new ol.Feature();
+    geolocation.on('change:accuracyGeometry', function (error) {
+      accuracyFeature.setGeometry(geolocation.getAccuracyGeometry());
+    });
+
+    var positionFeature = new ol.Feature();
+    positionFeature.setStyle(new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: 6,
+        fill: new ol.style.Fill({
+          color: '#3399CC'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#fff',
+          width: 2
+        })
+      })
+    }));
+
+    geolocation.on('change:position', function (error) {
+      var position = geolocation.getPosition();
+      positionFeature.setGeometry(position ? new ol.geom.Point(position) : null);
+    });
+
+    map.addLayer(
+      new ol.layer.Vector({
+        map: map,
+        source: new ol.source.Vector({
+          features: [accuracyFeature, positionFeature]
+        })
+      })
+    );
   };
 
   /**
