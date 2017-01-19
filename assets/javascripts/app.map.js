@@ -383,58 +383,51 @@ App.map = (function ($, publ) {
    */
   publ.setPopover = function () {
 
-    var overlay = new ol.Overlay({
-      element: document.getElementById('popup'),
-      autoPan: true,
-      autoPanAnimation: {
-        duration: 250
-      }
+	  var popup = new ol.Overlay.Popup ({
+      popupClass: "default", //"tooltips", "warning" "black" "default", "tips", "shadow",
+			closeBox: true,
+			onclose: function(){},
+			positioning: 'auto',
+			autoPan: true,
+			autoPanAnimation: { duration: 250 }
+		});
+    map.addOverlay(popup);
+
+    // Control Select
+    var select = new ol.interaction.Select({
+      layers: [vector],
+      multi: false
     });
-    map.addOverlay(overlay);
+    map.addInteraction(select);
 
-    $('#popup-closer').bind('click', function(evt) {
-      publ.unsetPopover(overlay,this);
+    // On selected => show/hide popup
+    select.getFeatures().on(['add'], function (evt){
+      var feature = evt.element;
+
+      var content = [];
+      content.push('<b>' + feature.get("subject") + '</b><br/>');
+      content.push('<span>Starts at: ' + feature.get("start_date") + '</span> |');
+
+      var url = contents.popup.href.replace(/\[(.+?)\]/g, feature.get('id'));
+      content.push('<a href="' + url + '">Edit</a>');
+
+      popup.show(feature.getGeometry().getCoordinates(), content.join(' '));
     });
 
-    // display popup on click
-    map.on('singleclick', function(evt) {
-      var feature = map.forEachFeatureAtPixel(evt.pixel,
-        function(feature, layer) {
-          return feature;
-        }, {
-          layerFilter: function (layer) {
-            // Only return fatures from layer "vector"
-            return layer === vector;
-          },
-          hitTolerance: 0
-        }
-      );
-
-      if (feature) {
-        // TODO: Localize the popup and make it look better
-        var url = contents.popup.href.replace(/\[(.+?)\]/g, feature.get('id'));
-        $('#popup-content').html('<a href="' + url + '">Edit</a>');
-        overlay.setPosition(evt.coordinate);
-      }
-      else {
-        publ.unsetPopover(overlay,$('#popup-closer'));
-      }
+    select.getFeatures().on(['remove'], function (evt) {
+      popup.hide();
     });
 
     // change mouse cursor when over marker
     map.on('pointermove', function(evt) {
       if (evt.dragging) return;
-      var hit = map.hasFeatureAtPixel(evt.pixel, function(layer) {
-        return layer === vector;
+      var hit = map.hasFeatureAtPixel(evt.pixel, {
+        layerFilter: function(layer) {
+          return layer === vector;
+        }
       });
       map.getTargetElement().style.cursor = hit ? 'pointer' : '';
     });
-  };
-
-  publ.unsetPopover = function (layer,close) {
-    layer.setPosition(undefined);
-    close.blur();
-    return false;
   };
 
   /**

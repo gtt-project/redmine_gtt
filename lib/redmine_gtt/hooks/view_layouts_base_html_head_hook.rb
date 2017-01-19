@@ -28,11 +28,6 @@ module RedmineGtt
           :maxzoom => Setting.plugin_redmine_gtt['default_map_maxzoom_level'],
         }, :id => 'ol-defaults', :style => 'display:none')
 
-        tags << content_tag(:div, :id => "popup", :class => "ol-popup") do
-          concat content_tag(:a, "", :href => "#", :id => "popup-closer", :class => "ol-popup-closer")
-          concat content_tag(:div, "", :id => "popup-content")
-        end
-
         return tags.join("\n")
       end
 
