@@ -174,8 +174,6 @@ App.map = (function ($, publ) {
         map.updateSize();
       }, 200);
     });
-
-    return;
   };
 
   /**
@@ -403,9 +401,12 @@ App.map = (function ($, publ) {
       var feature = map.forEachFeatureAtPixel(evt.pixel,
         function(feature, layer) {
           return feature;
-        }, null, function (layer) {
-          // Only return fatures from layer "vector"
-          return layer === vector;
+        }, {
+          layerFilter: function (layer) {
+            // Only return fatures from layer "vector"
+            return layer === vector;
+          },
+          hitTolerance: 0
         }
       );
 
