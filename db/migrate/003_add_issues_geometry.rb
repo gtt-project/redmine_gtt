@@ -6,6 +6,5 @@ class AddIssuesGeometry < ActiveRecord::Migration
 
   def self.down
     remove_column :issues, :geom
-    # remove_index :issues, :geom
   end
 end

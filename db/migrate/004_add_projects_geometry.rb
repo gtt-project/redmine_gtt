@@ -6,6 +6,5 @@ class AddProjectsGeometry < ActiveRecord::Migration
 
   def self.down
     remove_column :projects, :geom
-    # remove_index :projects, :geom
   end
 end

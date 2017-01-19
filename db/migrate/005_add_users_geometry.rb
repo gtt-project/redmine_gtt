@@ -6,6 +6,5 @@ class AddUsersGeometry < ActiveRecord::Migration
 
   def self.down
     remove_column :users, :geom
-    # remove_index :users, :geom
   end
 end
