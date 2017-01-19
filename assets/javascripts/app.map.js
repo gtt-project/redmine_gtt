@@ -25,10 +25,18 @@ App.map = (function ($, publ) {
     contents = $(options.target).data();
     defaults = $("#ol-defaults").data();
 
-    if (defaults.lon === null) defaults.lon = quick_hack.lon
-    if (defaults.lat === null) defaults.lat = quick_hack.lat
-    if (defaults.zoom === null) defaults.zoom = quick_hack.zoom
-    if (defaults.maxzoom === null) defaults.maxzoom = quick_hack.maxzoom
+    if (defaults.lon === null) {
+      defaults.lon = quick_hack.lon;
+    }
+    if (defaults.lat === null) {
+      defaults.lat = quick_hack.lat;
+    }
+    if (defaults.zoom === null) {
+      defaults.zoom = quick_hack.zoom;
+    }
+    if (defaults.maxzoom === null) {
+      defaults.maxzoom = quick_hack.maxzoom;
+    }
 
     if (contents.geom && contents.geom !== null) {
       features = new ol.format.GeoJSON().readFeatures(
@@ -354,7 +362,7 @@ App.map = (function ($, publ) {
       title: 'Upload GeoJSON',
       handleClick: function () {
         var data = prompt("Please paste a GeoJSON geometry here");
-        if (data != null) {
+        if (data !== null) {
           var features = new ol.format.GeoJSON().readFeatures(
             JSON.parse(data), {
               featureProjection: 'EPSG:3857'
@@ -403,7 +411,7 @@ App.map = (function ($, publ) {
 
       if (feature) {
         // TODO: Localize the popup and make it look better
-        var url = contents.popup.href.replace(/\[(.+?)\]/g, feature.get('id'))
+        var url = contents.popup.href.replace(/\[(.+?)\]/g, feature.get('id'));
         $('#popup-content').html('<a href="' + url + '">Edit</a>');
         overlay.setPosition(evt.coordinate);
       }
