@@ -9,7 +9,7 @@ module RedmineGtt
         tags << stylesheet_link_tag("ol.css", :plugin => "redmine_gtt", :media => "all")
         tags << stylesheet_link_tag("ol-control.css", :plugin => "redmine_gtt", :media => "all")
         tags << stylesheet_link_tag("ol3-ext.min.css", :plugin => "redmine_gtt", :media => "all")
-        tags << stylesheet_link_tag("controlbar.css", :plugin => "redmine_gtt", :media => "all")
+        tags << stylesheet_link_tag("fonts.css", :plugin => "redmine_gtt", :media => "all")
         tags << stylesheet_link_tag("app.css", :plugin => "redmine_gtt", :media => "all")
 
         tags << javascript_include_tag('ol.js', :plugin => 'redmine_gtt')
