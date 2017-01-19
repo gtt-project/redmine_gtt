@@ -131,6 +131,7 @@ App.map = (function ($, publ) {
 
     this.setView();
     this.setGeolocation();
+    this.setGeocoding();
     this.zoomToExtent();
 
     // Control button
@@ -212,7 +213,7 @@ App.map = (function ($, publ) {
   publ.setGeolocation = function (){
 
     geolocation = new ol.Geolocation({
-      tracking: true,
+      tracking: false,
       projection: map.getView().getProjection()
     });
 
@@ -266,7 +267,7 @@ App.map = (function ($, publ) {
     var geolocationCtrl = new ol.control.Toggle({
       html: '<i class="icon-compass" ></i>',
       title: "Geolocation",
-      active: true,
+      active: false,
       onToggle: function (active) {
         geolocation.setTracking(active);
         geolocationLayer.setVisible(active);
@@ -276,6 +277,29 @@ App.map = (function ($, publ) {
       }
     });
     toolbar.addControl(geolocationCtrl);
+  };
+
+  /**
+   * Add Geocoding functionality
+   */
+  publ.setGeocoding = function (){
+
+    // Control button
+    var geocodingCtrl = new ol.control.Toggle({
+      html: '<i class="icon-info" ></i>',
+      title: "Geocoding",
+      onToggle: function (active) {
+        console.log(active);
+      },
+      bar: new ol.control.Bar({
+        controls: [
+          new ol.control.Button({
+            html: '<input type="text" placeholder="Go to address..." disabled />'
+          })
+        ]
+      })
+    });
+    toolbar.addControl(geocodingCtrl);
   };
 
   /**
