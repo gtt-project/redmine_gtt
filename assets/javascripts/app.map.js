@@ -294,7 +294,7 @@ App.map = (function ($, publ) {
       bar: new ol.control.Bar({
         controls: [
           new ol.control.Button({
-            html: '<input type="text" placeholder="Go to address..." disabled />'
+            html: '<input type="text" placeholder="Go to address... [TBD]" disabled />'
           })
         ]
       })
