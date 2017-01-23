@@ -12,6 +12,20 @@
 -->
 
 <p>
+  <%= content_tag(:label, l(:gtt_settings_map_url)) %>
+  <%= text_field_tag('settings[default_map_url]',
+      @settings['default_map_url'],
+      :size => 80) %>
+</p>
+
+<p>
+  <%= content_tag(:label, l(:gtt_settings_map_apikey)) %>
+  <%= text_field_tag('settings[default_map_apikey]',
+      @settings['default_map_apikey'],
+      :size => 80) %>
+</p>
+
+<p>
   <%= content_tag(:label, l(:gtt_settings_map_maxzoom_level)) %>
   <%= text_field_tag('settings[default_map_maxzoom_level]',
       @settings['default_map_maxzoom_level'],

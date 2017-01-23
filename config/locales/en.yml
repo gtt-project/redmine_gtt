@@ -15,10 +15,16 @@ en:
 
   label_gtt: "GTT"
   label_tab_general: "General"
+  label_tab_geocoder: "Geocoder"
   label_tab_map: "Basemap"
 
   gtt_settings_general_center_lon: "Default map center longitude"
   gtt_settings_general_center_lat: "Default map center latitude"
   gtt_settings_general_zoom_level: "Default map zoom level"
 
+  gtt_settings_map_url: "API Service URL"
+  gtt_settings_map_apikey: "API Key"
   gtt_settings_map_maxzoom_level: "Maximum map zoom level"
+
+  gtt_settings_geocoder_url: "API Service URL"
+  gtt_settings_geocoder_apikey: "API Key"
