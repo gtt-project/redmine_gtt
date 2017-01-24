@@ -16,11 +16,13 @@ module RedmineGtt
             factory = RGeo::GeoJSON::EntityFactory.instance
             features = []
             issues.each do |issue|
-              wkb = RGeo::WKRep::WKBParser.new(
-                :support_ewkb => true,
-                :default_srid => 4326
-              ).parse(issue.geom)
-              features << factory.feature(wkb, issue.id, issue.as_json)
+              unless issue.geom.nil?
+                wkb = RGeo::WKRep::WKBParser.new(
+                  :support_ewkb => true,
+                  :default_srid => 4326
+                ).parse(issue.geom)
+                features << factory.feature(wkb, issue.id, issue.as_json)
+              end
             end
             RGeo::GeoJSON.encode factory.feature_collection(features)
           else
