@@ -294,18 +294,45 @@ App.map = (function ($, publ) {
     var geocodingCtrl = new ol.control.Toggle({
       html: '<i class="icon-info" ></i>',
       title: "Geocoding",
+      className: "ctl-geocoding",
       onToggle: function (active) {
-        console.log(active);
+        if (active) {
+          $(".ctl-geocoding button input").focus();
+        }
       },
       bar: new ol.control.Bar({
         controls: [
           new ol.control.Button({
-            html: '<input type="text" placeholder="Go to address... [TBD]" disabled />'
+            html: '<form><input name="address" type="text" /></form>'
           })
         ]
       })
     });
     toolbar.addControl(geocodingCtrl);
+
+    // Make Geocoding API request
+    $(".ctl-geocoding form").submit(function (evt) {
+      evt.preventDefault();
+
+      if (!defaults.geocoderUrl) {
+        throw new Error ("No Geocoding service configured!")
+      }
+
+      var url = [
+        defaults.geocoderUrl,
+        ($(this).serializeArray())[0].value
+      ];
+
+      $.getJSON(url.join("/"), function(geojson) {
+        // TODO, check for valid results
+        var address = new ol.format.GeoJSON().readFeature(
+          geojson, {
+            featureProjection: 'EPSG:3857'
+          }
+        );
+        map.getView().fit(address.getGeometry().getExtent(), map.getSize());
+      });
+    });
   };
 
   /**
