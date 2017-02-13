@@ -315,7 +315,7 @@ App.map = (function ($, publ) {
       evt.preventDefault();
 
       if (!defaults.geocoderUrl) {
-        throw new Error ("No Geocoding service configured!")
+        throw new Error ("No Geocoding service configured!");
       }
 
       var url = [
