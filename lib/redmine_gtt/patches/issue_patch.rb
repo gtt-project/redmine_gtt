@@ -18,10 +18,7 @@ module RedmineGtt
         def geojson
           unless self.geom.nil?
             factory = RGeo::GeoJSON::EntityFactory.instance
-            wkb = RGeo::WKRep::WKBParser.new(
-              :support_ewkb => true,
-              :default_srid => 4326
-            ).parse(self.geom)
+            wkb = RGeo::WKRep::WKBParser.new().parse(self.geom)
             RGeo::GeoJSON.encode factory.feature(wkb, self.id, self.as_json)
           else
             nil
@@ -34,12 +31,10 @@ module RedmineGtt
             begin
               geojson = JSON.parse(g)
               feature = RGeo::GeoJSON.decode(geojson, json_parser: :json)
-              ewkb = RGeo::WKRep::WKBGenerator.new(
-                :type_format => :ewkb,
-                :emit_ewkb_srid => true,
+              wkb = RGeo::WKRep::WKBGenerator.new(
                 :hex_format => true
               )
-              self[:geom] = ewkb.generate(feature.geometry)
+              self[:geom] = wkb.generate(feature.geometry)
             rescue
               # The Gemetry is likely to be already in WKB format
               self[:geom] = g

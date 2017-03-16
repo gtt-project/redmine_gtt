@@ -14,17 +14,21 @@ module RedmineGtt
         def get_geojson(issues)
           unless issues.nil?
             factory = RGeo::GeoJSON::EntityFactory.instance
-            features = []
-            issues.each do |issue|
-              unless issue.geom.nil?
-                wkb = RGeo::WKRep::WKBParser.new(
-                  :support_ewkb => true,
-                  :default_srid => 4326
-                ).parse(issue.geom)
-                features << factory.feature(wkb, issue.id, issue.as_json)
+            if (issues.kind_of?(Array))
+              # Handle arrays of issues
+              features = []
+              issues.each do |issue|
+                unless issue.geom.nil?
+                  wkb = RGeo::WKRep::WKBParser.new().parse(issue.geom)
+                  features << factory.feature(wkb, issue.id, issue.as_json)
+                end
               end
+              RGeo::GeoJSON.encode factory.feature_collection(features)
+            else
+              # Handle single issue
+              wkb = RGeo::WKRep::WKBParser.new().parse(issues.geom)
+              RGeo::GeoJSON.encode factory.feature(wkb, issue.id, issue.as_json)
             end
-            RGeo::GeoJSON.encode factory.feature_collection(features)
           else
             nil
           end
