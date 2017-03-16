@@ -21,7 +21,7 @@ Dir.glob("#{Rails.root}/plugins/*/app/overrides").each do |dir|
 end
 
 # Register MIME Types
-Mime::Type.register "application/json", :geojson
+Mime::Type.register "application/geojson", :geojson
 
 # require_dependency 'issue_query'
 # unless IssueQuery.included_modules.include?(RedmineGtt::Patches::IssueQueryPatch)
