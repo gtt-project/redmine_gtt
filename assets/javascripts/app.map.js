@@ -495,7 +495,7 @@ App.map = (function ($, publ) {
 
       var content = [];
       content.push('<b>' + feature.get("subject") + '</b><br/>');
-      content.push('<span>Starts at: ' + feature.get("start_date") + '</span> |');
+      // content.push('<span>Starts at: ' + feature.get("start_date") + '</span> |');
 
       var url = contents.popup.href.replace(/\[(.+?)\]/g, feature.get('id'));
       content.push('<a href="' + url + '">Edit</a>');
