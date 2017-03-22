@@ -1,3 +1,28 @@
+<div class="contextual">
+<%= link_to l(:label_gtt_basemap_new), new_gtt_basemap_path, :class => 'icon icon-add' %>
+</div>
+
+<h3><%=l(:label_gtt_basemap_plural)%></h3>
+
+<table class="list">
+  <thead><tr>
+  <th><%=l(:label_gtt_basemap)%></th>
+  <th><%=l(:label_gtt_basemap_url)%></th>
+  <th></th>
+  </tr></thead>
+  <tbody>
+<% for basemap in GttBasemap.all %>
+  <tr class="<%= cycle("odd", "even") %>">
+  <td><%= basemap.name %></td>
+  <td><%= basemap.url %></td>
+  <td class="buttons">
+    <%= delete_link gtt_basemap_path(status) %>
+  </td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+
 <!--
 <fieldset>
   <%= content_tag(:p, l(:gtt_text_settings_help)) %>

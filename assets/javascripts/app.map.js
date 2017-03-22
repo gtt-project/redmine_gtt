@@ -56,21 +56,8 @@ App.map = (function ($, publ) {
         "features": features,
         "useSpatialIndex": false
       }),
-      style: new ol.style.Style({
-        fill: new ol.style.Fill({
-          color: 'rgba(255, 255, 255, 0.2)'
-        }),
-        stroke: new ol.style.Stroke({
-          color: '#ffcc33',
-          width: 4
-        }),
-        image: new ol.style.Circle({
-          radius: 8,
-          fill: new ol.style.Fill({
-            color: '#ffcc33'
-          })
-        })
-      })
+      renderOrder: ol.ordering.yOrdering(),
+      style: this.getStyle
     });
 
     // Layer for project boundary
@@ -174,6 +161,81 @@ App.map = (function ($, publ) {
         map.updateSize();
       }, 200);
     });
+  };
+
+  publ.getColor = function (feature) {
+    // console.log(feature.get("tracker_id"));
+    return "navy";
+  };
+
+  publ.getStyle = function (feature,resolution) {
+    var style= [];
+    var glyph = ol.style.FontSymbol.prototype.defs.glyphs;
+
+    // Apply Shadow
+    style.push(
+      new ol.style.Style({
+        image: new ol.style.Shadow({
+          radius: 15,
+          blur: 5,
+          offsetX: 0,
+          offsetY: 0,
+          fill: new ol.style.Fill({
+            color: "rgba(0,0,0,0.5)"
+          })
+        })
+      })
+    );
+
+    // Apply Font Style
+    style.push(
+      new ol.style.Style({
+        image: new ol.style.FontSymbol({
+          form: "blazon",
+          gradient: false,
+          glyph: "☀",
+          fontSize: 1,
+          radius: 15,
+          //offsetX: -15,
+          rotation: 0,
+          rotateWithView: false,
+          offsetY: 0,
+          color: "white",
+          fill: new ol.style.Fill({
+            color: publ.getColor(feature)
+          }),
+          stroke: new ol.style.Stroke({
+            color: "white",
+            width: 3
+          })
+        }),
+        stroke: new ol.style.Stroke({
+          width: 2,
+          color: "#f80"
+        }),
+        fill: new ol.style.Fill({
+          color: [255, 136, 0, 0.2]
+        })
+      })
+    );
+
+    return style;
+
+    // return new ol.style.Style({
+    //   fill: new ol.style.Fill({
+    //     color: 'rgba(255, 255, 255, 0.2)'
+    //   }),
+    //   stroke: new ol.style.Stroke({
+    //     color: '#ffcc33',
+    //     width: 4
+    //   }),
+    //   image: new ol.style.Circle({
+    //     radius: 8,
+    //     fill: new ol.style.Fill({
+    //       color: '#ffcc33'
+    //     })
+    //   })
+    // });
   };
 
   /**
