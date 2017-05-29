@@ -32,41 +32,18 @@ module RedmineGtt
           # another output format (geojson). Hopefully this isn't too annoying
           # to maintain. See the previous alias how it would be much nicer.
           retrieve_query
-          sort_init(@query.sort_criteria.empty? ? [['id', 'desc']] : @query.sort_criteria)
-          sort_update(@query.sortable_columns)
-          @query.sort_criteria = sort_criteria.to_a
 
           if @query.valid?
-            case params[:format]
-            when 'csv', 'pdf'
-              @limit = Setting.issues_export_limit.to_i
-              if params[:columns] == 'all'
-                @query.column_names = @query.available_inline_columns.map(&:name)
-              end
-            when 'atom'
-              @limit = Setting.feeds_limit.to_i
-            when 'xml', 'json'
-              @offset, @limit = api_offset_and_limit
-              @query.column_names = %w(author)
-            else
-              @limit = per_page_option
-            end
-
-            @issue_count = @query.issue_count
-            @issue_pages = Redmine::Pagination::Paginator.new @issue_count, @limit, params['page']
-            @offset ||= @issue_pages.offset
-            @issues = @query.issues(:include => [:assigned_to, :tracker, :priority, :category, :fixed_version],
-                                    :order => sort_clause,
-                                    :offset => @offset,
-                                    :limit => @limit)
-            @issue_count_by_group = @query.issue_count_by_group
-
             respond_to do |format|
               format.geojson { send_data(
                 IssuesHelper.get_geojson(@issues).to_json,
                 :type => 'application/json; header=present',
                 :filename => "issues.geojson")
               }
+              format.any { index_without_geojson }
+            end
+          else
+            respond_to do |format|
               format.any { index_without_geojson }
             end
           end
