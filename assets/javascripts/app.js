@@ -14,9 +14,12 @@ var App = (function ($, publ) {
     });
 
     // Hack to disable geometry changes in history
-    $( "#history ul.details li:contains('ジオメトリ')").hide();
-    $( "#history ul.details li:contains('Geometry')").hide();
-    $( "#history ul.details li:contains('Geometrie')").hide();
+    $("#history ul.details li:contains('ジオメトリ')").hide();
+    $("#history ul.details li:contains('Geometry')").hide();
+    $("#history ul.details li:contains('Geometrie')").hide();
+
+    // Hack to set "private" flag by default
+    $('#issue-form.new_issue #issue_is_private_wrap input[type="checkbox"]').attr("checked", "checked");
 
     return;
   };
