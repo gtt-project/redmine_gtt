@@ -52,6 +52,8 @@ App.map = (function ($, publ) {
 
     // Layer for vector features
     vector = new ol.layer.Vector({
+      title: "Features",
+      displayInLayerSwitcher: false,
       source: new ol.source.Vector({
         "features": features,
         "useSpatialIndex": false
@@ -60,8 +62,29 @@ App.map = (function ($, publ) {
       style: this.getStyle
     });
 
+    var osm = new ol.layer.Tile({
+      title: "OSM",
+      baseLayer: true,
+      preview: "/plugin_assets/redmine_gtt/images/preview_osm.jpg",
+      source: new ol.source.OSM()
+    });
+
+    var cmj = new ol.layer.Tile({
+      title: "国土地理院",
+      baseLayer: true,
+      preview: "/plugin_assets/redmine_gtt/images/preview_gsi.png",
+      visible: false,
+      source: new ol.source.OSM({
+        url: "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
+        attributions: '<a href="https://portal.cyberjapan.jp/help/termsofuse.html" target="_blank">国土地理院</a>',
+        crossOrigin: null,
+      })
+    });
+
     // Layer for project boundary
     bounds = new ol.layer.Vector({
+      title: "Boundaries",
+      displayInLayerSwitcher: false,
       source: new ol.source.Vector(),
       style: new ol.style.Style({
         fill: new ol.style.Fill({
@@ -71,22 +94,6 @@ App.map = (function ($, publ) {
           color: '#29a2e1',
           width: 4
         })
-      })
-    });
-
-    var tiles = new ol.layer.Tile({
-      // source: new ol.source.OSM({
-      //   url: "https://tile.mierune.co.jp/mierune_mono/{z}/{x}/{y}.png",
-      //   attributions: "Maptiles by <a href='http://mierune.co.jp/' " +
-      //     "target='_blank'>MIERUNE</a>, under CC BY. Data by <a " +
-      //     "href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> " +
-      //     "contributors, under ODbL.",
-      //   crossOrigin: null
-      // })
-      source: new ol.source.OSM({
-        url: "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
-        attributions: '<a href="https://portal.cyberjapan.jp/help/termsofuse.html" target="_blank">国土地理院</a>',
-        crossOrigin: null
       })
     });
 
@@ -100,18 +107,22 @@ App.map = (function ($, publ) {
       );
       bounds.getSource().addFeature(boundary);
 
-      tiles.addFilter(
-        new ol.filter.Mask({
-          feature: boundary,
-          inner: false,
-          fill: new ol.style.Fill({ color:[255,255,255,0.8] })
-        })
-      );
+      cmj.addFilter(new ol.filter.Mask({
+        feature: boundary,
+        inner: false,
+        fill: new ol.style.Fill({ color:[255,255,255,0.4] })
+      }));
+
+      osm.addFilter(new ol.filter.Mask({
+        feature: boundary,
+        inner: false,
+        fill: new ol.style.Fill({ color:[255,255,255,0.4] })
+      }));
     }
 
     map = new ol.Map({
       target: options.target,
-      layers: [tiles,bounds,vector],
+      layers: [osm,cmj,bounds,vector],
       controls: ol.control.defaults({
         attributionOptions: ({
           collapsible: false
@@ -161,6 +172,9 @@ App.map = (function ($, publ) {
         map.updateSize();
       }, 200);
     });
+
+    // Add LayerSwitcher Image Toolbar
+  	map.addControl(new ol.control.LayerSwitcherImage());
   };
 
   publ.getColor = function (feature) {
@@ -324,6 +338,7 @@ App.map = (function ($, publ) {
     });
 
     var geolocationLayer = new ol.layer.Vector({
+      displayInLayerSwitcher: false,
       map: map,
       source: new ol.source.Vector({
         features: [accuracyFeature, positionFeature]
@@ -478,7 +493,7 @@ App.map = (function ($, publ) {
 			onclose: function(){},
 			positioning: 'auto',
 			autoPan: true,
-			autoPanAnimation: { duration: 250 }
+      autoPanAnimation: { duration: 250 }
 		});
     map.addOverlay(popup);
 
