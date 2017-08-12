@@ -179,7 +179,21 @@ App.map = (function ($, publ) {
 
   publ.getColor = function (feature) {
     // console.log(feature.get("tracker_id"));
-    return "navy";
+    color = "navy";
+
+    switch (feature.get('status_id')) {
+      case 1:
+        color = "red";
+        break;
+
+      case 4:
+      case 5:
+      case 6:
+        color = "green";
+        break;
+    }
+
+    return color;
   };
 
   publ.getStyle = function (feature,resolution) {
@@ -224,8 +238,8 @@ App.map = (function ($, publ) {
           })
         }),
         stroke: new ol.style.Stroke({
-          width: 2,
-          color: "#f80"
+          width: 4,
+          color: publ.getColor(feature)
         }),
         fill: new ol.style.Fill({
           color: [255, 136, 0, 0.2]
@@ -234,22 +248,6 @@ App.map = (function ($, publ) {
     );
 
     return style;
-
-    // return new ol.style.Style({
-    //   fill: new ol.style.Fill({
-    //     color: 'rgba(255, 255, 255, 0.2)'
-    //   }),
-    //   stroke: new ol.style.Stroke({
-    //     color: '#ffcc33',
-    //     width: 4
-    //   }),
-    //   image: new ol.style.Circle({
-    //     radius: 8,
-    //     fill: new ol.style.Fill({
-    //       color: '#ffcc33'
-    //     })
-    //   })
-    // });
   };
 
   /**
