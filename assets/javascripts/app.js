@@ -13,6 +13,11 @@ var App = (function ($, publ) {
       target: options.target
     });
 
+    // Hack to disable geometry changes in history
+    $( "#history ul.details li:contains('ジオメトリ')").hide();
+    $( "#history ul.details li:contains('Geometry')").hide();
+    $( "#history ul.details li:contains('Geometrie')").hide();
+
     return;
   };
 
