@@ -13,7 +13,7 @@ Redmine::Plugin.register :redmine_gtt do
   url 'https://georepublic.info'
   author_url 'mailto:info@georepublic.de'
 
-	requires_redmine :version_or_higher => '3.3.0'
+	requires_redmine :version_or_higher => '3.4.0'
   # begin
   #   requires_redmine_plugin :redmine_language_change, :version_or_higher => '0.0.1'
   # rescue Redmine::PluginNotFound  => e
@@ -30,7 +30,7 @@ Redmine::Plugin.register :redmine_gtt do
 		:partial => 'settings/gtt/main'
 	)
 
-  menu :admin_menu, :gtt, {:controller => 'settings', :action => 'plugin', :id => "redmine_gtt"}, :caption => :label_gtt
+  # menu :admin_menu, :gtt, {:controller => 'settings', :action => 'plugin', :id => "redmine_gtt"}, :caption => :label_gtt
 end
 
 ActionDispatch::Callbacks.to_prepare do
