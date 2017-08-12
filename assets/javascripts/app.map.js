@@ -179,18 +179,20 @@ App.map = (function ($, publ) {
 
   publ.getColor = function (feature) {
     // console.log(feature.get("tracker_id"));
-    color = "navy";
+    color = "#f80";
 
-    switch (feature.get('status_id')) {
-      case 1:
-        color = "red";
-        break;
+    if(feature.get('status_id')) {
+      switch (feature.get('status_id')) {
+        case 1:
+          color = "red";
+          break;
 
-      case 4:
-      case 5:
-      case 6:
-        color = "green";
-        break;
+        case 4:
+        case 5:
+        case 6:
+          color = "green";
+          break;
+      }
     }
 
     return color;
