@@ -26,8 +26,7 @@ Redmine::Plugin.register :redmine_gtt do
 			'map_center_latitude' => 35.689524,
 			'map_zoom_level' => 8,
 			'map_maxzoom_level' => 18
-		},
-		:partial => 'settings/gtt/main'
+		}
 	)
 
   # menu :admin_menu, :gtt, {:controller => 'settings', :action => 'plugin', :id => "redmine_gtt"}, :caption => :label_gtt
