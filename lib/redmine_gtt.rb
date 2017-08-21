@@ -26,7 +26,7 @@ end
 
 # require_dependency 'issue_query'
 # unless IssueQuery.included_modules.include?(RedmineGtt::Patches::IssueQueryPatch)
-# 	IssueQuery.send(:include, RedmineGtt::Patches::IssueQueryPatch)
+#   IssueQuery.send(:include, RedmineGtt::Patches::IssueQueryPatch)
 # end
 
 # require_dependency 'issues_controller'
@@ -36,3 +36,7 @@ end
 
 # Register MIME Types
 Mime::Type.register_alias "application/json", :geojson
+
+
+GttTileSource.add 'GttOsmTileSource'
+

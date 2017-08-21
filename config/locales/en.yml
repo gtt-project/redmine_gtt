@@ -3,20 +3,30 @@ en:
   field_geometry: "Geometry"
   field_location: "Location"
   field_geom: "Geometry"
+  field_min_zoom: Minimum Zoom
+  field_max_zoom: Maximum Zoom
+  field_attributions: Attributions
 
   label_geotask_map: "Geotask Map"
   label_project_map: "Project Map"
   label_user_map: "User Map"
+  label_name: Name
   label_nearby: "nearby(lat,lng)"
+  label_type: Type
+  label_config: Configuration
 
   gtt_label_geometry: "API Key"
   gtt_text_settings_help: "Enter the API key. Leave empty if no key is required."
   gtt_text_settings_geometry_example: "2747491302261fbc47967ba62621af22"
 
   label_gtt: "GTT"
+  label_gtt_tile_source: Tile Source
+  label_gtt_tile_source_new: New Tile Source
+  label_gtt_tile_source_plural: Tile Sources
+  label_parameters: Parameters
   label_tab_general: "General"
   label_tab_geocoder: "Geocoder"
-  label_tab_map: "Basemap"
+  label_tab_map: "Tile Sources"
 
   gtt_settings_general_center_lon: "Default map center longitude"
   gtt_settings_general_center_lat: "Default map center latitude"
@@ -28,3 +38,9 @@ en:
 
   gtt_settings_geocoder_url: "API Service URL"
   gtt_settings_geocoder_apikey: "API Key"
+
+  gtt_tile_sources:
+    names:
+      GttOsmTileSource: OpenStreetMap
+
+  text_osm_url_sample: For example https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png
