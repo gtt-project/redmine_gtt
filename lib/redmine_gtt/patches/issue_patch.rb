@@ -6,7 +6,8 @@ module RedmineGtt
       def self.apply
         Issue.prepend self unless Issue < self
         Issue.class_eval do
-          safe_attributes "geom" if lambda {|issue, user| user.allowed_to?(:edit_issues, issue.project)}
+          safe_attributes "geom",
+            if: ->(issue, user){ user.allowed_to?(:edit_issues, issue.project)}
         end
       end
 
