@@ -1,11 +1,6 @@
 # Global Hooks
 require 'redmine_gtt/hooks/view_layouts_base_html_head_hook'
 
-# Issue Hooks
-require 'redmine_gtt/patches/issue_patch.rb'
-require 'redmine_gtt/patches/issues_controller_patch.rb'
-require 'redmine_gtt/patches/issues_helper_patch.rb'
-
 
 # API Template Hooks
 # Seems like this is not necessary
@@ -24,9 +19,13 @@ Mime::Type.register_alias "application/json", :geojson
 module RedmineGtt
 
   def self.setup
+    RedmineGtt::Patches::IssuesHelperPatch.apply
+
+    RedmineGtt::Patches::IssuePatch.apply
     RedmineGtt::Patches::ProjectPatch.apply
     RedmineGtt::Patches::UserPatch.apply
 
+    RedmineGtt::Patches::IssuesControllerPatch.apply
     RedmineGtt::Patches::ProjectsControllerPatch.apply
     RedmineGtt::Patches::ProjectsHelperPatch.apply
     RedmineGtt::Patches::UsersControllerPatch.apply
@@ -35,7 +34,6 @@ module RedmineGtt
     # 	IssueQuery.send(:include, RedmineGtt::Patches::IssueQueryPatch)
     # end
 
-    # IssuesController.send(:prepend, RedmineGtt::Patches::IssuesControllerPatch)
 
     #Redmine::Views::ApiTemplateHandler.send(:prepend, RedmineGtt::Patches::ApiTemplateHandlerPatch)
   end
