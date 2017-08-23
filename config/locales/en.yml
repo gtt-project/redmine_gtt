@@ -6,6 +6,7 @@ en:
   field_min_zoom: Minimum Zoom
   field_max_zoom: Maximum Zoom
   field_attributions: Attributions
+  field_gtt_tile_source_ids: Tile Sources
 
   label_geotask_map: "Geotask Map"
   label_project_map: "Project Map"
@@ -14,6 +15,8 @@ en:
   label_nearby: "nearby(lat,lng)"
   label_type: Type
   label_config: Configuration
+  label_gtt_settings: GTT
+  label_gtt_settings_headline: GTT Settings
 
   gtt_label_geometry: "API Key"
   gtt_text_settings_help: "Enter the API key. Leave empty if no key is required."
@@ -27,6 +30,8 @@ en:
   label_tab_general: "General"
   label_tab_geocoder: "Geocoder"
   label_tab_map: "Tile Sources"
+
+  gtt_tile_sources_info: Select the tile sources that should be available in this project.
 
   gtt_settings_general_center_lon: "Default map center longitude"
   gtt_settings_general_center_lat: "Default map center latitude"

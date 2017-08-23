@@ -8,6 +8,7 @@ module RedmineGtt
         base.class_eval do
           unloadable
           safe_attributes "geom"
+          has_and_belongs_to_many :gtt_tile_sources
         end
       end
 

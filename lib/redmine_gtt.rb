@@ -40,3 +40,4 @@ Mime::Type.register_alias "application/json", :geojson
 
 GttTileSource.add 'GttOsmTileSource'
 
+RedmineGtt::Patches::ProjectsHelperPatch.apply

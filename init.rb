@@ -15,6 +15,12 @@ Redmine::Plugin.register :redmine_gtt do
 
   requires_redmine :version_or_higher => '3.4.0'
 
+  project_module :gtt do
+    permission :manage_gtt_settings, {
+      projects: [ :update_gtt_configuration ]
+    }, require: :loggedin
+  end
+
   # begin
   #   requires_redmine_plugin :redmine_language_change, :version_or_higher => '0.0.1'
   # rescue Redmine::PluginNotFound  => e
