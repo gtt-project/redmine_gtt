@@ -3,10 +3,12 @@ module RedmineGtt
 
     module ProjectPatch
       def self.apply
-        Project.prepend self unless Project < self
-        Project.class_eval do
-          safe_attributes "geom"
-          has_and_belongs_to_many :gtt_tile_sources
+        unless Project < self
+          Project.prepend self
+          Project.class_eval do
+            safe_attributes "geom"
+            has_and_belongs_to_many :gtt_tile_sources
+          end
         end
       end
 

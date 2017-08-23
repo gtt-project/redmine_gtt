@@ -3,9 +3,11 @@ module RedmineGtt
 
     module UserPatch
       def self.apply
-        User.prepend self unless User < self
-        User.class_eval do
-          safe_attributes "geom"
+        unless User < self
+          User.prepend self 
+          User.class_eval do
+            safe_attributes "geom"
+          end
         end
       end
 

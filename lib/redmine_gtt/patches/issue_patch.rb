@@ -4,10 +4,12 @@ module RedmineGtt
     module IssuePatch
 
       def self.apply
-        Issue.prepend self unless Issue < self
-        Issue.class_eval do
-          safe_attributes "geom",
-            if: ->(issue, user){ user.allowed_to?(:edit_issues, issue.project)}
+        unless Issue < self
+          Issue.prepend self
+          Issue.class_eval do
+            safe_attributes "geom",
+              if: ->(issue, user){ user.allowed_to?(:edit_issues, issue.project)}
+          end
         end
       end
 
