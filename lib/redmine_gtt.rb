@@ -6,10 +6,6 @@ require 'redmine_gtt/patches/issue_patch.rb'
 require 'redmine_gtt/patches/issues_controller_patch.rb'
 require 'redmine_gtt/patches/issues_helper_patch.rb'
 
-# User Hooks
-require 'redmine_gtt/patches/user_patch.rb'
-require 'redmine_gtt/patches/users_controller_patch.rb'
-
 
 # API Template Hooks
 # Seems like this is not necessary
@@ -29,9 +25,11 @@ module RedmineGtt
 
   def self.setup
     RedmineGtt::Patches::ProjectPatch.apply
+    RedmineGtt::Patches::UserPatch.apply
 
     RedmineGtt::Patches::ProjectsControllerPatch.apply
     RedmineGtt::Patches::ProjectsHelperPatch.apply
+    RedmineGtt::Patches::UsersControllerPatch.apply
 
     # unless IssueQuery.included_modules.include?(RedmineGtt::Patches::IssueQueryPatch)
     # 	IssueQuery.send(:include, RedmineGtt::Patches::IssueQueryPatch)
