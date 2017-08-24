@@ -13,7 +13,7 @@ module RedmineGtt
         tags << stylesheet_link_tag("app.css", :plugin => "redmine_gtt", :media => "all")
         tags << stylesheet_link_tag("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
 
-        tags << javascript_include_tag('ol-debug.js', :plugin => 'redmine_gtt')
+        tags << javascript_include_tag('ol.js', :plugin => 'redmine_gtt')
         tags << javascript_include_tag('ol3-ext.min.js', :plugin => 'redmine_gtt')
         tags << javascript_include_tag('app.js', :plugin => 'redmine_gtt')
         tags << javascript_include_tag('app.map.js', :plugin => 'redmine_gtt')

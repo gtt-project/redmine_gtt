@@ -1,7 +1,7 @@
 Deface::Override.new(
   :virtual_path => "issues/index",
   :name => "deface_view_issues_index_map",
-  :insert_after => "erb[loud]:contains('error_messages_for')",
+  :insert_after => "erb[loud]:contains('render_query_totals')",
   :partial => "issues/index/map"
 )
 
