@@ -1,0 +1,9 @@
+<div class="box">
+  <%= f.hidden_field(:geom, :value => @project.geojson, :id => 'geom') %>
+
+  <%= content_tag(:div, "", :data => {
+      :geom => @project.geojson,
+      :edit => 'Polygon'
+    }, :id => 'ol-' + rand(36**8).to_s(36), :class => 'ol-map')
+  %>
+</div>

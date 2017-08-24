@@ -1,0 +1,21 @@
+<% return '' if @issue.nil? || @issue.project.nil? %>
+<% return '' unless User.current.allowed_to?(:view_issues, @issue.project) %>
+
+<%
+  if @issue.new_record?
+    return '' unless User.current.allowed_to?(:add_issues, @issue.project)
+  else
+    return '' unless User.current.allowed_to?(:edit_issues, @issue.project)
+  end
+%>
+
+<div class="box">
+  <%= f.hidden_field(:geom, :value => @issue.geojson, :id => 'geom') %>
+
+  <%= content_tag(:div, "", :data => {
+      :geom => @issue.geojson,
+      :bounds => @project.geojson,
+      :edit => 'Point LineString Polygon'
+    }, :id => 'ol-' + rand(36**8).to_s(36), :class => 'ol-map')
+  %>
+</div>

@@ -1,0 +1,58 @@
+<div class="contextual">
+<%= link_to l(:label_gtt_basemap_new), new_gtt_basemap_path, :class => 'icon icon-add' %>
+</div>
+
+<h3><%=l(:label_gtt_basemap_plural)%></h3>
+
+<table class="list">
+  <thead><tr>
+  <th><%=l(:label_gtt_basemap)%></th>
+  <th><%=l(:label_gtt_basemap_url)%></th>
+  <th></th>
+  </tr></thead>
+  <tbody>
+<% for basemap in GttBasemap.all %>
+  <tr class="<%= cycle("odd", "even") %>">
+  <td><%= basemap.name %></td>
+  <td><%= basemap.url %></td>
+  <td class="buttons">
+    <%= delete_link gtt_basemap_path(status) %>
+  </td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+
+<!--
+<fieldset>
+  <%= content_tag(:p, l(:gtt_text_settings_help)) %>
+  <p>
+    <%= content_tag(:label, l(:gtt_label_geometry)) %>
+    <%= text_field_tag("settings[map_api_key_setting]",
+        @settings['map_api_key_setting'],
+        :size => '60') %><br />
+    <em><%= l(:label_example) %>: <%= l(:gtt_text_settings_geometry_example) %></em>
+  </p>
+</fieldset>
+-->
+
+<p>
+  <%= content_tag(:label, l(:gtt_settings_map_url)) %>
+  <%= text_field_tag('settings[default_map_url]',
+      @settings['default_map_url'],
+      :size => 80) %>
+</p>
+
+<p>
+  <%= content_tag(:label, l(:gtt_settings_map_apikey)) %>
+  <%= text_field_tag('settings[default_map_apikey]',
+      @settings['default_map_apikey'],
+      :size => 80) %>
+</p>
+
+<p>
+  <%= content_tag(:label, l(:gtt_settings_map_maxzoom_level)) %>
+  <%= text_field_tag('settings[default_map_maxzoom_level]',
+      @settings['default_map_maxzoom_level'],
+      :size => 5) %>
+</p>
