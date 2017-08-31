@@ -66,7 +66,12 @@ App.map = (function ($, publ) {
       title: "OSM",
       baseLayer: true,
       preview: "/plugin_assets/redmine_gtt/images/preview_osm.jpg",
-      source: new ol.source.OSM()
+      // source: new ol.source.OSM()
+      source: new ol.source.OSM({
+        url: "https://tile.openstreetmap.jp/{z}/{x}/{y}.png",
+        attributions: '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        crossOrigin: null,
+      })
     });
 
     var cmj = new ol.layer.Tile({
