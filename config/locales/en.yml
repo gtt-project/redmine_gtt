@@ -1,11 +1,11 @@
 # English strings go here for Rails i18n
 en:
+  error_invalid_json: must be valid JSON
+
   field_geometry: "Geometry"
   field_location: "Location"
   field_geom: "Geometry"
-  field_min_zoom: Minimum Zoom
-  field_max_zoom: Maximum Zoom
-  field_attributions: Attributions
+  field_options_string: Options
   field_gtt_tile_source_ids: Tile Sources
 
   label_geotask_map: "Geotask Map"
@@ -43,9 +43,5 @@ en:
 
   gtt_settings_geocoder_url: "API Service URL"
   gtt_settings_geocoder_apikey: "API Key"
-
-  gtt_tile_sources:
-    names:
-      GttOsmTileSource: OpenStreetMap
 
   text_osm_url_sample: For example https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png

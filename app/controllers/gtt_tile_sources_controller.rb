@@ -10,7 +10,7 @@ class GttTileSourcesController < ApplicationController
   end
 
   def new
-    @tile_source = GttTileSource.new_for_type tile_source_params[:type]
+    @tile_source = GttTileSource.new
   end
 
   def create
@@ -50,9 +50,6 @@ class GttTileSourcesController < ApplicationController
   def tile_source_params
     return {} unless params[:tile_source]
 
-    params[:tile_source].permit(
-      :name, :type, :attributions,       # common for all types
-      :url, :min_zoom, :max_zoom         # GttOsmTileSource
-    )
+    params[:tile_source].permit( :name, :type, :options_string )
   end
 end

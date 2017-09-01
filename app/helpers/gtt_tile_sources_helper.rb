@@ -1,22 +1,6 @@
 module GttTileSourcesHelper
-  def tile_source_type_select_tag(tile_source)
-    options = []
-    GttTileSource.types.each do |name|
-      options << [l(name, scope: %i(gtt_tile_sources names)), name]
-    end
-
-    select_tag('tile_source_type',
-               options_for_select(options, tile_source.type),
-               :disabled => (tile_source && !tile_source.new_record?),
-               :data => {:remote => true, :method => 'get'})
-
-  end
-
-  def tile_source_fields(tile_source, form)
-    if tile_source.is_a?(GttTileSource)
-      partial = tile_source.class.name.demodulize.underscore + "_fields"
-      render partial: partial, locals: { f: form }
-    end
+  def pretty_tile_source_options(tile_source)
+    JSON.pretty_generate tile_source.options if Hash === tile_source.options
   end
 
   def tile_source_options(tile_source)

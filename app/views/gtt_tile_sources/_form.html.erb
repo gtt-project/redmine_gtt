@@ -2,15 +2,9 @@
 
 
 <div class="box tabular">
-  <p>
-    <%= label_tag('tile_source_type', l(:label_type)) %>
-    <%= tile_source_type_select_tag(@tile_source) %>
-  </p>
-
   <p><%= f.text_field :name, required: true, size: 25  %></p>
-
-  <%= tile_source_fields @tile_source, f %>
-
+  <p><%= f.text_field :type, required: true, size: 25  %></p>
+  <p> <%= f.text_area :options_string, rows: 10, cols: 80 %> </p>
 </div>
 
 

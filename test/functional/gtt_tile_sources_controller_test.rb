@@ -33,15 +33,17 @@ class GttTileSourcesControllerTest < ActionController::TestCase
       post :create, tile_source: {
         name: 'test',
         type: 'GttOsmTileSource',
-        attributions: 'test',
-        url: 'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png'
+        options_string: {
+          attributions: 'test',
+          url: 'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png'
+        }.to_json
       }
     end
 
-    assert ts = GttOsmTileSource.last
-    assert_equal 'test', ts.attributions
+    assert ts = GttTileSource.last
+    assert_equal 'test', ts.options['attributions']
     assert_equal 'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
-      ts.url
+      ts.options['url']
   end
 
   test 'should get edit' do
@@ -52,11 +54,11 @@ class GttTileSourcesControllerTest < ActionController::TestCase
 
   test 'should update' do
     ts = create_tile_source
-    patch :update, id: ts.to_param, tile_source: { name: 'new name', url: 'https://example.com' }
+    patch :update, id: ts.to_param, tile_source: { name: 'new name', options_string: {url: 'https://example.com'}.to_json }
     assert_redirected_to gtt_tile_sources_path
     ts.reload
     assert_equal 'new name', ts.name
-    assert_equal 'https://example.com', ts.url
+    assert_equal 'https://example.com', ts.options['url']
   end
 
   test 'should destroy tilesource' do
@@ -70,7 +72,7 @@ class GttTileSourcesControllerTest < ActionController::TestCase
   private
 
   def create_tile_source
-    RedmineGtt::Actions::CreateTileSource.(type: 'GttOsmTileSource',
+    RedmineGtt::Actions::CreateTileSource.(type: 'ol.source.OSM',
                                            name: 'test').tile_source
   end
 

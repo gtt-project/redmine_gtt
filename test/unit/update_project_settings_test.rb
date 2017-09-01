@@ -5,7 +5,7 @@ class UpdateProjectSettingsTest < ActiveSupport::TestCase
 
   test 'should save tile sources' do
     p = Project.find 'ecookbook'
-    ts = GttOsmTileSource.create! name: 'test'
+    ts = GttTileSource.create! name: 'test', type: 'ol.source.OSM'
     r = RedmineGtt::Actions::UpdateProjectSettings.(
       p, gtt_tile_source_ids: [ ts.id ]
     )

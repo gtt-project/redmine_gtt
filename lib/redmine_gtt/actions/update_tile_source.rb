@@ -6,16 +6,12 @@ module RedmineGtt
 
       def initialize(tile_source, parameters)
         @ts = tile_source
-        @params = parameters.except(:type)
+        @params = parameters
       end
 
       def call
         @ts.attributes = @params
-        if @ts.save
-          Result.new tile_source_updated: true, tile_source: @ts
-        else
-          Result.new tile_source: @ts
-        end
+        Result.new tile_source_updated: @ts.save, tile_source: @ts
       end
 
     end

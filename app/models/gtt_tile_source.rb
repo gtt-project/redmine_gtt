@@ -3,33 +3,24 @@
 # Configuration is stored as json, this can be extended to support
 # tile sources other than ol.source.OSM
 class GttTileSource < ActiveRecord::Base
+  self.inheritance_column = 'none'
+
   validates :name, presence: true
-  validates :type, inclusion: { in: ->(r){ GttTileSource.types } }
+  validates :type, presence: true
+  validate :take_json_options
 
-  store_accessor :options, :attributions
+  attr_writer :options_string
+  def options_string
+    @options_string ||= JSON.pretty_generate(options || {})
+  end
 
-  class << self
+  private
 
-    def types
-      @types || []
-    end
-
-    # Add a new tile source implementation
-    def add(class_name)
-      @types ||= []
-      @types << class_name
-    end
-
-    def new_for_type(type)
-      if types.include? type
-        type.new
-      else
-        GttOsmTileSource.new
-      end
-    end
-
+  def take_json_options
+    self.options = JSON.parse options_string
+  rescue JSON::ParserError
+    errors.add :options_string, I18n.t(:error_invalid_json)
   end
 
 end
-
 
