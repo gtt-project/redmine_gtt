@@ -39,7 +39,7 @@ Redmine::Plugin.register :redmine_gtt do
   menu :admin_menu,
     :gtt_tile_sources,
     { controller: 'gtt_tile_sources', action: 'index' },
-    caption: :label_gtt_tile_source_plural
+    caption: :label_gtt_tile_source_plural, :html => {:class => 'icon'}
 end
 
 ActionDispatch::Callbacks.to_prepare do
@@ -62,4 +62,8 @@ ActionDispatch::Callbacks.to_prepare do
   # end
 end
 
-
+class GttListener < Redmine::Hook::ViewListener
+  render_on :view_layouts_base_html_head, inline: <<-END
+      <%= stylesheet_link_tag 'gtt', :plugin => 'redmine_gtt' %>
+    END
+end
