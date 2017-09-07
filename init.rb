@@ -47,7 +47,6 @@ ActionDispatch::Callbacks.to_prepare do
   # Automatically encode points to geojson with as_json in rails3
   RGeo::ActiveRecord::GeometryMixin.set_json_generator(:geojson)
 
-  # require_dependency 'home_page_redirector'
   require 'redmine_gtt'
 
   # ActiveRecord::Base.include_root_in_json = true
