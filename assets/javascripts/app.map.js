@@ -8,6 +8,7 @@ App.map = (function ($, publ) {
 
   var map, vector, bounds, contents, toolbar, geolocation = null;
   var features = [];
+  var layerArr = []
 
   // Quick hack
   var quick_hack = {
@@ -50,6 +51,19 @@ App.map = (function ($, publ) {
     //  through the template causes encoding problems
     publ.updateForm(features);
 
+    contents.layers.forEach(function(layer) {
+      var s = layer.type.split(".");
+      layerArr.push(
+        new ol.layer.Tile({
+          title: layer.name,
+          baseLayer: true,
+          visible: false,
+          source: new ol[s[1]][s[2]](layer.options)
+        })
+      );
+    });
+    layerArr[0].setVisible(true);
+
     // Layer for vector features
     vector = new ol.layer.Vector({
       title: "Features",
@@ -61,30 +75,7 @@ App.map = (function ($, publ) {
       renderOrder: ol.ordering.yOrdering(),
       style: this.getStyle
     });
-
-    var osm = new ol.layer.Tile({
-      title: "OSM",
-      baseLayer: true,
-      preview: "/plugin_assets/redmine_gtt/images/preview_osm.jpg",
-      // source: new ol.source.OSM()
-      source: new ol.source.OSM({
-        url: "https://tile.openstreetmap.jp/{z}/{x}/{y}.png",
-        attributions: '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        crossOrigin: null,
-      })
-    });
-
-    var cmj = new ol.layer.Tile({
-      title: "国土地理院",
-      baseLayer: true,
-      preview: "/plugin_assets/redmine_gtt/images/preview_gsi.png",
-      visible: false,
-      source: new ol.source.OSM({
-        url: "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
-        attributions: '<a href="https://portal.cyberjapan.jp/help/termsofuse.html" target="_blank">国土地理院</a>',
-        crossOrigin: null,
-      })
-    });
+    layerArr.push(vector);
 
     // Layer for project boundary
     bounds = new ol.layer.Vector({
@@ -101,6 +92,7 @@ App.map = (function ($, publ) {
         })
       })
     });
+    layerArr.push(bounds);
 
     // Render project boundary if bounds are available
     if (contents.bounds && contents.bounds !== null) {
@@ -112,22 +104,20 @@ App.map = (function ($, publ) {
       );
       bounds.getSource().addFeature(boundary);
 
-      cmj.addFilter(new ol.filter.Mask({
-        feature: boundary,
-        inner: false,
-        fill: new ol.style.Fill({ color:[255,255,255,0.4] })
-      }));
-
-      osm.addFilter(new ol.filter.Mask({
-        feature: boundary,
-        inner: false,
-        fill: new ol.style.Fill({ color:[255,255,255,0.4] })
-      }));
+      layerArr.forEach(function(layer) {
+        if(layer.get("baseLayer")) {
+          layer.addFilter(new ol.filter.Mask({
+            feature: boundary,
+            inner: false,
+            fill: new ol.style.Fill({ color:[255,255,255,0.4] })
+          }));
+        }
+      });
     }
 
     map = new ol.Map({
       target: options.target,
-      layers: [osm,cmj,bounds,vector],
+      layers: layerArr,
       controls: ol.control.defaults({
         attributionOptions: ({
           collapsible: false
@@ -179,7 +169,7 @@ App.map = (function ($, publ) {
     });
 
     // Add LayerSwitcher Image Toolbar
-  	map.addControl(new ol.control.LayerSwitcherImage());
+  	map.addControl(new ol.control.LayerPopup());
   };
 
   publ.getColor = function (feature) {

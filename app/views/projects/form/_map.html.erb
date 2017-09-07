@@ -4,6 +4,7 @@
 
   <%= content_tag(:div, "", :data => {
       :geom => @project.geojson,
+      :layers => @project.gtt_tile_sources,
       :edit => 'Polygon'
     }, :id => 'ol-' + rand(36**8).to_s(36), :class => 'ol-map')
   %>
