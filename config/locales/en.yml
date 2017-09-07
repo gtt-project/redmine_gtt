@@ -2,6 +2,7 @@
 en:
   error_invalid_json: must be valid JSON
 
+  field_default: Default for new projects
   field_geometry: "Geometry"
   field_location: "Location"
   field_geom: "Geometry"

@@ -11,6 +11,9 @@ class GttTileSource < ActiveRecord::Base
   # globally available tile sources
   scope :global, ->{ where global: true }
 
+  # default tile sources for new projects
+  scope :default, ->{ where default: true }
+
   attr_writer :options_string
   def options_string
     @options_string ||= JSON.pretty_generate(options || {})
