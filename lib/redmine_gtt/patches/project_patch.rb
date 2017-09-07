@@ -8,7 +8,7 @@ module RedmineGtt
           Project.class_eval do
             safe_attributes "geom"
             has_and_belongs_to_many :gtt_tile_sources
-            after_create :set_default_tile_sources
+            after_save :set_default_tile_sources
           end
         end
       end
