@@ -1,6 +1,7 @@
 <tr class="<%= cycle("odd", "even") %>">
   <td><%= tile_source.type %></td>
   <td><%= link_to tile_source.name, edit_gtt_tile_source_path(tile_source) %></td>
+  <td><%= format_object tile_source.global %></td>
   <td><%= tile_source_options tile_source %></td>
   <td class="buttons">
     <%= delete_link gtt_tile_source_path(tile_source) %>

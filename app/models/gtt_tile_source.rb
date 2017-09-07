@@ -1,13 +1,15 @@
 # Tile source model
 #
-# Configuration is stored as json, this can be extended to support
-# tile sources other than ol.source.OSM
+# Configuration is stored as json
 class GttTileSource < ActiveRecord::Base
   self.inheritance_column = 'none'
 
   validates :name, presence: true
   validates :type, presence: true
   validate :take_json_options
+
+  # globally available tile sources
+  scope :global, ->{ where global: true }
 
   attr_writer :options_string
   def options_string

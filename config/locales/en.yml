@@ -5,10 +5,12 @@ en:
   field_geometry: "Geometry"
   field_location: "Location"
   field_geom: "Geometry"
+  field_global: Globally available
   field_options_string: Options
   field_gtt_tile_source_ids: Tile Sources
 
   label_geotask_map: "Geotask Map"
+  label_global: Global
   label_project_map: "Project Map"
   label_user_map: "User Map"
   label_name: Name
