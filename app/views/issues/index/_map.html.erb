@@ -1,6 +1,7 @@
 <% return '' if @project.nil? %>
 <% return '' unless User.current.allowed_to?(:view_issues, @project) %>
 
+<% if @project.nil? or @project.module_enabled?(:gtt) %>
 <fieldset id="location" class="collapsible">
   <legend onclick="toggleFieldset(this);"><%= l(:field_location) %></legend>
 
@@ -8,9 +9,11 @@
       # TODO: Don't know where to extend "Issues"
       :geom => IssuesHelper.get_geojson(@issues),
       :bounds => @project.geojson,
+      :layers => @project.gtt_tile_sources,
       :popup => {
         :href => '/issues/[id]'
       }
     }, :id => 'ol-' + rand(36**8).to_s(36), :class => 'ol-map')
   %>
 </fieldset>
+<% end %>
