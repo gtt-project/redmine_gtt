@@ -25,6 +25,7 @@ App.map = (function ($, publ) {
 
     contents = $(options.target).data();
     defaults = $("#ol-defaults").data();
+    defaults.geocoderUrl = "https://***REMOVED***/geojson";
 
     if (defaults.lon === null) {
       defaults.lon = quick_hack.lon;
