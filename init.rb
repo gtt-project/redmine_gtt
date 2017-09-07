@@ -18,7 +18,7 @@ Redmine::Plugin.register :redmine_gtt do
   project_module :gtt do
     permission :manage_gtt_settings, {
       projects: [ :update_gtt_configuration ]
-    }, require: :loggedin
+    }, require: :member
   end
 
   # begin
