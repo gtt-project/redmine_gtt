@@ -1,6 +1,9 @@
+<% if @project.nil? or @project.module_enabled?(:gtt) %>
 <h3><%= l(:label_user_map) %></h3>
 
 <%= content_tag(:div, "",:data => {
     :geom => @user.geojson,
+    :layers => GttTileSource.default
   }, :id => 'ol-' + rand(36**8).to_s(36), :class => 'ol-map')
 %>
+<% end %>
