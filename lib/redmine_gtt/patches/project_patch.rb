@@ -46,7 +46,7 @@ module RedmineGtt
 
 
       def set_default_tile_sources
-        if gtt_tile_sources.none?
+        if gtt_tile_sources.none? and module_enabled?(:gtt)
           self.gtt_tile_sources = GttTileSource.default.to_a
         end
       end
