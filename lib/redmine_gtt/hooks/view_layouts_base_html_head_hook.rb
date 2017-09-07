@@ -7,7 +7,6 @@ module RedmineGtt
       def view_layouts_base_html_head(context={})
         tags = [];
         tags << stylesheet_link_tag("ol.css", :plugin => "redmine_gtt", :media => "all")
-        tags << stylesheet_link_tag("ol-control.css", :plugin => "redmine_gtt", :media => "all")
         tags << stylesheet_link_tag("ol3-ext.min.css", :plugin => "redmine_gtt", :media => "all")
         tags << stylesheet_link_tag("fonts.css", :plugin => "redmine_gtt", :media => "all")
         tags << stylesheet_link_tag("app.css", :plugin => "redmine_gtt", :media => "all")
