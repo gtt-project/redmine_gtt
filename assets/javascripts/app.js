@@ -18,9 +18,6 @@ var App = (function ($, publ) {
     $("#history ul.details li:contains('Geometry')").hide();
     $("#history ul.details li:contains('Geometrie')").hide();
 
-    // Hack to set "private" flag by default
-    $('#issue-form.new_issue #issue_is_private_wrap input[type="checkbox"]').attr("checked", "checked");
-
     return;
   };
 

@@ -2,55 +2,61 @@ module RedmineGtt
   module Patches
 
     module ProjectPatch
-      def self.included(base)
-        base.extend(ClassMethods)
-        base.send(:include, InstanceMethods)
-        base.class_eval do
-          unloadable
-          safe_attributes "geom"
-        end
-      end
-
-      module ClassMethods
-      end
-
-      module InstanceMethods
-        def geojson
-          unless self.geom.nil?
-            factory = RGeo::GeoJSON::EntityFactory.instance
-            wkb = RGeo::WKRep::WKBParser.new(
-              :support_ewkb => true,
-              :default_srid => 4326
-            ).parse(self.geom)
-            properties = self.as_json({except: [ :geom ]})
-            RGeo::GeoJSON.encode factory.feature(wkb, self.id, properties)
-          else
-            nil
-          end
-        end
-
-        def geom=(g)
-          # Turn geometry attribute into WKB for database use
-          if (g.present?)
-            geojson = JSON.parse(g)
-            feature = RGeo::GeoJSON.decode(geojson, json_parser: :json)
-
-            ewkb = RGeo::WKRep::WKBGenerator.new(
-              :type_format => :ewkb,
-              :emit_ewkb_srid => true,
-              :hex_format => true
-            )
-            self[:geom] = ewkb.generate(feature.geometry)
-          else
-            self[:geom] = nil
+      def self.apply
+        unless Project < self
+          Project.prepend self
+          Project.class_eval do
+            safe_attributes "geom"
+            has_and_belongs_to_many :gtt_tile_sources
+            after_create :set_default_tile_sources
           end
         end
       end
+
+      def geojson
+        unless self.geom.nil?
+          factory = RGeo::GeoJSON::EntityFactory.instance
+          wkb = RGeo::WKRep::WKBParser.new(
+            :support_ewkb => true,
+            :default_srid => 4326
+          ).parse(self.geom)
+          properties = self.as_json({except: [ :geom ]})
+          RGeo::GeoJSON.encode factory.feature(wkb, self.id, properties)
+        else
+          nil
+        end
+      end
+
+      def geom=(g)
+        # Turn geometry attribute into WKB for database use
+        if (g.present?)
+          geojson = JSON.parse(g)
+          feature = RGeo::GeoJSON.decode(geojson, json_parser: :json)
+
+          ewkb = RGeo::WKRep::WKBGenerator.new(
+            :type_format => :ewkb,
+            :emit_ewkb_srid => true,
+            :hex_format => true
+          )
+          self[:geom] = ewkb.generate(feature.geometry)
+        else
+          self[:geom] = nil
+        end
+      end
+
+      def enabled_module_names=(*_)
+        super
+        set_default_tile_sources
+      end
+
+      def set_default_tile_sources
+        if gtt_tile_sources.none? and module_enabled?(:gtt)
+          self.gtt_tile_sources = GttTileSource.default.to_a
+        end
+      end
+      private :set_default_tile_sources
 
     end
   end
 end
 
-unless Project.included_modules.include?(RedmineGtt::Patches::ProjectPatch)
-  Project.send(:include, RedmineGtt::Patches::ProjectPatch)
-end

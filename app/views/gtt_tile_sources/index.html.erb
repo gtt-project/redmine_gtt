@@ -1,0 +1,28 @@
+<div class="contextual">
+<%= link_to l(:label_gtt_tile_source_new), new_gtt_tile_source_path, :class => 'icon icon-add' %>
+</div>
+
+<h2><%= l :label_gtt_tile_source_plural %></h2>
+
+<% if @tile_sources.any? %>
+<table class="list">
+  <thead>
+    <tr>
+      <th><%= l :label_type %></th>
+      <th><%= l :label_name %></th>
+      <th><%= l :label_global %></th>
+      <th><%= l :label_default %></th>
+      <th><%= l :label_config %></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= render collection: @tile_sources, partial: 'tile_source' %>
+  </tbody>
+</table>
+
+<% else %>
+<p class="nodata"><%= l :label_no_data %></p>
+<% end %>
+
+<% html_title l :label_gtt_tile_source_plural -%>

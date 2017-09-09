@@ -1,7 +1,7 @@
 /**
  * ol3-ext - A set of cool extensions for OpenLayers 3 (ol3).
  * @abstract ol3,openlayers,popup,menu,symbol,renderer,filter,canvas,interaction,split,statistic,charts,pie,LayerSwitcher,toolbar,animation
- * @version v1.0.0
+ * @version v1.0.1
  * @author Jean-Marc Viglino (https://github.com/Viglino)
  * @link https://github.com/Viglino/ol3-ext#,
  * @license CECILL-B
@@ -49,6 +49,7 @@ ol.control.LayerSwitcher = function(opt_options)
 	{	element = $("<div>").addClass((options.switcherClass || 'ol-layerswitcher') +' ol-unselectable ol-control ol-collapsed');
 	
 		this.button = $("<button>")
+					.attr('type','button')
 					.on("touchstart", function(e)
 					{	element.toggleClass("ol-collapsed"); 
 						e.preventDefault(); 
@@ -155,8 +156,8 @@ ol.control.LayerSwitcher.prototype.overflow = function(dir)
 		{	// Bug IE: need to have an height defined
 			$(this.element).css("height", "100%");
 			switch (dir)
-			{	case 1: top += 2*$("li",this.panel_).height(); break;
-				case -1: top -= 2*$("li",this.panel_).height(); break;
+			{	case 1: top += 2*$("li.visible .li-content",this.panel_).height(); break;
+				case -1: top -= 2*$("li.visible .li-content",this.panel_).height(); break;
 				case "+50%": top += Math.round(h/2); break;
 				case "-50%": top -= Math.round(h/2); break;
 				default: break;
@@ -288,14 +289,17 @@ ol.control.LayerSwitcher.prototype.dragOrdering_ = function(e)
 		case 'mousedown': 
 		case 'touchstart':
 		{	e.stopPropagation();
-			//e.preventDefault();
+			e.preventDefault();
+			var pageY = e.pageY 
+					|| (e.originalEvent.touches && e.originalEvent.touches.length && e.originalEvent.touches[0].pageY) 
+					|| (e.originalEvent.changedTouches && e.originalEvent.changedTouches.length && e.originalEvent.changedTouches[0].pageY);
 			drag = 
 				{	self: drag.self,
 					elt: $(e.currentTarget).closest("li"), 
 					start: true, 
 					element: drag.self.element, 
 					panel: drag.self.panel_, 
-					pageY: e.pageY || e.originalEvent.touches[0].pageY 
+					pageY: pageY
 				};
 			drag.elt.parent().addClass('drag');
 			$(document).on("mouseup mousemove touchend touchcancel touchmove", drag, drag.self.dragOrdering_);
@@ -341,9 +345,13 @@ ol.control.LayerSwitcher.prototype.dragOrdering_ = function(e)
 			break;
 		}
 		// Ordering
-		default: 
+		case 'mousemove':
+		case 'touchmove':
 		{	// First drag (more than 2 px) => show drag element (ghost)
-			if (drag.start && Math.abs(drag.pageY - (e.pageY || e.originalEvent.touches[0].pageY)) > 2)
+			var pageY = e.pageY 
+					|| (e.originalEvent.touches && e.originalEvent.touches.length && e.originalEvent.touches[0].pageY) 
+					|| (e.originalEvent.changedTouches && e.originalEvent.changedTouches.length && e.originalEvent.changedTouches[0].pageY);
+			if (drag.start && Math.abs(drag.pageY - pageY) > 2)
 			{	drag.start = false;
 				drag.elt.addClass("drag");
 				drag.layer = drag.elt.data('layer');
@@ -363,13 +371,14 @@ ol.control.LayerSwitcher.prototype.dragOrdering_ = function(e)
 				e.stopPropagation();
 
 				// Ghost div
-				drag.div.css ({ top:(e.pageY || e.originalEvent.touches[0].pageY)-drag.panel.offset().top+5 });
+				drag.div.css ({ top:pageY - drag.panel.offset().top + drag.panel.scrollTop() +5 });
 				
 				var li;
 				if (e.pageX) li = $(e.target);
-				else li = $(document.elementFromPoint(e.originalEvent.touches[0].clientX, e.originalEvent.touches[0].clientY)); 
+				else li = $(document.elementFromPoint(e.originalEvent.touches[0].clientX, e.originalEvent.touches[0].clientY));
 				if (li.hasClass("ol-switcherbottomdiv")) 
 				{	drag.self.overflow(-1);
+					console.log('bottom')
 				}
 				else if (li.hasClass("ol-switchertopdiv")) 
 				{	drag.self.overflow(1);
@@ -399,6 +408,8 @@ ol.control.LayerSwitcher.prototype.dragOrdering_ = function(e)
 			}
 			break;
 		}
+		default: break;
+
 	}
 };
 
@@ -415,7 +426,9 @@ ol.control.LayerSwitcher.prototype.dragOpacity_ = function(e)
 		case 'touchstart':
 		{	e.stopPropagation();
 			e.preventDefault();
-			drag.start = e.pageX || e.originalEvent.touches[0].pageX;
+			drag.start = e.pageX 
+					|| (e.originalEvent.touches && e.originalEvent.touches.length && e.originalEvent.touches[0].pageX) 
+					|| (e.originalEvent.changedTouches && e.originalEvent.changedTouches.length && e.originalEvent.changedTouches[0].pageX);
 			drag.elt = $(e.target);
 			drag.layer = drag.elt.closest("li").data('layer')
 			drag.self.dragging_ = true;
@@ -434,7 +447,9 @@ ol.control.LayerSwitcher.prototype.dragOpacity_ = function(e)
 		}
 		// Move opcaity
 		default: 
-		{	var x = e.pageX || e.originalEvent.touches[0].pageX;
+		{	var x = e.pageX 
+				|| (e.originalEvent.touches && e.originalEvent.touches.length && e.originalEvent.touches[0].pageX) 
+				|| (e.originalEvent.changedTouches && e.originalEvent.changedTouches.length && e.originalEvent.changedTouches[0].pageX);
 			var dx = Math.max ( 0, Math.min( 1, (x - drag.elt.parent().offset().left) / drag.elt.parent().width() ));
 			drag.elt.css("left", (dx*100)+"%");
 			drag.opacity = dx;
@@ -510,7 +525,7 @@ ol.control.LayerSwitcher.prototype.drawList = function(ul, collection)
 
 		var li = $("<li>").addClass((layer.getVisible()?"visible ":" ")+(layer.get('baseLayer')?"baselayer":""))
 						.data("layer",layer).appendTo(ul);
-		
+
 		var layer_buttons = $("<div>").addClass("ol-layerswitcher-buttons").appendTo(li);
 
 		var d = $("<div>").addClass('li-content').appendTo(li);
@@ -600,7 +615,9 @@ ol.control.LayerSwitcher.prototype.drawList = function(ul, collection)
 				.on("click", function(e)
 				{	e.stopPropagation();
 					e.preventDefault();
-					var x = e.pageX || e.originalEvent.touches[0].pageX;
+					var x = e.pageX 
+						|| (e.originalEvent.touches && e.originalEvent.touches.length && e.originalEvent.touches[0].pageX) 
+						|| (e.originalEvent.changedTouches && e.originalEvent.changedTouches.length && e.originalEvent.changedTouches[0].pageX);
 					var dx = Math.max ( 0, Math.min( 1, (x - $(this).offset().left) / $(this).width() ));
 					$(this).closest("li").data('layer').setOpacity(dx);
 				})
@@ -612,10 +629,16 @@ ol.control.LayerSwitcher.prototype.drawList = function(ul, collection)
 
 		// Layer group
 		if (layer.getLayers)
-		{	if (layer.get("openInLayerSwitcher")===true) 
+		{	li.addClass('ol-layer-group');
+			if (layer.get("openInLayerSwitcher")===true) 
 			{	this.drawList ($("<ul>").appendTo(li), layer.getLayers());
 			}
 		}
+		else if (layer instanceof ol.layer.Vector) li.addClass('ol-layer-vector');
+		else if (layer instanceof ol.layer.VectorTile) li.addClass('ol-layer-vector');
+		else if (layer instanceof ol.layer.Tile) li.addClass('ol-layer-tile');
+		else if (layer instanceof ol.layer.Image) li.addClass('ol-layer-image');
+		else if (layer instanceof ol.layer.Heatmap) li.addClass('ol-layer-heatmap');
 	}
 
 	if (ul==this.panel_) this.overflow();
@@ -658,23 +681,23 @@ ol.control.LayerSwitcher.prototype.setprogress_ = function(layer)
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
 */
 /** A simple push button control 
- *
- * @constructor
- * @extends {ol.control.Control}
- * @param {Object=} opt_options Control options.
- *		className {String} class of the control
- *		title {String} title of the control
- *		html {String} html to insert in the control
- *		handleClick {function} callback when control is clicked (or use change:active event)
- */
+* @constructor
+* @extends {ol.control.Control}
+* @param {Object=} options Control options.
+*	@param {String} options.className class of the control
+*	@param {String} options.title title of the control
+*	@param {String} options.html html to insert in the control
+*	@param {function} options.handleClick callback when control is clicked (or use change:active event)
+*/
 ol.control.Button = function(options) 
 {	options = options || {};
 	var element = $("<div>").addClass((options.className||"") + ' ol-button ol-unselectable ol-control');
 	var self = this;
 
 	$("<button>").html(options.html || "")
+				.attr('type','button')
 				.attr('title', options.title)
-				.on("touchstart click", function(e)
+				.on("click", function(e)
 				{	if (e && e.preventDefault) 
 					{	e.preventDefault();
 						e.stopPropagation();
@@ -693,6 +716,13 @@ ol.control.Button = function(options)
 ol.inherits(ol.control.Button, ol.control.Control);
 
 /** A simple push button control drawn as text
+* @constructor
+* @extends {ol.control.Button}
+* @param {Object=} options Control options.
+*	@param {String} options.className class of the control
+*	@param {String} options.title title of the control
+*	@param {String} options.html html to insert in the control
+*	@param {function} options.handleClick callback when control is clicked (or use change:active event)
 */
 ol.control.TextButton = function(options) 
 {	options = options || {};
@@ -1636,53 +1666,6 @@ ol.control.Bar.prototype.onActivateControl_ = function (e)
 	this.deactivateControls (this.controls_[n]);
 };
 
-/*	Copyright (c) 2017 Jean-Marc VIGLINO, 
-	released under the CeCILL-B license (French BSD license)
-	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
-*/
-/**
- * Draw a compass on the map. The position/size of the control is defined in the css.
- *
- * @constructor
- * @extends {ol.control.Control}
- * @param {Object=} Control options. The style {ol.style.Style} option is usesd to draw the text.
- *	- className {string} class name for the control
- *	- image {Image} an image, default use the src option or a default image
- *	- src {string} image src, default use the image option or a default image
- *	- rotateVithView {boolean} rotate vith view (false to show watermark), default true
- *	- style {ol.style.Stroke} style to draw the lines, default draw no lines
- */
-ol.control.DeviceOrientation = function(options) 
-{	var self = this;
-	if (!options) options = {};
-	
-	// Initialize parent
-	var element = $("<div>").addClass('ol-unselectable ol-control ol-deviceorientation');
-	if (options.className) element.addClass(options.className);
-	this.compass = $("<div>").addClass("ol-compass").appendTo(element);
-
-	ol.control.Control.call(this, 
-	{	element: element.get(0),
-		target: options.target
-	});
-	
-	if(window.DeviceOrientationEvent) 
-		window.addEventListener("deviceorientation", function(e){ self.setOrientation(e.alpha); }, false);
-	else
-		element.addClass('ol-disable');
-};
-ol.inherits(ol.control.DeviceOrientation, ol.control.Control);
-
-/** Set the orientation
-*/
-ol.control.DeviceOrientation.prototype.setOrientation = function(r)
-{	var t = "translate(-50%, -50%) rotate("+r+"deg)";
-	this.compass.css(
-	{	"-webkit-transform": t,
-		"transform": t
-	});
-	console.log(r)
-};
 /** A simple toggle control with a callback function
  * OpenLayers 3 Layer Switcher Control.
  *
@@ -1743,7 +1726,7 @@ ol.control.Gauge = function(options)
 {	options = options || {};
 	var element = $("<div>").addClass((options.className||"") + ' ol-gauge ol-unselectable ol-control');
 	this.title_ = $("<span>").appendTo(element);
-	this.gauge_ = $("<button>").appendTo($("<div>").appendTo(element)).width(0);
+	this.gauge_ = $("<button>").attr('type','button').appendTo($("<div>").appendTo(element)).width(0);
 	
 	ol.control.Control.call(this, 
 	{	element: element.get(0),
@@ -1776,6 +1759,141 @@ ol.control.Gauge.prototype.val = function(v)
 	}
 	return this.val_;
 };
+/** GeoBookmarks
+ *
+ * @constructor
+ * @extends {ol.control.Control}
+ * @trigger add|remove when a bookmark us added or deleted
+ * @param {Object=} Control options.
+ *	- className {string} default ol-bookmark
+ *	- placeholder {string} input placeholder, default Add a new geomark...
+ *	- editable {bool} enable modification, default true
+ *  - marks a list of default bookmarks : { BM1:{pos:ol.coordinates, zoom: integer, permanent: true}, BM2:{pos:ol.coordinates, zoom: integer} }
+ */
+ol.control.GeoBookmark = function(options) 
+{	options = options || {};
+	var self = this;
+
+	var element;
+	if (options.target) 
+	{	element = $("<div>").addClass(options.className || "ol-bookmark");
+	}
+	else
+	{	element = $("<div>").addClass((options.className || 'ol-bookmark') +' ol-unselectable ol-control ol-collapsed')
+						.on("mouseleave", function()
+						{	if (!input.is(":focus")) menu.hide();
+						});
+		// Show bookmarks on clik
+		this.button = $("<button>")
+					.attr('type','button')
+					.click(function(e)
+					{	menu.toggle();
+					})
+					.appendTo(element);
+	}
+	// The menu
+	var menu = $("<div>")
+				.appendTo(element);
+	var ul = $("<ul>")
+				.appendTo(menu);
+	var input = $("<input>")
+			.attr('placeholder', options.placeholder || "Add a new geomark...")
+			.on('change', function(e)
+			{	var title = $(this).val();
+				if (title) 
+				{	self.addBookmark(title);
+					$(this).val("");
+					self.dispatchEvent({ type:"add", name: title })
+				}
+				menu.hide();
+			})
+			.on('blur', function(){ menu.hide(); });
+	if (options.editable!==false) input.appendTo(menu);
+
+	// Init
+	ol.control.Control.call(this, 
+	{	element: element.get(0),
+		target: options.target
+	});
+
+	this.set('editable', options.editable!==false);
+	// Set default bmark
+	this.setBookmarks(options.marks);
+}
+ol.inherits(ol.control.GeoBookmark, ol.control.Control);
+
+
+/** Set bookmarks
+* @param {} bmark a list of bookmarks : { BM1:{pos:ol.coordinates, zoom: integer}, BM2:{pos:ol.coordinates, zoom: integer} }
+* @param [boolean} modify, default false
+*/
+ol.control.GeoBookmark.prototype.setBookmarks = function (bmark)
+{	if (!bmark) bmark = JSON.parse(localStorage['ol@bookmark'] || "{}");
+	var modify = this.get('editable');
+	var ul = $("ul", this.element);
+	var menu = $("> div", this.element);
+	var self = this;
+
+	localStorage['ol@bookmark'] = JSON.stringify(bmark);
+	ul.html("");
+	for (var b in bmark)
+	{	var li = $("<li>").text(b)
+			.data('bookmark', bmark[b])
+			.click(function()
+			{	var bm = $(this).data('bookmark');
+				self.getMap().getView().setCenter(bm.pos);
+				self.getMap().getView().setZoom(bm.zoom);
+				menu.hide();
+			})
+		li.appendTo(ul);
+		if (modify && !bmark[b].permanent)
+		{	$("<button>")
+				.data('name', b)
+				.attr('title', "Suppr.")
+				.click(function(e)
+				{	self.removeBookmark($(this).data('name'));
+					self.dispatchEvent({ type:"add", name: $(this).data('name') })
+					e.stopPropagation()
+				})
+				.appendTo(li);
+		}
+	}
+};
+
+/** Get Geo bookmarks
+* @return a list of bookmarks : { BM1:{pos:ol.coordinates, zoom: integer}, BM2:{pos:ol.coordinates, zoom: integer} }
+*/
+ol.control.GeoBookmark.prototype.getBookmarks = function ()
+{	return JSON.parse(localStorage['ol@bookmark'] || "{}");
+};
+
+/** Remove a Geo bookmark
+* @param {string} name
+*/
+ol.control.GeoBookmark.prototype.removeBookmark = function (name)
+{	if (!name) return;
+	bmark = JSON.parse(localStorage['ol@bookmark'] || "{}");
+	delete bmark[name];
+	this.setBookmarks(bmark);
+};
+
+/** Add a new Geo bookmark
+* @param {string} name
+* @param {ol.Coordintes} position, default current position
+* @param {number} zoom, default default map zoom
+* @param {bool} permanent: prevent from deletion, default false
+*/
+ol.control.GeoBookmark.prototype.addBookmark = function (name, position, zoom, permanent)
+{	if (!name) return;
+	bmark = JSON.parse(localStorage['ol@bookmark'] || "{}");
+	bmark[name] = 
+		{	pos: position || this.getMap().getView().getCenter(), 
+			zoom: zoom || this.getMap().getView().getZoom()
+		};
+	if (permanent) bmark[name].permanent = true;
+	this.setBookmarks(bmark);
+};
+
 /*	Copyright (c) 2016 Jean-Marc VIGLINO, 
 	released under the CeCILL-B license (French BSD license)
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
@@ -2803,6 +2921,7 @@ ol.control.Overview = function(opt_options)
 		if (/top/.test(options.align)) element.addClass('ol-control-top');
 		if (/right/.test(options.align)) element.addClass('ol-control-right');
 		$("<button>").on("touchstart", function(e){ self.toggleMap(); e.preventDefault(); })
+					.attr('type','button')
 					.click (function(){self.toggleMap()})
 					.appendTo(element);
 		this.panel_ = $("<div>").addClass("panel")
@@ -3284,242 +3403,6 @@ ol.control.Permalink.prototype.layerChange_ = function(e)
 	released under the CeCILL-B license (French BSD license)
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
 */
-/** ol.control.PirateMap adds an old map effect on a canvas renderer. 
-* It colors the map, adds a parchment texture and compass onto the map. 
-* @param {Object}
-*	- hue {ol.Color} color to set hue of the map, default #963
-*	- saturation {Number} saturation of the hue color, default 0.6
-*	- opacity {Number} opacity of the overimpose image, default 0.7
-*/
-ol.control.PirateMap = function(options) 
-{	
-	// deprecated
-	console.error("ol.control.PirateMap is deprecated. Use a combination of ol.filter.Texture + ol.controlCompass + ol.control.Clip.\n"
-		+"See http://viglino.github.io/ol3-ext/examples/map.pirate.html")
-	
-	options = options || {};
-	var self = this;
-
-	this.asset = {};
-	this.hue = (options.hue ? ol.color.asString(options.hue) : "#963");
-	this.saturation = options.saturation || 0.6;
-	this.opacity = options.opacity || 0.7;
-
-	// Get image in css
-	this.asset.back = new Image();
-	this.asset.back.onload = function(){ if (self.map_) self.map_.renderSync(); }
-	var i = $("<img>").addClass("pirate_back").appendTo("body");
-	this.asset.back.src = i.css("background-image").replace(/^url\(\"(.*)\"\)$/,"$1");
-	i.remove();
-
-	this.asset.compass = new Image();
-	this.asset.compass.onload = function(){ if (self.map_) self.map_.renderSync(); }
-	var i = $("<img>").addClass("pirate_compass").appendTo("body");
-	this.asset.compass.src =  i.css("background-image").replace(/^url\(\"(.*)\"\)$/,"$1");
-	i.remove();
-
-	var div = document.createElement('div');
-	div.className = "ol-pirate ol-unselectable ol-control";
-	ol.control.Control.call(this, 
-	{	element: div,
-		target: options.target
-	});
-};
-
-ol.inherits(ol.control.PirateMap, ol.control.Control);
-
-/**
- * Remove the control from its current map and attach it to the new map.
- * Subclasses may set up event handlers to get notified about changes to
- * the map here.
- * @param {ol.Map} map Map.
- * @api stable
- */
-ol.control.PirateMap.prototype.setMap = function (map)
-{	ol.control.Control.prototype.setMap.call(this, map);
-
-	if (this.map_) 
-	{	this.map_.un('precompose', this.drawMask_, this);
-		this.map_.un('postcompose', this.drawPirate_, this);
-	}
-
-	if (map) 
-	{	map.on('precompose', this.drawMask_, this);
-		map.on('postcompose', this.drawPirate_, this);
-	}
-	this.map_ = map;
-};
-
-(function() {
-
-var crop = [[0.023, 0.957], [0, 0.463], [0.007, 0.42], [0.004, 0.397], [0.029, 0.383], [0.013, 0.383], [0.046, 0.367], [0.011, 0.371], [0.004, 0.349], [0.006, 0.297], [0.012, 0.265], [0.007, 0.246], [0.016, 0.191], [0.031, 0.191], [0.019, 0.171], [0.012, 0.1], [0.046, 0.001], [0.071, 0.012], [0.1, 0], [0.186, 0.01], [0.228, 0.008], [0.239, 0.022], [0.25, 0.009], [0.304, 0.002], [0.311, 0.027], [0.313, 0.007], [0.322, 0.064], [0.311, 0.101], [0.329, 0.055], [0.321, 0.018], [0.334, 0.01], [0.496, 0.009], [0.53, 0.019], [0.553, 0.01], [0.615, 0.014], [0.683, 0.03], [0.697, 0.019], [0.728, 0.027], [0.732, 0.066], [0.735, 0.012], [0.752, 0.006], [0.795, 0.014], [0.85, 0.007], [0.929, 0.013], [1, 0.204], [0.994, 0.324], [0.999, 0.393], [0.988, 0.464], [0.947, 0.46], [0.977, 0.47], [0.978, 0.479], [0.99, 0.489], [0.994, 0.572], [0.992, 0.669], [0.982, 0.673], [0.994, 0.689], [1, 0.716], [0.999, 0.81], [0.987, 0.816], [0.996, 0.83], [0.99, 0.894], [0.944, 1], [0.848, 0.993], [0.841, 0.97], [0.837, 0.993], [0.798, 0.981], [0.697, 0.98], [0.653, 0.986], [0.606, 0.981], [0.598, 0.968], [0.598, 0.941], [0.592, 0.982], [0.558, 0.988], [0.507, 0.983], [0.485, 0.988], [0.418, 0.978], [0.4, 0.969], [0.393, 0.98], [0.338, 0.984], [0.304, 0.977], [0.251, 0.984], [0.238, 0.979], [0.252, 0.915], [0.239, 0.969], [0.233, 0.953], [0.23, 0.984], [0.155, 0.971], [0.147, 0.957], [0.142, 0.974], [0.095, 0.976], [0.066, 0.98], [0.023, 0.957]];
-
-ol.control.PirateMap.prototype.drawMask_ = function (event)
-{
-	var ctx = event.context;
-	var canvas = ctx.canvas;
-	var w = canvas.width;
-	var h = canvas.height;
-		
-	ctx.save();
-/*
-		ctx.lineWidth = 5;
-		ctx.strokeStyle = "rgba(0,0,0,0.3)";
-
-		ctx.beginPath();
-		ctx.moveTo(w*crop[0][0]+2, h*crop[0][1]+2);
-		for (var i=1; i<crop.length; i++)
-			ctx.lineTo(w*crop[i][0]+2, h*crop[i][1]+2);
-		ctx.closePath();
-		ctx.stroke();
-*/
-
-		ctx.beginPath();
-		ctx.moveTo(w*crop[0][0], h*crop[0][1]);
-		for (var i=1; i<crop.length; i++)
-			ctx.lineTo(w*crop[i][0], h*crop[i][1]);
-
-	ctx.clip();
-};
-
-/** Draw on the final canvas
-* @private
-*/
-function drawlines(ctx, cx, cy, m)
-{
-	ctx.moveTo (cx+m, cy);
-	ctx.lineTo(cx-m, cy);
-		
-	ctx.moveTo (cx, cy+m);
-	ctx.lineTo(cx, cy-m);
-
-	ctx.moveTo (cx+m, cy+m);
-	ctx.lineTo(cx-m, cy-m);
-	ctx.moveTo (cx+m, cy-m);
-	ctx.lineTo(cx-m, cy+m);
-
-	ctx.moveTo (cx+m/2, cy-3*m/2);
-	ctx.lineTo(cx-m/2, cy+3*m/2);
-	ctx.moveTo (cx+m/2, cy+3*m/2);
-	ctx.lineTo(cx-m/2, cy-3*m/2);
-
-	ctx.moveTo (cx+3*m/2, cy+m/2);
-	ctx.lineTo(cx-3*m/2, cy-m/2);
-	ctx.moveTo (cx+3*m/2, cy-m/2);
-	ctx.lineTo(cx-3*m/2, cy+m/2);
-}
-
-function drawCompass(ctx, compass, cx, cy, rot, sc, m)
-{	ctx.save();
-
-		ctx.translate(cx, cy);
-		ctx.rotate(rot);
-		
-		ctx.beginPath();
-			drawlines(ctx, 0, 0, m*1.5)
-		ctx.stroke();
-		
-		if (sc)
-		{	ctx.globalAlpha = 1;
-			ctx.drawImage (compass, -compass.width/2*sc, -compass.height/2*sc, compass.width*sc, compass.height*sc);
-		}
-
-	ctx.restore();
-}
-
-ol.control.PirateMap.prototype.drawPirate_ = function (event)
-{	if (!this.map_) return;
-	var ctx = event.context;
-	var canvas = ctx.canvas;
-	var ratio = event.frameState.pixelRatio;
-	var view = this.map_.getView();
-	var img = this.asset.back;
-	var compass = this.asset.compass;
-	
-	var m = Math.max(canvas.width, canvas.height);
-	var res = view.getResolution()/ratio;
-	var rot = view.getRotation();
-
-	// Set back color hue
-	ctx.save();
-	
-		//ctx.scale(ratio, ratio);
-
-		ctx.globalCompositeOperation = "color";
-		ctx.fillStyle = this.hue;
-		ctx.globalAlpha = this.saturation;
-		ctx.fillRect(0,0,canvas.width,canvas.height);  
-
-	ctx.restore();
-
-	// Draw back image
-	ctx.save();
-
-		var ext = event.frameState.extent;
-		var dx = ext[0]/res;
-		var dy = ext[1]/res;
-		dx = dx % img.width ;
-		dy = img.height - dy % img.height;
-		if (dx<0) dx += img.width;
-		if (dy<0) dy += img.height;
-
-		ctx.globalCompositeOperation = "multiply";
-		ctx.globalAlpha = this.opacity;
-
-		ctx.rotate(rot);
-
-		for (var i=-dx-m; i<m; i+=img.width)
-		for (var j=-dy-m; j<m; j+=img.height)
-		{	ctx.drawImage(img, i,j);
-		}
-
-	ctx.restore();
-
-	// Draw compass
-	ctx.save();
-
-		ctx.lineWidth = 1;
-		ctx.strokeStyle = this.hue;
-		ctx.globalCompositeOperation = "multiply";
-		ctx.globalAlpha = this.opacity;
-
-		drawCompass (ctx, compass, canvas.width*0.9, canvas.height*0.9, rot, ratio, m*1.5);
-		drawCompass (ctx, compass, compass.width/2 + canvas.width*0.05, canvas.height*0.5, rot, 0.5*ratio, m*1.5);
-	
-	ctx.restore();
-
-	// Restore clip
-	ctx.restore();
-
-/** /
-	ctx.save();
-	ctx.strokeStyle = "rgba(0,0,0,0.3)";
-	ctx.globalCompositeOperation = "multiply";
-	ctx.globalAlpha = 0.3;
-
-	var w=canvas.width;
-	var h=canvas.height;
-	
-	for (var lw=3; lw>0; lw--)
-	{	
-		ctx.beginPath();
-		ctx.lineWidth = 4*lw;
-		ctx.moveTo(w*crop[0][0]+2, h*crop[0][1]+2);
-		for (var i=1; i<crop.length; i++)
-			ctx.lineTo(w*crop[i][0]+2, h*crop[i][1]+2);
-		ctx.closePath();
-		ctx.stroke();
-	}
-	ctx.restore();
-/**/
-
-}
-})();
-
-/*	Copyright (c) 2016 Jean-Marc VIGLINO, 
-	released under the CeCILL-B license (French BSD license)
-	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
-*/
 /**
  * @classdesc OpenLayers 3 Profil Control.
  *	Draw a profil of a feature (with a 3D geometry)
@@ -3542,6 +3425,7 @@ ol.control.Profil = function(opt_options)
 	else
 	{	element = $("<div>").addClass((options.className || 'ol-profil') +' ol-unselectable ol-control ol-collapsed');
 		this.button = $("<button>")
+					.attr('type','button')
 					.on("click touchstart", function(e)
 					{	self.toggle();
 						e.preventDefault();
@@ -3898,13 +3782,14 @@ ol.control.Profil.prototype.getImage = function(type, encoderOptions)
  * @param {Object=} Control options. 
  *	- className {string} control class name
  *	- target {Element | string | undefined} Specify a target if you want the control to be rendered outside of the map's viewport.
- *	- placeholder {string | undefined} placeholder, default "search..."
+ *	- placeholder {string | undefined} placeholder, default "Search..."
  *	- typing {number | undefined} a delay on each typing to start searching (ms), default 300.
  *	- source {ol.source.Vector} source to search in
- *	- property {string | function | undefined} a property to display in the index or a function that takes a feature and return the name to display in the index, default 'name'.
- *	- getSearchString {function | undefined} a function that take a feature and return a text to be used as search string
  *	- minLength {integer | undefined} minimum length to start searching, default 1
- *	- maxItems {integer | undefined} maximum number of items to display in the list, default 10
+ *	- maxItems {integer | undefined} maximum number of items to display in the autocomplete list, default 10
+*
+ *	- property {string | function | undefined} a property to display in the index or a function that takes a feature and return the name to display in the index, default 'name'.
+ *	- getSearchString {function | undefined} a function that take a feature and return a text to be used as search string, default property is used as seach string
  */
 ol.control.SearchFeature = function(options) 
 {	var self = this;
@@ -3917,23 +3802,57 @@ ol.control.SearchFeature = function(options)
 	else
 	{	element = $("<div>").addClass((options.className||"") + 'ol-searchfeature ol-unselectable ol-control ol-collapsed');
 		this.button = $("<button>")
+					.attr('type','button')
 					.click (function()
 					{	element.toggleClass("ol-collapsed"); 
-						if (!element.hasClass("ol-collapsed")) $("input", element).focus();
+						if (!element.hasClass("ol-collapsed")) 
+						{	$("input", element).focus();
+							$('li', element).removeClass('select');
+						}
 					})
 					.appendTo(element);
 	}
 	// Search input
 	var tout, cur="";
 	$("<input>").attr('type','search')
-		.attr('placeholder', options.placeholder||"search...")
+		.attr('placeholder', options.placeholder||"Search...")
 		.on('keyup search', function(e) 
-		{	if (cur != $(this).val())
-			{	cur = $(this).val();
+		{	if (e.key=='ArrowDown' || e.key=='ArrowUp')
+			{	var i, li  = $("li", element);
+				for (i=0; i<li.length; i++) if ($(li[i]).hasClass('select')) break;
+				if (i<li.length)
+				{	var l = $(li[i+(e.key=='ArrowDown' ? 1 : -1)]);
+					if (l.length) 
+					{	$(li[i]).removeClass('select');
+						l.addClass('select');
+					}
+				}
+				else $(li[0]).addClass('select');
+			}
+			else if (e.key =='Enter')
+			{	var i, li  = $("li", element);
+				for (i=0; i<li.length; i++) if ($(li[i]).hasClass('select')) break;
+				if (i<li.length) 
+				{	$(this).blur();
+					self.dispatchEvent({ type:"select", feature:$(li[i]).data('feature') });
+				}
+				else 
+				{	self.search($(this).val(), function(f)
+					{	self.dispatchEvent({ type:"select", feature:f });
+					});
+				}
+			}
+			else if (cur != $(this).val())
+			{	// current search
+				cur = $(this).val();
 				// prevent searching on each typing
 				if (tout) clearTimeout(tout);
-				tout = setTimeout(function(){ self.search(cur)}, options.typing || 300);
+				tout = setTimeout(function()
+				{	if (cur.length >= self.get("minLength")) self.autocomplete_(cur);
+					else $("ul", this.element).html("");
+				}, options.typing || 300);
 			}
+			else $("li", element).removeClass('select');
 		})
 		.blur(function()
 		{	setTimeout(function(){ element.addClass('ol-collapsed') }, 200);
@@ -3983,12 +3902,31 @@ ol.control.SearchFeature.prototype.getSearchString = function (f)
 
 /** Search a string in the features
 *	@param {string} s the search string
+*	@private
 */
-ol.control.SearchFeature.prototype.search = function (s)
+ol.control.SearchFeature.prototype.autocomplete_ = function (s)
 {	var ul = $("ul", this.element).html("");
-	if (s.length < this.get("minLength")) return;
 	var self = this;
-	var nb = this.get("maxItems");
+	this.autocomplete (s, this.get("maxItems"), function(auto)
+	{	for (var i=0; i<auto.length; i++)
+		{	$("<li>").text(auto[i].name)
+				.data('feature', auto[i].feature)
+				.click(function(e)
+				{	self.dispatchEvent({ type:"select", feature:$(this).data('feature') });
+				})
+				.appendTo(ul);
+		}
+	});
+};
+
+/** Autocomplete function
+* @param {string} s search string
+* @param {int} max max 
+* @param {function} cback a callback function that takes an array of {name, feature} to display in the autocomplete fielad
+* @api
+*/
+ol.control.SearchFeature.prototype.autocomplete = function (s, max, cback)
+{	var result = [];
 	// regexp
 	s = s.replace(/^\*/,'');
 	var rex = new RegExp(s, 'i');
@@ -3996,15 +3934,20 @@ ol.control.SearchFeature.prototype.search = function (s)
 	var features = this.source_.getFeatures();
 	for (var i=0, f; f=features[i]; i++)
 	{	if (rex.test(this.getSearchString(f)))
-		{	$("<li>").text(this.getFeatureName(f))
-					.data('feature', f)
-					.click(function(e)
-					{	self.dispatchEvent({ type:"select", feature:$(this).data('feature') });
-					})
-					.appendTo(ul);
-			if ((--nb)<=0) break;;
+		{	result.push({ name:this.getFeatureName(f), feature:f });
+			if ((--max)<=0) break;
 		}
 	}
+	cback (result);
+};
+
+/** Search a feature 
+* @param {string} s search string
+* @param {function} cback a callback function that takes a feature
+* @api
+*/
+ol.control.SearchFeature.prototype.search = function (s, cback)
+{	
 };
 
 /*	Copyright (c) 2015 Jean-Marc VIGLINO, 
@@ -4046,16 +3989,16 @@ ol.control.Swipe = function(opt_options)
 	this.on('propertychange', function() 
 	{	if (this.getMap()) this.getMap().renderSync();
 		if (this.get('orientation') === "horizontal")
-		{	$(this.element).css("top", this.get('position')*100+"%")
+		{	$(this.element).css("top", this.get('position')*100+"%");
 			$(this.element).css("left", "");
 		}
 		else
 		{	if (this.get('orientation') !== "vertical") this.set('orientation', "vertical");
-			$(this.element).css("left", this.get('position')*100+"%")
+			$(this.element).css("left", this.get('position')*100+"%");
 			$(this.element).css("top", "");
 		}
-		$(this.element).removeClass("horizontal vertical")
-		$(this.element).addClass(this.get('orientation'))
+		$(this.element).removeClass("horizontal vertical");
+		$(this.element).addClass(this.get('orientation'));
 	}, this);
 	
 	this.set('position', options.position || 0.5);
@@ -4099,7 +4042,7 @@ ol.control.Swipe.prototype.isLayer_ = function(layer)
 	{	if (this.layers[k].layer === layer)  return k;
 	}
 	return -1;
-}
+};
 
 /** Add a layer to clip
  *	@param {ol.layer|Array<ol.layer>} layer to clip
@@ -4119,7 +4062,7 @@ ol.control.Swipe.prototype.addLayer = function(layers, right)
 			}
 		}
 	}
-}
+};
 
 /** Remove a layer to clip
  *	@param {ol.layer|Array<ol.layer>} layer to clip
@@ -4136,7 +4079,7 @@ ol.control.Swipe.prototype.removeLayer = function(layers)
 			this.getMap().renderSync();
 		}
 	}
-}
+};
 
 /** @private
 */
@@ -4155,10 +4098,13 @@ ol.control.Swipe.prototype.move = function(e)
 		{	self.isMoving = true;
 			$(document).on ("mouseup mousemove touchend touchcancel touchmove", self, self.move );
 		}
-		default: 
+		case 'mousemove': 
+		case 'touchmove':
 		{	if (self.isMoving)
 			{	if (self.get('orientation') === "vertical")
-				{	var pageX = e.pageX || e.originalEvent.touches[0].pageX;
+				{	var pageX = e.pageX 
+						|| (e.originalEvent.touches && e.originalEvent.touches.length && e.originalEvent.touches[0].pageX) 
+						|| (e.originalEvent.changedTouches && e.originalEvent.changedTouches.length && e.originalEvent.changedTouches[0].pageX);
 					if (!pageX) break;
 					pageX -= $(self.getMap().getTargetElement()).offset().left;
 
@@ -4167,19 +4113,22 @@ ol.control.Swipe.prototype.move = function(e)
 					self.set('position', l);
 				}
 				else
-				{	var pageY = e.pageY || e.originalEvent.touches[0].pageY;
+				{	var pageY = e.pageY 
+						|| (e.originalEvent.touches && e.originalEvent.touches.length && e.originalEvent.touches[0].pageY) 
+						|| (e.originalEvent.changedTouches && e.originalEvent.changedTouches.length && e.originalEvent.changedTouches[0].pageY);
 					if (!pageY) break;
 					pageY -= $(self.getMap().getTargetElement()).offset().top;
 
-                                        var l = self.getMap().getSize()[1];
+					var l = self.getMap().getSize()[1];
 					l = Math.min(Math.max(0, 1-(l-pageY)/l), 1);
 					self.set('position', l);
 				}
 			}
 			break;
 		}
+		default: break;
 	}
-}
+};
 
 /** @private
 */
@@ -4191,7 +4140,7 @@ ol.control.Swipe.prototype.precomposeLeft = function(e)
 	if (this.get('orientation') === "vertical") ctx.rect (0,0, canvas.width*this.get('position'), canvas.height);
 	else ctx.rect (0,0, canvas.width, canvas.height*this.get('position'));
 	ctx.clip();
-}
+};
 
 /** @private
 */
@@ -4203,13 +4152,13 @@ ol.control.Swipe.prototype.precomposeRight = function(e)
 	if (this.get('orientation') === "vertical") ctx.rect (canvas.width*this.get('position'), 0, canvas.width, canvas.height);
 	else ctx.rect (0,canvas.height*this.get('position'), canvas.width, canvas.height);
 	ctx.clip();
-}
+};
 
 /** @private
 */
 ol.control.Swipe.prototype.postcompose = function(e) 
-{	ctx = e.context.restore();
-}
+{	e.context.restore();
+};
 
 /*	Copyright (c) 2016 Jean-Marc VIGLINO, 
 	released under the CeCILL-B license (French BSD license)
@@ -4299,14 +4248,15 @@ ol.control.Target.prototype.drawTarget_ = function (e)
 
 			if (style instanceof ol.style.Style)
 			{	var imgs = style.getImage();
-				var sc;
-				if (imgs) 
-				{	var sc = imgs.getScale(); 
+				var sc=0;
+				// OL < v4.3 : setImageStyle don't check retina
+				if (imgs && !ol.Map.prototype.getFeaturesAtPixel) 
+				{	sc = imgs.getScale(); 
 					imgs.setScale(ratio*sc);
 				}
 				e.vectorContext.setStyle(style);
 				e.vectorContext.drawGeometry(geom);
-				if (imgs) imgs.setScale(sc);
+				if (sc && imgs) imgs.setScale(sc);
 			}
 		}
 
@@ -4363,13 +4313,14 @@ ol.control.Target.prototype.drawTarget_ = function (e)
  *
  * @constructor
  * @extends {ol.control.Button}
- * @fires change:active
+ * @fires change:active, change:disable
  * @param {Object=} opt_options Control options.
  *		className {String} class of the control
  *		title {String} title of the control
  *		html {String} html to insert in the control
  *		interaction {ol.interaction} interaction associated with the control 
  *		active {bool} the control is created active, default false
+ *		disable {bool} the control is created disabled, default false
  *		bar {ol.control.Bar} a subbar associated with the control (drawn when active if control is nested in a ol.control.Bar)
  *		autoActive {bool} the control will activate when shown in an ol.control.Bar, default false
  *		onToggle {function} callback when control is clicked (or use change:active event)
@@ -4387,9 +4338,9 @@ ol.control.Toggle = function(options)
 
 	if (options.toggleFn) options.onToggle = options.toggleFn; // compat old version
 	options.handleClick = function()
-				{	self.toggle();
-					if (options.onToggle) options.onToggle.call(self, self.getActive());
-				};
+		{	self.toggle();
+			if (options.onToggle) options.onToggle.call(self, self.getActive());
+		};
 	options.className = (options.className||"") + " ol-toggle";
 	ol.control.Button.call(this, options);
 
@@ -4403,6 +4354,7 @@ ol.control.Toggle = function(options)
 	}
 
 	this.setActive (options.active);
+	this.setDisable (options.disable);
 };
 ol.inherits(ol.control.Toggle, ol.control.Button);
 
@@ -4432,6 +4384,26 @@ ol.control.Toggle.prototype.setMap = function(map)
 */
 ol.control.Toggle.prototype.getSubBar = function ()
 {	return this.subbar_;
+};
+
+/**
+ * Test if the control is disabled.
+ * @return {bool}.
+ * @api stable
+ */
+ol.control.Toggle.prototype.getDisable = function()
+{	return $("button", this.element).prop("disabled");
+};
+
+/** Disable the control. If disable, the control will be deactivated too.
+* @param {bool} b disable (or enable) the control, default false (enable)
+*/
+ol.control.Toggle.prototype.setDisable = function(b)
+{	if (this.getDisable()==b) return;
+	$("button", this.element).prop("disabled", b);
+	if (b && this.getActive()) this.setActive(false);
+
+	this.dispatchEvent({ type:'change:disable', key:'disable', oldValue:!b, disable:b });
 };
 
 /**
@@ -4519,15 +4491,16 @@ ol.featureAnimation.prototype.drawGeom_ = function (e, geom, shadow)
 	var style = e.style;
 	for (var i=0; i<style.length; i++)
 	{	var imgs = style[i].getImage();
-		var sc;
-		if (imgs) 
+		var sc=0;
+		// OL < v4.3 : setImageStyle doesn't check retina
+		if (imgs && !ol.Map.prototype.getFeaturesAtPixel) 
 		{	sc = imgs.getScale(); 
 			imgs.setScale(e.frameState.pixelRatio*sc);
 		}
 		e.vectorContext.setStyle(style[i]);
 		if (style[i].getZIndex()<0) e.vectorContext.drawGeometry(shadow||geom);
 		else e.vectorContext.drawGeometry(geom);
-		if (imgs) imgs.setScale(sc);
+		if (sc && imgs) imgs.setScale(sc);
 	}
 };
 
@@ -4608,7 +4581,7 @@ ol.layer.Vector.prototype.animateFeature = function(feature, fanim)
 		event.time = e.frameState.time - event.start;
 		event.elapsed = event.time / fanim[step].duration_;
 		if (event.elapsed > 1) event.elapsed = 1;
-
+		
 		// Stop animation?
 		if (!fanim[step].animate(event))
 		{	nb++;
@@ -4992,11 +4965,12 @@ ol.featureAnimation.Teleport.prototype.animate = function (e)
 {	var sc = this.easing_(e.elapsed);
 	if (sc)
 	{	e.context.save()
+			var ratio = e.frameState.pixelRatio;
 			e.context.globalAlpha = sc;
 			e.context.scale(sc,1/sc);
 			var m = e.frameState.coordinateToPixelTransform;
-			var dx = (1/sc-1) * (m[0]*e.coord[0] + m[1]*e.coord[1] +m[4]);
-			var dy = (sc-1) * (m[2]*e.coord[0] + m[3]*e.coord[1] +m[5]);
+			var dx = (1/sc-1) * ratio * (m[0]*e.coord[0] + m[1]*e.coord[1] +m[4]);
+			var dy = (sc-1) * ratio * (m[2]*e.coord[0] + m[3]*e.coord[1] +m[5]);
 			e.context.translate(dx,dy);
 			this.drawGeom_(e, e.geom);
 		e.context.restore()
@@ -5057,33 +5031,74 @@ ol.featureAnimation.Throw.prototype.animate = function (e)
 	
 */
 
-/** Zoom animation: feature zoom in
+/** Zoom animation: feature zoom in (for points)
 * @param {ol.featureAnimationZoomOptions} options
 */
 ol.featureAnimation.Zoom = function(options)
-{	ol.featureAnimation.call(this, options);
+{	options = options || {};
+	ol.featureAnimation.call(this, options);
+	this.set('zoomout', options.zoomOut);
 }
 ol.inherits(ol.featureAnimation.Zoom, ol.featureAnimation);
+
+
+/** Zoom animation: feature zoom out (for points)
+* @param {ol.featureAnimationZoomOptions} options
+*/
+ol.featureAnimation.ZoomOut = function(options)
+{	options = options || {};
+	options.zoomOut = true;
+	ol.featureAnimation.Zoom.call(this, options);
+}
+ol.inherits(ol.featureAnimation.ZoomOut, ol.featureAnimation.Zoom);
 
 /** Animate
 * @param {ol.featureAnimationEvent} e
 */
 ol.featureAnimation.Zoom.prototype.animate = function (e)
-{	var sc = this.easing_(e.elapsed);
+{	var fac = this.easing_(e.elapsed);
+	if (fac)
+	{	if (this.get('zoomout')) fac  = 1/fac;
+		var style = e.style;
+		var imgs, sc=[]
+		for (var i=0; i<style.length; i++)
+		{	imgs = style[i].getImage();
+			if (imgs) 
+			{	sc[i] = imgs.getScale(); 
+				imgs.setScale(sc[i]*fac);
+			}
+		}
+
+		e.context.save()
+			var ratio = e.frameState.pixelRatio;
+			var m = e.frameState.coordinateToPixelTransform;
+			var dx = (1/fac-1)* ratio * (m[0]*e.coord[0] + m[1]*e.coord[1] +m[4]);
+			var dy = (1/fac-1)* ratio * (m[2]*e.coord[0] + m[3]*e.coord[1] +m[5]);
+			e.context.scale(fac,fac);
+			e.context.translate(dx,dy);
+			this.drawGeom_(e, e.geom);
+		e.context.restore()
+		
+		for (var i=0; i<style.length; i++)
+		{	imgs = style[i].getImage();
+			if (imgs) imgs.setScale(sc[i]);
+		}
+	}
+/*
+	var sc = this.easing_(e.elapsed);
 	if (sc)
 	{	e.context.save()
+		console.log(e)
 			var ratio = e.frameState.pixelRatio;
 			var m = e.frameState.coordinateToPixelTransform;
 			var dx = (1/(sc)-1)* ratio * (m[0]*e.coord[0] + m[1]*e.coord[1] +m[4]);
 			var dy = (1/(sc)-1)*ratio * (m[2]*e.coord[0] + m[3]*e.coord[1] +m[5]);
 			e.context.scale(sc,sc);
 			e.context.translate(dx,dy);
-			e.frameState.pixelRatio = 1;
 			this.drawGeom_(e, e.geom);
-			e.frameState.pixelRatio=ratio
 		e.context.restore()
 	}
-
+*/
 	return (e.time <= this.duration_);
 }
 
@@ -5542,7 +5557,7 @@ ol.inherits(ol.filter.Composite, ol.filter.Base);
 *	@param {string} operation composite function
 */
 ol.filter.Composite.prototype.setOperation = function(operation)
-{	this.set(operation || "source-over");
+{	this.set('operation', operation || "source-over");
 }
 
 ol.filter.Composite.prototype.precompose = function(e)
@@ -6135,14 +6150,15 @@ ol.interaction.CenterTouch.prototype.drawTarget_ = function (e)
 
 			if (style instanceof ol.style.Style)
 			{	var imgs = style.getImage();
-				var sc;
-				if (imgs) 
-				{	var sc = imgs.getScale(); 
+				var sc=0;
+				// OL < v4.3 : setImageStyle doesn't check retina
+				if (imgs && !ol.Map.prototype.getFeaturesAtPixel) 
+				{	sc = imgs.getScale(); 
 					imgs.setScale(ratio*sc);
 				}
 				e.vectorContext.setStyle(style);
 				e.vectorContext.drawGeometry(geom);
-				if (imgs) imgs.setScale(sc);
+				if (sc && imgs) imgs.setScale(sc);
 			}
 		}
 
@@ -7354,7 +7370,7 @@ ol.interaction.Hover.prototype.setLayerFilter = function(filter)
 	else this.layerFilter_ = function(){ return true; };
 };
 
-/** Cursor move > tells other maps to show the cursor
+/** Get features whenmove
 * @param {ol.event} e "move" event
 */
 ol.interaction.Hover.prototype.handleMove_ = function(e) 
@@ -7764,7 +7780,7 @@ ol.interaction.SnapGuides.prototype.setMap = function(map)
 * @param {boolean} active
 */
 ol.interaction.SnapGuides.prototype.setActive = function(active) 
-{	this.overlayLayer_.setVisible(active);
+{	if (this.getMap()) this.overlayLayer_.setVisible(active);
 	ol.interaction.Interaction.prototype.setActive.call (this, active);
 }
 
@@ -7826,7 +7842,8 @@ ol.interaction.SnapGuides.prototype.addOrthoGuide = function(v)
 * @api
 */
 ol.interaction.SnapGuides.prototype.setDrawInteraction = function(drawi)
-{	// Number of points currently drawing
+{	var self = this;
+	// Number of points currently drawing
 	var nb = 0;
 	// Current guidelines
 	var features = [];
@@ -7846,11 +7863,11 @@ ol.interaction.SnapGuides.prototype.setDrawInteraction = function(drawi)
 		}
 		var l = coord.length;
 		if (l != nb && l > s)
-		{	snapi.clearGuides(features);
+		{	self.clearGuides(features);
 			features = [
-					snapi.addOrthoGuide([coord[l-s],coord[l-s-1]]),
-					snapi.addGuide([coord[0],coord[1]]),
-					snapi.addOrthoGuide([coord[0],coord[1]])
+					self.addOrthoGuide([coord[l-s],coord[l-s-1]]),
+					self.addGuide([coord[0],coord[1]]),
+					self.addOrthoGuide([coord[0],coord[1]])
 				];
 			nb = l;
 		}
@@ -7868,6 +7885,7 @@ ol.interaction.SnapGuides.prototype.setDrawInteraction = function(drawi)
 		features = [];
 	});
 };
+
 /*	Copyright (c) 2016 Jean-Marc VIGLINO, 
 	released under the CeCILL-B license (French BSD license)
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
@@ -8499,6 +8517,96 @@ ol.Map.prototype.hideTarget = function()
 {
 	this.removeOverlay(this.targetOverlay_);
 	this.targetOverlay_ = undefined;
+};
+/*	
+	Tinker Bell effect on maps.
+	
+	Copyright (c) 2015 Jean-Marc VIGLINO, 
+	released under the CeCILL-B license (French BSD license)
+	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
+	@link https://github.com/Viglino
+ */
+ /**
+ * @constructor
+ * @extends {ol.interaction.Pointer}
+ *	@param {ol.interaction.TinkerBell.options} flashlight options param
+ *		- color {ol.Color} color of the sparkles
+ */
+ol.interaction.TinkerBell = function(options) 
+{	options = options || {};
+
+	ol.interaction.Pointer.call(this, 
+	{	handleDownEvent: this.onMove,
+		handleMoveEvent: this.onMove
+	});
+
+	this.set('color', options.color ? ol.color.asString(options.color) : "#fff");
+	this.sparkle = [0,0];
+	this.sparkles = [];
+	this.lastSparkle = this.time = new Date();
+
+	var self = this;
+	this.out_ = function() { self.isout_=true; };
+	this.isout_ = true;
+};
+ol.inherits(ol.interaction.TinkerBell, ol.interaction.Pointer);
+
+/** Set the map > start postcompose
+*/
+ol.interaction.TinkerBell.prototype.setMap = function(map)
+{	if (this.getMap())
+	{	this.getMap().un('postcompose', this.postcompose_, this);
+		map.getViewport().removeEventListener('mouseout', this.out_, false);
+		this.getMap().render();
+	}
+	
+	ol.interaction.Pointer.prototype.setMap.call(this, map);
+
+	if (map)
+	{	map.on('postcompose', this.postcompose_, this);
+		map.on('mouseout', this.onMove, this);
+		map.getViewport().addEventListener('mouseout', this.out_, false);
+	}
+};
+
+ol.interaction.TinkerBell.prototype.onMove = function(e)
+{	this.sparkle = e.pixel;
+	this.isout_ = false;
+	this.getMap().render();
+};
+
+/** Postcompose function
+*/
+ol.interaction.TinkerBell.prototype.postcompose_ = function(e)
+{	var delta = 15;
+	var ctx = e.context;
+	var canvas = ctx.canvas;
+	var dt = e.frameState.time - this.time;
+	this.time = e.frameState.time;
+	if (e.frameState.time-this.lastSparkle > 30 && !this.isout_)
+	{	this.lastSparkle = e.frameState.time;
+		this.sparkles.push({ p:[this.sparkle[0]+Math.random()*delta-delta/2, this.sparkle[1]+Math.random()*delta], o:1 });
+	}
+	ctx.save();
+		ctx.scale(e.frameState.pixelRatio,e.frameState.pixelRatio);
+		ctx.fillStyle = this.get("color");
+		for (var i=this.sparkles.length-1, p; p=this.sparkles[i]; i--)
+		{	if (p.o < 0.2) 
+			{	this.sparkles.splice(0,i+1);
+				break;
+			}
+			ctx.globalAlpha = p.o;
+			ctx.beginPath();
+			ctx.arc (p.p[0], p.p[1], 2.2, 0, 2 * Math.PI, false);
+			ctx.fill();
+			p.o *= 0.98;
+			p.p[0] += (Math.random()-0.5);
+			p.p[1] += dt*(1+Math.random())/30;
+		};
+	ctx.restore();
+
+	// tell OL3 to continue postcompose animation
+	if (this.sparkles.length) this.getMap().render(); 
 };
 /*	Copyright (c) 2016 Jean-Marc VIGLINO, 
 	released under the CeCILL-B license (French BSD license)
@@ -9567,7 +9675,7 @@ ol.source.GeoImage.prototype.setScale = function(scale)
  */
 ol.source.Source.prototype.getPreview = function(lonlat, resolution)
 {	return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAk6QAAJOkBUCTn+AAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAANeSURBVHic7ZpPiE1RHMc/780MBhkik79JSUlIUbOxI+wkI2yRhYSUlJLNpJF/xcpiJBmZGBZsNM1CkmhKITGkGbH0/BuPmXnP4rxbb/TOn3fvOffeec6nfqvb/b7f93fveeec37ng8Xg8Ho/nf6Uu4d+fDswFssCvhHOJhaXAMeApMAQUyyIPPAdOAiuTStAVy4EHjDWsix5gdRLJ2mY34ulWYz6IEeA4kIk9awtkgTOEM/5vdAKT4k0/Ou3YMR/ELcbRm9AKFLBbgCJwNE4TYZkJfMG++SIwDCyLz0o4bI17WdyJz0r1TAZ+oDcxCBwAFgIzEIuhvcBbg3sLwOK4DFXLFvQGniCGSSUagS4DjUPOHESkA3XiOWCORqMR6Nfo9DjI3QqPUSd+ylBnv0Zn0GrWFvmIOvGNhjqrNDp/EAutyFgRKUM2tgO+Gur81FxvAKYZaimxXYBvmuuLDHWWaK4X0RfJCNsF6NdcbzXU2a65PohYFKWOc+jn8PUajbWIXaBKp9NB7lZYh34OzwFbFfd/NtDYYSth27urLGIm0M31AL3APWAAmIooymaDnPIl/Vz4NN1yHrd7gcvxWQnHAuA3bsyPop8hUsE13BSgK04TUViBeFo2zedJ8S6wElexW4D2eNOPTjNi6WvD/DtEr8E6tk6GGoAmxFY2iFHE9NZiQf8gogiB9gTEH23izAZuE77vHyU+ANucO1QwD3hD/MbLowAcdm20EmkwXx4n3NodS9rMB2HabYpEWs0HcRqHp0fNwAvJD+eBTZr7p6BvmQVxUaEzEbiruNfJekH15L8jtrEm7JJolEcOmKXRqQOuKDQuY7HZY8s8iNfzkSLxIuI43FTrkkLnOlBfRW4VsWk+oAX5weknxFAxJQNckGgVgZuIRVoomoGXEmGTMa+iQ6K7M4SW7k24QYgiuDQPYinbhugiF4H3RGtzZYCzyIvQXfpNI1ybLyeLpf5+iTbkRbiP2EcocTHm4+YI8iI8RFHwWjAfsA95Q+YZFU6wasl8wB7kReijtNbIILa0vcg/PRlGfPQwHmlCviDqAzaA+OREtzqr1ejOIDorxlNEjTGUBV4nnUWCvAJxGDlA8q9j3DEArAn2zvXAfOwfl6eVAmJrPpJ0Ih6Px+PxeJLjLwPul3vj5d0eAAAAAElFTkSuQmCC";
-}
+};
 
 /**
  * Return the tile image of the source.
@@ -9583,7 +9691,7 @@ ol.source.Tile.prototype.getPreview = function(lonlat, resolution)
 	var coord = this.getTileGrid().getTileCoordForCoordAndResolution(lonlat, resolution);
 	var fn = this.getTileUrlFunction();
 	return fn.call(this, coord, this.getProjection());
-}
+};
 
 
 /**
@@ -9605,7 +9713,7 @@ ol.source.TileWMS.prototype.getPreview = function(lonlat, resolution)
 	var url = this.getGetFeatureInfoUrl(lonlat, resolution, this.getProjection() || 'EPSG:3857', {});
 	url = url.replace(/getfeatureinfo/i,"GetMap");
 	return url;
-}
+};
 
 
 /**
@@ -9637,7 +9745,7 @@ ol.layer.Layer.prototype.getPreview = function(lonlat, resolution)
 
 	if (this.getSource) return [ this.getSource().getPreview(lonlat, resolution) ];
 	return [];
-}
+};
 
 /**
  * Return a preview for the layer.
@@ -9656,8 +9764,149 @@ ol.layer.Group.prototype.getPreview = function(lonlat, resolution)
 		}
 	}
 	return t;
-}
+};
 
+/*	Copyright (c) 2017 Jean-Marc VIGLINO, 
+	released under the CeCILL-B license (French BSD license)
+	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
+	
+*/
+
+(function() {
+
+/* Implementation */
+function addFeature(f)
+{	var h = this._hexgrid.coord2hex(f.getGeometry().getFirstCoordinate());
+	var id = h.toString();
+	if (this._bin[id]) 
+	{	this._bin[id].get('features').push(f);
+	}
+	else 
+	{	var ex = new ol.Feature(new ol.geom.Polygon([this._hexgrid.getHexagon(h)]));
+		ex.set('features',[f]);
+		ex.set('center', new ol.geom.Point(ol.extent.getCenter(ex.getGeometry().getExtent())));
+		this._bin[id] = ex;
+		this._source.addFeature(ex);
+	}
+	f.on("change", modifyFeature, this);
+};
+
+// Get the hexagon of a feature
+// @return {} the bin id, the index of the feature in the bin and a boolean if the feature has moved to an other bin
+function getBin(f)
+{	// Test if feature exists in the current hex
+	var id = this._hexgrid.coord2hex(f.getGeometry().getFirstCoordinate()).toString();
+	if (this._bin[id])
+	{	var index = this._bin[id].get('features').indexOf(f);
+		if (index > -1) return { id:id, index:index };
+	}
+	// The feature has moved > check all bins
+	for (id in this._bin)
+	{	var index = this._bin[id].get('features').indexOf(f);
+		if (index > -1) return { id:id, index:index, moved:true };
+	}
+	return false;
+};
+
+function removeFeature(f, bin)
+{	var b = bin || getBin.call(this,f);
+	if (b)
+	{	var features = this._bin[b.id].get('features');
+		features.splice(b.index, 1);
+		if (!features.length)
+		{	this._source.removeFeature(this._bin[b.id]);
+			delete this._bin[b.id];
+		}
+	}
+	else 
+	{	console.log("[ERROR:HexBin] remove feature feature doesn't exists anymore.");
+	}
+	f.un("change", modifyFeature, this);
+};
+
+function modifyFeature(e)
+{	var bin = getBin.call(this,e.target);
+	if (bin && bin.moved)
+	{	// remove from the bin
+		removeFeature.call(this,e.target, bin);
+		// insert in the new bin
+		addFeature.call (this, e.target);
+	}	
+	this._source.changed();
+};
+
+// Clear all bins and generate a new one
+function reset()
+{	this._bin = {};
+	this._source.clear();
+	var features = this._origin.getFeatures();
+	for (var i=0, f; f=features[i]; i++)
+	{	addFeature.call (this,f);
+	};
+};
+
+// Init the bin
+function hexbinInit(source, options)
+{	// The HexGrid
+	this._hexgrid = new ol.HexGrid(options);
+	this._bin = {};
+	// Source and origin
+	this._source = source;
+	this._origin = options.source;
+	// Existing features
+	reset.call(this);
+	// Future features
+	this._origin.on("addfeature", function(e){ addFeature.call(this, e.feature); }, this);
+	this._origin.on("removefeature", function(e){ removeFeature.call(this, e.feature); }, this);
+};
+
+/** A source for hexagonal binning
+* @constructor 
+* @extends {ol.source.Vector}
+* @param {olx.source.VectorOptions=} options extend ol.source.Vector options
+*	@param {ol.source.Vector} options.source the source
+* @todo 
+*/
+ol.source.HexBin = function(options)
+{	options = options || {} ;
+	ol.source.Vector.call (this, options);	
+	hexbinInit.call(this, this, options);
+};
+ol.inherits (ol.source.HexBin, ol.source.Vector);
+
+/**
+* Get the orginal source 
+* @return {ol.source.Vector} 
+*/
+ol.source.HexBin.prototype.getSource = function()
+{	return this._origin;
+};
+
+/** An image source for hexagonal binning
+* @constructor 
+* @extends {ol.source.ImageVector}
+* @param {olx.source.ImageVectorOptions=} options
+* @todo 
+*/
+ol.source.ImageHexBin = function(options)
+{	options = options || {} ;
+	var source = new ol.source.Vector();
+	hexbinInit.call (this, source, options);
+	options.source = source;
+	// Create source
+	ol.source.ImageVector.call (this, options);	
+};
+ol.inherits (ol.source.ImageHexBin, ol.source.ImageVector);
+
+/**
+* Get the orginal source 
+* @return {ol.source.Vector} 
+*/
+ol.source.ImageHexBin.prototype.getOriginSource = function()
+{	return this._origin;
+};
+
+})();
 /*	Copyright (c) 2017 Jean-Marc VIGLINO, 
 	released under the CeCILL-B license (French BSD license)
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
@@ -10321,6 +10570,7 @@ ol.Overlay.Popup = function (options)
         this.onclose = options.onclose;      
         this.onshow = options.onshow;      
 	$("<button>").addClass("closeBox").addClass(options.closeBox?"hasclosebox":"")
+				.attr('type', 'button')
 				.prependTo(d)
 				.click(function()
 				{	self.hide();
@@ -10416,6 +10666,13 @@ ol.Overlay.Popup.prototype.setPositioning_ = function (pos)
 	$(this.element).addClass(this.getClassPositioning());
 }
 
+/** Check if popup is visible
+* @return {boolean}
+*/
+ol.Overlay.Popup.prototype.getVisible = function ()
+{	return $(this.element).hasClass("visible");
+};
+
 /**
  * Set the position and the content of the popup.
  * @param {ol.Coordinate|string} the coordinate of the popup or the HTML content.
@@ -10437,8 +10694,8 @@ ol.Overlay.Popup.prototype.show = function (coordinate, html)
 		this.prevHTML = html;
 		$(this.content).html("").append(html);
 		// Refresh when loaded (img)
-		$("*", this.content).load(function()
-		{	map.renderSync(); 
+		$("*", this.content).on('load',function()
+		{	map.renderSync();
 		})
 	}
 
@@ -10509,7 +10766,8 @@ ol.style.FontSymbol = function(opt_options)
 	if (options.stroke) strokeWidth = options.stroke.getWidth();
 	ol.style.RegularShape.call (this,{ radius: options.radius, fill:options.fill, 
 									rotation:options.rotation, rotateWithView: options.rotateWithView });
-
+	
+	if (typeof(options.opacity)=="number") this.setOpacity(options.opacity);
 	this.color_ = options.color;
 	this.fontSize_ = options.fontSize || 1;
 	this.stroke_ = options.stroke;
@@ -10564,7 +10822,34 @@ ol.style.FontSymbol.prototype.defs = { 'fonts':{}, 'glyphs':{} };
 				search: g.search || ""
 			};
 	}
- }
+ };
+
+
+/**
+ * Clones the style. 
+ * @return {ol.style.FontSymbol} 
+ */
+ol.style.FontSymbol.prototype.clone = function() 
+{	var g = new ol.style.FontSymbol(
+	{	glyph: "",
+		color: this.color_,
+		fontSize: this.fontSize_,
+		stroke: this.stroke_,
+		fill: this.fill_,
+		radius: this.radius_ + (this.stroke_ ? this.stroke_.getWidth():0),
+		form: this.form_,
+		gradient: this.gradient_,
+		offsetX: this.offset_[0],
+		offsetY: this.offset_[1],
+		opacity: this.getOpacity(),
+		rotation: this.getRotation(),
+		rotateWithView: this.getRotateWithView()
+	});
+	g.setScale(this.getScale());
+	g.glyph_ = this.glyph_;
+	g.renderMarker_();
+	return g;
+};
 
 /**
  * Get the fill style for the symbol.
@@ -10594,6 +10879,17 @@ ol.style.FontSymbol.prototype.getGlyph = function(name)
 	else return this.glyph_;
 };
 
+/**
+ * Get the glyph name.
+ * @return {string} the name
+ * @api
+ */
+ol.style.FontSymbol.prototype.getGlyphName = function() 
+{	for (var i in ol.style.FontSymbol.prototype.defs.glyphs)
+	{	if (ol.style.FontSymbol.prototype.defs.glyphs[i] === this.glyph_) return i;
+	}
+	return "";
+};
 
 /**
  * Get the stroke style for the symbol.
@@ -10901,7 +11197,30 @@ ol.style.Chart.colors =
 	"pastel":	["#fb4","#79c","#f66","#7d7","#acc","#fdd","#ff9","#b9b"], 
 	"neon":		["#ff0","#0ff","#0f0","#f0f","#f00","#00f"]
 }
-		
+
+/**
+ * Clones the style. 
+ * @return {ol.style.Chart} 
+ */
+ol.style.Chart.prototype.clone = function() 
+{	var s = new ol.style.Chart(
+	{	type: this.type_,
+		radius: this.radius_,
+		rotation: this.getRotation(),
+		scale: this.getScale(),
+		data: this.getData(),
+		snapToPixel: this.getSnapToPixel(),
+		stroke: this.stroke_,
+		colors: this.colors_,
+		offsetX: this.offset_[0],
+		offsetY: this.offset_[1],
+		animation: this.animation_
+	});
+	s.setScale(this.getScale());
+	s.setOpacity(this.getOpacity());
+	return s;
+};
+
 /** Get data associatied with the chart
 */
 ol.style.Chart.prototype.getData = function() 
@@ -11229,6 +11548,17 @@ ol.style.FillPattern = function(options)
 
 };
 ol.inherits(ol.style.FillPattern, ol.style.Fill);
+
+
+/**
+ * Clones the style. 
+ * @return {ol.style.FillPattern} 
+ */
+ol.style.FillPattern.prototype.clone = function() 
+{	var s = ol.style.Fill.prototype.clone.call(this);
+	s.canvas_ = this.canvas_;
+	return s;
+};
 
 /** Get canvas used as pattern
 *	@return {canvas}
@@ -11655,820 +11985,6 @@ ol.style.FillPattern.prototype.getChecksum = function()
 	return this.checksums_[0];
 };
 /**/
-ol.style.FontSymbol.addDefs(
-{	"font":"FontAwesome",
-	"name":"FontAwesome",
-	"copyright":"SIL OFL 1.1",
-	"prefix": "fa"
-},
-{	"fa-glass": "\uf000",
-	"fa-music": "\uf001",
-	"fa-search": "\uf002",
-	"fa-envelope-o": "\uf003",
-	"fa-heart": "\uf004",
-	"fa-star": "\uf005",
-	"fa-star-o": "\uf006",
-	"fa-user": "\uf007",
-	"fa-film": "\uf008",
-	"fa-th-large": "\uf009",
-	"fa-th": "\uf00a",
-	"fa-th-list": "\uf00b",
-	"fa-check": "\uf00c",
-	"fa-remove":"\uf00d",
-	"fa-close":"\uf00d",
-	"fa-times": "\uf00d",
-	"fa-search-plus": "\uf00e",
-	"fa-search-minus": "\uf010",
-	"fa-power-off": "\uf011",
-	"fa-signal": "\uf012",
-	"fa-gear": "\uf013",
-	"fa-cog": "\uf013",
-	"fa-trash-o": "\uf014",
-	"fa-home": "\uf015",
-	"fa-file-o": "\uf016",
-	"fa-clock-o": "\uf017",
-	"fa-road": "\uf018",
-	"fa-download": "\uf019",
-	"fa-arrow-circle-o-down": "\uf01a",
-	"fa-arrow-circle-o-up": "\uf01b",
-	"fa-inbox": "\uf01c",
-	"fa-play-circle-o": "\uf01d",
-	"fa-rotate-right": "\uf01e",
-	"fa-repeat": "\uf01e",
-	"fa-refresh": "\uf021",
-	"fa-list-alt": "\uf022",
-	"fa-lock": "\uf023",
-	"fa-flag": "\uf024",
-	"fa-headphones": "\uf025",
-	"fa-volume-off": "\uf026",
-	"fa-volume-down": "\uf027",
-	"fa-volume-up": "\uf028",
-	"fa-qrcode": "\uf029",
-	"fa-barcode": "\uf02a",
-	"fa-tag": "\uf02b",
-	"fa-tags": "\uf02c",
-	"fa-book": "\uf02d",
-	"fa-bookmark": "\uf02e",
-	"fa-print": "\uf02f",
-	"fa-camera": "\uf030",
-	"fa-font": "\uf031",
-	"fa-bold": "\uf032",
-	"fa-italic": "\uf033",
-	"fa-text-height": "\uf034",
-	"fa-text-width": "\uf035",
-	"fa-align-left": "\uf036",
-	"fa-align-center": "\uf037",
-	"fa-align-right": "\uf038",
-	"fa-align-justify": "\uf039",
-	"fa-list": "\uf03a",
-	"fa-dedent": "\uf03b",
-	"fa-outdent": "\uf03b",
-	"fa-indent": "\uf03c",
-	"fa-video-camera": "\uf03d",
-	"fa-photo": "\uf03e",
-	"fa-image": "\uf03e",
-	"fa-picture-o": "\uf03e",
-	"fa-pencil": "\uf040",
-	"fa-map-marker": "\uf041",
-	"fa-adjust": "\uf042",
-	"fa-tint": "\uf043",
-	"fa-edit": "\uf044",
-	"fa-pencil-square-o": "\uf044",
-	"fa-share-square-o": "\uf045",
-	"fa-check-square-o": "\uf046",
-	"fa-arrows": "\uf047",
-	"fa-step-backward": "\uf048",
-	"fa-fast-backward": "\uf049",
-	"fa-backward": "\uf04a",
-	"fa-play": "\uf04b",
-	"fa-pause": "\uf04c",
-	"fa-stop": "\uf04d",
-	"fa-forward": "\uf04e",
-	"fa-fast-forward": "\uf050",
-	"fa-step-forward": "\uf051",
-	"fa-eject": "\uf052",
-	"fa-chevron-left": "\uf053",
-	"fa-chevron-right": "\uf054",
-	"fa-plus-circle": "\uf055",
-	"fa-minus-circle": "\uf056",
-	"fa-times-circle": "\uf057",
-	"fa-check-circle": "\uf058",
-	"fa-question-circle": "\uf059",
-	"fa-info-circle": "\uf05a",
-	"fa-crosshairs": "\uf05b",
-	"fa-times-circle-o": "\uf05c",
-	"fa-check-circle-o": "\uf05d",
-	"fa-ban": "\uf05e",
-	"fa-arrow-left": "\uf060",
-	"fa-arrow-right": "\uf061",
-	"fa-arrow-up": "\uf062",
-	"fa-arrow-down": "\uf063",
-	"fa-mail-forward": "\uf064",
-	"fa-share": "\uf064",
-	"fa-expand": "\uf065",
-	"fa-compress": "\uf066",
-	"fa-plus": "\uf067",
-	"fa-minus": "\uf068",
-	"fa-asterisk": "\uf069",
-	"fa-exclamation-circle": "\uf06a",
-	"fa-gift": "\uf06b",
-	"fa-leaf": "\uf06c",
-	"fa-fire": "\uf06d",
-	"fa-eye": "\uf06e",
-	"fa-eye-slash": "\uf070",
-	"fa-warning": "\uf071",
-	"fa-exclamation-triangle": "\uf071",
-	"fa-plane": "\uf072",
-	"fa-calendar": "\uf073",
-	"fa-random": "\uf074",
-	"fa-comment": "\uf075",
-	"fa-magnet": "\uf076",
-	"fa-chevron-up": "\uf077",
-	"fa-chevron-down": "\uf078",
-	"fa-retweet": "\uf079",
-	"fa-shopping-cart": "\uf07a",
-	"fa-folder": "\uf07b",
-	"fa-folder-open": "\uf07c",
-	"fa-arrows-v": "\uf07d",
-	"fa-arrows-h": "\uf07e",
-	"fa-bar-t-o": "\uf080",
-	"fa-bar-t": "\uf080",
-	"fa-twitter-square": "\uf081",
-	"fa-facebook-square": "\uf082",
-	"fa-camera-retro": "\uf083",
-	"fa-key": "\uf084",
-	"fa-gears": "\uf085",
-	"fa-cogs": "\uf085",
-	"fa-comments": "\uf086",
-	"fa-thumbs-o-up": "\uf087",
-	"fa-thumbs-o-down": "\uf088",
-	"fa-star-half": "\uf089",
-	"fa-heart-o": "\uf08a",
-	"fa-sign-out": "\uf08b",
-	"fa-linkedin-square": "\uf08c",
-	"fa-thumb-tack": "\uf08d",
-	"fa-external-link": "\uf08e",
-	"fa-sign-in": "\uf090",
-	"fa-trophy": "\uf091",
-	"fa-github-square": "\uf092",
-	"fa-upload": "\uf093",
-	"fa-lemon-o": "\uf094",
-	"fa-phone": "\uf095",
-	"fa-square-o": "\uf096",
-	"fa-bookmark-o": "\uf097",
-	"fa-phone-square": "\uf098",
-	"fa-twitter": "\uf099",
-	"fa-facebook-f": "\uf09a",
-	"fa-facebook": "\uf09a",
-	"fa-github": "\uf09b",
-	"fa-unlock": "\uf09c",
-	"fa-credit-card": "\uf09d",
-	"fa-feed": "\uf09e",
-	"fa-rss": "\uf09e",
-	"fa-hdd-o": "\uf0a0",
-	"fa-bullhorn": "\uf0a1",
-	"fa-bell": "\uf0f3",
-	"fa-certificate": "\uf0a3",
-	"fa-hand-o-right": "\uf0a4",
-	"fa-hand-o-left": "\uf0a5",
-	"fa-hand-o-up": "\uf0a6",
-	"fa-hand-o-down": "\uf0a7",
-	"fa-arrow-circle-left": "\uf0a8",
-	"fa-arrow-circle-right": "\uf0a9",
-	"fa-arrow-circle-up": "\uf0aa",
-	"fa-arrow-circle-down": "\uf0ab",
-	"fa-globe": "\uf0ac",
-	"fa-wrench": "\uf0ad",
-	"fa-tasks": "\uf0ae",
-	"fa-filter": "\uf0b0",
-	"fa-briefcase": "\uf0b1",
-	"fa-arrows-alt": "\uf0b2",
-	"fa-group": "\uf0c0",
-	"fa-users": "\uf0c0",
-	"fa-chain": "\uf0c1",
-	"fa-link": "\uf0c1",
-	"fa-cloud": "\uf0c2",
-	"fa-flask": "\uf0c3",
-	"fa-cut": "\uf0c4",
-	"fa-scissors": "\uf0c4",
-	"fa-copy": "\uf0c5",
-	"fa-files-o": "\uf0c5",
-	"fa-paperclip": "\uf0c6",
-	"fa-save": "\uf0c7",
-	"fa-floppy-o": "\uf0c7",
-	"fa-square": "\uf0c8",
-	"fa-navicon": "\uf0c9",
-	"fa-reorder": "\uf0c9",
-	"fa-bars": "\uf0c9",
-	"fa-list-ul": "\uf0ca",
-	"fa-list-ol": "\uf0cb",
-	"fa-strikethrough": "\uf0cc",
-	"fa-underline": "\uf0cd",
-	"fa-table": "\uf0ce",
-	"fa-magic": "\uf0d0",
-	"fa-truck": "\uf0d1",
-	"fa-pinterest": "\uf0d2",
-	"fa-pinterest-square": "\uf0d3",
-	"fa-google-plus-square": "\uf0d4",
-	"fa-google-plus": "\uf0d5",
-	"fa-money": "\uf0d6",
-	"fa-caret-down": "\uf0d7",
-	"fa-caret-up": "\uf0d8",
-	"fa-caret-left": "\uf0d9",
-	"fa-caret-right": "\uf0da",
-	"fa-columns": "\uf0db",
-	"fa-unsorted": "\uf0dc",
-	"fa-sort": "\uf0dc",
-	"fa-sort-down":  "\uf0dd",
-	"fa-sort-desc": "\uf0dd",
-	"fa-sort-up": "\uf0de",
-	"fa-sort-asc": "\uf0de",
-	"fa-envelope": "\uf0e0",
-	"fa-linkedin": "\uf0e1",
-	"fa-rotate-left": "\uf0e2",
-	"fa-undo": "\uf0e2",
-	"fa-legal": "\uf0e3",
-	"fa-gavel": "\uf0e3",
-	"fa-dashboard": "\uf0e4",
-	"fa-tachometer": "\uf0e4",
-	"fa-comment-o": "\uf0e5",
-	"fa-comments-o": "\uf0e6",
-	"fa-flash": "\uf0e7",
-	"fa-bolt": "\uf0e7",
-	"fa-sitemap": "\uf0e8",
-	"fa-umbrella": "\uf0e9",
-	"fa-paste": "\uf0ea",
-	"fa-clipboard": "\uf0ea",
-	"fa-lightbulb-o": "\uf0eb",
-	"fa-exchange": "\uf0ec",
-	"fa-cloud-download": "\uf0ed",
-	"fa-cloud-upload": "\uf0ee",
-	"fa-user-md": "\uf0f0",
-	"fa-stethoscope": "\uf0f1",
-	"fa-suitcase": "\uf0f2",
-	"fa-bell-o": "\uf0a2",
-	"fa-coffee": "\uf0f4",
-	"fa-cutlery": "\uf0f5",
-	"fa-file-text-o": "\uf0f6",
-	"fa-building-o": "\uf0f7",
-	"fa-hospital-o": "\uf0f8",
-	"fa-ambulance": "\uf0f9",
-	"fa-medkit": "\uf0fa",
-	"fa-fighter-jet": "\uf0fb",
-	"fa-beer": "\uf0fc",
-	"fa-h-square": "\uf0fd",
-	"fa-plus-square": "\uf0fe",
-	"fa-angle-double-left": "\uf100",
-	"fa-angle-double-right": "\uf101",
-	"fa-angle-double-up": "\uf102",
-	"fa-angle-double-down": "\uf103",
-	"fa-angle-left": "\uf104",
-	"fa-angle-right": "\uf105",
-	"fa-angle-up": "\uf106",
-	"fa-angle-down": "\uf107",
-	"fa-desktop": "\uf108",
-	"fa-laptop": "\uf109",
-	"fa-tablet": "\uf10a",
-	"fa-mobile-phone": "\uf10b",
-	"fa-mobile": "\uf10b",
-	"fa-circle-o": "\uf10c",
-	"fa-quote-left": "\uf10d",
-	"fa-quote-right": "\uf10e",
-	"fa-spinner": "\uf110",
-	"fa-circle": "\uf111",
-	"fa-mail-reply": "\uf112",
-	"fa-reply": "\uf112",
-	"fa-github-alt": "\uf113",
-	"fa-folder-o": "\uf114",
-	"fa-folder-open-o": "\uf115",
-	"fa-smile-o": "\uf118",
-	"fa-frown-o": "\uf119",
-	"fa-meh-o": "\uf11a",
-	"fa-gamepad": "\uf11b",
-	"fa-keyboard-o": "\uf11c",
-	"fa-flag-o": "\uf11d",
-	"fa-flag-checkered": "\uf11e",
-	"fa-terminal": "\uf120",
-	"fa-code": "\uf121",
-	"fa-mail-reply-all": "\uf122",
-	"fa-reply-all": "\uf122",
-	"fa-star-half-empty": "\uf123",
-	"fa-star-half-full": "\uf123",
-	"fa-star-half-o": "\uf123",
-	"fa-location-arrow": "\uf124",
-	"fa-crop": "\uf125",
-	"fa-code-fork": "\uf126",
-	"fa-unlink": "\uf127",
-	"fa-chain-broken": "\uf127",
-	"fa-question": "\uf128",
-	"fa-info": "\uf129",
-	"fa-exclamation": "\uf12a",
-	"fa-superscript": "\uf12b",
-	"fa-subscript": "\uf12c",
-	"fa-eraser": "\uf12d",
-	"fa-puzzle-piece": "\uf12e",
-	"fa-microphone": "\uf130",
-	"fa-microphone-slash": "\uf131",
-	"fa-shield": "\uf132",
-	"fa-calendar-o": "\uf133",
-	"fa-fire-extinguisher": "\uf134",
-	"fa-rocket": "\uf135",
-	"fa-maxcdn": "\uf136",
-	"fa-chevron-circle-left": "\uf137",
-	"fa-chevron-circle-right": "\uf138",
-	"fa-chevron-circle-up": "\uf139",
-	"fa-chevron-circle-down": "\uf13a",
-	"fa-html5": "\uf13b",
-	"fa-css3": "\uf13c",
-	"fa-anchor": "\uf13d",
-	"fa-unlock-alt": "\uf13e",
-	"fa-bullseye": "\uf140",
-	"fa-ellipsis-h": "\uf141",
-	"fa-ellipsis-v": "\uf142",
-	"fa-rss-square": "\uf143",
-	"fa-play-circle": "\uf144",
-	"fa-ticket": "\uf145",
-	"fa-minus-square": "\uf146",
-	"fa-minus-square-o": "\uf147",
-	"fa-level-up": "\uf148",
-	"fa-level-down": "\uf149",
-	"fa-check-square": "\uf14a",
-	"fa-pencil-square": "\uf14b",
-	"fa-external-link-square": "\uf14c",
-	"fa-share-square": "\uf14d",
-	"fa-compass": "\uf14e",
-	"fa-toggle-down": "\uf150",
-	"fa-caret-square-o-down": "\uf150",
-	"fa-toggle-up": "\uf151",
-	"fa-caret-square-o-up": "\uf151",
-	"fa-toggle-right": "\uf152",
-	"fa-caret-square-o-right": "\uf152",
-	"fa-euro": "\uf153",
-	"fa-eur": "\uf153",
-	"fa-gbp": "\uf154",
-	"fa-dollar": "\uf155",
-	"fa-usd": "\uf155",
-	"fa-rupee": "\uf156",
-	"fa-inr": "\uf156",
-	"fa-cny": "\uf157",
-	"fa-rmb": "\uf157",
-	"fa-yen": "\uf157",
-	"fa-jpy": "\uf157",
-	"fa-ruble": "\uf158",
-	"fa-rouble": "\uf158",
-	"fa-rub": "\uf158",
-	"fa-won": "\uf159",
-	"fa-krw": "\uf159",
-	"fa-bitcoin": "\uf15a",
-	"fa-btc": "\uf15a",
-	"fa-file": "\uf15b",
-	"fa-file-text": "\uf15c",
-	"fa-sort-alpha-asc": "\uf15d",
-	"fa-sort-alpha-desc": "\uf15e",
-	"fa-sort-amount-asc": "\uf160",
-	"fa-sort-amount-desc": "\uf161",
-	"fa-sort-numeric-asc": "\uf162",
-	"fa-sort-numeric-desc": "\uf163",
-	"fa-thumbs-up": "\uf164",
-	"fa-thumbs-down": "\uf165",
-	"fa-youtube-square": "\uf166",
-	"fa-youtube": "\uf167",
-	"fa-xing": "\uf168",
-	"fa-xing-square": "\uf169",
-	"fa-youtube-play": "\uf16a",
-	"fa-dropbox": "\uf16b",
-	"fa-stack-overflow": "\uf16c",
-	"fa-instagram": "\uf16d",
-	"fa-flickr": "\uf16e",
-	"fa-adn": "\uf170",
-	"fa-bitbucket": "\uf171",
-	"fa-bitbucket-square": "\uf172",
-	"fa-tumblr": "\uf173",
-	"fa-tumblr-square": "\uf174",
-	"fa-long-arrow-down": "\uf175",
-	"fa-long-arrow-up": "\uf176",
-	"fa-long-arrow-left": "\uf177",
-	"fa-long-arrow-right": "\uf178",
-	"fa-apple": "\uf179",
-	"fa-windows": "\uf17a",
-	"fa-android": "\uf17b",
-	"fa-linux": "\uf17c",
-	"fa-dribbble": "\uf17d",
-	"fa-skype": "\uf17e",
-	"fa-foursquare": "\uf180",
-	"fa-trello": "\uf181",
-	"fa-female": "\uf182",
-	"fa-male": "\uf183",
-	"fa-gittip": "\uf184",
-	"fa-gratipay": "\uf184",
-	"fa-sun-o": "\uf185",
-	"fa-moon-o": "\uf186",
-	"fa-archive": "\uf187",
-	"fa-bug": "\uf188",
-	"fa-vk": "\uf189",
-	"fa-weibo": "\uf18a",
-	"fa-renren": "\uf18b",
-	"fa-pagelines": "\uf18c",
-	"fa-stack-exchange": "\uf18d",
-	"fa-arrow-circle-o-right": "\uf18e",
-	"fa-arrow-circle-o-left": "\uf190",
-	"fa-toggle-left": "\uf191",
-	"fa-caret-square-o-left": "\uf191",
-	"fa-dot-circle-o": "\uf192",
-	"fa-wheelchair": "\uf193",
-	"fa-vimeo-square": "\uf194",
-	"fa-turkish-lira": "\uf195",
-	"fa-try": "\uf195",
-	"fa-plus-square-o": "\uf196",
-	"fa-space-shuttle": "\uf197",
-	"fa-slack": "\uf198",
-	"fa-envelope-square": "\uf199",
-	"fa-wordpress": "\uf19a",
-	"fa-openid": "\uf19b",
-	"fa-institution": "\uf19c",
-	"fa-bank": "\uf19c",
-	"fa-university": "\uf19c",
-	"fa-mortar-board": "\uf19d",
-	"fa-graduation-cap": "\uf19d",
-	"fa-yahoo": "\uf19e",
-	"fa-google": "\uf1a0",
-	"fa-reddit": "\uf1a1",
-	"fa-reddit-square": "\uf1a2",
-	"fa-stumbleupon-circle": "\uf1a3",
-	"fa-stumbleupon": "\uf1a4",
-	"fa-delicious": "\uf1a5",
-	"fa-digg": "\uf1a6",
-	"fa-pied-piper": "\uf1a7",
-	"fa-pied-piper-alt": "\uf1a8",
-	"fa-drupal": "\uf1a9",
-	"fa-joomla": "\uf1aa",
-	"fa-language": "\uf1ab",
-	"fa-fax": "\uf1ac",
-	"fa-building": "\uf1ad",
-	"fa-child": "\uf1ae",
-	"fa-paw": "\uf1b0",
-	"fa-spoon": "\uf1b1",
-	"fa-cube": "\uf1b2",
-	"fa-cubes": "\uf1b3",
-	"fa-behance": "\uf1b4",
-	"fa-behance-square": "\uf1b5",
-	"fa-steam": "\uf1b6",
-	"fa-steam-square": "\uf1b7",
-	"fa-recycle": "\uf1b8",
-	"fa-automobile": "\uf1b9",
-	"fa-car": "\uf1b9",
-	"fa-cab": "\uf1ba",
-	"fa-taxi": "\uf1ba",
-	"fa-tree": "\uf1bb",
-	"fa-spotify": "\uf1bc",
-	"fa-deviantart": "\uf1bd",
-	"fa-soundcloud": "\uf1be",
-	"fa-database": "\uf1c0",
-	"fa-file-pdf-o": "\uf1c1",
-	"fa-file-word-o": "\uf1c2",
-	"fa-file-excel-o": "\uf1c3",
-	"fa-file-powerpoint-o": "\uf1c4",
-	"fa-file-photo-o": "\uf1c5",
-	"fa-file-picture-o": "\uf1c5",
-	"fa-file-image-o": "\uf1c5",
-	"fa-file-zip-o": "\uf1c6",
-	"fa-file-archive-o": "\uf1c6",
-	"fa-file-sound-o": "\uf1c7",
-	"fa-file-audio-o": "\uf1c7",
-	"fa-file-movie-o": "\uf1c8",
-	"fa-file-video-o": "\uf1c8",
-	"fa-file-code-o": "\uf1c9",
-	"fa-vine": "\uf1ca",
-	"fa-codepen": "\uf1cb",
-	"fa-jsfiddle": "\uf1cc",
-	"fa-life-bouy": "\uf1cd",
-	"fa-life-buoy": "\uf1cd",
-	"fa-life-saver": "\uf1cd",
-	"fa-support": "\uf1cd",
-	"fa-life-ring": "\uf1cd",
-	"fa-circle-o-notch": "\uf1ce",
-	"fa-ra": "\uf1d0",
-	"fa-rebel": "\uf1d0",
-	"fa-ge": "\uf1d1",
-	"fa-empire": "\uf1d1",
-	"fa-git-square": "\uf1d2",
-	"fa-git": "\uf1d3",
-	"fa-y-combinator-square": "\uf1d4",
-	"fa-yc-square": "\uf1d4",
-	"fa-hacker-news": "\uf1d4",
-	"fa-tencent-weibo": "\uf1d5",
-	"fa-qq": "\uf1d6",
-	"fa-wechat": "\uf1d7",
-	"fa-weixin": "\uf1d7",
-	"fa-send": "\uf1d8",
-	"fa-paper-plane": "\uf1d8",
-	"fa-send-o": "\uf1d9",
-	"fa-paper-plane-o": "\uf1d9",
-	"fa-history": "\uf1da",
-	"fa-circle-thin": "\uf1db",
-	"fa-header": "\uf1dc",
-	"fa-paragraph": "\uf1dd",
-	"fa-sliders": "\uf1de",
-	"fa-share-alt": "\uf1e0",
-	"fa-share-alt-square": "\uf1e1",
-	"fa-bomb": "\uf1e2",
-	"fa-soccer-ball-o": "\uf1e3",
-	"fa-futbol-o": "\uf1e3",
-	"fa-tty": "\uf1e4",
-	"fa-binoculars": "\uf1e5",
-	"fa-plug": "\uf1e6",
-	"fa-slideshare": "\uf1e7",
-	"fa-twitch": "\uf1e8",
-	"fa-yelp": "\uf1e9",
-	"fa-newspaper-o": "\uf1ea",
-	"fa-wifi": "\uf1eb",
-	"fa-calculator": "\uf1ec",
-	"fa-paypal": "\uf1ed",
-	"fa-google-wallet": "\uf1ee",
-	"fa-cc-visa": "\uf1f0",
-	"fa-cc-mastercard": "\uf1f1",
-	"fa-cc-discover": "\uf1f2",
-	"fa-cc-amex": "\uf1f3",
-	"fa-cc-paypal": "\uf1f4",
-	"fa-cc-stripe": "\uf1f5",
-	"fa-bell-slash": "\uf1f6",
-	"fa-bell-slash-o": "\uf1f7",
-	"fa-trash": "\uf1f8",
-	"fa-copyright": "\uf1f9",
-	"fa-at": "\uf1fa",
-	"fa-eyedropper": "\uf1fb",
-	"fa-paint-brush": "\uf1fc",
-	"fa-birthday-cake": "\uf1fd",
-	"fa-area-t": "\uf1fe",
-	"fa-pie-t": "\uf200",
-	"fa-line-t": "\uf201",
-	"fa-lastfm": "\uf202",
-	"fa-lastfm-square": "\uf203",
-	"fa-toggle-off": "\uf204",
-	"fa-toggle-on": "\uf205",
-	"fa-bicycle": "\uf206",
-	"fa-bus": "\uf207",
-	"fa-ioxhost": "\uf208",
-	"fa-angellist": "\uf209",
-	"fa-cc": "\uf20a",
-	"fa-shekel": "\uf20b",
-	"fa-sheqel": "\uf20b",
-	"fa-ils": "\uf20b",
-	"fa-meanpath": "\uf20c",
-	"fa-buysellads": "\uf20d",
-	"fa-connectdevelop": "\uf20e",
-	"fa-dashcube": "\uf210",
-	"fa-forumbee": "\uf211",
-	"fa-leanpub": "\uf212",
-	"fa-sellsy": "\uf213",
-	"fa-shirtsinbulk": "\uf214",
-	"fa-simplybuilt": "\uf215",
-	"fa-skyatlas": "\uf216",
-	"fa-cart-plus": "\uf217",
-	"fa-cart-arrow-down": "\uf218",
-	"fa-diamond": "\uf219",
-	"fa-ship": "\uf21a",
-	"fa-user-secret": "\uf21b",
-	"fa-motorcycle": "\uf21c",
-	"fa-street-view": "\uf21d",
-	"fa-heartbeat": "\uf21e",
-	"fa-venus": "\uf221",
-	"fa-mars": "\uf222",
-	"fa-mercury": "\uf223",
-	"fa-intersex": "\uf224",
-	"fa-transgender": "\uf224",
-	"fa-transgender-alt": "\uf225",
-	"fa-venus-double": "\uf226",
-	"fa-mars-double": "\uf227",
-	"fa-venus-mars": "\uf228",
-	"fa-mars-stroke": "\uf229",
-	"fa-mars-stroke-v": "\uf22a",
-	"fa-mars-stroke-h": "\uf22b",
-	"fa-neuter": "\uf22c",
-	"fa-genderless": "\uf22d",
-	"fa-facebook-official": "\uf230",
-	"fa-pinterest-p": "\uf231",
-	"fa-whatsapp": "\uf232",
-	"fa-server": "\uf233",
-	"fa-user-plus": "\uf234",
-	"fa-user-times": "\uf235",
-	"fa-hotel": "\uf236",
-	"fa-bed": "\uf236",
-	"fa-viacoin": "\uf237",
-	"fa-train": "\uf238",
-	"fa-subway": "\uf239",
-	"fa-medium": "\uf23a",
-	"fa-yc": "\uf23b",
-	"fa-y-combinator": "\uf23b",
-	"fa-optin-monster": "\uf23c",
-	"fa-opencart": "\uf23d",
-	"fa-expeditedssl": "\uf23e",
-	"fa-battery-4": "\uf240",
-	"fa-battery-full": "\uf240",
-	"fa-battery-3": "\uf241",
-	"fa-battery-three-quarters": "\uf241",
-	"fa-battery-2": "\uf242",
-	"fa-battery-half": "\uf242",
-	"fa-battery-1": "\uf243",
-	"fa-battery-quarter": "\uf243",
-	"fa-battery-0": "\uf244",
-	"fa-battery-empty": "\uf244",
-	"fa-mouse-pointer": "\uf245",
-	"fa-i-cursor": "\uf246",
-	"fa-object-group": "\uf247",
-	"fa-object-ungroup": "\uf248",
-	"fa-sticky-note": "\uf249",
-	"fa-sticky-note-o": "\uf24a",
-	"fa-cc-jcb": "\uf24b",
-	"fa-cc-diners-club": "\uf24c",
-	"fa-clone": "\uf24d",
-	"fa-balance-scale": "\uf24e",
-	"fa-hourglass-o": "\uf250",
-	"fa-hourglass-1": "\uf251",
-	"fa-hourglass-start": "\uf251",
-	"fa-hourglass-2": "\uf252",
-	"fa-hourglass-half": "\uf252",
-	"fa-hourglass-3": "\uf253",
-	"fa-hourglass-end": "\uf253",
-	"fa-hourglass": "\uf254",
-	"fa-hand-grab-o": "\uf255",
-	"fa-hand-rock-o": "\uf255",
-	"fa-hand-stop-o": "\uf256",
-	"fa-hand-paper-o": "\uf256",
-	"fa-hand-scissors-o": "\uf257",
-	"fa-hand-lizard-o": "\uf258",
-	"fa-hand-spock-o": "\uf259",
-	"fa-hand-pointer-o": "\uf25a",
-	"fa-hand-peace-o": "\uf25b",
-	"fa-trademark": "\uf25c",
-	"fa-registered": "\uf25d",
-	"fa-creative-commons": "\uf25e",
-	"fa-gg": "\uf260",
-	"fa-gg-circle": "\uf261",
-	"fa-tripadvisor": "\uf262",
-	"fa-odnoklassniki": "\uf263",
-	"fa-odnoklassniki-square": "\uf264",
-	"fa-get-pocket": "\uf265",
-	"fa-wikipedia-w": "\uf266",
-	"fa-safari": "\uf267",
-	"fa-chrome": "\uf268",
-	"fa-firefox": "\uf269",
-	"fa-opera": "\uf26a",
-	"fa-internet-explorer": "\uf26b",
-	"fa-tv": "\uf26c",
-	"fa-television": "\uf26c",
-	"fa-contao": "\uf26d",
-	"fa-500px": "\uf26e",
-	"fa-amazon": "\uf270",
-	"fa-calendar-plus-o": "\uf271",
-	"fa-calendar-minus-o": "\uf272",
-	"fa-calendar-times-o": "\uf273",
-	"fa-calendar-check-o": "\uf274",
-	"fa-industry": "\uf275",
-	"fa-map-pin": "\uf276",
-	"fa-map-signs": "\uf277",
-	"fa-map-o": "\uf278",
-	"fa-map": "\uf279",
-	"fa-commenting": "\uf27a",
-	"fa-commenting-o": "\uf27b",
-	"fa-houzz": "\uf27c",
-	"fa-vimeo": "\uf27d",
-	"fa-black-tie": "\uf27e",
-	"fa-fonticons": "\uf280"
-});
-/* Copyright (c) 2014 by Jean-Marc.Viglino [at]ign.fr
-* Dual-licensed under the CeCILL-B Licence (http://www.cecill.info/)
-* and the Beerware license (http://en.wikipedia.org/wiki/Beerware), 
-*
-* Font definiton to use with fontsymbols
-*/
-
-ol.style.FontSymbol.addDefs
-({	"font":"fontmaki",
-	"name":"Maki",
-	"copyright":"CC0 - MapBox - https://www.mapbox.com/maki/",
-	"prefix":"maki"
-},
-{	"maki-bicycle": {"font":"fontmaki","code":59392,"name":"bicycle","search":"bicycle"},
-	"maki-building": {"font":"fontmaki","code":59393,"name":"building","search":"building"},
-	"maki-bus": {"font":"fontmaki","code":59394,"name":"bus","search":"bus"},
-	"maki-cafe": {"font":"fontmaki","code":59395,"name":"cafe","search":"cafe"},
-	"maki-camera": {"font":"fontmaki","code":59396,"name":"camera","search":"camera"},
-	"maki-campsite": {"font":"fontmaki","code":59397,"name":"campsite","search":"campsite"},
-	"maki-car": {"font":"fontmaki","code":59398,"name":"car","search":"car"},
-	"maki-cemetery": {"font":"fontmaki","code":59399,"name":"cemetery","search":"cemetery"},
-	"maki-chemist": {"font":"fontmaki","code":59400,"name":"chemist","search":"chemist"},
-	"maki-cinema": {"font":"fontmaki","code":59401,"name":"cinema","search":"cinema"},
-	"maki-circle": {"font":"fontmaki","code":59402,"name":"circle","search":"circle"},
-	"maki-circle_stroked": {"font":"fontmaki","code":59403,"name":"circle_stroked","search":"circle_stroked"},
-	"maki-city": {"font":"fontmaki","code":59404,"name":"city","search":"city"},
-	"maki-clothing_store": {"font":"fontmaki","code":59405,"name":"clothing_store","search":"clothing_store"},
-	"maki-college": {"font":"fontmaki","code":59406,"name":"college","search":"college"},
-	"maki-commercial": {"font":"fontmaki","code":59407,"name":"commercial","search":"commercial"},
-	"maki-cricket": {"font":"fontmaki","code":59408,"name":"cricket","search":"cricket"},
-	"maki-cross": {"font":"fontmaki","code":59409,"name":"cross","search":"cross"},
-	"maki-dam": {"font":"fontmaki","code":59410,"name":"dam","search":"dam"},
-	"maki-danger": {"font":"fontmaki","code":59411,"name":"danger","search":"danger"},
-	"maki-dentist": {"font":"fontmaki","code":59412,"name":"dentist","search":"dentist"},
-	"maki-disability": {"font":"fontmaki","code":59413,"name":"disability","search":"disability"},
-	"maki-dog_park": {"font":"fontmaki","code":59414,"name":"dog_park","search":"dog_park"},
-	"maki-embassy": {"font":"fontmaki","code":59415,"name":"embassy","search":"embassy"},
-	"maki-emergency_telephone": {"font":"fontmaki","code":59416,"name":"emergency_telephone","search":"emergency_telephone"},
-	"maki-entrance": {"font":"fontmaki","code":59417,"name":"entrance","search":"entrance"},
-	"maki-farm": {"font":"fontmaki","code":59418,"name":"farm","search":"farm"},
-	"maki-fast_food": {"font":"fontmaki","code":59419,"name":"fast_food","search":"fast_food"},
-	"maki-ferry": {"font":"fontmaki","code":59420,"name":"ferry","search":"ferry"},
-	"maki-fire_station": {"font":"fontmaki","code":59421,"name":"fire_station","search":"fire_station"},
-	"maki-fuel": {"font":"fontmaki","code":59422,"name":"fuel","search":"fuel"},
-	"maki-garden": {"font":"fontmaki","code":59423,"name":"garden","search":"garden"},
-	"maki-gift": {"font":"fontmaki","code":59424,"name":"gift","search":"gift"},
-	"maki-golf": {"font":"fontmaki","code":59425,"name":"golf","search":"golf"},
-	"maki-grocery": {"font":"fontmaki","code":59426,"name":"grocery","search":"grocery"},
-	"maki-hairdresser": {"font":"fontmaki","code":59427,"name":"hairdresser","search":"hairdresser"},
-	"maki-harbor": {"font":"fontmaki","code":59428,"name":"harbor","search":"harbor"},
-	"maki-heart": {"font":"fontmaki","code":59429,"name":"heart","search":"heart"},
-	"maki-heliport": {"font":"fontmaki","code":59430,"name":"heliport","search":"heliport"},
-	"maki-hospital": {"font":"fontmaki","code":59431,"name":"hospital","search":"hospital"},
-	"maki-ice_cream": {"font":"fontmaki","code":59432,"name":"ice_cream","search":"ice_cream"},
-	"maki-industrial": {"font":"fontmaki","code":59433,"name":"industrial","search":"industrial"},
-	"maki-land_use": {"font":"fontmaki","code":59434,"name":"land_use","search":"land_use"},
-	"maki-laundry": {"font":"fontmaki","code":59435,"name":"laundry","search":"laundry"},
-	"maki-library": {"font":"fontmaki","code":59436,"name":"library","search":"library"},
-	"maki-lighthouse": {"font":"fontmaki","code":59437,"name":"lighthouse","search":"lighthouse"},
-	"maki-lodging": {"font":"fontmaki","code":59438,"name":"lodging","search":"lodging"},
-	"maki-logging": {"font":"fontmaki","code":59439,"name":"logging","search":"logging"},
-	"maki-london_underground": {"font":"fontmaki","code":59440,"name":"london_underground","search":"london_underground"},
-	"maki-marker": {"font":"fontmaki","code":59441,"name":"marker","search":"marker"},
-	"maki-minefield": {"font":"fontmaki","code":59442,"name":"minefield","search":"minefield"},
-	"maki-marker_stroked": {"font":"fontmaki","code":59443,"name":"marker_stroked","search":"marker_stroked"},
-	"maki-mobilephone": {"font":"fontmaki","code":59444,"name":"mobilephone","search":"mobilephone"},
-	"maki-monument": {"font":"fontmaki","code":59445,"name":"monument","search":"monument"},
-	"maki-museum": {"font":"fontmaki","code":59446,"name":"museum","search":"museum"},
-	"maki-music": {"font":"fontmaki","code":59447,"name":"music","search":"music"},
-	"maki-oil_well": {"font":"fontmaki","code":59448,"name":"oil_well","search":"oil_well"},
-	"maki-park": {"font":"fontmaki","code":59449,"name":"park","search":"park"},
-	"maki-park2": {"font":"fontmaki","code":59450,"name":"park2","search":"park2"},
-	"maki-parking": {"font":"fontmaki","code":59451,"name":"parking","search":"parking"},
-	"maki-parking_garage": {"font":"fontmaki","code":59452,"name":"parking_garage","search":"parking_garage"},
-	"maki-pharmacy": {"font":"fontmaki","code":59453,"name":"pharmacy","search":"pharmacy"},
-	"maki-pitch": {"font":"fontmaki","code":59454,"name":"pitch","search":"pitch"},
-	"maki-playground": {"font":"fontmaki","code":59455,"name":"playground","search":"playground"},
-	"maki-police": {"font":"fontmaki","code":59456,"name":"police","search":"police"},
-	"maki-polling_place": {"font":"fontmaki","code":59457,"name":"polling_place","search":"polling_place"},
-	"maki-post": {"font":"fontmaki","code":59458,"name":"post","search":"post"},
-	"maki-prison": {"font":"fontmaki","code":59459,"name":"prison","search":"prison"},
-	"maki-rail": {"font":"fontmaki","code":59460,"name":"rail","search":"rail"},
-	"maki-rail_above": {"font":"fontmaki","code":59461,"name":"rail_above","search":"rail_above"},
-	"maki-rail_light": {"font":"fontmaki","code":59462,"name":"rail_light","search":"rail_light"},
-	"maki-rail_metro": {"font":"fontmaki","code":59463,"name":"rail_metro","search":"rail_metro"},
-	"maki-rail_underground": {"font":"fontmaki","code":59464,"name":"rail_underground","search":"rail_underground"},
-	"maki-religious-christian": {"font":"fontmaki","code":59465,"theme":"religious","name":"christian","search":"religious,christian"},
-	"maki-religious-jewish": {"font":"fontmaki","code":59466,"theme":"religious","name":"jewish","search":"religious,jewish"},
-	"maki-religious-muslim": {"font":"fontmaki","code":59467,"theme":"religious","name":"muslim","search":"religious,muslim"},
-	"maki-religious-place_of_worship": {"font":"fontmaki","code":59468,"theme":"religious","name":"place_of_worship","search":"religious,place_of_worship"},
-	"maki-restaurant": {"font":"fontmaki","code":59469,"name":"restaurant","search":"restaurant"},
-	"maki-roadblock": {"font":"fontmaki","code":59470,"name":"roadblock","search":"roadblock"},
-	"maki-rocket": {"font":"fontmaki","code":59471,"name":"rocket","search":"rocket"},
-	"maki-school": {"font":"fontmaki","code":59472,"name":"school","search":"school"},
-	"maki-scooter": {"font":"fontmaki","code":59473,"name":"scooter","search":"scooter"},
-	"maki-shop": {"font":"fontmaki","code":59474,"name":"shop","search":"shop"},
-	"maki-skiing": {"font":"fontmaki","code":59475,"name":"skiing","search":"skiing"},
-	"maki-slaughterhouse": {"font":"fontmaki","code":59476,"name":"slaughterhouse","search":"slaughterhouse"},
-	"maki-soccer": {"font":"fontmaki","code":59477,"name":"soccer","search":"soccer"},
-	"maki-square": {"font":"fontmaki","code":59478,"name":"square","search":"square"},
-	"maki-square_stroked": {"font":"fontmaki","code":59479,"name":"square_stroked","search":"square_stroked"},
-	"maki-star": {"font":"fontmaki","code":59480,"name":"star","search":"star"},
-	"maki-star_stroked": {"font":"fontmaki","code":59481,"name":"star_stroked","search":"star_stroked"},
-	"maki-suitcase": {"font":"fontmaki","code":59482,"name":"suitcase","search":"suitcase"},
-	"maki-swimming": {"font":"fontmaki","code":59483,"name":"swimming","search":"swimming"},
-	"maki-telephone": {"font":"fontmaki","code":59484,"name":"telephone","search":"telephone"},
-	"maki-tennis": {"font":"fontmaki","code":59485,"name":"tennis","search":"tennis"},
-	"maki-theatre": {"font":"fontmaki","code":59486,"name":"theatre","search":"theatre"},
-	"maki-toilets": {"font":"fontmaki","code":59487,"name":"toilets","search":"toilets"},
-	"maki-town": {"font":"fontmaki","code":59488,"name":"town","search":"town"},
-	"maki-town_hall": {"font":"fontmaki","code":59489,"name":"town_hall","search":"town_hall"},
-	"maki-triangle": {"font":"fontmaki","code":59490,"name":"triangle","search":"triangle"},
-	"maki-triangle_stroked": {"font":"fontmaki","code":59491,"name":"triangle_stroked","search":"triangle_stroked"},
-	"maki-village": {"font":"fontmaki","code":59492,"name":"village","search":"village"},
-	"maki-warehouse": {"font":"fontmaki","code":59493,"name":"warehouse","search":"warehouse"},
-	"maki-waste_basket": {"font":"fontmaki","code":59494,"name":"waste_basket","search":"waste_basket"},
-	"maki-water": {"font":"fontmaki","code":59495,"name":"water","search":"water"},
-	"maki-wetland": {"font":"fontmaki","code":59496,"name":"wetland","search":"wetland"},
-	"maki-zoo": {"font":"fontmaki","code":59497,"name":"zoo","search":"zoo"},
-	"maki-aerialway": {"font":"fontmaki","code":59498,"name":"aerialway","search":"aerialway"},
-	"maki-airfield": {"font":"fontmaki","code":59499,"name":"airfield","search":"airfield"},
-	"maki-airport": {"font":"fontmaki","code":59500,"name":"airport","search":"airport"},
-	"maki-alcohol_shop": {"font":"fontmaki","code":59501,"name":"alcohol_shop","search":"alcohol_shop"},
-	"maki-america_football": {"font":"fontmaki","code":59502,"name":"america_football","search":"america_football"},
-	"maki-art_gallery": {"font":"fontmaki","code":59503,"name":"art_gallery","search":"art_gallery"},
-	"maki-bakery": {"font":"fontmaki","code":59504,"name":"bakery","search":"bakery"},
-	"maki-bank": {"font":"fontmaki","code":59505,"name":"bank","search":"bank"},
-	"maki-bar": {"font":"fontmaki","code":59506,"name":"bar","search":"bar"},
-	"maki-baseball": {"font":"fontmaki","code":59507,"name":"baseball","search":"baseball"},
-	"maki-basketball": {"font":"fontmaki","code":59508,"name":"basketball","search":"basketball"},
-	"maki-beer": {"font":"fontmaki","code":59509,"name":"beer","search":"beer"},
-});
-
 /*	Copyright (c) 2015 Jean-Marc VIGLINO, 
 	released under the CeCILL-B license (French BSD license)
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
@@ -12542,9 +12058,33 @@ ol.style.Photo = function(opt_options)
 	
 	this.onload_ = options.onload;
 
-	this.render_();
+	if (typeof(options.opacity)=='number') this.setOpacity(options.opacity);
+	if (typeof(options.rotation)=='number') this.setRotation(options.rotation);
+	this.renderPhoto_();
 };
 ol.inherits(ol.style.Photo, ol.style.RegularShape);
+
+
+/**
+ * Clones the style. 
+ * @return {ol.style.Photo} 
+ */
+ol.style.Photo.prototype.clone = function() 
+{	return new ol.style.Photo(
+	{	stroke: this.stroke_,
+		fill: this.fill_,
+		shadow: this.shadow_,
+		crop: this.crop_,
+		crossOrigin: this.crossOrigin_,
+		kind: this.kind_,
+		radius: this.radius_,
+		src: this.src_,
+		offsetX: this.offset_[0],
+		offsetY: this.offset_[1],
+		opacity: this.getOpacity(),
+		rotation: this.getRotation()
+	});
+};
 
 /**
  * Draws a rounded rectangle using the current state of the canvas. 
@@ -12630,7 +12170,7 @@ ol.style.Photo.prototype.drawBack_ = function(context, color, strokeWidth)
 /**
  * @private
  */
-ol.style.Photo.prototype.render_ = function() 
+ol.style.Photo.prototype.renderPhoto_ = function() 
 {
 	var strokeStyle;
 	var strokeWidth = 0;
@@ -13039,6 +12579,23 @@ ol.style.Shadow = function(opt_options)
 ol.inherits(ol.style.Shadow, ol.style.RegularShape);
 
 /**
+ * Clones the style. 
+ * @return {ol.style.Shadow} 
+ */
+ol.style.Shadow.prototype.clone = function() 
+{	var s = new ol.style.Shadow(
+	{	fill: this.fill_,
+		radius: this.radius_,
+		blur: this.blur_,
+		offsetX: this.offset_[0],
+		offsetY: this.offset_[1]
+	});
+	s.setScale(this.getScale());
+	s.setOpacity(this.getOpacity());
+	return s;
+};
+
+/**
  * @private
  */
 ol.style.Shadow.prototype.renderShadow_ = function() 
@@ -13320,6 +12877,320 @@ exif2geojson = function (img, options)
 }
 
 })();
+/*	Copyright (c) 2017 Jean-Marc VIGLINO, 
+	released under the CeCILL-B license (French BSD license)
+	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
+*/
+/**
+* Hexagonal grids
+* @classdesc ol.HexGrid is a class to compute hexagonal grids 
+* @see http://www.redblobgames.com/grids/hexagons
+*
+* @constructor ol.HexGrid
+* @extends {ol.Object}
+* @param {olx.HexGrid=} options
+*	@param {Number} options.size size of the exagon in map units, default 80000
+*	@param {ol.coordinate} options.origin orgin of the grid, default [0,0]
+*	@param {pointy|flat} options.layout grid layout, default pointy
+* @todo 
+*/
+ol.HexGrid = function (options)
+{	options = options || {};
+	
+	ol.Object.call (this, options);
+
+	// Options
+	this.size_ = options.size||80000;
+	this.origin_ = options.origin || [0,0];
+	this.layout_ = this.layout[options.layout] || this.layout.pointy;
+
+};
+ol.inherits (ol.HexGrid, ol.Object);
+
+/** Layout
+*/
+ol.HexGrid.prototype.layout =
+{	pointy: 
+	[	Math.sqrt(3), Math.sqrt(3)/2, 0, 3/2, 
+		Math.sqrt(3)/3, -1/3, 0, 2/3, 
+		// corners
+		Math.cos(Math.PI / 180 * (60 * 0 + 30)), Math.sin(Math.PI / 180 * (60 * 0 + 30)), 
+		Math.cos(Math.PI / 180 * (60 * 1 + 30)), Math.sin(Math.PI / 180 * (60 * 1 + 30)), 
+		Math.cos(Math.PI / 180 * (60 * 2 + 30)), Math.sin(Math.PI / 180 * (60 * 2 + 30)), 
+		Math.cos(Math.PI / 180 * (60 * 3 + 30)), Math.sin(Math.PI / 180 * (60 * 3 + 30)), 
+		Math.cos(Math.PI / 180 * (60 * 4 + 30)), Math.sin(Math.PI / 180 * (60 * 4 + 30)), 
+		Math.cos(Math.PI / 180 * (60 * 5 + 30)), Math.sin(Math.PI / 180 * (60 * 5 + 30))
+	],
+	flat: 
+	[	3/2, 0, Math.sqrt(3)/2, Math.sqrt(3), 2/3, 
+		0, -1/3, Math.sqrt(3) / 3, 
+		// corners
+		Math.cos(Math.PI / 180 * (60 * 0)), Math.sin(Math.PI / 180 * (60 * 0)), 
+		Math.cos(Math.PI / 180 * (60 * 1)), Math.sin(Math.PI / 180 * (60 * 1)), 
+		Math.cos(Math.PI / 180 * (60 * 2)), Math.sin(Math.PI / 180 * (60 * 2)), 
+		Math.cos(Math.PI / 180 * (60 * 3)), Math.sin(Math.PI / 180 * (60 * 3)), 
+		Math.cos(Math.PI / 180 * (60 * 4)), Math.sin(Math.PI / 180 * (60 * 4)), 
+		Math.cos(Math.PI / 180 * (60 * 5)), Math.sin(Math.PI / 180 * (60 * 5))
+	]
+};
+
+/** Set layout
+* @param {pointy | flat | undefined} layout name, default pointy
+*/
+ol.HexGrid.prototype.setLayout = function (layout)
+{	this.layout_ = this.layout[layout] || this.layout.pointy;
+	this.changed();
+}
+
+/** Get layout
+* @return {pointy | flat} layout name
+*/
+ol.HexGrid.prototype.getLayout = function ()
+{	return (this.layout_[9]!=0 ? 'pointy' : 'flat');
+}
+
+/** Set hexagon origin
+* @param {ol.coordinate} coord origin
+*/
+ol.HexGrid.prototype.setOrigin = function (coord)
+{	this.origin_ = coord;
+	this.changed();
+}
+
+/** Get hexagon origin
+* @return {ol.coordinate} coord origin
+*/
+ol.HexGrid.prototype.getOrigin = function (coord)
+{	return this.origin_;
+}
+
+/** Set hexagon size
+* @param {Number} hexagon size
+*/
+ol.HexGrid.prototype.setSize = function (s)
+{	this.size_ = s || 80000;
+	this.changed();
+}
+
+/** Get hexagon size
+* @return {Number} hexagon size
+*/
+ol.HexGrid.prototype.getSize = function (s)
+{	return this.size_;
+}
+
+/** Convert cube to axial coords
+* @param {ol.coordinate} c cube coordinate
+* @return {ol.coordinate} axial coordinate
+*/
+ol.HexGrid.prototype.cube2hex = function (c)
+{	return [c[0], c[2]];
+};
+
+/** Convert axial to cube coords
+* @param {ol.coordinate} h axial coordinate
+* @return {ol.coordinate} cube coordinate
+*/
+ol.HexGrid.prototype.hex2cube = function(h)
+{	return [h[0], -h[0]-h[1], h[1]];
+};
+
+/** Convert offset to axial coords
+* @param {ol.coordinate} h axial coordinate
+* @return {ol.coordinate} offset coordinate
+*/
+ol.HexGrid.prototype.hex2offset = function (h)
+{	if (this.layout_[9]) return [ h[0] + (h[1] - (h[1]&1)) / 2, h[1] ];
+	else return [ h[0], h[1] + (h[0] + (h[0]&1)) / 2 ];
+}
+
+/** Convert axial to offset coords
+* @param {ol.coordinate} o offset coordinate
+* @return {ol.coordinate} axial coordinate
+*/
+ol.HexGrid.prototype.offset2hex = function(o)
+{	if (this.layout_[9]) return [ q = o[0] - (o[1] - (o[1]&1)) / 2,  r = o[1] ];
+	else return [ o[0], o[1] - (o[0] + (o[0]&1)) / 2 ];
+}
+
+/** Convert offset to cube coords
+* @param {ol.coordinate} c cube coordinate
+* @return {ol.coordinate} offset coordinate
+* /
+ol.HexGrid.prototype.cube2offset = function(c)
+{	return hex2offset(cube2hex(c));
+};
+
+/** Convert cube to offset coords
+* @param {ol.coordinate} o offset coordinate
+* @return {ol.coordinate} cube coordinate
+* /
+ol.HexGrid.prototype.offset2cube = function (o)
+{	return hex2cube(offset2Hex(o));
+};
+
+/** Round cube coords
+* @param {ol.coordinate} h cube coordinate
+* @return {ol.coordinate} rounded cube coordinate
+*/
+ol.HexGrid.prototype.cube_round = function(h)
+{	var rx = Math.round(h[0])
+	var ry = Math.round(h[1])
+	var rz = Math.round(h[2])
+
+	var x_diff = Math.abs(rx - h[0])
+	var y_diff = Math.abs(ry - h[1])
+	var z_diff = Math.abs(rz - h[2])
+
+	if (x_diff > y_diff && x_diff > z_diff) rx = -ry-rz
+	else if (y_diff > z_diff) ry = -rx-rz
+	else rz = -rx-ry
+
+	return [rx, ry, rz];
+};
+
+/** Round axial coords
+* @param {ol.coordinate} h axial coordinate
+* @return {ol.coordinate} rounded axial coordinate
+*/
+ol.HexGrid.prototype.hex_round = function(h)
+{	return this.cube2hex( this.cube_round( this.hex2cube(h )) );
+};
+
+/** Get hexagon corners
+*/
+ol.HexGrid.prototype.hex_corner = function(center, size, i)
+{	return [ center[0] + size * this.layout_[8+(2*(i%6))], center[1] + size * this.layout_[9+(2*(i%6))]];
+};
+
+/** Get hexagon coordinates at a coordinate
+* @param {ol.coord} coord
+* @return {Arrary<ol.coord>}
+*/
+ol.HexGrid.prototype.getHexagonAtCoord = function (coord)
+{	returhn (this.getHexagon(this.coord2hex(coord)));
+};
+
+/** Get hexagon coordinates at hex
+* @param {ol.coord} hex
+* @return {Arrary<ol.coord>}
+*/
+ol.HexGrid.prototype.getHexagon = function (hex)
+{	var p = [];
+	var c = this.hex2coord(hex);
+	for (var i=0; i<=7; i++)
+	{	p.push(this.hex_corner(c, this.size_, i, this.layout_[8]));
+	}
+	return p;
+};
+
+/** Convert hex to coord
+* @param {ol.hex} hex 
+* @return {ol.coord} 
+*/
+ol.HexGrid.prototype.hex2coord = function (hex)
+{	return [
+		this.origin_[0] + this.size_ * (this.layout_[0] * hex[0] + this.layout_[1] * hex[1]), 
+		this.origin_[1] + this.size_ * (this.layout_[2] * hex[0] + this.layout_[3] * hex[1])
+	];
+};
+
+/** Convert coord to hex
+* @param {ol.coord} coord 
+* @return {ol.hex} 
+*/
+ol.HexGrid.prototype.coord2hex = function (coord)
+{	var c = [ (coord[0]-this.origin_[0]) / this.size_, (coord[1]-this.origin_[1]) / this.size_ ];
+	var q = this.layout_[4] * c[0] + this.layout_[5] * c[1];
+	var r = this.layout_[6] * c[0] + this.layout_[7] * c[1];
+	return this.hex_round([q, r]);
+};
+
+/** Calculate distance between to hexagon (number of cube)
+* @param {ol.coordinate} a first cube coord
+* @param {ol.coordinate} a second cube coord
+* @return {Number} distance
+*/
+ol.HexGrid.prototype.cube_distance = function (a, b)
+{	//return ( (Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) + Math.abs(a[2] - b[2])) / 2 );
+	return ( Math.max (Math.abs(a[0] - b[0]), Math.abs(a[1] - b[1]), Math.abs(a[2] - b[2])) );
+};
+
+(function(){
+/** Line interpolation
+*/
+function lerp(a, b, t)
+{	// for floats
+    return a + (b - a) * t;
+};
+function cube_lerp(a, b, t)
+{	// for hexes
+    return [ 
+		lerp (a[0]+1e-6, b[0], t), 
+		lerp (a[1]+1e-6, b[1], t),
+		lerp (a[2]+1e-6, b[2], t)
+	];
+};
+
+/** Calculate line between to hexagon 
+* @param {ol.coordinate} a first cube coord
+* @param {ol.coordinate} b second cube coord
+* @return {Array<ol.coordinate>} array of cube coordinates
+*/
+ol.HexGrid.prototype.cube_line = function (a, b)
+{	var d = this.cube_distance(a, b);
+	if (!d) return [a];
+    var results = []
+    for (var i=0; i<=d; i++) 
+	{	results.push ( this.cube_round ( cube_lerp(a, b, i/d) ) );
+	}
+    return results;
+};
+})();
+
+
+ol.HexGrid.prototype.neighbors = 
+{	'cube':	[ [+1, -1,  0], [+1,  0, -1], [0, +1, -1], [-1, +1,  0], [-1,  0, +1], [0, -1, +1] ],
+	'hex':	[ [+1, 0], [+1,  -1], [0, -1], [-1, 0], [-1, +1], [0, +1] ]
+};
+
+/** Get the neighbors for an hexagon
+* @param {ol.coordinate} h axial coord
+* @param {Number} direction 
+* @return { ol.coordinate | Array<ol.coordinates> } neighbor || array of neighbors
+*/
+ol.HexGrid.prototype.hex_neighbors = function (h, d)
+{	if (d!==undefined)
+	{	return [ h[0] + this.neighbors.hex[d%6][0], h[1]  + this.neighbors.hex[d%6][1] ];
+	}
+	else
+	{	var n = [];
+		for (d=0; d<6; d++)
+		{	n.push ([ h[0] + this.neighbors.hex[d][0], h[1]  + this.neighbors.hex[d][1] ]);
+		}
+		return n;
+	}
+};
+
+/** Get the neighbors for an hexagon
+* @param {ol.coordinate} c cube coord
+* @param {Number} direction 
+* @return { ol.coordinate | Array<ol.coordinates> } neighbor || array of neighbors
+*/
+ol.HexGrid.prototype.cube_neighbors = function (c, d)
+{	if (d!==undefined)
+	{	return [ c[0] + this.neighbors.cube[d%6][0], c[1]  + this.neighbors.cube[d%6][1], c[2]  + this.neighbors.cube[d%6][2] ];
+	}
+	else
+	{	var n = [];
+		for (d=0; d<6; d++)
+		{	n.push ([ c[0] + this.neighbors.cube[d][0], c[1]  + this.neighbors.cube[d][1], c[2]  + this.neighbors.cube[d][2] ]);
+		}
+		for (d=0; d<6; d++) n[d] = this.cube2hex(n[d])
+		return n;
+	}
+};
+
 /** jQuery plugin to export the map 
 *
 * Export PDF :
@@ -13643,158 +13514,6 @@ ol.Map.prototype.animExtent = function(extent, options)
 			context.strokeStyle = color;
 			context.rect(p0[0], p0[1], p1[0]-p0[0], p1[1]-p0[1]);
 			context.stroke();
-			context.restore();
-			// tell OL3 to continue postcompose animation
-			frameState.animate = true;
-		}
-	}
-
-	// Launch animation
-	listenerKey = this.on('postcompose', animate, this);
-	this.renderSync();
-}
-
-
-/*	Copyright (c) 2015 Jean-Marc VIGLINO, 
-	released under the CeCILL-B license (French BSD license)
-	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
-*/
-/** Show a markup a point on postcompose
-*	@param {ol.coordinates} point to pulse
-*	@param {ol.markup.options} pulse options param
-*		- projection {ol.projection|String|undefined} projection of coords, default none
-*		- delay {Number} delay before mark fadeout
-*		- maxZoom {Number} zoom when mark fadeout
-*		- style {ol.style.Image|ol.style.Style|Array<ol.style.Style>} Image to draw as markup, default red circle
-*	@return Unique key for the listener with a stop function to stop animation
-*/
-ol.Map.prototype.markup = function(coords, options)
-{	var listenerKey;
-	var self = this;
-	options = options || {};
-
-	// Change to map's projection
-	if (options.projection)
-	{	coords = ol.proj.transform(coords, options.projection, this.getView().getProjection());
-	}
-	
-	// options
-	var start = new Date().getTime();
-	var delay = options.delay || 3000;
-	var duration = 1000;
-	var maxZoom = options.maxZoom || 100;
-	var easing = ol.easing.easeOut;
-	var style = options.style;
-	if (!style) style = new ol.style.Circle({ radius:10, stroke:new ol.style.Stroke({color:'red', width:2 }) });
-	if (style instanceof ol.style.Image) style = new ol.style.Style({ image: style });
-	if (!(style instanceof Array)) style = [style];
-
-	// Animate function
-	function animate(event) 
-	{	var frameState = event.frameState;
-		var elapsed = frameState.time - start;
-		if (elapsed > delay+duration) 
-		{	ol.Observable.unByKey(listenerKey);
-			listenerKey = null;
-		}
-		else 
-		{	if (delay>elapsed && this.getView().getZoom()>maxZoom) delay = elapsed;
-			var ratio = frameState.pixelRatio;
-			var elapsedRatio = 0;
-			if (elapsed > delay) elapsedRatio = (elapsed-delay) / duration;
-			var context = event.context;
-			context.save();
-			context.beginPath();
-			context.globalAlpha = easing(1 - elapsedRatio);
-			for (var i=0; i<style.length; i++)
-			{	var imgs = style[i].getImage();
-				var sc = imgs.getScale(); 
-				imgs.setScale(sc*ratio);
-				event.vectorContext.setStyle(style[i]);
-				event.vectorContext.drawGeometry(new ol.geom.Point(coords));
-				imgs.setScale(sc);
-			}
-			context.restore();
-			// tell OL3 to continue postcompose animation
-			if (elapsed >= delay) frameState.animate = true;
-		}
-	}
-			
-	setTimeout (function()
-		{	if (listenerKey) self.renderSync(); 
-		}, delay);
-
-	// Launch animation
-	listenerKey = this.on('postcompose', animate, this);
-	this.renderSync();
-	listenerKey.stop = function()
-	{	delay = duration = 0;
-		this.target.renderSync();
-	};
-	return listenerKey;
-}
-/*	Copyright (c) 2015 Jean-Marc VIGLINO, 
-	released under the CeCILL-B license (French BSD license)
-	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
-*/
-/** Pulse a point on postcompose
-*	@param {ol.coordinates} point to pulse
-*	@param {ol.pulse.options} pulse options param
-*		- projection {ol.projection||String} projection of coords
-*		- duration {Number} animation duration in ms, default 3000
-*		- amplitude {Number} movement amplitude 0: none - 0.5: start at 0.5*radius of the image - 1: max, default 1
-*		- easing {ol.easing} easing function, default ol.easing.easeOut
-*		- style {ol.style.Image|ol.style.Style|Array<ol.style.Style>} Image to draw as markup, default red circle
-*/
-ol.Map.prototype.pulse = function(coords, options)
-{	var listenerKey;
-	options = options || {};
-
-	// Change to map's projection
-	if (options.projection)
-	{	coords = ol.proj.transform(coords, options.projection, this.getView().getProjection());
-	}
-	
-	// options
-	var start = new Date().getTime();
-	var duration = options.duration || 3000;
-	var easing = options.easing || ol.easing.easeOut;
-	
-	var style = options.style;
-	if (!style) style = new ol.style.Circle({ radius:30, stroke:new ol.style.Stroke({color:'red', width:2 }) });
-	if (style instanceof ol.style.Image) style = new ol.style.Style({ image: style });
-	if (!(style instanceof Array)) style = [style];
-
-	var amplitude = options.amplitude || 1;
-	if (amplitude<0) amplitude=0;
-
-	var maxRadius = options.radius || 15;
-	if (maxRadius<0) maxRadius = 5;
-	var minRadius = maxRadius - (options.amplitude || maxRadius); //options.minRadius || 0;
-	var width = options.lineWidth || 2;
-	var color = options.color || 'red';
-
-	// Animate function
-	function animate(event) 
-	{	var frameState = event.frameState;
-		var ratio = frameState.pixelRatio;
-		var elapsed = frameState.time - start;
-		if (elapsed > duration) ol.Observable.unByKey(listenerKey);
-		else
-		{	var elapsedRatio = elapsed / duration;
-			var context = event.context;
-			context.save();
-			context.beginPath();
-			var e = easing(elapsedRatio)
-			context.globalAlpha = easing(1 - elapsedRatio);
-			for (var i=0; i<style.length; i++)
-			{	var imgs = style[i].getImage();
-				var sc = imgs.getScale(); 
-				imgs.setScale(ratio*sc*(1+amplitude*(e-1)));
-				event.vectorContext.setStyle(style[i]);
-				event.vectorContext.drawGeometry(new ol.geom.Point(coords));
-				imgs.setScale(sc);
-			}
 			context.restore();
 			// tell OL3 to continue postcompose animation
 			frameState.animate = true;

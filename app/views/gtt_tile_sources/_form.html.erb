@@ -1,0 +1,13 @@
+<%= error_messages_for 'tile_source' %>
+
+
+<div class="box tabular">
+  <p><%= f.text_field :name, required: true, size: 25  %></p>
+  <p><%= f.text_field :type, required: true, size: 25  %></p>
+  <p><%= f.check_box :global %></p>
+  <p><%= f.check_box :default %></p>
+  <p> <%= f.text_area :options_string, rows: 10, cols: 80 %> </p>
+</div>
+
+
+
