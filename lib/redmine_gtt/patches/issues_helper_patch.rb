@@ -2,14 +2,11 @@ module RedmineGtt
   module Patches
 
     module IssuesHelperPatch
-      def self.included(base)
-        base.extend(ClassMethods)
-        base.send(:include, InstanceMethods)
-        base.class_eval do
-          unloadable
-        end
+      def self.apply
+        IssuesHelper.extend(ClassMethods)
       end
 
+      # FIXME move that method somewhere else
       module ClassMethods
         def get_geojson(issues)
           unless issues.nil?
@@ -35,13 +32,7 @@ module RedmineGtt
         end
       end
 
-      module InstanceMethods
-      end
-
     end
   end
 end
 
-unless IssuesHelper.included_modules.include?(RedmineGtt::Patches::IssuesHelperPatch)
-  IssuesHelper.send(:include, RedmineGtt::Patches::IssuesHelperPatch)
-end

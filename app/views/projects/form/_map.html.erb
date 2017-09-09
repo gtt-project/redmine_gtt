@@ -1,9 +1,12 @@
+<% if @project.nil? or @project.module_enabled?(:gtt) %>
 <div class="box">
   <%= f.hidden_field(:geom, :value => @project.geojson, :id => 'geom') %>
 
   <%= content_tag(:div, "", :data => {
       :geom => @project.geojson,
+      :layers => @project.gtt_tile_sources,
       :edit => 'Polygon'
     }, :id => 'ol-' + rand(36**8).to_s(36), :class => 'ol-map')
   %>
 </div>
+<% end %>
