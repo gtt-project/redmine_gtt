@@ -1,15 +1,7 @@
-<% return '' if @issue.nil? || @issue.project.nil? %>
-<% return '' unless User.current.allowed_to?(:view_issues, @issue.project) %>
-
-<%
-  if @issue.new_record?
-    return '' unless User.current.allowed_to?(:add_issues, @issue.project)
-  else
-    return '' unless User.current.allowed_to?(:edit_issues, @issue.project)
-  end
+<% if (@project.nil? or @project.module_enabled?(:gtt)) &&
+      ((@issue.new_record? && User.current.allowed_to?(:add_issues, @issue.project)) ||
+        User.current.allowed_to?(:edit_issues, @issue.project))
 %>
-
-<% if @project.nil? or @project.module_enabled?(:gtt) %>
 <div class="box">
   <%= f.hidden_field(:geom, :value => @issue.geojson, :id => 'geom') %>
 
