@@ -18,9 +18,6 @@ var App = (function ($, publ) {
     $("#history ul.details li:contains('Geometry')").hide();
     $("#history ul.details li:contains('Geometrie')").hide();
 
-    // Hack to hide "Members" box on project overview
-    $("#content .splitcontentright div.members.box").hide();
-
     return;
   };
 
