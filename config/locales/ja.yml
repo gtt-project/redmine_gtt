@@ -1,24 +1,50 @@
 # Japanese strings go here for Rails i18n
 ja:
+  error_invalid_json: must be valid JSON
+
+  field_default: 新規プロジェクトのデフォルト
   field_geometry: "ジオメトリ"
   field_location: "場所"
   field_geom: "ジオメトリ"
+  field_global: 世界的に利用可能
+  field_options_string: オプション
+  field_gtt_tile_source_ids: タイルソース
 
   label_geotask_map: "知らせて 地図"
+  label_global: グローバル
   label_project_map: "プロジェクト 地図"
   label_user_map: "ユーザ 地図"
+  label_name: タイトル
   label_nearby: "近く(lat,lng)"
+  label_type: タイプ
+  label_config: 構成
+  label_gtt_settings: GTT
+  label_gtt_settings_headline: GTTの設定
 
-  gtt_label_geometry: "API Key"
+  gtt_label_geometry: "APIキー"
   gtt_text_settings_help: "Enter the API key. Leave empty if no key is required."
   gtt_text_settings_geometry_example: "2747491302261fbc47967ba62621af22"
 
   label_gtt: "GTT"
-  label_tab_general: "General"
-  label_tab_map: "Basemap"
+  label_gtt_tile_source: タイルソース
+  label_gtt_tile_source_new: 新しいタイルソース
+  label_gtt_tile_source_plural: タイルソース
+  label_parameters: パラメーター
+  label_tab_general: "一般"
+  label_tab_geocoder: "ジオコーダー"
+  label_tab_map: "タイルソース"
+
+  gtt_tile_sources_info: このプロジェクトで使用できるタイルソースを選択します。
 
   gtt_settings_general_center_lon: "既定の地図中心経度"
   gtt_settings_general_center_lat: "既定の地図中心緯度"
   gtt_settings_general_zoom_level: "既定の地図ズームレベル"
 
+  gtt_settings_map_url: "APIサービスのURL"
+  gtt_settings_map_apikey: "APIキー"
   gtt_settings_map_maxzoom_level: "Maximum 地図ズームレベル"
+
+  gtt_settings_geocoder_url: "APIサービスのURL"
+  gtt_settings_geocoder_apikey: "APIキー"
+
+  text_osm_url_sample: 例： https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png
