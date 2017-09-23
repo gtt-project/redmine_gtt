@@ -15,6 +15,10 @@ module RedmineGtt
         end
       end
 
+      def map
+        GttMap.new json: geojson, layers: gtt_tile_sources
+      end
+
       def enabled_module_names=(*_)
         super
         set_default_tile_sources

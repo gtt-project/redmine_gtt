@@ -9,18 +9,19 @@ module RedmineGtt
       end
 
       def geojson
-        if geom.present?
+        @geojson ||= if geom.present?
           Conversions.wkb_to_json(
             geom, id: id, properties: geojson_additional_properties
           )
         end
       end
 
-      def geom=(geometry)
+      def geojson=(geometry)
+        @geojson = geometry
         if (geometry.present?)
-          self[:geom] = Conversions.to_wkb geometry
+          self.geom = Conversions.to_wkb geometry
         else
-          self[:geom] = nil
+          self.geom = nil
         end
       end
 
