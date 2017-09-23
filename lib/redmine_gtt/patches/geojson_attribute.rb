@@ -8,10 +8,13 @@ module RedmineGtt
         as_json except: [:geom]
       end
 
-      def geojson
+      # use simple: true to skip inclusion of record's properties
+      def geojson(simple: false)
         @geojson ||= if geom.present?
           Conversions.wkb_to_json(
-            geom, id: id, properties: geojson_additional_properties
+            geom,
+            id: id,
+            properties: (simple ? {} : geojson_additional_properties)
           )
         end
       end
