@@ -7,7 +7,7 @@ module RedmineGtt
           User.prepend GeojsonAttribute
           User.prepend self
           User.class_eval do
-            safe_attributes "geom"
+            safe_attributes "geojson"
           end
         end
       end
