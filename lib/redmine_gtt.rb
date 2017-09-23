@@ -2,6 +2,7 @@
 
 # Global Hooks
 require 'redmine_gtt/hooks/view_layouts_base_html_head_hook'
+require 'redmine_gtt/view_hooks'
 
 
 # API Template Hooks
@@ -33,6 +34,9 @@ module RedmineGtt
     RedmineGtt::Patches::UsersControllerPatch.apply
 
     ProjectsController.class_eval do
+      helper 'gtt_map'
+    end
+    UsersController.class_eval do
       helper 'gtt_map'
     end
 

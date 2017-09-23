@@ -12,12 +12,6 @@ Deface::Override.new(
   :partial => "users/form/map"
 )
 
-Deface::Override.new(
-  :virtual_path => "users/show",
-  :name => "deface_view_users_show_map",
-  :insert_bottom => "div.splitcontentleft",
-  :partial => "users/show/map"
-)
 
 Deface::Override.new(
   :virtual_path => "users/show",
