@@ -33,11 +33,10 @@ module RedmineGtt
     RedmineGtt::Patches::ProjectsHelperPatch.apply
     RedmineGtt::Patches::UsersControllerPatch.apply
 
-    ProjectsController.class_eval do
-      helper 'gtt_map'
-    end
-    UsersController.class_eval do
-      helper 'gtt_map'
+    [ ProjectsController, MyController, UsersController ].each do |c|
+      c.class_eval do
+        helper 'gtt_map'
+      end
     end
 
     # unless IssueQuery.included_modules.include?(RedmineGtt::Patches::IssueQueryPatch)
