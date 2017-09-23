@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Global Hooks
 require 'redmine_gtt/hooks/view_layouts_base_html_head_hook'
 
@@ -29,6 +31,10 @@ module RedmineGtt
     RedmineGtt::Patches::ProjectsControllerPatch.apply
     RedmineGtt::Patches::ProjectsHelperPatch.apply
     RedmineGtt::Patches::UsersControllerPatch.apply
+
+    ProjectsController.class_eval do
+      helper 'gtt_map'
+    end
 
     # unless IssueQuery.included_modules.include?(RedmineGtt::Patches::IssueQueryPatch)
     # 	IssueQuery.send(:include, RedmineGtt::Patches::IssueQueryPatch)

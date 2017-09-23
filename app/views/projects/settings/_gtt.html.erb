@@ -1,17 +1,23 @@
-<% @gtt_configuration ||= GttConfiguration.for(@project) %>
-<%= labelled_form_for @gtt_configuration,
+<% @form ||= GttConfiguration.for(@project) %>
+<%= labelled_form_for @form,
       url: update_gtt_configuration_path(@project),
       html: { method: :put } do |f| %>
 
   <h3><%= t :label_gtt_settings_headline %></h3>
+
   <div class="box tabular">
     <p>
       <%= f.select :gtt_tile_source_ids,
-        options_from_collection_for_select(GttTileSource.all.order(name: :asc), :id, :name, selected: @gtt_configuration.gtt_tile_source_ids),
+        options_from_collection_for_select(GttTileSource.all.order(name: :asc), :id, :name, selected: @form.gtt_tile_source_ids),
         {}, { multiple: true, size: 5 } %>
       <br /><em><%= t :gtt_tile_sources_info %></em>
     </p>
   </div>
+
+  <div class="box">
+    <%= map_form_field f, @form.map, edit_mode: 'Polygon' %>
+  </div>
+
 
   <%= submit_tag l(:button_save) %>
 

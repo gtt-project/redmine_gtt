@@ -14,6 +14,10 @@ module RedmineGtt
         end
       end
 
+      def map
+        GttMap.new json: geojson, layers: project.gtt_tile_sources
+      end
+
     end
 
   end

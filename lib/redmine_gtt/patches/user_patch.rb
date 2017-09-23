@@ -12,6 +12,10 @@ module RedmineGtt
         end
       end
 
+      def map
+        GttMap.new json: geojson, layers: GttTileSource.global
+      end
+
       def geojson_additional_properties
         as_json except: %i(
           hashed_password hashed_password salt must_change_passwd
