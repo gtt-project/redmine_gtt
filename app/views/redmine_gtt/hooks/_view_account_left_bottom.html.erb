@@ -1,0 +1,5 @@
+<% if @user.geom %>
+  <h3><%= l(:label_user_map) %></h3>
+  <%= map_tag map: @user.map %>
+<% end %>
+
