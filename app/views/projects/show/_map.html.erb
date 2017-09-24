@@ -2,11 +2,6 @@
 <div class="usermap box">
   <h3><%= l(:label_project_map) %></h3>
 
-  <%= content_tag(:div, "",:data => {
-      :geom => @project.geojson,
-      :bounds => @project.geojson,
-      :layers => @project.gtt_tile_sources
-    }, :id => 'ol-' + rand(36**8).to_s(36), :class => 'ol-map')
-  %>
+  <%= map_tag map: @project.map %>
 </div>
 <% end %>

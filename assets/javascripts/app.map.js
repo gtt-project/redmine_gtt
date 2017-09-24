@@ -169,6 +169,12 @@ App.map = (function ($, publ) {
       }, 200);
     });
 
+    // Redraw the map, when a GTT Tab gets activated
+    $("#tab-gtt").click(function(){
+      map.updateSize();
+      publ.zoomToExtent();
+    });
+
     // Add LayerSwitcher Image Toolbar
   	map.addControl(new ol.control.LayerPopup());
   };
