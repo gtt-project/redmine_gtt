@@ -9,11 +9,10 @@ api.user do
   api.api_key    @user.api_key if User.current.admin? || (User.current == @user)
   api.status     @user.status if User.current.admin?
 
-  unless @user.geom.nil?
-    api.geom RGeo::GeoJSON.encode RGeo::GeoJSON::EntityFactory.instance.feature(
-                RGeo::WKRep::WKBParser.new().parse(@user.geom), @user.id)
+  if @user.geom
+    api.geojson @user.geojson(simple: true)
   else
-    api.geom ""
+    api.geojson ""
   end
 
   render_api_custom_values @user.visible_custom_field_values, api
