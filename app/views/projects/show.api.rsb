@@ -8,11 +8,10 @@ api.project do
   api.status      @project.status
   api.is_public   @project.is_public?
 
-  unless @project.geom.nil?
-    api.geom RGeo::GeoJSON.encode RGeo::GeoJSON::EntityFactory.instance.feature(
-                RGeo::WKRep::WKBParser.new().parse(@project.geom), @project.id)
+  if @project.geom
+    api.geojson @project.geojson(simple: true)
   else
-    api.geom ""
+    api.geojson ""
   end
 
   render_api_custom_values @project.visible_custom_field_values, api
