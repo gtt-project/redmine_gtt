@@ -1,0 +1,7 @@
+<% if (@project.nil? or @project.module_enabled?(:gtt)) &&
+      ((issue.new_record? && User.current.allowed_to?(:add_issues, issue.project)) ||
+        User.current.allowed_to?(:edit_issues, issue.project))
+%>
+  <%= map_form_field form, issue.map, edit_mode: 'Point LineString Polygon' %>
+<% end %>
+

@@ -12,6 +12,10 @@
   color: #222;
   font-weight: 400;
 }
+#issue-form .ol-map {
+  width: 92%;
+  margin: 1em auto;
+}
 
 .ol-control button{
     background-color: rgba(40, 40, 40, 0.8);
