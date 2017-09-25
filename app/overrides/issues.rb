@@ -12,19 +12,6 @@ Deface::Override.new(
   :partial => "issues/index/geojson"
 )
 
-Deface::Override.new(
-  :virtual_path => "issues/new",
-  :name => "deface_view_issues_new_map",
-  :insert_before => "div.box",
-  :partial => "issues/form/map"
-)
-
-Deface::Override.new(
-  :virtual_path => "issues/_edit",
-  :name => "deface_view_issues_edit_map",
-  :insert_before => "div.box",
-  :partial => "issues/form/map"
-)
 
 Deface::Override.new(
   :virtual_path => "issues/show",
