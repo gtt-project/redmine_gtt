@@ -9,7 +9,10 @@ module RedmineGtt
           Issue.prepend GeojsonAttribute
           Issue.class_eval do
             safe_attributes "geojson",
-              if: ->(issue, user){ user.allowed_to?(:edit_issues, issue.project)}
+              if: ->(issue, user){
+                perm = issue.new_record? ? :add_issues : :edit_issues
+                user.allowed_to? perm, issue.project
+              }
           end
         end
       end
