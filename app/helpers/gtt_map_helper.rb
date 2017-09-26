@@ -11,17 +11,24 @@ module GttMapHelper
 
   def map_tag(map: nil, layers: map&.layers,
               geom: map.json, bounds: map.bounds,
-              edit: nil)
+              edit: nil, popup: nil)
 
     data = {
-      geom: geom,
-      layers: layers
+      geom: geom.is_a?(String) ? geom : geom.to_json
     }
-    data[:bounds] = bounds if bounds
-    data[:edit]   = edit   if edit
 
-    map_id = rand(36**8).to_s(36)
-    content_tag(:div, "", data: data, id: "ol-#{map_id}", class: 'ol-map')
+    if layers
+      data[:layers] = layers.is_a?(String) ? layers : layers.to_json
+    end
+
+    if bounds
+      data[:bounds] = bounds.is_a?(String) ? bounds : bounds.to_json
+    end
+
+    data[:edit]   = edit   if edit
+    data[:popup]  = popup  if popup
+
+    content_tag(:div, "", data: data, id: "ol-#{rand(36**8).to_s(36)}", class: 'ol-map')
   end
 
 end
