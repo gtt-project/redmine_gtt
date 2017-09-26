@@ -6,7 +6,8 @@ class UpdateProjectSettingsTest < ActiveSupport::TestCase
   test 'should save tile sources' do
     p = Project.find 'ecookbook'
     ts = GttTileSource.create! name: 'test', type: 'ol.source.OSM'
-    form = GttConfiguration.for(p).from_params gtt_tile_source_ids: [ ts.id ]
+    form = GttConfiguration.from_params gtt_tile_source_ids: [ ts.id ]
+    form.project = p
     r = RedmineGtt::Actions::UpdateProjectSettings.( form )
 
     assert r.settings_saved?

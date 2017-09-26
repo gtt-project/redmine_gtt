@@ -6,11 +6,6 @@ class GttMapTest < ActiveSupport::TestCase
     @ts = GttTileSource.create! name: 'test', type: 'ol.source.OSM'
   end
 
-
-  test 'should check arguments' do
-    assert_raise(ArgumentError){ GttMap.new layers: [@ts] }
-  end
-
   test 'should compute json from wkb' do
     wkb = "01030000000100000006000000C84B374110E76040381DD011545A4140C84B3739ACE96040F07E6DCC7A594140C84B37F199E960403CBC2D58E2554140C84B373917E8604098CBC3E188564140C84B37FD36E66040F24C2E959D564140C84B374110E76040381DD011545A4140"
     m = GttMap.new layers: [@ts], wkb: wkb
