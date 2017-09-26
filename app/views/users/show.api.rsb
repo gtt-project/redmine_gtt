@@ -10,7 +10,7 @@ api.user do
   api.status     @user.status if User.current.admin?
 
   if @user.geom
-    api.geojson @user.geojson(simple: true)
+    api.geojson @user.geojson
   else
     api.geojson ""
   end

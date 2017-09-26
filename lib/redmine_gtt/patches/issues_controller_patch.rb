@@ -9,7 +9,7 @@ module RedmineGtt
       def show
         respond_to do |format|
           format.geojson { send_data(
-            @issue.geojson.to_json,
+            @issue.as_geojson(include_properties: true).to_json,
             :type => 'application/json; header=present',
             :filename => "#{@issue.id}.geojson")
           }
@@ -24,11 +24,12 @@ module RedmineGtt
         if @query.valid?
           respond_to do |format|
             format.geojson {
+              issues = @query.issues(offset: @offset, limit: @limit)
               send_data(
-                # TODO move that method somewhere else:
-                IssuesHelper.get_geojson(@issues).to_json,
+                Issue.array_to_geojson(issues, include_properties: true).to_json,
                 :type => 'application/json; header=present',
-                :filename => "issues.geojson")
+                :filename => "issues.geojson"
+              )
             }
             format.any { super }
           end

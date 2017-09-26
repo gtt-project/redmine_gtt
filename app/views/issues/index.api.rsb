@@ -21,7 +21,7 @@ api.array :issues, api_meta(:total_count => @issue_count, :offset => @offset, :l
       api.estimated_hours issue.estimated_hours
 
       if issue.geom
-        api.geojson issue.geojson(simple: true)
+        api.geojson issue.geojson
       else
         api.geojson ""
       end

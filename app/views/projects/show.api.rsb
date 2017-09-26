@@ -9,7 +9,7 @@ api.project do
   api.is_public   @project.is_public?
 
   if @project.geom
-    api.geojson @project.geojson(simple: true)
+    api.geojson @project.geojson
   else
     api.geojson ""
   end
