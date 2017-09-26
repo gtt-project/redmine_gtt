@@ -24,7 +24,7 @@ api.issue do
   end
 
   if @issue.geom
-    api.geojson @issue.geojson(simple: true)
+    api.geojson @issue.geojson
   else
     api.geojson ""
   end

@@ -18,8 +18,9 @@ module RedmineGtt
       end
 
       def map
-        GttMap.new json: geojson, layers: project.gtt_tile_sources,
-          bounds: (new_record? ? project.map.json : geojson(simple: true))
+        json = as_geojson
+        GttMap.new json: json, layers: project.gtt_tile_sources,
+          bounds: (new_record? ? project.map.json : json)
       end
 
     end

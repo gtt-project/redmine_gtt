@@ -5,10 +5,10 @@ module RedmineGtt
 
       def self.apply
         unless Project < self
-          Project.prepend self
           Project.prepend GeojsonAttribute
+          Project.prepend self
           Project.class_eval do
-            safe_attributes "geom"
+            safe_attributes "geojson"
             has_and_belongs_to_many :gtt_tile_sources
             after_create :set_default_tile_sources
           end
@@ -16,7 +16,7 @@ module RedmineGtt
       end
 
       def map
-        GttMap.new json: geojson, layers: gtt_tile_sources
+        GttMap.new json: as_geojson, layers: gtt_tile_sources
       end
 
       def enabled_module_names=(*_)

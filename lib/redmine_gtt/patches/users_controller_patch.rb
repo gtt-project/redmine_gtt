@@ -9,7 +9,7 @@ module RedmineGtt
       def show
         respond_to do |format|
           format.geojson { send_data(
-            @user.geojson.to_json,
+            @user.as_geojson(include_properties: true).to_json,
             :type => 'application/json; header=present',
             :filename => "#{@user.login}.geojson")
           }
