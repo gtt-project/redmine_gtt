@@ -20,11 +20,10 @@ api.array :issues, api_meta(:total_count => @issue_count, :offset => @offset, :l
       api.is_private  issue.is_private
       api.estimated_hours issue.estimated_hours
 
-      unless issue.geom.nil?
-        api.geom RGeo::GeoJSON.encode RGeo::GeoJSON::EntityFactory.instance.feature(
-                    RGeo::WKRep::WKBParser.new().parse(issue.geom), issue.id)
+      if issue.geom
+        api.geojson issue.geojson
       else
-        api.geom ""
+        api.geojson ""
       end
 
       render_api_custom_values issue.visible_custom_field_values, api

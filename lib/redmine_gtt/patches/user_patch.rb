@@ -13,14 +13,25 @@ module RedmineGtt
       end
 
       def map
-        GttMap.new json: geojson, layers: GttTileSource.global
+        GttMap.new json: as_geojson, layers: GttTileSource.global
       end
 
-      def geojson_additional_properties
-        as_json except: %i(
+      def geojson_additional_properties(include_properties)
+        default_except = %i(
           hashed_password hashed_password salt must_change_passwd
-          passwd_changed_on auth_source_id geom
+          passwd_changed_on auth_source_id
         )
+
+        case include_properties
+        when Hash
+          if except = include_properties[:except]
+            return super except: (except + default_except)
+          end
+        when TrueClass
+          return super except: default_except
+        end
+
+        super
       end
 
     end

@@ -9,14 +9,36 @@ module RedmineGtt
   # between.
   module Conversions
 
+    class WkbToJson
+      def initialize()
+        @factory = RGeo::GeoJSON::EntityFactory.instance
+        @parser = RGeo::WKRep::WKBParser.new(
+          support_ewkb: true,
+          default_srid: 4326
+        )
+      end
+
+      def to_json(wkb, id: nil, properties: nil)
+        RGeo::GeoJSON.encode feature(wkb, id, properties)
+      end
+
+      def collection_to_json(data)
+        RGeo::GeoJSON.encode @factory.feature_collection(
+          data.map{|wkb, id, props| feature wkb, id, props}
+        )
+      end
+
+      private
+
+      def feature(wkb, id, properties = nil)
+        @factory.feature @parser.parse(wkb), id, (properties || {})
+      end
+
+    end
+
     # Turns database WKB into geometry attribute string
-    def self.wkb_to_json(wkb, id: nil, properties: {})
-      factory = RGeo::GeoJSON::EntityFactory.instance
-      geometry = RGeo::WKRep::WKBParser.new(
-        support_ewkb: true,
-        default_srid: 4326
-      ).parse(wkb)
-      RGeo::GeoJSON.encode factory.feature(geometry, id, properties)
+    def self.wkb_to_json(wkb, id: nil, properties: nil)
+      WkbToJson.new.to_json(wkb, id: id, properties: properties)
     end
 
     # Turn geometry attribute string into WKB for database use

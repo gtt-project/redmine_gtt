@@ -9,14 +9,18 @@ module RedmineGtt
           Issue.prepend GeojsonAttribute
           Issue.class_eval do
             safe_attributes "geojson",
-              if: ->(issue, user){ user.allowed_to?(:edit_issues, issue.project)}
+              if: ->(issue, user){
+                perm = issue.new_record? ? :add_issues : :edit_issues
+                user.allowed_to? perm, issue.project
+              }
           end
         end
       end
 
       def map
-        GttMap.new json: geojson, layers: project.gtt_tile_sources,
-          bounds: (new_record? ? project.map.json : geojson(simple: true))
+        json = as_geojson
+        GttMap.new json: json, layers: project.gtt_tile_sources,
+          bounds: (new_record? ? project.map.json : json)
       end
 
     end
