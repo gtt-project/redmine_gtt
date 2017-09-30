@@ -1,17 +1,11 @@
-Rails.logger.info 'Starting GeoTask plugin for RedMine'
-
-require 'pp'
 require 'redmine'
-
-GTT_VERSION_NUMBER = '0.1.0'
 
 Redmine::Plugin.register :redmine_gtt do
   name 'Redmine GTT plugin'
   author 'Georepublic'
-  description 'This is a plugin for location-based task management in Redmine'
-  version GTT_VERSION_NUMBER
-  url 'https://georepublic.info'
-  author_url 'mailto:info@georepublic.de'
+  author_url 'https://hub.georepublic.net/gtt/redmine_gtt'
+  description 'Adds location-based task management and maps'
+  version '0.5.0'
 
   requires_redmine :version_or_higher => '3.4.0'
 
@@ -20,12 +14,6 @@ Redmine::Plugin.register :redmine_gtt do
       projects: [ :update_gtt_configuration ]
     }, require: :member
   end
-
-  # begin
-  #   requires_redmine_plugin :redmine_language_change, :version_or_higher => '0.0.1'
-  # rescue Redmine::PluginNotFound  => e
-  #   raise "Please install redmine_language_change plugin"
-  # end
 
   settings(
     :default => {
