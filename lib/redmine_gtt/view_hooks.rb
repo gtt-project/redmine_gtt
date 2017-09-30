@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RedmineGtt
   class ViewHooks < Redmine::Hook::ViewListener
     render_on :view_account_left_bottom,
@@ -8,5 +10,8 @@ module RedmineGtt
 
     render_on :view_users_form,
       partial: 'redmine_gtt/hooks/view_users_form'
+
+    render_on :view_issues_form_details_top,
+      partial: 'redmine_gtt/hooks/view_issues_form_details_top'
   end
 end

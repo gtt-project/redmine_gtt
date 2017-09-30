@@ -1,8 +1,0 @@
-<% if (@project.nil? or @project.module_enabled?(:gtt)) &&
-      ((@issue.new_record? && User.current.allowed_to?(:add_issues, @issue.project)) ||
-        User.current.allowed_to?(:edit_issues, @issue.project))
-%>
-<div class="box">
-  <%= map_form_field f, @issue.map, edit_mode: 'Point LineString Polygon' %>
-</div>
-<% end %>

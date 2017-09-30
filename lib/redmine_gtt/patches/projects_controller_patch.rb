@@ -9,7 +9,7 @@ module RedmineGtt
       def show
         respond_to do |format|
           format.geojson { send_data(
-            @project.geojson.to_json,
+            @project.as_geojson(include_properties: true).to_json,
             type: 'application/json; header=present',
             filename: "#{@project.identifier}.geojson")
           }

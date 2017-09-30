@@ -9,11 +9,10 @@ api.array :users, api_meta(:total_count => @user_count, :offset => @offset, :lim
       api.created_on user.created_on
       api.last_login_on user.last_login_on
 
-      unless user.geom.nil?
-        api.geom RGeo::GeoJSON.encode RGeo::GeoJSON::EntityFactory.instance.feature(
-                    RGeo::WKRep::WKBParser.new().parse(user.geom), user.id)
+      if user.geom
+        api.geojson user.geojson
       else
-        api.geom ""
+        api.geojson ""
       end
 
       render_api_custom_values user.visible_custom_field_values, api

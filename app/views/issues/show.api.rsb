@@ -23,11 +23,10 @@ api.issue do
     api.total_spent_hours(@issue.total_spent_hours)
   end
 
-  unless @issue.geom.nil?
-    api.geom RGeo::GeoJSON.encode RGeo::GeoJSON::EntityFactory.instance.feature(
-                RGeo::WKRep::WKBParser.new().parse(@issue.geom), @issue.id)
+  if @issue.geom
+    api.geojson @issue.geojson
   else
-    api.geom ""
+    api.geojson ""
   end
 
   render_api_custom_values @issue.visible_custom_field_values, api
