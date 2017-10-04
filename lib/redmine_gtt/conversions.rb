@@ -9,37 +9,66 @@ module RedmineGtt
   # between.
   module Conversions
 
-    class WkbToJson
+    class GeomToJson
       def initialize()
         @factory = RGeo::GeoJSON::EntityFactory.instance
+      end
+
+      def to_json(object, id: nil, properties: nil)
+        RGeo::GeoJSON.encode feature(object, id, properties)
+      end
+
+      def collection_to_json(data)
+        RGeo::GeoJSON.encode @factory.feature_collection(
+          data.map{|object, id, props| feature object, id, props}
+        )
+      end
+
+      private
+
+      def feature(object, id, properties = nil)
+        @factory.feature object, id, (properties || {})
+      end
+    end
+
+    class WkbToGeom
+      def initialize()
         @parser = RGeo::WKRep::WKBParser.new(
           support_ewkb: true,
           default_srid: 4326
         )
       end
 
-      def to_json(wkb, id: nil, properties: nil)
-        RGeo::GeoJSON.encode feature(wkb, id, properties)
+      def self.call(wkb)
+        new.call wkb
       end
 
-      def collection_to_json(data)
-        RGeo::GeoJSON.encode @factory.feature_collection(
-          data.map{|wkb, id, props| feature wkb, id, props}
-        )
+      def call(wkb)
+        @parser.parse(wkb)
       end
-
-      private
-
-      def feature(wkb, id, properties = nil)
-        @factory.feature @parser.parse(wkb), id, (properties || {})
-      end
-
     end
+
 
     # Turns database WKB into geometry attribute string
     def self.wkb_to_json(wkb, id: nil, properties: nil)
-      WkbToJson.new.to_json(wkb, id: id, properties: properties)
+      geom_to_json WkbToGeom.(wkb), id: id, properties: properties
     end
+
+    # turns Rgeo object into GeoJSON
+    def self.geom_to_json(object, id: nil, properties: nil)
+      GeomToJson.new.to_json(object, id: id, properties: properties)
+    end
+
+    # Turn geometry attribute string (GeoJSON) into Rgeo object for database
+    # use
+    def self.to_geom(geometry)
+      geojson = JSON.parse(geometry)
+      RGeo::GeoJSON.decode(
+        geojson,
+        json_parser: :json,
+        geo_factory: RGeo::Cartesian.preferred_factory(srid: 4326)
+      ).geometry
+  end
 
     # Turn geometry attribute string into WKB for database use
     def self.to_wkb(geometry)
