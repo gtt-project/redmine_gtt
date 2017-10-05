@@ -27,15 +27,3 @@ var App = (function ($, publ) {
   return publ;
 
 })(jQuery, App || {});
-
-/**
- * When DOM is ready, initialize map plugin
- */
-$(document).ready(function(){
-  // A page may contain more than one map
-  $("div.ol-map").each(function(idx) {
-    App.init({
-      target: this
-    });
-  });
-});
