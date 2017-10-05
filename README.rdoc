@@ -9,8 +9,6 @@ Creating a PostGIS-enabled database
 
 createdb -U postgres -O redmine redmine
 psql -U postgres -d redmine -c "CREATE EXTENSION postgis;"
-psql -U redmine -d redmine -c "CREATE SCHEMA app;"
-psql -U redmine -d redmine -c "CREATE SCHEMA dev;"
 
 = Installation
 
