@@ -3,9 +3,9 @@ ja:
   error_invalid_json: must be valid JSON
 
   field_default: 新規プロジェクトのデフォルト
-  field_geometry: "ジオメトリ"
+  field_geometry: "ロケーション"
   field_location: "場所"
-  field_geom: "ジオメトリ"
+  field_geom: "ロケーション"
   field_global: 世界的に利用可能
   field_options_string: オプション
   field_gtt_tile_source_ids: タイルソース
