@@ -8,7 +8,7 @@ App.map = (function ($, publ) {
 
   var map, vector, bounds, contents, toolbar, geolocation = null;
   var features = [];
-  var layerArr = []
+  var layerArr = [];
 
   // Quick hack
   var quick_hack = {
@@ -22,6 +22,15 @@ App.map = (function ($, publ) {
    *
    */
   publ.init = function (options) {
+
+    map = null;
+    vector = null;
+    bounds = null;
+    toolbar = null;
+    geolocation = null;
+
+    features = [];
+    layerArr = [];
 
     contents = $(options.target).data();
     defaults = $("#ol-defaults").data();

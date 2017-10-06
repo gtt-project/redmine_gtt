@@ -13,14 +13,14 @@ module RedmineGtt
               find_in_batches.each{|group| group.each{|o|
                 data << o.geojson_params(include_properties)
               }}
-            Conversions::WkbToJson.new.collection_to_json data
+            Conversions::GeomToJson.new.collection_to_json data
           }
         end
       end
 
       module ClassMethods
         def array_to_geojson(array, include_properties: false)
-          Conversions::WkbToJson.new.collection_to_json(
+          Conversions::GeomToJson.new.collection_to_json(
             array.map{ |o|
               o.geojson_params(include_properties) if o.geom
             }.compact
@@ -48,7 +48,7 @@ module RedmineGtt
       # returns the geojson attribute for reading / writing to the DB
       def geojson
         @geojson ||= if geom.present?
-          Conversions.wkb_to_json geom
+          Conversions.geom_to_json geom
         end
       end
 
@@ -56,7 +56,7 @@ module RedmineGtt
       def geojson=(geometry)
         @geojson = geometry
         if (geometry.present?)
-          self.geom = Conversions.to_wkb geometry
+          self.geom = Conversions.to_geom geometry
         else
           self.geom = nil
         end
@@ -73,7 +73,7 @@ module RedmineGtt
         return geojson unless include_properties
 
         if geom.present?
-          Conversions.wkb_to_json(
+          Conversions.geom_to_json(
             geom,
             id: id,
             properties: geojson_additional_properties(include_properties)

@@ -28,7 +28,20 @@ module GttMapHelper
     data[:edit]   = edit   if edit
     data[:popup]  = popup  if popup
 
-    content_tag(:div, "", data: data, id: "ol-#{rand(36**8).to_s(36)}", class: 'ol-map')
+    uid = "ol-" + rand(36**8).to_s(36)
+
+    safe_join [
+      content_tag(:div, "", data: data, id: uid, class: 'ol-map'),
+      javascript_tag("
+        $(document).ready(function(){
+          $('div.ol-map').each(function(idx) {
+            App.init({
+              target: this
+            });
+          });
+        });
+      ")
+    ]
   end
 
 end

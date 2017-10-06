@@ -7,7 +7,7 @@ class GttMapTest < GttTest
   end
 
   test 'should compute json from wkb' do
-    m = GttMap.new layers: [@ts], wkb: test_wkb
+    m = GttMap.new layers: [@ts], geom: test_geom
     assert_geojson m.json
   end
 end

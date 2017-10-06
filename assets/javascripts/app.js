@@ -14,9 +14,9 @@ var App = (function ($, publ) {
     });
 
     // Hack to disable geometry changes in history
-    $("#history ul.details li:contains('ジオメトリ')").hide();
-    $("#history ul.details li:contains('Geometry')").hide();
-    $("#history ul.details li:contains('Geometrie')").hide();
+    // $("#history ul.details li:contains('ジオメトリ')").hide();
+    // $("#history ul.details li:contains('Geometry')").hide();
+    // $("#history ul.details li:contains('Geometrie')").hide();
 
     return;
   };
@@ -27,15 +27,3 @@ var App = (function ($, publ) {
   return publ;
 
 })(jQuery, App || {});
-
-/**
- * When DOM is ready, initialize map plugin
- */
-$(document).ready(function(){
-  // A page may contain more than one map
-  $("div.ol-map").each(function(idx) {
-    App.init({
-      target: this
-    });
-  });
-});
