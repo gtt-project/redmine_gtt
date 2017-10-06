@@ -144,6 +144,7 @@ App.map = (function ($, publ) {
     this.setGeolocation();
     this.setGeocoding();
     this.zoomToExtent();
+    this.parseHistory();
 
     // Control button
     var maximizeCtrl = new ol.control.Button({
@@ -301,9 +302,35 @@ App.map = (function ($, publ) {
   };
 
   /**
+   * Parse page for WKT strings in history
+   */
+  publ.parseHistory = function () {
+    $('div#history ul.details i').each( function (idx,item) {
+      var regex = new RegExp(/\w+\s(\((-?\d+.\d+\s?-?\d+.\d+,?)+\))+/g);
+      var match = $(item).text().match(regex);
+      if (match !== null) {
+        var feature = new ol.format.WKT().readFeature(
+          match[0], {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+          }
+        );
+        var wkt = new ol.format.WKT().writeFeature(
+          feature, {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857',
+            decimals: 6
+          }
+        );
+        $(item).html('<a href="#" onclick="event.preventDefault();" class="wkt">' + wkt + '</a>');
+      }
+    });
+  };
+
+  /**
    * Add Geolocation functionality
    */
-  publ.setGeolocation = function (){
+  publ.setGeolocation = function () {
 
     geolocation = new ol.Geolocation({
       tracking: false,
