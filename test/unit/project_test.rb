@@ -5,14 +5,14 @@ class ProjectTest < GttTest
 
   test 'should have geojson attribute' do
     p = Project.find 'ecookbook'
-    p.update_column :geom, test_wkb
+    p.update_column :geom, test_geom
 
     assert_geojson p.geojson
   end
 
   test 'should render properties in as_geojson' do
     p = Project.find 'ecookbook'
-    p.update_column :geom, test_wkb
+    p.update_column :geom, test_geom
 
     j = p.as_geojson include_properties: true
     assert_geojson j
