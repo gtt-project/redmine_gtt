@@ -2,7 +2,7 @@
 <%= link_to l(:label_gtt_tile_source_new), new_gtt_tile_source_path, :class => 'icon icon-add' %>
 </div>
 
-<h2><%= l :label_gtt_tile_source_plural %></h2>
+<%= title l :label_gtt_tile_source_plural %>
 
 <% if @tile_sources.any? %>
 <table class="list">
@@ -25,4 +25,3 @@
 <p class="nodata"><%= l :label_no_data %></p>
 <% end %>
 
-<% html_title l :label_gtt_tile_source_plural -%>
