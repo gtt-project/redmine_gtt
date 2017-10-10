@@ -8,6 +8,9 @@ class GttTileSource < ActiveRecord::Base
   validates :type, presence: true
   validate :take_json_options
 
+  acts_as_positioned
+  scope :sorted, ->{ order :position }
+
   # globally available tile sources
   scope :global, ->{ where global: true }
 

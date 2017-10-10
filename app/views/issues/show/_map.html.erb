@@ -1,11 +1,3 @@
-<% return '' if @issue.project.nil? %>
-<% return '' unless User.current.allowed_to?(:view_issues, @issue.project) %>
-
 <% if @project.nil? or @project.module_enabled?(:gtt) %>
-<%= content_tag(:div, "", :data => {
-    :geom => @issue.geojson,
-    :bounds => @project.geojson,
-    :layers => @project.gtt_tile_sources,
-  }, :id => 'ol-' + rand(36**8).to_s(36), :class => 'ol-map')
-%>
+  <%= map_tag map: @issue.map %>
 <% end %>
