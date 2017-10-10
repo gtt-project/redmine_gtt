@@ -61,18 +61,31 @@ var App = (function ($, publ) {
     //  through the template causes encoding problems
     publ.updateForm(features);
 
-    contents.layers.forEach(function(layer) {
+    contents.layers.forEach(function(layer,idx) {
       var s = layer.type.split(".");
-      layerArr.push(
-        new ol.layer.Tile({
-          title: layer.name,
-          baseLayer: true,
-          visible: false,
-          source: new ol[s[1]][s[2]](layer.options)
-        })
-      );
+      var l = new ol.layer.Tile({
+        index: idx,
+        title: layer.name,
+        baseLayer: true,
+        visible: false,
+        source: new ol[s[1]][s[2]](layer.options)
+      });
+      l.on("change:visible", function(e) {
+        if (e.target.getVisible()) {
+          document.cookie = "_redmine_gtt_basemap=" + e.target.get("index") + ";path=/";
+        }
+      });
+      layerArr.push(l);
     });
-    layerArr[0].setVisible(true);
+
+    // Decide which baselayer to show
+    var idx = getCookie("_redmine_gtt_basemap") || 0;
+    if (layerArr.length > idx) {
+      layerArr[idx].setVisible(true);
+    }
+    else {
+      layerArr[0].setVisible(true);
+    }
 
     // Layer for vector features
     vector = new ol.layer.Vector({
@@ -186,7 +199,7 @@ var App = (function ($, publ) {
     });
 
     // Add LayerSwitcher Image Toolbar
-  	map.addControl(new ol.control.LayerPopup());
+    map.addControl(new ol.control.LayerPopup());
   };
 
   publ.getColor = function (feature) {
@@ -583,6 +596,21 @@ var App = (function ($, publ) {
     }));
     $("#geom").val(JSON.stringify(geojson.features[0]));
   };
+
+  function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+  }
 
   /**
    * Return public objects

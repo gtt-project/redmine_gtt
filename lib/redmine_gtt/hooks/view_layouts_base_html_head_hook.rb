@@ -12,7 +12,7 @@ module RedmineGtt
         tags << stylesheet_link_tag("ol3-ext.min.css", :plugin => "redmine_gtt", :media => "all")
         tags << stylesheet_link_tag("app.css", :plugin => "redmine_gtt", :media => "all")
 
-        tags << javascript_include_tag('ol.js', :plugin => 'redmine_gtt')
+        tags << javascript_include_tag('ol-debug.js', :plugin => 'redmine_gtt')
         tags << javascript_include_tag('ol3-ext.min.js', :plugin => 'redmine_gtt')
         tags << javascript_include_tag('app.js', :plugin => 'redmine_gtt')
         return tags.join("\n")
