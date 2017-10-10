@@ -16,7 +16,7 @@ module RedmineGtt
       end
 
       def map
-        GttMap.new json: as_geojson, layers: gtt_tile_sources
+        GttMap.new json: as_geojson, layers: gtt_tile_sources.sorted
       end
 
       def enabled_module_names=(*_)
@@ -26,7 +26,7 @@ module RedmineGtt
 
       def set_default_tile_sources
         if gtt_tile_sources.none? and module_enabled?(:gtt)
-          self.gtt_tile_sources = GttTileSource.default.to_a
+          self.gtt_tile_sources = GttTileSource.default.sorted.to_a
         end
       end
       private :set_default_tile_sources

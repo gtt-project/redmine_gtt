@@ -5,7 +5,7 @@
 <%= title l :label_gtt_tile_source_plural %>
 
 <% if @tile_sources.any? %>
-<table class="list">
+<table class="list tile_sources">
   <thead>
     <tr>
       <th><%= l :label_type %></th>
@@ -25,3 +25,6 @@
 <p class="nodata"><%= l :label_no_data %></p>
 <% end %>
 
+<%= javascript_tag do %>
+  $(function() { $("table.tile_sources tbody").positionedItems(); });
+<% end %>
