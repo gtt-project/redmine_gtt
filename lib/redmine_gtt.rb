@@ -34,6 +34,7 @@ module RedmineGtt
     RedmineGtt::Patches::IssuesHelperPatch.apply
 
     RedmineGtt::Patches::IssuePatch.apply
+    RedmineGtt::Patches::IssueQueryPatch.apply
     RedmineGtt::Patches::ProjectPatch.apply
     RedmineGtt::Patches::UserPatch.apply
 
