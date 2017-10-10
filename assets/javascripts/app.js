@@ -64,7 +64,7 @@ var App = (function ($, publ) {
     contents.layers.forEach(function(layer,idx) {
       var s = layer.type.split(".");
       var l = new ol.layer.Tile({
-        index: idx,
+        lid: layer.id,
         title: layer.name,
         baseLayer: true,
         visible: false,
@@ -72,20 +72,13 @@ var App = (function ($, publ) {
       });
       l.on("change:visible", function(e) {
         if (e.target.getVisible()) {
-          document.cookie = "_redmine_gtt_basemap=" + e.target.get("index") + ";path=/";
+          document.cookie = "_redmine_gtt_basemap=" +
+                            e.target.get("lid") + ";path=/";
         }
       });
       layerArr.push(l);
     });
-
-    // Decide which baselayer to show
-    var idx = getCookie("_redmine_gtt_basemap") || 0;
-    if (layerArr.length > idx) {
-      layerArr[idx].setVisible(true);
-    }
-    else {
-      layerArr[0].setVisible(true);
-    }
+    publ.setBasemap(layerArr);
 
     // Layer for vector features
     vector = new ol.layer.Vector({
@@ -200,6 +193,42 @@ var App = (function ($, publ) {
 
     // Add LayerSwitcher Image Toolbar
     map.addControl(new ol.control.LayerPopup());
+  };
+
+  /**
+   * Decide which baselayer to show
+   */
+  publ.setBasemap = function (layers) {
+
+    if (layers.length === 0) {
+      console.error("There is no baselayer availaable!");
+      return;
+    }
+
+    var index = 0;
+    var cookie = parseInt(
+      getCookie("_redmine_gtt_basemap")
+    );
+
+    if (cookie) {
+      var lid = 0;
+      // Check if layer ID exists in available layers
+      layers.forEach(function(layer){
+        if (cookie === layer.get("lid")) {
+          lid = cookie;
+        }
+      });
+
+      // Set selected layer visible
+      layers.forEach(function(layer,idx){
+        if (lid === layer.get("lid")) {
+          index = idx;
+        }
+      });
+    }
+
+    // Set layer visible
+    layers[index].setVisible(true);
   };
 
   publ.getColor = function (feature) {
