@@ -13,6 +13,11 @@ module RedmineGtt
             :type => 'application/json; header=present',
             :filename => "#{@issue.id}.geojson")
           }
+          format.pdf {
+            # pretend the geometry is a custom field to have it rendered
+            @issue.class_eval{prepend GeometryAsCustomFieldPatch}
+            super
+          }
           format.any { super }
         end
       end
