@@ -4,7 +4,7 @@
  * @param  {[type]} publ  [description]
  * @return {[type]}       [description]
  */
-App.map = (function ($, publ) {
+var App = (function ($, publ) {
 
   var map, vector, bounds, contents, toolbar, geolocation = null;
   var features = [];
@@ -589,4 +589,4 @@ App.map = (function ($, publ) {
    */
   return publ;
 
-})(jQuery, App.map || {});
+})(jQuery, App || {});

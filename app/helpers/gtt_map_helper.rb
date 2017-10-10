@@ -34,10 +34,8 @@ module GttMapHelper
       content_tag(:div, "", data: data, id: uid, class: 'ol-map'),
       javascript_tag("
         $(document).ready(function(){
-          $('##{uid}').each(function(idx) {
-            App.init({
-              target: this
-            });
+          App.init({
+            target: $('##{uid}')[0]
           });
         });
       ")
