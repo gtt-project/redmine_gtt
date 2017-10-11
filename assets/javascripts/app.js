@@ -348,7 +348,7 @@ var App = (function ($, publ) {
    */
   publ.parseHistory = function () {
     $('div#history ul.details i').each( function (idx,item) {
-      var regex = new RegExp(/\w+\s(\((-?\d+.\d+\s?-?\d+.\d+,?)+\))+/g);
+      var regex = new RegExp(/\w+[\s]?(\((-?\d+.\d+\s?-?\d+.\d+,?)+\))+/g);
       var match = $(item).text().match(regex);
       if (match !== null) {
         var feature = new ol.format.WKT().readFeature(
