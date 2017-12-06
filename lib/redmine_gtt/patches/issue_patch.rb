@@ -8,6 +8,7 @@ module RedmineGtt
           Issue.prepend self
           Issue.prepend GeojsonAttribute
           Issue.class_eval do
+            attr_reader :distance
             safe_attributes "geojson",
               if: ->(issue, user){
                 perm = issue.new_record? ? :add_issues : :edit_issues

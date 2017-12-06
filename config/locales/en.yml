@@ -26,7 +26,8 @@ en:
   gtt_text_settings_geometry_example: "2747491302261fbc47967ba62621af22"
 
   label_gtt: "GTT"
-  label_gtt_bounding_box_filter: Location
+  label_gtt_bbox_filter: Location
+  label_gtt_distance: Distance
   label_gtt_tile_source: Tile Source
   label_gtt_tile_source_new: New Tile Source
   label_gtt_tile_source_plural: Tile Sources
