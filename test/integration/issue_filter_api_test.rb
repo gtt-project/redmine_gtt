@@ -48,6 +48,16 @@ class IssueFilterApiTest < Redmine::ApiTest::Base
     }
   }
 
+  POLY_IN = {
+    'type' => 'Feature',
+    'geometry' => {
+      'type' => 'Polygon',
+      'coordinates' => [
+        [[123.269691,9.305099], [123.279691,9.305099],[123.279691,9.405099],[123.269691,9.405099]]
+      ]
+    }
+  }
+
   # x1,y1,x2,y2 (Lng1,Lat1,...)
   BBOX = '123.193645|9.256139|123.331833|9.364216'
 
@@ -203,5 +213,33 @@ class IssueFilterApiTest < Redmine::ApiTest::Base
     assert_equal 1, data['issues'].size
     assert_equal issue_out.id, data['issues'][0]['id']
   end
+
+
+  test 'should find polygon included in bounding box' do
+
+    get '/projects/ecookbook/issues.json', params: { status_id: 'o' }
+
+    assert_response :success
+    assert data = JSON.parse(response.body)
+    assert_equal 6, data['issues'].size
+
+    issue_in = @project.issues.find 1
+    issue_in.update_attribute :geojson, POLY_IN.to_json
+
+    issue_out = @project.issues.find 2
+    issue_out.update_attribute :geojson, POINT_OUT.to_json
+
+    # find everyting inside the given box
+    # using the shorter API parameter format
+
+    get '/projects/ecookbook/issues.json', params: {
+      status_id: 'o', bbox: "=#{BBOX}"
+    }
+    assert_response :success
+    assert data = JSON.parse(response.body)
+    assert_equal 1, data['issues'].size
+    assert_equal issue_in.id, data['issues'][0]['id']
+  end
+
 
 end

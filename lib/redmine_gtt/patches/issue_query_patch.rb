@@ -111,17 +111,13 @@ module RedmineGtt
         # box = "ST_Polygon(ST_GeomFromText('LINESTRING(#{coordinates})'), 4326)"
         # "#{not_in}ST_Contains(#{box}, ST_SetSRID(#{db_table}.geom, 4326))"
 
+
         # So instead, I came up with this:
-        "#{not_in}ST_MakeEnvelope(#{lng1},#{lat1},#{lng2},#{lat2}, 4326) ~ #{Issue.table_name}.geom"
-        # I am not sure about the implications of using ~ instead of one of
-        # the ST_ functions. Appears that it is a  PostgreSQL geometric
-        # operator, leading to casting the PostGIS values to a PostgreSQL
-        # geometric type. Fact is, this statement does not seem to care
-        # about the SRID (can even leave it out of the MakeEnvelope call).
-        # Doesn't feel right but works for my simple test case and is
-        # probably good enough for this simple case (bbox is a rectangle and
-        # other geometry is a point). We should check if indizes are actually
-        # used though.
+        # "#{not_in}ST_MakeEnvelope(#{lng1},#{lat1},#{lng2},#{lat2}, 4326) ~ #{Issue.table_name}.geom"
+        #
+        # And then with this, which also handles geometries that are not simple
+        # points:
+        "#{not_in} ST_Intersects(#{Issue.table_name}.geom, ST_MakeEnvelope(#{lng1},#{lat1},#{lng2},#{lat2}, 4326))"
       end
 
       private
