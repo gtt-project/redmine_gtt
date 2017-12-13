@@ -193,6 +193,9 @@ var App = (function ($, publ) {
 
     // Add LayerSwitcher Image Toolbar
     map.addControl(new ol.control.LayerPopup());
+
+    // Add map events
+    map.on('moveend', publ.updateFilter);
   };
 
   /**
@@ -342,6 +345,16 @@ var App = (function ($, publ) {
       });
     }
   };
+
+  /**
+   *  Updates map settings for Redmine filter
+   */
+  publ.updateFilter = function () {
+    var center = map.getView().getCenter();
+    var extent = map.getView().calculateExtent(map.getSize());
+    console.log("Map Center (WGS84): ", ol.proj.transform(center,'EPSG:3857','EPSG:4326'));
+    console.log("Map Extent (WGS84): ", ol.proj.transformExtent(extent,'EPSG:3857','EPSG:4326'));
+  }
 
   /**
    * Parse page for WKT strings in history
