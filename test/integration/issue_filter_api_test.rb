@@ -134,7 +134,6 @@ class IssueFilterApiTest < Redmine::ApiTest::Base
     assert_equal 1, data['issues'].size
     assert_equal issue_out.id, data['issues'][0]['id']
 
-
     # find everyting on the 1km radius
     # more of a theoretical use case...
     get '/projects/ecookbook/issues.json', params: {

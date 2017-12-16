@@ -53,7 +53,7 @@ module RedmineGtt
             'bbox',
             name: l(:label_gtt_bbox_filter),
             type: :list,
-            values: ['On map']
+            values: [['On map', '']]
           )
           add_available_filter(
             'distance',
