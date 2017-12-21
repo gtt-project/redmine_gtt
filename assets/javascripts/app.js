@@ -218,7 +218,7 @@ var App = (function ($, publ) {
   publ.setBasemap = function (layers) {
 
     if (layers.length === 0) {
-      console.error("There is no baselayer availaable!");
+      console.error("There is no baselayer available!");
       return;
     }
 
@@ -378,7 +378,7 @@ var App = (function ($, publ) {
     var extent = map.getView().calculateExtent(map.getSize());
 
     center = ol.proj.transform(center,'EPSG:3857','EPSG:4326');
-    console.log("Map Center (WGS84): ", center);
+    // console.log("Map Center (WGS84): ", center);
     $('fieldset#location').data('center', center);
     $('#tr_distance #values_distance_3').val(center[0]);
     $('#tr_distance #values_distance_4').val(center[1]);
@@ -394,7 +394,7 @@ var App = (function ($, publ) {
     document.cookie = cookie.join(";");
 
     extent = ol.proj.transformExtent(extent,'EPSG:3857','EPSG:4326').join('|');
-    console.log("Map Extent (WGS84): ",extent);
+    // console.log("Map Extent (WGS84): ",extent);
     $('select[name="v[bbox][]"]').find('option').first().val(extent);
     // adjust the value of the 'On map' option tag
     // Also adjust the JSON data that's the basis for building the filter row
@@ -763,11 +763,11 @@ function buildDistanceFilterRow(operator, values){
   }
   var x,y;
   if(values.length > 2){
-    console.log('distance center point from values: ', values[base_idx], values[base_idx+1]);
+    // console.log('distance center point from values: ', values[base_idx], values[base_idx+1]);
     x = values[base_idx];
     y = values[base_idx+1];
   } else {
-    console.log('taking distance from map fieldset: ', $('fieldset#location').data('center'));
+    // console.log('taking distance from map fieldset: ', $('fieldset#location').data('center'));
     var xy = $('fieldset#location').data('center');
     x = xy[0]; y = xy[1];
   }
