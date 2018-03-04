@@ -9,6 +9,10 @@ var App = (function ($, publ) {
   var map, vector, bounds, contents, toolbar, geolocation = null;
   var features = [];
   var layerArr = [];
+  var filters = {
+    location: false,
+    distance: false
+  };
 
   // Quick hack
   var quick_hack = {
@@ -149,7 +153,6 @@ var App = (function ($, publ) {
     this.setView();
     this.setGeolocation();
     this.setGeocoding();
-    this.zoomToExtent();
     this.parseHistory();
 
     // Control button
@@ -157,7 +160,7 @@ var App = (function ($, publ) {
       html: '<i class="icon-maximize" ></i>',
       title: "Maximize",
       handleClick: function () {
-        publ.zoomToExtent();
+        publ.zoomToExtent(true);
       }
     });
     toolbar.addControl(maximizeCtrl);
@@ -194,8 +197,19 @@ var App = (function ($, publ) {
     // Add LayerSwitcher Image Toolbar
     map.addControl(new ol.control.LayerPopup());
 
-    // Add map events
-    map.on('moveend', publ.updateFilter);
+    // Because Redmine filter functions are applied later, the Window onload
+    // event provides a workaround to have filters loaded before executing
+    // the following code
+    $(window).bind('load', function() {
+      if ($("tr#tr_bbox").length > 0) {
+        filters.location = true;
+      }
+      if ($("tr#tr_distance").length > 0) {
+        filters.distance = true;
+      }
+      publ.zoomToExtent();
+      map.on('moveend', publ.updateFilter);
+    });
   };
 
   /**
@@ -204,7 +218,7 @@ var App = (function ($, publ) {
   publ.setBasemap = function (layers) {
 
     if (layers.length === 0) {
-      console.error("There is no baselayer availaable!");
+      console.error("There is no baselayer available!");
       return;
     }
 
@@ -326,8 +340,18 @@ var App = (function ($, publ) {
   /**
    *
    */
-  publ.zoomToExtent = function () {
-    if (vector.getSource().getFeatures().length > 0) {
+  publ.zoomToExtent = function (force) {
+    if (!force && (filters.distance || filters.location)) {
+      // Do not zoom to extent but show the previous extent stored as cookie
+      var parts = (getCookie("_redmine_gtt_permalink")).split("/");
+      map.getView().setZoom(parseInt(parts[0], 10));
+      map.getView().setCenter(ol.proj.transform([
+        parseFloat(parts[1]),
+        parseFloat(parts[2])
+      ],'EPSG:4326','EPSG:3857'));
+      map.getView().setRotation(parseFloat(parts[3]));
+    }
+    else if (vector.getSource().getFeatures().length > 0) {
       var extent = ol.extent.createEmpty();
       // Because the vector layer is set to "useSpatialIndex": false, we cannot
       // make use of "vector.getSource().getExtent()"
@@ -354,14 +378,23 @@ var App = (function ($, publ) {
     var extent = map.getView().calculateExtent(map.getSize());
 
     center = ol.proj.transform(center,'EPSG:3857','EPSG:4326');
-    console.log("Map Center (WGS84): ", center);
+    // console.log("Map Center (WGS84): ", center);
     $('fieldset#location').data('center', center);
     $('#tr_distance #values_distance_3').val(center[0]);
     $('#tr_distance #values_distance_4').val(center[1]);
 
+    // Set Permalink as Cookie
+    var cookie = [];
+    var hash = map.getView().getZoom() + '/' +
+      Math.round(center[0] * 1000000) / 1000000 + '/' +
+      Math.round(center[1] * 1000000) / 1000000 + '/' +
+      map.getView().getRotation();
+    cookie.push("_redmine_gtt_permalink=" + hash);
+    cookie.push("path=" + window.location.pathname);
+    document.cookie = cookie.join(";");
 
     extent = ol.proj.transformExtent(extent,'EPSG:3857','EPSG:4326').join('|');
-    console.log("Map Extent (WGS84): ",extent);
+    // console.log("Map Extent (WGS84): ",extent);
     $('select[name="v[bbox][]"]').find('option').first().val(extent);
     // adjust the value of the 'On map' option tag
     // Also adjust the JSON data that's the basis for building the filter row
@@ -730,15 +763,14 @@ function buildDistanceFilterRow(operator, values){
   }
   var x,y;
   if(values.length > 2){
-    console.log('distance center point from values: ', values[base_idx], values[base_idx+1]);
+    // console.log('distance center point from values: ', values[base_idx], values[base_idx+1]);
     x = values[base_idx];
     y = values[base_idx+1];
   } else {
-    console.log('taking distance from map fieldset: ', $('fieldset#location').data('center'));
+    // console.log('taking distance from map fieldset: ', $('fieldset#location').data('center'));
     var xy = $('fieldset#location').data('center');
     x = xy[0]; y = xy[1];
   }
   $('#values_'+fieldId+'_3').val(x);
   $('#values_'+fieldId+'_4').val(y);
 }
-
