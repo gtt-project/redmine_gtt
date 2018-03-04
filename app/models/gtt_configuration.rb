@@ -17,7 +17,7 @@ class GttConfiguration
   end
 
   def map
-    GttMap.new json: geojson, layers: project.gtt_tile_sources
+    GttMap.new json: geojson, layers: project.gtt_tile_sources.sorted
   end
 
 end

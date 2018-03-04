@@ -8,6 +8,7 @@ module RedmineGtt
           Issue.prepend self
           Issue.prepend GeojsonAttribute
           Issue.class_eval do
+            attr_reader :distance
             safe_attributes "geojson",
               if: ->(issue, user){
                 perm = issue.new_record? ? :add_issues : :edit_issues
@@ -19,7 +20,7 @@ module RedmineGtt
 
       def map
         json = as_geojson
-        GttMap.new json: json, layers: project.gtt_tile_sources,
+        GttMap.new json: json, layers: project.gtt_tile_sources.sorted,
           bounds: (new_record? ? project.map.json : json)
       end
 

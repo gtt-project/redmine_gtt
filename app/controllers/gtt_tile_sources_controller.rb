@@ -6,7 +6,7 @@ class GttTileSourcesController < ApplicationController
   self.main_menu = false
 
   def index
-    @tile_sources = GttTileSource.order name: :asc
+    @tile_sources = GttTileSource.sorted
   end
 
   def new
@@ -31,10 +31,21 @@ class GttTileSourcesController < ApplicationController
     ts = GttTileSource.find params[:id]
     r = RedmineGtt::Actions::UpdateTileSource.(ts, tile_source_params)
     if r.tile_source_updated?
-      redirect_to gtt_tile_sources_path
+      respond_to do |format|
+        format.html {
+          flash[:notice] = l(:notice_successful_update)
+          redirect_to gtt_tile_sources_path
+        }
+        format.js { head 200 }
+      end
     else
-      @tile_source = r.tile_source
-      render 'edit'
+      respond_to do |format|
+        format.html {
+          @tile_source = r.tile_source
+          render 'edit'
+        }
+        format.js { head 422 }
+      end
     end
   end
 
@@ -50,7 +61,7 @@ class GttTileSourcesController < ApplicationController
   def tile_source_params
     return {} unless params[:tile_source]
 
-    params[:tile_source].permit( :name, :type, :global,
+    params[:tile_source].permit( :name, :type, :global, :position,
                                 :default, :options_string )
   end
 end
