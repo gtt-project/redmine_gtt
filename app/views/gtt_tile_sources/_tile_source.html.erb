@@ -5,6 +5,7 @@
   <td><%= checked_image tile_source.default? %></td>
   <td><%= tile_source_options tile_source %></td>
   <td class="buttons">
+    <%= reorder_handle(tile_source, url: gtt_tile_source_path(tile_source), param: 'tile_source') %>
     <%= delete_link gtt_tile_source_path(tile_source) %>
   </td>
 </tr>

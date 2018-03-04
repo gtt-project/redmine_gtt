@@ -13,7 +13,7 @@ module RedmineGtt
       end
 
       def map
-        GttMap.new json: as_geojson, layers: GttTileSource.global
+        GttMap.new json: as_geojson, layers: GttTileSource.global.sorted
       end
 
       def geojson_additional_properties(include_properties)

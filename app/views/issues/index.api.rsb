@@ -26,6 +26,10 @@ api.array :issues, api_meta(:total_count => @issue_count, :offset => @offset, :l
         api.geojson ""
       end
 
+      if issue.distance
+        api.distance issue.distance
+      end
+
       render_api_custom_values issue.visible_custom_field_values, api
 
       api.created_on issue.created_on

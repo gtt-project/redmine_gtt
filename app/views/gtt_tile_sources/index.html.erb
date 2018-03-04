@@ -2,10 +2,10 @@
 <%= link_to l(:label_gtt_tile_source_new), new_gtt_tile_source_path, :class => 'icon icon-add' %>
 </div>
 
-<h2><%= l :label_gtt_tile_source_plural %></h2>
+<%= title l :label_gtt_tile_source_plural %>
 
 <% if @tile_sources.any? %>
-<table class="list">
+<table class="list tile_sources">
   <thead>
     <tr>
       <th><%= l :label_type %></th>
@@ -25,4 +25,6 @@
 <p class="nodata"><%= l :label_no_data %></p>
 <% end %>
 
-<% html_title l :label_gtt_tile_source_plural -%>
+<%= javascript_tag do %>
+  $(function() { $("table.tile_sources tbody").positionedItems(); });
+<% end %>

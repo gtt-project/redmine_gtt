@@ -15,7 +15,6 @@ module RedmineGtt
         tags << javascript_include_tag('ol.js', :plugin => 'redmine_gtt')
         tags << javascript_include_tag('ol3-ext.min.js', :plugin => 'redmine_gtt')
         tags << javascript_include_tag('app.js', :plugin => 'redmine_gtt')
-        tags << javascript_include_tag('app.map.js', :plugin => 'redmine_gtt')
         return tags.join("\n")
       end
 
