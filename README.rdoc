@@ -15,7 +15,7 @@ psql -U postgres -d redmine -c "CREATE EXTENSION postgis;"
 Installation goes here
 
 cd path/to/project
-bundle install --without test
+bundle install --path vendor/bundle --without test
 
 RAILS_ENV=production bundle exec rake db:migrate
 RAILS_ENV=production bundle exec rake redmine:plugins:migrate
