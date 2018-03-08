@@ -7,6 +7,7 @@
 var App = (function ($, publ) {
 
   var map, vector, bounds, contents, toolbar, geolocation = null;
+  var maps = [];
   var features = [];
   var layerArr = [];
   var filters = {
@@ -210,6 +211,9 @@ var App = (function ($, publ) {
       publ.zoomToExtent();
       map.on('moveend', publ.updateFilter);
     });
+
+    // Handle multiple maps per page
+    maps.push(map);
   };
 
   /**
@@ -344,12 +348,14 @@ var App = (function ($, publ) {
     if (!force && (filters.distance || filters.location)) {
       // Do not zoom to extent but show the previous extent stored as cookie
       var parts = (getCookie("_redmine_gtt_permalink")).split("/");
-      map.getView().setZoom(parseInt(parts[0], 10));
-      map.getView().setCenter(ol.proj.transform([
-        parseFloat(parts[1]),
-        parseFloat(parts[2])
-      ],'EPSG:4326','EPSG:3857'));
-      map.getView().setRotation(parseFloat(parts[3]));
+      maps.forEach(function (m) {
+        m.getView().setZoom(parseInt(parts[0], 10));
+        m.getView().setCenter(ol.proj.transform([
+          parseFloat(parts[1]),
+          parseFloat(parts[2])
+        ],'EPSG:4326','EPSG:3857'));
+        m.getView().setRotation(parseFloat(parts[3]));
+      })
     }
     else if (vector.getSource().getFeatures().length > 0) {
       var extent = ol.extent.createEmpty();
@@ -358,14 +364,20 @@ var App = (function ($, publ) {
       vector.getSource().getFeatures().forEach(function (feature) {
         ol.extent.extend(extent, feature.getGeometry().getExtent());
       });
-      map.getView().fit(extent, map.getSize());
+      maps.forEach(function (m) {
+        m.getView().fit(extent, m.getSize());
+      });
     }
     else if (bounds.getSource().getFeatures().length > 0) {
-      map.getView().fit(bounds.getSource().getExtent(), map.getSize());
+      maps.forEach(function (m) {
+        m.getView().fit(bounds.getSource().getExtent(), m.getSize());
+      });
     }
     else if (geolocation) {
       geolocation.once('change:position', function (error) {
-        map.getView().setCenter(geolocation.getPosition());
+        maps.forEach(function (m) {
+          m.getView().setCenter(geolocation.getPosition());
+        });
       });
     }
   };
