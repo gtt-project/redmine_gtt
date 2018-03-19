@@ -5,7 +5,11 @@ class UserTest < GttTest
 
   setup do
     @user = User.find_by_login 'dlopper'
-    @user.update_column :geom, test_geom
+    @user.update_attribute :geojson, test_geojson
+  end
+
+  test 'should set geom from json' do
+    assert @user.geom.present?
   end
 
   test 'should have geojson attribute' do
