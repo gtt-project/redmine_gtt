@@ -6,7 +6,12 @@ class IssueTest < GttTest
   setup do
     @project = Project.find 'ecookbook'
     @issue = @project.issues.last
-    @issue.update_column :geom, test_geom
+    @issue.update_attribute :geojson, test_geojson
+    @issue = Issue.find @issue.id
+  end
+
+  test 'should have geom attribute' do
+    assert @issue.geom.present?
   end
 
   test 'should have geojson attribute' do
