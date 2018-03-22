@@ -6,6 +6,22 @@ module RedmineGtt
         ProjectsController.prepend self unless ProjectsController < self
       end
 
+      # overrides index action to add spatial filtering to projects API listing
+      def index
+        respond_to do |format|
+          format.api {
+            scope = RedmineGtt::SpatialProjectsQuery.new(
+              contains: params[:contains],
+              projects: Project.visible.sorted
+            ).scope
+            @project_count = scope.count
+            @offset, @limit = api_offset_and_limit
+            @projects = scope.offset(@offset).limit(@limit).to_a
+          }
+          format.any { super }
+        end
+      end
+
       def show
         respond_to do |format|
           format.geojson { send_data(

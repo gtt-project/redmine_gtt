@@ -6,7 +6,7 @@ class GttMapTest < GttTest
     @ts = GttTileSource.create! name: 'test', type: 'ol.source.OSM'
   end
 
-  test 'should compute json from wkb' do
+  test 'should compute json from geom' do
     m = GttMap.new layers: [@ts], geom: test_geom
     assert_geojson m.json
   end
