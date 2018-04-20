@@ -26,6 +26,8 @@ ja:
   gtt_text_settings_geometry_example: "2747491302261fbc47967ba62621af22"
 
   label_gtt: "GTT"
+  label_gtt_bbox_filter: 場所
+  label_gtt_distance: 距離
   label_gtt_tile_source: タイルソース
   label_gtt_tile_source_new: 新しいタイルソース
   label_gtt_tile_source_plural: タイルソース
@@ -42,7 +44,7 @@ ja:
 
   gtt_settings_map_url: "APIサービスのURL"
   gtt_settings_map_apikey: "APIキー"
-  gtt_settings_map_maxzoom_level: "Maximum 地図ズームレベル"
+  gtt_settings_map_maxzoom_level: "最大地図ズームレベル"
 
   gtt_settings_geocoder_url: "APIサービスのURL"
   gtt_settings_geocoder_apikey: "APIキー"
