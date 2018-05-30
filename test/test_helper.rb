@@ -3,8 +3,12 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../test/test_helper')
 
 class GttTest < ActiveSupport::TestCase
 
+  def test_coordinates
+    [[[135.220734222412,34.7056906000311],[135.302273376465,34.6990600142143],[135.300041778564,34.6709699843709],[135.252834899902,34.6760523038894],[135.194212539673,34.6766840435102],[135.220734222412,34.7056906000311]]]
+  end
+
   def test_geojson
-    {'type'=>'Feature','geometry'=>{ 'type'=>'Polygon','coordinates'=> [[[135.22073422241215,34.70569060003112],[135.30227337646488,34.6990600142143],[135.3000417785645,34.670969984370885],[135.25283489990238,34.676052303889435],[135.1942125396729,34.67668404351015],[135.22073422241215,34.70569060003112]]]}}.to_json
+    {'type'=>'Feature','geometry'=>{ 'type'=>'Polygon','coordinates'=> test_coordinates}}.to_json
   end
 
   def test_geom
@@ -16,7 +20,11 @@ class GttTest < ActiveSupport::TestCase
     assert_equal 'Feature', json['type']
     assert geom = json['geometry']
     assert_equal 'Polygon', geom['type']
-    assert_equal [[[135.22073422241215,34.70569060003112],[135.30227337646488,34.6990600142143],[135.3000417785645,34.670969984370885],[135.25283489990238,34.676052303889435],[135.1942125396729,34.67668404351015],[135.22073422241215,34.70569060003112]]], geom['coordinates']
+    assert_equal_coordinates test_coordinates, geom['coordinates']
+  end
+
+  def assert_equal_coordinates(a, b)
+    assert_equal a.flatten.map{|f|f.round 5}, b.flatten.map{|f|f.round 5}
   end
 
   def assert_geojson_collection(json)

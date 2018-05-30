@@ -7,18 +7,26 @@ module RedmineGtt
       def self.prepended(base)
         base.extend ClassMethods
         base.class_eval do
+          # if this wouldnt break count, this would be really nice:
+          #default_scope ->{ select "#{table_name}.*, ST_AsGeoJson(#{table_name}.geom) as geojson" }
           scope :geojson, ->(include_properties: false){
             data = []
             where.not(geom: nil).
-              find_in_batches.each{|group| group.each{|o|
+              select("#{table_name}.*, #{geojson_attribute_select}").
+              find_each{|o|
                 data << o.geojson_params(include_properties)
-              }}
+              }
             Conversions::GeomToJson.new.collection_to_json data
           }
         end
       end
 
       module ClassMethods
+
+        def geojson_attribute_select
+          "ST_AsGeoJson(#{table_name}.geom) as db_geojson"
+        end
+
         def array_to_geojson(array, include_properties: false)
           Conversions::GeomToJson.new.collection_to_json(
             array.map{ |o|
@@ -47,9 +55,12 @@ module RedmineGtt
 
       # returns the geojson attribute for reading / writing to the DB
       def geojson
-        @geojson ||= if geom.present?
-          Conversions.geom_to_json geom
-        end
+        @geojson ||= if respond_to?(:db_geojson) && db_geojson.present?
+                       # use the value returned by ST_AsGeoJson
+                       Conversions.to_feature db_geojson
+                     elsif geom.present?
+                       Conversions.geom_to_json geom
+                     end
       end
 
       # sets the geojson attribute for reading / writing to the DB

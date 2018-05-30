@@ -48,6 +48,14 @@ module RedmineGtt
       end
     end
 
+    def self.to_feature(geometry, properties: {})
+      geometry = JSON.parse geometry if geometry.is_a?(String)
+      {
+        'type' => 'Feature',
+        'geometry' => geometry,
+        'properties' => properties
+      }
+    end
 
     # Turns database WKB into geometry attribute string
     def self.wkb_to_json(wkb, id: nil, properties: nil)
