@@ -14,6 +14,16 @@ class IssueTest < GttTest
     assert @issue.geom.present?
   end
 
+  test 'should load geojson' do
+    @issue = Issue.find @issue.id
+    assert j = @issue.geojson
+    assert j.present?
+    @issue.instance_variable_set "@geojson", nil
+    Issue.load_geojson [@issue]
+    assert_equal j, @issue.instance_variable_get("@geojson")
+    assert_equal j, @issue.geojson
+  end
+
   test 'should have geojson attribute' do
     assert_geojson @issue.geojson
   end
