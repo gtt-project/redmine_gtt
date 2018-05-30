@@ -9,10 +9,12 @@ api.array :projects, api_meta(:total_count => @project_count, :offset => @offset
       api.status      project.status
       api.is_public   project.is_public?
 
-      if project.geom
-        api.geojson project.geojson
-      else
-        api.geojson ""
+      if @include_geometry
+        if project.geom
+          api.geojson project.geojson.to_json
+        else
+          api.geojson ""
+        end
       end
 
       render_api_custom_values project.visible_custom_field_values, api

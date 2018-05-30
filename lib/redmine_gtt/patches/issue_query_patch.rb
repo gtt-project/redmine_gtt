@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RedmineGtt
   module Patches
     module IssueQueryPatch
@@ -13,12 +15,22 @@ module RedmineGtt
 
       def issues(*_)
         super.tap do |issues|
+          if load_geojson? || has_column?(:geom)
+            Issue.load_geojson(issues)
+          end
           if center = find_center_point
             load_distances(issues, center)
           end
         end
       rescue ::ActiveRecord::StatementInvalid => e
         raise ::Query::StatementInvalid.new(e.message)
+      end
+
+      def load_geojson
+        @load_geojson = true
+      end
+      def load_geojson?
+        !!@load_geojson
       end
 
       def available_columns
@@ -75,7 +87,7 @@ module RedmineGtt
           # or ['meters_min', 'meters_max', 'lng', 'lat'] if op == '><'
           lng, lat = value.last(2).map(&:to_f)
           distance = value.first.to_i
-          sql = "ST_Distance_Sphere(#{Issue.table_name}.geom, ST_GeomFromText('POINT(#{lng} #{lat})',4326))"
+          sql = +"ST_Distance_Sphere(#{Issue.table_name}.geom, ST_GeomFromText('POINT(#{lng} #{lat})',4326))"
           if operator == '><'
             distance_max = value[1].to_i
             sql << " BETWEEN #{distance} AND #{distance_max}"
