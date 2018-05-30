@@ -47,7 +47,37 @@ class ProjectsApiTest < Redmine::IntegrationTest
     assert projects = xml.xpath('/projects/project')
     assert_equal 1, projects.size, xml.to_s
     assert_equal 'ecookbook', projects.xpath('identifier').text
+    assert_equal 0, projects.xpath('geojson').size, projects.to_s
 
+  end
+
+  test 'should include geojson on demand' do
+    geo = {
+      'type' => 'Feature',
+      'geometry' => {
+        'type' => 'Polygon',
+        'coordinates' => [
+          [[123.269691,9.305099], [123.279691,9.305099],[123.279691,9.405099],[123.269691,9.405099], [123.269691,9.305099]]
+        ]
+      }
+    }
+    geojson = geo.to_json
+
+    @project.update_attribute :geojson, geojson
+    get '/projects.xml?include=geometry'
+    assert_response :success
+    xml = xml_data
+    assert projects = xml.xpath('/projects/project')
+    assert json = projects.xpath('geojson').text
+    assert json.present?
+    assert_match(/123\.269691/, json)
+    assert_equal geo['geometry'], JSON.parse(json)['geometry'], json
+
+    get '/projects.json?include=geometry'
+    assert_response :success
+    assert json = JSON.parse(@response.body)
+    hsh = JSON.parse json['projects'].detect{|p|p['id'] == @project.id}['geojson']
+    assert_equal geo['geometry'], hsh['geometry']
   end
 
   def xml_data

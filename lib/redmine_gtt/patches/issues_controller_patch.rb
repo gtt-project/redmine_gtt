@@ -22,6 +22,11 @@ module RedmineGtt
         end
       end
 
+      def retrieve_query(*_)
+        return @query if @query
+        super
+      end
+      private :retrieve_query
 
       def index
         retrieve_query
@@ -36,6 +41,7 @@ module RedmineGtt
                 :filename => "issues.geojson"
               )
             }
+            format.api { @query.load_geojson; super }
             format.any { super }
           end
         else
