@@ -151,7 +151,7 @@ var App = (function ($, publ) {
     toolbar.setPosition("bottom-left");
     map.addControl(toolbar);
 
-    this.setView();
+    // this.setView();
     this.setGeolocation();
     this.setGeocoding();
     this.parseHistory();
@@ -171,6 +171,20 @@ var App = (function ($, publ) {
     }
     else if (contents.popup) {
       this.setPopover();
+    }
+
+    // Fixing issue with sidebar hide button
+    $("#hideSidebarButton").on('click', function (evt) {
+      setTimeout(function(){
+        map.updateSize();
+      }, 50);
+    });
+
+    // Sidebar hack, which does some weird resizing otherwise
+    if ($('#sidebar').not(':visible')) {
+      setTimeout(function(){
+        map.updateSize();
+      }, 50);
     }
 
     // When one or more issues is selected, zoom to selected map features
