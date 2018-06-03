@@ -379,6 +379,7 @@ var App = (function ($, publ) {
         ol.extent.extend(extent, feature.getGeometry().getExtent());
       });
       maps.forEach(function (m) {
+        m.getView().setMaxZoom(18);
         m.getView().fit(extent, m.getSize());
       });
     }
