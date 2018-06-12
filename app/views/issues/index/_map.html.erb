@@ -3,7 +3,7 @@
 <fieldset id="location" class="collapsible">
   <legend onclick="toggleFieldset(this);"><%= l(:field_location) %></legend>
 
-  <%= map_tag map: @project.map, geom: (Issue.array_to_geojson(@issues, include_properties: { only: %i(id subject) }) if @issues), popup: { href: '/issues/[id]' } %>
+  <%= map_tag map: @project.map, geom: (Issue.array_to_geojson(@issues, include_properties: { only: %i(id subject tracker_id status_id) }) if @issues), popup: { href: '/issues/[id]' } %>
 </fieldset>
 
 <% end %>
