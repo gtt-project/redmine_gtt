@@ -108,7 +108,7 @@ var App = (function ($, publ) {
           color: 'rgba(255, 255, 255, 0.2)'
         }),
         stroke: new ol.style.Stroke({
-          color: '#29a2e1',
+          color: '#333333',
           width: 4
         })
       })
@@ -268,23 +268,57 @@ var App = (function ($, publ) {
 
   publ.getColor = function (feature) {
     // console.log(feature.get("tracker_id"));
-    color = "#f80";
+    color = "#FFD700";
 
     if(feature.get('status_id')) {
       switch (feature.get('status_id')) {
         case 1:
-          color = "red";
+          color = "#FF0000";
           break;
 
-        case 4:
         case 5:
         case 6:
-          color = "green";
+          color = "#0000CD";
           break;
       }
     }
 
     return color;
+  };
+
+  publ.getSymbol = function (feature) {
+    var symbol = "maki-marker";
+
+    // Todo, match with tracker name
+    if(feature.get('tracker_id')) {
+      switch (feature.get('tracker_id')) {
+        case "ゴミ":
+          symbol = "maki-waste-basket";
+          break;
+
+        case "道路":
+          symbol = "maki-car";
+          break;
+
+        case "公園":
+          symbol = "maki-garden";
+          break;
+
+        case "テーマ":
+          symbol = "maki-art-gallery";
+          break;
+
+        case "かいけつ":
+          symbol = "maki-heart";
+          break;
+
+        case "協働":
+          symbol = "maki-star";
+          break;
+      }
+    }
+
+    return symbol;
   };
 
   publ.getStyle = function (feature,resolution) {
@@ -312,7 +346,7 @@ var App = (function ($, publ) {
         image: new ol.style.FontSymbol({
           form: "blazon",
           gradient: false,
-          glyph: "☀",
+          glyph: publ.getSymbol(feature),
           fontSize: 1,
           radius: 15,
           //offsetX: -15,
