@@ -6,6 +6,17 @@
  */
 var App = (function ($, publ) {
 
+  ol.style.FontSymbol.addDefs
+  ( "mcr-icons", {
+    "mcr-icon-bulp": "\uf101",
+    "mcr-icon-park": "\uf102",
+    "mcr-icon-pen": "\uf103",
+    "mcr-icon-road": "\uf104",
+    "mcr-icon-street": "\uf105",
+    "mcr-icon-trash": "\uf106",
+    "mcr-icon-write": "\uf107"
+  });
+
   var map, vector, bounds, contents, toolbar, geolocation = null;
   var maps = [];
   var features = [];
@@ -105,11 +116,12 @@ var App = (function ($, publ) {
       source: new ol.source.Vector(),
       style: new ol.style.Style({
         fill: new ol.style.Fill({
-          color: 'rgba(255, 255, 255, 0.2)'
+          color: 'rgba(255,255,255,0.0)'
         }),
         stroke: new ol.style.Stroke({
-          color: '#333333',
-          width: 4
+          color: 'rgba(220,26,26,0.7)',
+          // lineDash: [12,1,12],
+          width: 1
         })
       })
     });
@@ -130,7 +142,7 @@ var App = (function ($, publ) {
           layer.addFilter(new ol.filter.Mask({
             feature: boundary,
             inner: false,
-            fill: new ol.style.Fill({ color:[255,255,255,0.4] })
+            fill: new ol.style.Fill({ color:[220,26,26,.1]})
           }));
         }
       });
@@ -280,12 +292,12 @@ var App = (function ($, publ) {
     if(feature.get('status_id')) {
       switch (feature.get('status_id')) {
         case 1:
-          color = "#FF0000";
+          color = "#DC143C";
           break;
 
         case 5:
         case 6:
-          color = "#0000CD";
+          color = "#1E90FF";
           break;
       }
     }
@@ -294,33 +306,33 @@ var App = (function ($, publ) {
   };
 
   publ.getSymbol = function (feature) {
-    var symbol = "maki-marker";
+    var symbol = "mcr-icon-write";
 
     // Todo, match with tracker name
     if(feature.get('tracker_id')) {
       switch (feature.get('tracker_id')) {
         case "ゴミ":
-          symbol = "maki-waste-basket";
+          symbol = "mcr-icon-trash";
           break;
 
         case "道路":
-          symbol = "maki-car";
+          symbol = "mcr-icon-road";
           break;
 
         case "公園":
-          symbol = "maki-garden";
+          symbol = "mcr-icon-park";
           break;
 
         case "テーマ":
-          symbol = "maki-art-gallery";
+          symbol = "mcr-icon-pen";
           break;
 
         case "かいけつ":
-          symbol = "maki-heart";
+          symbol = "mcr-icon-bulp";
           break;
 
         case "協働":
-          symbol = "maki-star";
+          symbol = "mcr-icon-write";
           break;
       }
     }
@@ -354,19 +366,17 @@ var App = (function ($, publ) {
           form: "blazon",
           gradient: false,
           glyph: publ.getSymbol(feature),
-          fontSize: 1,
-          radius: 15,
-          //offsetX: -15,
+          fontSize: 0.6,
+          radius: 22,
           rotation: 0,
           rotateWithView: false,
-          offsetY: 0,
-          color: "white",
+          color: "#333333",
           fill: new ol.style.Fill({
             color: publ.getColor(feature)
           }),
           stroke: new ol.style.Stroke({
-            color: "white",
-            width: 3
+            color: "#333333",
+            width: 1
           })
         }),
         stroke: new ol.style.Stroke({

@@ -35,3 +35,45 @@
 .icon-trash:before{content:'\004f';}
 .icon-target:before{content:'\0050';}
 .icon-modify:before{content:'\0051';}
+
+@font-face {
+  font-family: "mcr-icons";
+  src: url("../fonts/mcr-icons.eot?75e7536f7f839b0f143e30ad8d0da92d?#iefix") format("embedded-opentype"),
+  url("../fonts/mcr-icons.woff2?75e7536f7f839b0f143e30ad8d0da92d") format("woff2"),
+  url("../fonts/mcr-icons.woff?75e7536f7f839b0f143e30ad8d0da92d") format("woff"),
+  url("../fonts/mcr-icons.ttf?75e7536f7f839b0f143e30ad8d0da92d") format("truetype"),
+  url("../fonts/mcr-icons.svg?75e7536f7f839b0f143e30ad8d0da92d#mcr-icons") format("svg");
+}
+
+[class^="mcr-icon-"]:before, i[class*=" mcr-icon-"]:before {
+  font-family: mcr-icons !important;
+  font-style: normal;
+  font-weight: normal !important;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.mcr-icon-bulp:before {
+  content: "\f101";
+}
+.mcr-icon-park:before {
+  content: "\f102";
+}
+.mcr-icon-pen:before {
+  content: "\f103";
+}
+.mcr-icon-road:before {
+  content: "\f104";
+}
+.mcr-icon-street:before {
+  content: "\f105";
+}
+.mcr-icon-trash:before {
+  content: "\f106";
+}
+.mcr-icon-write:before {
+  content: "\f107";
+}
