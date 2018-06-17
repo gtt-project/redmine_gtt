@@ -226,6 +226,13 @@ var App = (function ($, publ) {
       map.on('moveend', publ.updateFilter);
     });
 
+    // To fix an issue with empty map after changing the tracker type
+    $('select#issue_tracker_id').on('change', function(evt) {
+      setTimeout( function() {
+        publ.zoomToExtent();
+      }, 1000);
+    });
+
     // Handle multiple maps per page
     maps.push(map);
   };
