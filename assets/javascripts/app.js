@@ -297,7 +297,28 @@ var App = (function ($, publ) {
 
         case 5:
         case 6:
-          color = "#1E90FF";
+          // color = "#1E90FF";
+          color = "#228B22";
+          break;
+      }
+    }
+
+    return color;
+  };
+
+  publ.getFontColor = function (feature) {
+    // console.log(feature.get("tracker_id"));
+    color = "#666666";
+
+    if(feature.get('status_id')) {
+      switch (feature.get('status_id')) {
+        case 1:
+          color = "#FFFFFF";
+          break;
+
+        case 5:
+        case 6:
+          color = "#FFFFFF";
           break;
       }
     }
@@ -367,10 +388,10 @@ var App = (function ($, publ) {
           gradient: false,
           glyph: publ.getSymbol(feature),
           fontSize: 0.6,
-          radius: 22,
+          radius: 18,
           rotation: 0,
           rotateWithView: false,
-          color: "#333333",
+          color: publ.getFontColor(feature),
           fill: new ol.style.Fill({
             color: publ.getColor(feature)
           }),
