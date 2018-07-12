@@ -28,6 +28,15 @@ class IssueTest < GttTest
     assert_geojson @issue.geojson
   end
 
+  test 'should have geojson for print' do
+    assert d = @issue.geodata_for_print
+    assert center = d[:center]
+    assert_equal 2, center.size
+    assert geom = d[:geojson]['geometry']
+    assert coords = geom['coordinates']
+    assert_equal 15052703.2783315, coords.flatten.first
+  end
+
   test 'should render properties in as_geojson' do
     j = @issue.as_geojson include_properties: true
     assert_geojson j
