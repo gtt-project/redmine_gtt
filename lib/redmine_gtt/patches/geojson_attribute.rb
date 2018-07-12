@@ -63,6 +63,25 @@ module RedmineGtt
                      end
       end
 
+      # returns a hash with two values:
+      # :geojson  is the feature with coordinates transformed to EPS 3857
+      # :center   is the geometric center of the geometry as computed by
+      #           ST_Centroid, in EPS 3857 as well.
+      #
+      # TODO for printing of multiple issues this should be optimized to avoid
+      # doing a single select for each issue
+      def geodata_for_print
+        if row = self.class.where(id: id).where.not(geom: nil).
+                   pluck("ST_AsGeoJson(ST_Transform(geom, 3857)) as geojson, ST_Transform(ST_Centroid(geom), 3857) as center").
+                   first
+          json, center = *row
+          {
+            geojson: Conversions.to_feature(json),
+            center: [center.x, center.y]
+          }
+        end
+      end
+
       # sets the geojson attribute for reading / writing to the DB
       def geojson=(geometry)
         @geojson = geometry
