@@ -609,6 +609,49 @@ var App = (function ($, publ) {
    */
   publ.setGeocoding = function (){
 
+    // Hack to add Geocoding buttons to text fields
+    // There should be a better way to do this
+    if ( $("#issue-form #attributes button.btn-geocode").length == 0 ) {
+      $("#issue-form #attributes label:contains('現地住所')").parent("p").append(
+        '<button name="button" type="button" class="btn-geocode">住所検索</button>'
+      );
+
+      $("button.btn-geocode").on("click", function(evt) {
+        if (vector.getSource().getFeatures().length > 0) {
+          var coords = null
+          vector.getSource().getFeatures().forEach(function (feature) {
+            // Todo: only works with point geometries for now for the last geometry
+            coords = feature.getGeometry().getCoordinates();
+          });
+          coords = ol.proj.transform(coords,'EPSG:3857','EPSG:4326')
+          $.getJSON("https://***REMOVED***/reversegeocode/json/" + coords.join(",") + ",1000", function(data) {
+            $("#issue-form #attributes label:contains('現地住所')").parent("p").children("input").val(data.result.address);
+          });
+        }
+      });
+
+    }
+
+    if ( $("#issue-form #attributes button.btn-parksearch").length == 0 ) {
+      $("#issue-form #attributes label:contains('公園検索')").parent("p").append(
+        '<button name="button" type="button" class="btn-parksearch">公園検索</button>'
+      );
+
+      $("button.btn-parksearch").on("click", function(evt) {
+        if (vector.getSource().getFeatures().length > 0) {
+          var coords = null
+          vector.getSource().getFeatures().forEach(function (feature) {
+            // Todo: only works with point geometries for now for the last geometry
+            coords = feature.getGeometry().getCoordinates();
+          });
+          coords = ol.proj.transform(coords,'EPSG:3857','EPSG:4326')
+          $.getJSON("https://***REMOVED***/reversegeocode/json/" + coords.join(",") + ",1000", function(data) {
+            $("#issue-form #attributes label:contains('公園検索')").parent("p").children("input").val(data.result.address);
+          });
+        }
+      });
+    }
+
     // Control button
     var geocodingCtrl = new ol.control.Toggle({
       html: '<i class="icon-info" ></i>',
