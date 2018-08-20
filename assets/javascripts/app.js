@@ -650,7 +650,7 @@ var App = (function ($, publ) {
             coords = feature.getGeometry().getCoordinates();
           });
           coords = ol.proj.transform(coords,'EPSG:3857','EPSG:4326')
-          $.getJSON("http://***REMOVED***/geocoder/service/reversegeocode/json/" + coords.join(",") + ",500?useaddr=true&owner=***REMOVED***&details=true", function(data) {
+          $.getJSON("https://***REMOVED***/geocoder/service/reversegeocode/json/" + coords.join(",") + ",500?useaddr=true&owner=***REMOVED***&details=true", function(data) {
             if (data.result.address && data.result.details.id ) {
               $("#issue-form #attributes label:contains('公園検索')").parent("p").children("input").val(
                 "[" + data.result.details.id + "] " + data.result.address
