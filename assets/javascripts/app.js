@@ -625,7 +625,12 @@ var App = (function ($, publ) {
           });
           coords = ol.proj.transform(coords,'EPSG:3857','EPSG:4326')
           $.getJSON("https://geocoder.grp.one/reversegeocode/json/" + coords.join(",") + ",1000", function(data) {
-            $("#issue-form #attributes label:contains('現地住所')").parent("p").children("input").val(data.result.address);
+            if (data.result.address) {
+              $("#issue-form #attributes label:contains('現地住所')").parent("p").children("input").val(data.result.address);
+            }
+            else {
+              $("#issue-form #attributes label:contains('現地住所')").parent("p").children("input").val("---");
+            }
           });
         }
       });
@@ -645,8 +650,15 @@ var App = (function ($, publ) {
             coords = feature.getGeometry().getCoordinates();
           });
           coords = ol.proj.transform(coords,'EPSG:3857','EPSG:4326')
-          $.getJSON("https://geocoder.grp.one/reversegeocode/json/" + coords.join(",") + ",1000", function(data) {
-            $("#issue-form #attributes label:contains('公園検索')").parent("p").children("input").val(data.result.address);
+          $.getJSON("http://geofuse.georepublic.org/geocoder/service/reversegeocode/json/" + coords.join(",") + ",500?useaddr=true&owner=chiba&details=true", function(data) {
+            if (data.result.address && data.result.details.id ) {
+              $("#issue-form #attributes label:contains('公園検索')").parent("p").children("input").val(
+                "[" + data.result.details.id + "] " + data.result.address
+              );
+            }
+            else {
+              $("#issue-form #attributes label:contains('公園検索')").parent("p").children("input").val("---");
+            }
           });
         }
       });
