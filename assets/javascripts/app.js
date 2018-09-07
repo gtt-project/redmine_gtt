@@ -843,6 +843,51 @@ var App = (function ($, publ) {
     $("#geom").val(JSON.stringify(geojson.features[0]));
   };
 
+  publ.getScale = function () {
+    var resolution = map.getView().getResolution();
+    var units = map.getView().getProjection().getUnits();
+    var dpi = 25.4 / 0.28;
+    var mpu = ol.proj.METERS_PER_UNIT[units];
+    var inchesPerMeter = 39.37;
+    return resolution * (mpu * inchesPerMeter * dpi);
+  };
+
+  publ.getBasemapUrl = function () {
+    var layers = map.getLayers();
+    if (layers.getLength() === 0) {
+      console.error("There is no baselayer available!");
+      return;
+    }
+
+    var index = 0;
+    var cookie = parseInt(
+      getCookie("_redmine_gtt_basemap")
+    );
+
+    if (cookie) {
+      var lid = 0;
+      // Check if layer ID exists in available layers
+      layers.forEach(function(layer){
+        if (cookie === layer.get("lid")) {
+          lid = cookie;
+        }
+      });
+
+      // Get selected layer index
+      layers.forEach(function(layer,idx){
+        if (lid === layer.get("lid")) {
+          index = idx;
+        }
+      });
+    }
+
+    // Get layer url
+    var layer = layers.getArray()[index];
+    var url = layer.getSource().getUrls()[0];
+    //console.log(url);
+    return url;
+  };
+
   function getCookie(cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');
