@@ -187,16 +187,20 @@ var App = (function ($, publ) {
 
     // Fixing issue with sidebar hide button
     $("#hideSidebarButton").on('click', function (evt) {
-      setTimeout(function(){
-        map.updateSize();
-      }, 50);
+      //setTimeout(function(){
+        maps.forEach(function (m) {
+          m.updateSize();
+        });
+      //}, 50);
     });
 
     // Sidebar hack, which does some weird resizing otherwise
     if ($('#sidebar').not(':visible')) {
-      setTimeout(function(){
-        map.updateSize();
-      }, 50);
+      //setTimeout(function(){
+        maps.forEach(function (m) {
+          map.updateSize();
+        });
+      //}, 50);
     }
 
     // When one or more issues is selected, zoom to selected map features
@@ -211,13 +215,17 @@ var App = (function ($, publ) {
     // a Redmine problem
     $("div.contextual a.icon-edit").on('click', function (evt) {
       setTimeout( function() {
-        map.updateSize();
+        maps.forEach(function (m) {
+          m.updateSize();
+        });
       }, 200);
     });
 
     // Redraw the map, when a GTT Tab gets activated
     $("#tab-gtt").click(function(){
-      map.updateSize();
+      maps.forEach(function (m) {
+        m.updateSize();
+      });
       publ.zoomToExtent();
     });
 
@@ -844,7 +852,9 @@ var App = (function ($, publ) {
   };
 
   publ.getScale = function () {
-    var resolution = map.getView().getResolution();
+    // Always use 1st subject map
+    var m = maps[0];
+    var resolution = m.getView().getResolution();
     var units = map.getView().getProjection().getUnits();
     var dpi = 25.4 / 0.28;
     var mpu = ol.proj.METERS_PER_UNIT[units];
@@ -853,7 +863,9 @@ var App = (function ($, publ) {
   };
 
   publ.getBasemapUrl = function () {
-    var layers = map.getLayers();
+    // Always use 1st subject map
+    var m = maps[0];
+    var layers = m.getLayers();
     if (layers.getLength() === 0) {
       console.error("There is no baselayer available!");
       return;
