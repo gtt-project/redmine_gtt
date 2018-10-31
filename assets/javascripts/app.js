@@ -185,23 +185,12 @@ var App = (function ($, publ) {
       this.setPopover();
     }
 
-    // Fixing issue with sidebar hide button
-    $("#hideSidebarButton").on('click', function (evt) {
-      //setTimeout(function(){
-        maps.forEach(function (m) {
-          m.updateSize();
-        });
-      //}, 50);
-    });
-
-    // Sidebar hack, which does some weird resizing otherwise
-    if ($('#sidebar').not(':visible')) {
-      //setTimeout(function(){
-        maps.forEach(function (m) {
-          map.updateSize();
-        });
-      //}, 50);
-    }
+    // Sidebar hack
+    $("#sidebar").on('hideSidebar', function (evt) {
+      maps.forEach(function (m) {
+        m.updateSize();
+      });
+    })
 
     // When one or more issues is selected, zoom to selected map features
     $("table.issues tbody tr").on('click', function (evt) {
