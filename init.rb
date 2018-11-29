@@ -22,6 +22,7 @@ Redmine::Plugin.register :redmine_gtt do
       'map_zoom_level' => 8,
       'map_maxzoom_level' => 18
     },
+    partial: 'settings/gtt/settings'
   )
 
   menu :admin_menu,
