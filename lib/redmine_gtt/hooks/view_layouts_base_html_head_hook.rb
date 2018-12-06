@@ -16,6 +16,14 @@ module RedmineGtt
           :href => "/plugin_assets/redmine_gtt/fonts/mcr-icons.ttf?75e7536f7f839b0f143e30ad8d0da92d", :crossorigin => "anonymous" )
         tags << tag(:link, :rel => "preload", :as => "font", :type => "image/svg+xml",
           :href => "/plugin_assets/redmine_gtt/fonts/mcr-icons.svg?75e7536f7f839b0f143e30ad8d0da92d#mcr-icons", :crossorigin => "anonymous" )
+        tags << tag(:link, :rel => "preload", :as => "font", :type => "application/vnd.ms-fontobject",
+          :href => "/plugin_assets/redmine_gtt/fonts/fontmaki.eot?66752613#iefix'", :crossorigin => "anonymous" )
+        tags << tag(:link, :rel => "preload", :as => "font", :type => "font/woff",
+          :href => "/plugin_assets/redmine_gtt/fonts/fontmaki.woff?66752613", :crossorigin => "anonymous" )
+        tags << tag(:link, :rel => "preload", :as => "font", :type => "font/ttf",
+          :href => "/plugin_assets/redmine_gtt/fonts/fontmaki.ttf?66752613", :crossorigin => "anonymous" )
+        tags << tag(:link, :rel => "preload", :as => "font", :type => "image/svg+xml",
+          :href => "/plugin_assets/redmine_gtt/fonts/fontmaki.svg?66752613#fontmaki", :crossorigin => "anonymous" )
 
         tags << stylesheet_link_tag("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
         tags << stylesheet_link_tag("fonts.css", :plugin => "redmine_gtt", :media => "all")
@@ -25,6 +33,7 @@ module RedmineGtt
 
         tags << javascript_include_tag('ol.js', :plugin => 'redmine_gtt')
         tags << javascript_include_tag('ol3-ext.min.js', :plugin => 'redmine_gtt')
+        tags << javascript_include_tag('fontmaki-def.js', :plugin => 'redmine_gtt')
         tags << javascript_include_tag('app.js', :plugin => 'redmine_gtt')
         return tags.join("\n")
       end
@@ -37,7 +46,8 @@ module RedmineGtt
           :zoom => Setting.plugin_redmine_gtt['default_map_zoom_level'],
           :maxzoom => Setting.plugin_redmine_gtt['default_map_maxzoom_level'],
           :geocoder_url => Setting.plugin_redmine_gtt['default_geocoder_url'],
-          :geocoder_apikey => Setting.plugin_redmine_gtt['default_geocoder_apikey']
+          :geocoder_apikey => Setting.plugin_redmine_gtt['default_geocoder_apikey'],
+          :plugin_settings => Setting.plugin_redmine_gtt
         }, :id => 'ol-defaults', :style => 'display:none')
         return tags.join("\n")
       end
