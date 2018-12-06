@@ -28,6 +28,7 @@ en:
   label_gtt: "GTT"
   label_gtt_bbox_filter: Location
   label_gtt_distance: Distance
+  label_gtt_select_icon: Select icon
   label_gtt_tile_source: Tile Source
   label_gtt_tile_source_new: New Tile Source
   label_gtt_tile_source_plural: Tile Sources
@@ -48,5 +49,8 @@ en:
 
   gtt_settings_geocoder_url: "API Service URL"
   gtt_settings_geocoder_apikey: "API Key"
+
+  select_default_tracker_icon: "Select default tracker icon:"
+  select_default_status_color:  "Select default status color:"
 
   text_osm_url_sample: For example https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png
