@@ -286,76 +286,34 @@ var App = (function ($, publ) {
   };
 
   publ.getColor = function (feature) {
-    // console.log(feature.get("tracker_id"));
     color = "#FFD700";
+    var plugin_settings = defaults.pluginSettings
+    var status_ids = [];
 
     if(feature.get('status_id')) {
-      switch (feature.get('status_id')) {
-        case 1:
-          color = "#DC143C";
-          break;
-
-        case 5:
-        case 6:
-          // color = "#1E90FF";
-          color = "#228B22";
-          break;
-      }
+      status_ids.push(feature.get('status_id'));
+      status_ids.forEach(function(id){
+        color = plugin_settings["status_" + id];
+      })
     }
-
     return color;
   };
-
+  
   publ.getFontColor = function (feature) {
-    // console.log(feature.get("tracker_id"));
-    color = "#666666";
-
-    if(feature.get('status_id')) {
-      switch (feature.get('status_id')) {
-        case 1:
-          color = "#FFFFFF";
-          break;
-
-        case 5:
-        case 6:
-          color = "#FFFFFF";
-          break;
-      }
-    }
-
+    color = "#FFFFFF"
     return color;
   };
 
   publ.getSymbol = function (feature) {
     var symbol = "mcr-icon-write";
-
-    // Todo, match with tracker name
+    var plugin_settings = $("#ol-defaults").data("pluginSettings");
+    var tracker_ids = [];
+    
     if(feature.get('tracker_id')) {
-      switch (feature.get('tracker_id')) {
-        case "ゴミ":
-          symbol = "mcr-icon-trash";
-          break;
-
-        case "道路":
-          symbol = "mcr-icon-road";
-          break;
-
-        case "公園":
-          symbol = "mcr-icon-park";
-          break;
-
-        case "テーマ":
-          symbol = "mcr-icon-pen";
-          break;
-
-        case "かいけつ":
-          symbol = "mcr-icon-bulp";
-          break;
-
-        case "協働":
-          symbol = "mcr-icon-write";
-          break;
-      }
+      tracker_ids.push(feature.get('tracker_id'));
+      tracker_ids.forEach(function(id){
+        symbol = plugin_settings["tracker_" + id]
+      })
     }
 
     return symbol;
