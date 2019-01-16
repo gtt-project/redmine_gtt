@@ -30,7 +30,7 @@ Redmine::Plugin.register :redmine_gtt do
     caption: :label_gtt_tile_source_plural, :html => {:class => 'icon'}
 end
 
-ActionDispatch::Callbacks.to_prepare do
+ActiveSupport::Reloader.to_prepare do
 
   # Automatically encode points to geojson with as_json in rails3
   RGeo::ActiveRecord::GeometryMixin.set_json_generator(:geojson)
