@@ -1,4 +1,4 @@
-class EnablePostgis < ActiveRecord::Migration
+class EnablePostgis < ActiveRecord::Migration[5.2]
   def change
     enable_extension :postgis
   end
