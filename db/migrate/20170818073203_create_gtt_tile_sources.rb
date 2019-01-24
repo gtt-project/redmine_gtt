@@ -1,4 +1,4 @@
-class CreateGttTileSources < ActiveRecord::Migration
+class CreateGttTileSources < ActiveRecord::Migration[5.2]
   def change
     create_table :gtt_tile_sources do |t|
       t.string :name, null: false
