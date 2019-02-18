@@ -17,7 +17,7 @@ class ProjectsApiTest < Redmine::IntegrationTest
     assert projects.any?
     assert_equal Project.visible.count, projects.size
 
-    get '/projects.xml', contains: 'POINT(123.271 9.35)'
+    get '/projects.xml', params: {contains: 'POINT(123.271 9.35)'}
     assert_response :success
     xml = xml_data
     assert projects = xml.xpath('/projects/project')
@@ -35,13 +35,13 @@ class ProjectsApiTest < Redmine::IntegrationTest
 
     assert @project.visible?
 
-    get '/projects.xml', contains: 'POINT(123.271 9.55)'
+    get '/projects.xml', params: {contains: 'POINT(123.271 9.55)'}
     assert_response :success
     xml = xml_data
     assert projects = xml.xpath('/projects/project')
     assert_equal 0, projects.size
 
-    get '/projects.xml', contains: 'POINT(123.271 9.35)'
+    get '/projects.xml', params: {contains: 'POINT(123.271 9.35)'}
     assert_response :success
     xml = xml_data
     assert projects = xml.xpath('/projects/project')
