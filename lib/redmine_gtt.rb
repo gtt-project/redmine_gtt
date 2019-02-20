@@ -3,6 +3,8 @@
 # Global Hooks
 require 'redmine_gtt/hooks/view_layouts_base_html_head_hook'
 require 'redmine_gtt/view_hooks'
+# Other Dependency
+require 'redmine_gtt/conversions'
 
 
 # API Template Hooks
