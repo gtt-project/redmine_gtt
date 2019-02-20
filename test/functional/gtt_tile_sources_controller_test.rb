@@ -30,14 +30,14 @@ class GttTileSourcesControllerTest < ActionController::TestCase
 
   test 'should create tile source' do
     assert_difference 'GttTileSource.count' do
-      post :create, tile_source: {
+      post :create, params: { tile_source: {
         name: 'test',
         type: 'GttOsmTileSource',
         options_string: {
           attributions: 'test',
           url: 'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png'
         }.to_json
-      }
+      }}
     end
 
     assert ts = GttTileSource.last
@@ -48,13 +48,13 @@ class GttTileSourcesControllerTest < ActionController::TestCase
 
   test 'should get edit' do
     ts = create_tile_source
-    get :edit, id: ts.to_param
+    get :edit, params: {id: ts.to_param}
     assert_response :success
   end
 
   test 'should update' do
     ts = create_tile_source
-    patch :update, id: ts.to_param, tile_source: { name: 'new name', options_string: {url: 'https://example.com'}.to_json }
+    patch :update, params: {id: ts.to_param, tile_source: { name: 'new name', options_string: {url: 'https://example.com'}.to_json }}
     assert_redirected_to gtt_tile_sources_path
     ts.reload
     assert_equal 'new name', ts.name
@@ -64,7 +64,7 @@ class GttTileSourcesControllerTest < ActionController::TestCase
   test 'should destroy tilesource' do
     ts = create_tile_source
     assert_difference 'GttTileSource.count', -1 do
-      delete :destroy, id: ts.to_param
+      delete :destroy, params: {id: ts.to_param}
     end
   end
 
