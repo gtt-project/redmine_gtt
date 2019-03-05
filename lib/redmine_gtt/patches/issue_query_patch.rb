@@ -87,7 +87,7 @@ module RedmineGtt
           # or ['meters_min', 'meters_max', 'lng', 'lat'] if op == '><'
           lng, lat = value.last(2).map(&:to_f)
           distance = value.first.to_i
-          sql = +"ST_Distance_Sphere(#{Issue.table_name}.geom, ST_GeomFromText('POINT(#{lng} #{lat})',4326))"
+          sql = +"ST_DistanceSphere(#{Issue.table_name}.geom, ST_GeomFromText('POINT(#{lng} #{lat})',4326))"
           if operator == '><'
             distance_max = value[1].to_i
             sql << " BETWEEN #{distance} AND #{distance_max}"
@@ -141,7 +141,7 @@ module RedmineGtt
       end
 
       def distance_query(lng, lat)
-        "ST_Distance_Sphere(#{Issue.table_name}.geom, ST_GeomFromText('POINT(#{lng} #{lat})',4326))"
+        "ST_DistanceSphere(#{Issue.table_name}.geom, ST_GeomFromText('POINT(#{lng} #{lat})',4326))"
       end
 
       def load_distances(issues, center_point)
@@ -149,7 +149,7 @@ module RedmineGtt
         distances = Hash[
           Issue.
             where(id: issues.map(&:id)).
-            pluck(:id, "#{distance_query(lng, lat)}")
+            pluck(:id, Arel.sql("#{distance_query(lng, lat)}"))
         ]
         issues.each{|i| i.instance_variable_set :@distance, distances[i.id]}
       end
