@@ -72,7 +72,7 @@ module RedmineGtt
       # doing a single select for each issue
       def geodata_for_print
         if row = self.class.where(id: id).where.not(geom: nil).
-                   pluck("ST_AsGeoJson(ST_Transform(geom, 3857)) as geojson, ST_Transform(ST_Centroid(geom), 3857) as center").
+                   pluck(Arel.sql("ST_AsGeoJson(ST_Transform(geom, 3857)) as geojson, ST_Transform(ST_Centroid(geom), 3857) as center")).
                    first
           json, center = *row
           {
