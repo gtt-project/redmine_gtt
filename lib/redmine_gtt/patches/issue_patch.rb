@@ -32,7 +32,7 @@ module RedmineGtt
             geometries_by_id = Hash[
               Issue.
               where(id: issues.map(&:id)).
-              pluck(:id, Issue.geojson_attribute_select)
+              pluck(:id, Arel.sql(Issue.geojson_attribute_select))
             ]
             issues.each do |issue|
               issue.instance_variable_set(
