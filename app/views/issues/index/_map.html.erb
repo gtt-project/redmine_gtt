@@ -1,12 +1,9 @@
 <% if @project and @project.module_enabled?(:gtt) %>
 
 <fieldset id="location" class="collapsible collapsed">
-  <legend onclick="toggleFieldset(this);"><%= l(:field_location) %></legend>
+  <legend><%= l(:field_location) %></legend>
 
   <%= map_tag map: @project.map, geom: (Issue.array_to_geojson(@issues, include_properties: { only: %i(id subject tracker_id status_id) }) if @issues), popup: { href: '/issues/[id]' } %>
 </fieldset>
 
-<% end %>
-<%= javascript_tag do %>
-  $("#location").children("div").hide()
 <% end %>
