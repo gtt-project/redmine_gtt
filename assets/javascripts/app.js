@@ -231,6 +231,9 @@ var App = (function ($, publ) {
       if ($("tr#tr_distance").length > 0) {
         filters.distance = true;
       }
+      $("fieldset#location legend").click(function(){
+        toggleAndLoadMap(this)
+      })
       publ.zoomToExtent();
       map.on('moveend', publ.updateFilter);
     });
@@ -902,6 +905,15 @@ var App = (function ($, publ) {
         }
     }
     return "";
+  }
+
+  function toggleAndLoadMap(el) {
+    var fieldset = $(el).parents('fieldset').first();
+    fieldset.toggleClass('collapsed');
+    fieldset.children('div').toggle();
+    maps.forEach(function (m) {
+      m.updateSize();
+    });
   }
 
   /**
