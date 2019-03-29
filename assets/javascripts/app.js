@@ -9,12 +9,19 @@ var App = (function ($, publ) {
   ol.style.FontSymbol.addDefs
   ( "mcr-icons", {
     "mcr-icon-bulp": "\uf101",
-    "mcr-icon-park": "\uf102",
-    "mcr-icon-pen": "\uf103",
-    "mcr-icon-road": "\uf104",
-    "mcr-icon-street": "\uf105",
-    "mcr-icon-trash": "\uf106",
-    "mcr-icon-write": "\uf107"
+    "mcr-icon-douro": "\uf102",
+    "mcr-icon-gomi": "\uf103",
+    "mcr-icon-kaiketsu": "\uf104",
+    "mcr-icon-kouen": "\uf105",
+    "mcr-icon-kyoudou": "\uf106",
+    "mcr-icon-park": "\uf107",
+    "mcr-icon-pen": "\uf108",
+    "mcr-icon-river": "\uf109",
+    "mcr-icon-road": "\uf10a",
+    "mcr-icon-street": "\uf10b",
+    "mcr-icon-theme_report": "\uf10c",
+    "mcr-icon-trash": "\uf10d",
+    "mcr-icon-write": "\uf10e"
   });
 
   var map, vector, bounds, contents, toolbar, geolocation = null;

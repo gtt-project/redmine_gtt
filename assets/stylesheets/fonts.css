@@ -59,23 +59,44 @@
 .mcr-icon-bulp:before {
   content: "\f101";
 }
-.mcr-icon-park:before {
+.mcr-icon-douro:before {
   content: "\f102";
 }
-.mcr-icon-pen:before {
+.mcr-icon-gomi:before {
   content: "\f103";
 }
-.mcr-icon-road:before {
+.mcr-icon-kaiketsu:before {
   content: "\f104";
 }
-.mcr-icon-street:before {
+.mcr-icon-kouen:before {
   content: "\f105";
 }
-.mcr-icon-trash:before {
+.mcr-icon-kyoudou:before {
   content: "\f106";
 }
-.mcr-icon-write:before {
+.mcr-icon-park:before {
   content: "\f107";
+}
+.mcr-icon-pen:before {
+  content: "\f108";
+}
+.mcr-icon-river:before {
+  content: "\f109";
+}
+.mcr-icon-road:before {
+  content: "\f10a";
+}
+.mcr-icon-street:before {
+  content: "\f10b";
+}
+.mcr-icon-theme_report:before {
+  content: "\f10c";
+}
+.mcr-icon-trash:before {
+  content: "\f10d";
+}
+.mcr-icon-write:before {
+  content: "\f10e";
 }
 /** Maki is a clean point of interest icon set made for web cartography
   by Mapbox https://www.mapbox.com/maki/
