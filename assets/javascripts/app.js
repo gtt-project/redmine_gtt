@@ -295,13 +295,13 @@ var App = (function ($, publ) {
   publ.getColor = function (feature) {
     color = "#FFD700";
     var plugin_settings = defaults.pluginSettings
-    var status_ids = [];
 
-    if(feature.get('status_id')) {
-      status_ids.push(feature.get('status_id'));
-      status_ids.forEach(function(id){
-        color = plugin_settings["status_" + id];
-      })
+    var status_id = feature.get('status_id');
+    if (status_id) {
+      var key = "status_" + status_id;
+      if (key in plugin_settings) {
+        color = plugin_settings[key];
+      }
     }
     return color;
   };
@@ -313,14 +313,14 @@ var App = (function ($, publ) {
 
   publ.getSymbol = function (feature) {
     var symbol = "mcr-icon-write";
+
     var plugin_settings = $("#ol-defaults").data("pluginSettings");
-    var tracker_ids = [];
-    
-    if(feature.get('tracker_id')) {
-      tracker_ids.push(feature.get('tracker_id'));
-      tracker_ids.forEach(function(id){
-        symbol = plugin_settings["tracker_" + id]
-      })
+    var tracker_id = feature.get('tracker_id');
+    if (tracker_id) {
+      var key = "tracker_" + tracker_id;
+      if (key in plugin_settings) {
+        symbol = plugin_settings[key];
+      }
     }
 
     return symbol;
