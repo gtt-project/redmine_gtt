@@ -103,19 +103,6 @@ var App = (function ($, publ) {
     });
     publ.setBasemap(layerArr);
 
-    // Layer for vector features
-    vector = new ol.layer.Vector({
-      title: "Features",
-      displayInLayerSwitcher: false,
-      source: new ol.source.Vector({
-        "features": features,
-        "useSpatialIndex": false
-      }),
-      renderOrder: ol.ordering.yOrdering(),
-      style: this.getStyle
-    });
-    layerArr.push(vector);
-
     // Layer for project boundary
     bounds = new ol.layer.Vector({
       title: "Boundaries",
@@ -133,6 +120,19 @@ var App = (function ($, publ) {
       })
     });
     layerArr.push(bounds);
+
+    // Layer for vector features
+    vector = new ol.layer.Vector({
+      title: "Features",
+      displayInLayerSwitcher: false,
+      source: new ol.source.Vector({
+        "features": features,
+        "useSpatialIndex": false
+      }),
+      renderOrder: ol.ordering.yOrdering(),
+      style: this.getStyle
+    });
+    layerArr.push(vector);
 
     // Render project boundary if bounds are available
     if (contents.bounds && contents.bounds !== null) {
