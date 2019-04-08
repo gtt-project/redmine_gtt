@@ -1,11 +1,331 @@
 /**
- * ol3-ext - A set of cool extensions for OpenLayers 3 (ol3).
+ * ol-ext - A set of cool extensions for OpenLayers (ol).
  * @abstract ol3,openlayers,popup,menu,symbol,renderer,filter,canvas,interaction,split,statistic,charts,pie,LayerSwitcher,toolbar,animation
- * @version v1.0.1
+ * @version v1.1.3
  * @author Jean-Marc Viglino (https://github.com/Viglino)
- * @link https://github.com/Viglino/ol3-ext#,
- * @license CECILL-B
+ * @link https://github.com/Viglino/ol-ext#,
+ * @license BSD
  */
+/*	Copyright (c) 2017 Jean-Marc VIGLINO, 
+	released under the CeCILL-B license (French BSD license)
+	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
+*/
+/**
+ * Search Control.    
+ * This is the base class for search controls. You can use it for simple custom search or as base to new class.
+ * @see ol.control.SearchFeature
+ * @see ol.control.SearchPhoton
+ *
+ * @constructor
+ * @extends {ol.control.Control}
+ * @fires select
+ * @fires change:input
+ * @param {Object=} options
+ *	@param {string} options.className control class name
+ *	@param {Element | string | undefined} options.target Specify a target if you want the control to be rendered outside of the map's viewport.
+ *	@param {string | undefined} options.label Text label to use for the search button, default "search"
+ *	@param {string | undefined} options.placeholder placeholder, default "Search..."
+ *	@param {number | undefined} options.typing a delay on each typing to start searching (ms) use -1 to prevent autocompletion, default 300.
+ *	@param {integer | undefined} options.minLength minimum length to start searching, default 1
+ *	@param {integer | undefined} options.maxItems maximum number of items to display in the autocomplete list, default 10
+ *	@param {function} options.getTitle a function that takes a feature and return the name to display in the index.
+ *	@param {function} options.autocomplete a function that take a search string and callback function to send an array
+ */
+ol.control.Search = function(options) 
+{	var self = this;
+	if (!options) options = {};
+	if (options.typing == undefined) options.typing = 300;
+
+	var element;
+	if (options.target) 
+	{	element = $("<div>").addClass((options.className||"")+ " ol-search");
+	}
+	else
+	{	element = $("<div>").addClass((options.className||"") + ' ol-search ol-unselectable ol-control ol-collapsed');
+		this.button = $("<button>")
+					.attr('type','button')
+					.attr('title',options.label||"search")
+					.click (function()
+					{	element.toggleClass("ol-collapsed"); 
+						if (!element.hasClass("ol-collapsed")) 
+						{	$("input.search", element).focus();
+							$('li', element).removeClass('select');
+						}
+					})
+					.appendTo(element);
+	}
+	// Search input
+	var tout, cur="";
+	$("<input>").attr('type','search')
+		.addClass("search")
+		.attr('placeholder', options.placeholder||"Search...")
+		.on('change', function(e) 
+		{ 	self.dispatchEvent({ type:"change:input", input:e, value:$(this).val()  }); 
+		})
+		.on('keyup search cut paste input', function(e) 
+		{	// console.log(e.type+" "+e.key)
+			var li  = $("ul.autocomplete li.select", element);
+			var	val = $(this).val();
+			// move up/down
+			if (e.key=='ArrowDown' || e.key=='ArrowUp' || e.key=='Down' || e.key=='Up')
+			{	li.removeClass('select');
+				li = (/Down/.test(e.key)) ? li.next() : li.prev();
+				if (li.length) li.addClass('select');
+				else $("ul.autocomplete li",element).first().addClass('select');
+			}
+			// Clear input
+			else if (e.type=='input' && !val)
+			{	self.drawList_();
+			}
+			// Select in the list
+			else if (li.length && (e.type=="search" || e.key =='Enter'))
+			{	if (element.hasClass("ol-control")) $(this).blur();
+				li.removeClass('select');
+				cur = val;
+				self.select(li.data('search'));
+			}
+			// Search / autocomplete
+			else if ( (e.type=="search" || e.key =='Enter')
+					|| (cur!=val && options.typing>=0))
+			{	// current search
+				cur = val;
+				if (cur)
+				{	// prevent searching on each typing
+					if (tout) clearTimeout(tout);
+					tout = setTimeout(function()
+					{	if (cur.length >= self.get("minLength")) 
+						{	var s = self.autocomplete (cur, function(auto) { self.drawList_(auto); });
+							if (s) self.drawList_(s);
+						}
+						else self.drawList_();
+					}, options.typing);
+				}
+				else self.drawList_();
+			}
+			// Clear list selection
+			else 
+			{	$("ul.autocomplete li", element).removeClass('select');
+			}
+		})
+		.blur(function()
+		{	setTimeout(function(){ element.addClass('ol-collapsed') }, 200);
+		})
+		.focus(function()
+		{	element.removeClass('ol-collapsed')
+		})
+		.appendTo(element);
+	// Autocomplete list
+	$("<ul>").addClass('autocomplete').appendTo(element);
+	
+	ol.control.Control.call(this, 
+		{	element: element.get(0),
+			target: options.target
+		});
+
+	if (typeof (options.getTitle)=='function') this.getTitle = options.getTitle;
+	if (typeof (options.autocomplete)=='function') this.autocomplete = options.autocomplete;
+	
+	// Options
+	this.set('minLength', options.minLength || 1);
+	this.set('maxItems', options.maxItems || 10);
+
+};
+ol.inherits(ol.control.Search, ol.control.Control);
+
+/** Returns the text to be displayed in the menu
+*	@param {any} f feature to be displayed
+*	@return {string} the text to be displayed in the index, default f.name
+*	@api
+*/
+ol.control.Search.prototype.getTitle = function (f)
+{	return f.name || "No title";
+};
+
+/** Force search to refresh
+*/
+ol.control.Search.prototype.search = function ()
+{	$("input.search", this.element).trigger('search');
+};
+
+/** Set the input value in the form (for initialisation purpose)
+*	@param {string} value
+*	@param {boolean} search to start a search
+*	@api
+*/
+ol.control.Search.prototype.setInput = function (value, search)
+{	$("input.search",this.element).val(value);
+	if (search) $("input.search",this.element).trigger("keyup");
+};
+
+/** A ligne has been clicked in the menu > dispatch event
+*	@param {any} f the feature, as passed in the autocomplete
+*	@api
+*/
+ol.control.Search.prototype.select = function (f)
+{	this.dispatchEvent({ type:"select", search:f });
+};
+
+/** Autocomplete function
+* @param {string} s search string
+* @param {function} cback a callback function that takes an array to display in the autocomplete field (for asynchronous search)
+* @return {Array|false} an array of search solutions or false if the array is send with the cback argument
+* @api
+*/
+ol.control.Search.prototype.autocomplete = function (s, cback)
+{	cback ([]);
+	return false;
+};
+
+/** Prevent same feature to be drawn twice: test equality
+ * @param {} f1 First feature to compare
+ * @param {} f2 Second feature to compare
+ * @return {boolean}
+ * @api
+ */
+ol.control.Search.prototype.equalFeatures = function (f1, f2) {
+	return (this.getTitle(f1) == this.getTitle(f2));
+}
+
+/** Draw the list 
+* @param {Array} auto an array of search result
+*/
+ol.control.Search.prototype.drawList_ = function (auto)
+{	var ul = $("ul.autocomplete", this.element).html("");
+	if (!auto) return;
+	var self = this;
+	var max = Math.min (self.get("maxItems"),auto.length);
+	for (var i=0; i<max; i++)
+	{	if (!i || !self.equalFeatures(auto[i], auto[i-1])) {
+			$("<li>").html(self.getTitle(auto[i]))
+			.data('search', auto[i])
+			.click(function(e)
+			{	self.select($(this).data('search'));
+			})
+			.appendTo(ul);
+		}
+	}
+};
+/*	Copyright (c) 2017 Jean-Marc VIGLINO, 
+	released under the CeCILL-B license (French BSD license)
+	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
+*/
+/**
+ * Search places using the photon API.
+ *
+ * @constructor
+ * @extends {ol.control.Search}
+ * @fires select
+ * @param {Object=} Control options. 
+ *	@param {string} options.className control class name
+ *	@param {Element | string | undefined} options.target Specify a target if you want the control to be rendered outside of the map's viewport.
+ *	@param {string | undefined} options.label Text label to use for the search button, default "search"
+ *	@param {string | undefined} options.placeholder placeholder, default "Search..."
+ *	@param {number | undefined} options.typing a delay on each typing to start searching (ms), default 1000.
+ *	@param {integer | undefined} options.minLength minimum length to start searching, default 3
+ *	@param {integer | undefined} options.maxItems maximum number of items to display in the autocomplete list, default 10
+ *
+ *	@param {string|undefined} options.url Url to photon api, default "http://photon.komoot.de/api/"
+ *	@param {string|undefined} options.lang Force preferred language, default none
+ *	@param {boolean} options.position Search, with priority to geo position, default false
+ *	@param {function} options.getTitle a function that takes a feature and return the name to display in the index, default return street + name + contry 
+ */
+ol.control.SearchPhoton = function(options) 
+{	options = options || {};
+	delete options.autocomplete;
+	options.minLength = options.minLength || 3;
+	options.typing = options.typing || 800;
+	ol.control.Search.call(this, options);
+	this.set('lang', options.lang);
+	this.set('position', options.position);
+	// Handle Mix Content Warning
+	// If the current connection is an https connection all other connections must be https either
+	var url = options.url || "http://photon.komoot.de/api/";
+	if (window.location.protocol === "https:") {
+		var parser = document.createElement('a');
+		parser.href = url;
+		parser.protocol = window.location.protocol;
+		url = parser.href;
+	}
+	this.set('url', url);
+};
+ol.inherits(ol.control.SearchPhoton, ol.control.Search);
+
+/** Returns the text to be displayed in the menu
+*	@param {ol.Feature} f the feature
+*	@return {string} the text to be displayed in the index
+*	@api
+*/
+ol.control.SearchPhoton.prototype.getTitle = function (f)
+{	var p = f.properties;
+	return (p.housenumber||"")
+		+ " "+(p.street || p.name || "")
+		+ "<i>"
+		+ " "+(p.postcode||"")
+		+ " "+(p.city||"")
+		+ " ("+p.country
+		+ ")</i>";
+};
+
+/** Autocomplete function11
+* @param {string} s search string
+* @param {function} cback a callback function that takes an array of {name, feature} to display in the autocomplete fielad
+* @api
+*/
+ol.control.SearchPhoton.prototype.autocomplete = function (s, cback)
+{	var data = 
+	{	q: s,
+		lang: this.get('lang'),
+		limit: this.get('maxItems')
+	}
+	// Handle position proirity
+	if (this.get('position'))
+	{	var view = this.getMap().getView();
+		var pt = new ol.geom.Point(view.getCenter());
+		pt = (pt.transform (view.getProjection(), "EPSG:4326")).getCoordinates();
+		
+		data.lon = pt[0];
+		data.lat = pt[1];
+	}
+
+	var url = this.get('url');
+	$.support.cors = true;
+	$.ajax(url,
+		{	dataType: "json",
+			//crossDomain: true,
+			data: data,
+			success: function(r) { 
+				cback(r.features); 
+			},
+			error: function() {
+				console.log(url, arguments);
+			}
+		});
+};
+
+/** Prevent same feature to be drawn twice: test equality
+ * @param {} f1 First feature to compare
+ * @param {} f2 Second feature to compare
+ * @return {boolean}
+ * @api
+ */
+ol.control.SearchPhoton.prototype.equalFeatures = function (f1, f2) {
+	return (this.getTitle(f1) == this.getTitle(f2) 
+		&& f1.geometry.coordinates[0] == f2.geometry.coordinates[0]
+		&& f1.geometry.coordinates[1] == f2.geometry.coordinates[1]);
+};
+
+/** A ligne has been clicked in the menu > dispatch event
+*	@param {any} f the feature, as passed in the autocomplete
+*	@api
+*/
+ol.control.SearchPhoton.prototype.select = function (f)
+{	var c = f.geometry.coordinates;
+	// Add coordinate to the event
+	try {
+		c = ol.proj.transform (f.geometry.coordinates, 'EPSG:4326', this.getMap().getView().getProjection());
+	} catch(e) {};
+	this.dispatchEvent({ type:"select", search:f, coordinate: c });
+};
 /*	Copyright (c) 2015 Jean-Marc VIGLINO, 
 	released under the CeCILL-B license (French BSD license)
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
@@ -137,7 +457,7 @@ ol.control.LayerSwitcher.prototype.setHeader = function(html)
 };
 
 /** Calculate overflow and add scrolls
-*	@param {-1|0|1|+50%|-50%} dir scroll direction
+*	@param {Number} dir scroll direction -1|0|1|'+50%'|'-50%'
 */
 ol.control.LayerSwitcher.prototype.overflow = function(dir)
 {	
@@ -243,7 +563,7 @@ ol.control.LayerSwitcher.prototype.drawPanel_ = function(e)
 
 /** Change layer visibility according to the baselayer option
  * @param {ol.layer}
- * @param {Array{ol.layer}} related layers
+ * @param {Array<ol.layer>} related layers
  */
 ol.control.LayerSwitcher.prototype.switchLayerVisibility = function(l, layers)
 {
@@ -753,7 +1073,8 @@ ol.inherits(ol.control.TextButton, ol.control.Button);
  *
  * @constructor
  * @extends {ol.control.Attribution}
- * @param {Object=} Control options. The style {ol.style.Style} option is usesd to draw the text.
+ * @param {Object=} options extend the ol.control.Attribution options. 
+ * 	@param {ol.style.Style} options.style  option is usesd to draw the text.
  */
 ol.control.CanvasAttribution = function(options) 
 {	if (!options) options = {};
@@ -870,7 +1191,8 @@ ol.control.CanvasAttribution.prototype.drawAttribution_ = function(e)
  *
  * @constructor
  * @extends {ol.control.ScaleLine}
- * @param {Object=} Control options. The style {ol.style.Style} option is usesd to draw the scale line (default is black/white, 10px Arial).
+ * @param {Object=} options extend the ol.control.ScaleLine options. 
+ * 	@param {ol.style.Style} options.style usesd to draw the scale line (default is black/white, 10px Arial).
  */
 ol.control.CanvasScaleLine = function(options) 
 {	ol.control.ScaleLine.call(this, options);
@@ -997,7 +1319,8 @@ ol.control.CanvasScaleLine.prototype.drawScale_ = function(e)
  *
  * @constructor
  * @extends {ol.control.Control}
- * @param {Object=} Control options. The style {ol.style.Style} option is usesd to draw the text.
+ * @param {Object=} options extend the ol.control options. 
+ * 	@param {ol.style.Style} options.style stye usesd to draw the title.
  */
 ol.control.CanvasTitle = function(options) 
 {	if (!options) options={};
@@ -1140,10 +1463,11 @@ ol.control.CanvasTitle.prototype.drawTitle_ = function(e)
 */
 /** ol.control.Cloud adds an old map effect on a canvas renderer. 
 * It colors the map, adds a parchment texture and compass onto the map. 
-* @param {Object}
-*	- hue {ol.Color} color to set hue of the map, default #963
-*	- saturation {Number} saturation of the hue color, default 0.6
-*	- opacity {Number} opacity of the overimpose image, default 0.7
+* @constructor
+* @param {Object} options
+*	@param {ol.Color} options.hue color to set hue of the map, default #963
+*	@param {Number} options.saturation saturation of the hue color, default 0.6
+*	@param {Number} options.opacity opacity of the overimpose image, default 0.7
 * @todo add effects on pan / zoom change
 */
 ol.control.Cloud = function(options) 
@@ -1362,12 +1686,12 @@ ol.control.Cloud.prototype.drawCloud_ = function (event)
  *
  * @constructor
  * @extends {ol.control.Control}
- * @param {Object=} Control options. The style {ol.style.Style} option is usesd to draw the text.
- *	- className {string} class name for the control
- *	- image {Image} an image, default use the src option or a default image
- *	- src {string} image src, default use the image option or a default image
- *	- rotateVithView {boolean} rotate vith view (false to show watermark), default true
- *	- style {ol.style.Stroke} style to draw the lines, default draw no lines
+ * @param {Object=} options Control options. The style {ol.style.Style} option is usesd to draw the text.
+ *	@param {string} options.className class name for the control
+ *	@param {Image} options.image an image, default use the src option or a default image
+ *	@param {string} options.src image src, default use the image option or a default image
+ *	@param {boolean} options.rotateVithView rotate vith view (false to show watermark), default true
+ *	@param {ol.style.Stroke} options.style style to draw the lines, default draw no lines
  */
 ol.control.Compass = function(options) 
 {	var self = this;
@@ -1538,12 +1862,12 @@ ol.control.Compass.prototype.drawCompass_ = function(e)
  *
  * @constructor
  * @extends {ol.control.Control}
- * @param {Object=} opt_options Control options.
- *		className {String} class of the control
- *		group {bool} is a group, default false
- *		toggleOne {bool} only one toggle control is active at a time, default false
- *		autoDeactivate {bool} used with subbar to deactivate all control when top level control deactivate, default false
- *		controls {Array<ol.control>} a list of control to add to the bar
+ * @param {Object=} options Control options.
+ *	@param {String} options.className class of the control
+ *	@param {bool} options.group is a group, default false
+ *	@param {bool} options.toggleOne only one toggle control is active at a time, default false
+ *	@param {bool} options.autoDeactivate used with subbar to deactivate all control when top level control deactivate, default false
+ *	@param {Array<ol.control>} options.controls a list of control to add to the bar
  */
 ol.control.Bar = function(options) 
 {	if (!options) options={};
@@ -1704,16 +2028,15 @@ ol.control.Bar.prototype.onActivateControl_ = function (e)
 	}
 };
 
-/** A simple toggle control with a callback function
- * OpenLayers 3 Layer Switcher Control.
- *
+/** A simple control to disable all actions on the map.
+ * The control will create an invisible div over the map.
  * @constructor
  * @extends {ol.control.Control}
- * @param {Object=} opt_options Control options.
- *		class {String} class of the control
- *		html {String} html code to insert in the control
- *		on {bool} the control is on
- *		toggleFn {function} callback when control is clicked 
+ * @param {Object=} options Control options.
+ *		@param {String} options.class class of the control
+ *		@param {String} options.html html code to insert in the control
+ *		@param {bool} options.on the control is on
+ *		@param {function} options.toggleFn callback when control is clicked 
  */
 ol.control.Disable = function(options) 
 {	var options = options||{};
@@ -1726,16 +2049,16 @@ ol.control.Disable = function(options)
 }
 ol.inherits(ol.control.Disable, ol.control.Control);
 
-/**
- * @return {bool}.
+/** Test if the control is on
+ * @return {bool}
  * @api stable
  */
 ol.control.Disable.prototype.isOn = function()
 {	return $(this.element).hasClass("ol-disable");
 }
 
-/**
- * @return {bool}.
+/** Disable all action on the map
+ * @param {bool} b, default false
  * @api stable
  */
 ol.control.Disable.prototype.disableMap = function(b)
@@ -1750,15 +2073,15 @@ ol.control.Disable.prototype.disableMap = function(b)
 	released under the CeCILL-B license (French BSD license)
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
 */
-/** A simple gauge control 
+/** A simple gauge control to display level information on the map.
  *
  * @constructor
  * @extends {ol.control.Control}
- * @param {Object=} opt_options Control options.
- *		className {String} class of the control
- *		title {String} title of the control
- *		max {number} maximum value, default 100;
- *		val {number} the value, default 0
+ * @param {Object=} options Control options.
+ *		@param {String} options.className class of the control
+ *		@param {String} options.title title of the control
+ *		@param {number} options.max maximum value, default 100;
+ *		@param {number} options.val the value, default 0
  */
 ol.control.Gauge = function(options) 
 {	options = options || {};
@@ -1797,17 +2120,26 @@ ol.control.Gauge.prototype.val = function(v)
 	}
 	return this.val_;
 };
-/** GeoBookmarks
+/** Bookmark positions on ol maps. 
  *
  * @constructor
  * @extends {ol.control.Control}
- * @trigger add|remove when a bookmark us added or deleted
- * @param {Object=} Control options.
- *  @param {string} className default ol-bookmark
- *  @param {string} placeholder input placeholder, default Add a new geomark...
- *  @param {bool} editable enable modification, default true
- *  @param {string} namespace a namespace to save the boolmark (if more than one on a page), default: ol
- *  @param {Array<any> marks a list of default bookmarks : { BM1:{pos:ol.coordinates, zoom: integer, permanent: true}, BM2:{pos:ol.coordinates, zoom: integer} }
+ * @fires add
+ * @fires remove
+ * @param {} options Geobookmark's options
+ *  @param {string} options.className default ol-bookmark
+ *  @param {string} options.placeholder input placeholder, default Add a new geomark...
+ *  @param {bool} options.editable enable modification, default true
+ *  @param {string} options.namespace a namespace to save the boolmark (if more than one on a page), default ol
+ *  @param {Array<any>} options.marks a list of default bookmarks: 
+ * @see [Geobookmark example](../../examples/map.control.geobookmark.html)
+ * @example 
+var bm = new GeoBookmark ({ 
+  marks: {
+    "Paris": {pos:ol.proj.transform([2.351828, 48.856578], 'EPSG:4326', 'EPSG:3857'), zoom:11, permanent: true },
+    "London": {pos:ol.proj.transform([-0.1275,51.507222], 'EPSG:4326', 'EPSG:3857'), zoom:12}
+  }
+});
  */
 ol.control.GeoBookmark = function(options) {
   options = options || {};
@@ -1882,7 +2214,11 @@ ol.inherits(ol.control.GeoBookmark, ol.control.Control);
 
 /** Set bookmarks
 * @param {} bmark a list of bookmarks, default retreave in the localstorage
-*   example : setBookmarks({ "Mark 1":{pos:ol.coordinates, zoom: integer}, "Mark 2":{pos:ol.coordinates, zoom: integer} })
+* @example 
+bm.setBookmarks({ 
+  "Paris": {pos:ol.proj.transform([2.351828, 48.856578], 'EPSG:4326', 'EPSG:3857'), zoom:11, permanent: true },
+  "London": {pos:ol.proj.transform([-0.1275,51.507222], 'EPSG:4326', 'EPSG:3857'), zoom:12}
+});
 */
 ol.control.GeoBookmark.prototype.setBookmarks = function(bmark) {
   if (!bmark) bmark = JSON.parse(localStorage[this.get('namespace')+"@bookmark"] || "{}");
@@ -1919,7 +2255,7 @@ ol.control.GeoBookmark.prototype.setBookmarks = function(bmark) {
 };
 
 /** Get Geo bookmarks
-* @return a list of bookmarks : { BM1:{pos:ol.coordinates, zoom: integer}, BM2:{pos:ol.coordinates, zoom: integer} }
+* @return {any} a list of bookmarks : { BM1:{pos:ol.coordinates, zoom: integer}, BM2:{pos:ol.coordinates, zoom: integer} }
 */
 ol.control.GeoBookmark.prototype.getBookmarks = function() {
   return JSON.parse(localStorage[this.get('namespace')+"@bookmark"] || "{}");
@@ -1939,9 +2275,9 @@ ol.control.GeoBookmark.prototype.removeBookmark = function(name) {
 
 /** Add a new Geo bookmark (replace existing one if any)
 * @param {string} name name of the bookmark (display in the menu)
-* @param {ol.Coordintes} position, default current position
-* @param {number} zoom, default current map zoom
-* @param {bool} permanent: prevent from deletion, default false
+* @param {ol.Coordintes} position default current position
+* @param {number} zoom default current map zoom
+* @param {bool} permanent prevent from deletion, default false
 */
 ol.control.GeoBookmark.prototype.addBookmark = function(name, position, zoom, permanent) 
 {
@@ -2502,7 +2838,7 @@ ol.control.GridReference.prototype.getFeatureName = function (f)
 /** Sort function
 *	@param {ol.Feature} a first feature
 *	@param {ol.Feature} b second feature
-*	@return {-1|0|1} 0 if a==b, -1 if a<b, 1 if a>b
+*	@return {Number} 0 if a==b, -1 if a<b, 1 if a>b
 *	@api
 */
 ol.control.GridReference.prototype.sortFeatures = function (a,b)
@@ -2519,7 +2855,7 @@ ol.control.GridReference.prototype.indexTitle = function (f)
 };
 
 /** Display features in the index
-*	@param { Array <ol.Feature> | ol.Collection <ol.Feature> } features
+*	@param { Array<ol.Feature> | ol.Collection<ol.Feature> } features
 */
 ol.control.GridReference.prototype.setIndex = function (features)
 {	if (!this.getMap()) return;
@@ -3038,8 +3374,9 @@ ol.control.Overview = function(options)
 	this.ovmap_.addLayer(this.extentLayer);
 
 	/** Elastic bounce
-	*	@param {Int} number of bounce
-	*	@prama {Number} [0,1] amplitude of the bounce
+	*	@param {Int} bounce number of bounce
+	*	@param {Number} amplitude amplitude of the bounce [0,1] 
+	*	@return {Number}
 	*/
 	ol.easing.bounceFn = function (bounce, amplitude)
 	{	var a = (2*bounce+1) * Math.PI/2;
@@ -3050,6 +3387,11 @@ ol.control.Overview = function(options)
 			return 1 + Math.abs( Math.cos(a*t) ) * Math.pow(2, b*t) + c*t;
 		}
 	}
+	/** Elastic bounce
+	*	@param {Int} bounce number of bounce
+	*	@param {Number} amplitude amplitude of the bounce [0,1] 
+	*	@return {Number}
+	*/
 	ol.easing.elasticFn = function (bounce, amplitude)
 	{	var a = 3*bounce * Math.PI/2;
 		var b = amplitude>0 ? -1/amplitude : -100;
@@ -3059,6 +3401,7 @@ ol.control.Overview = function(options)
 			return 1 - Math.cos(a*t) * Math.pow(2, b*t) + c*t;
 		}
 	}
+
 	// Click on the preview center the map
 	this.ovmap_.addInteraction (new ol.interaction.Pointer(
 	{	handleDownEvent: function(evt)
@@ -3316,7 +3659,7 @@ ol.control.Permalink.prototype.setMap = function(map)
 
 /** Get layer given a permalink name (permalink propertie in the layer)
 *	@param {string} the permalink to search for
-*	@param {Array{ol.layer}|undefined} an array of layer to search in
+*	@param {Array<ol.layer>|undefined} an array of layer to search in
 *	@return {ol.layer|false}
 */
 ol.control.Permalink.prototype.getLayerByLink =  function (id, layers)
@@ -3840,181 +4183,54 @@ ol.control.Profil.prototype.getImage = function(type, encoderOptions)
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
 */
 /**
- * Search Control. This is the base class for search controls. You can use it for simple custom search or as base to new class
+ * Search places using the French National Base Address (BAN) API.
  *
  * @constructor
- * @extends {ol.control.Control}
- * @fires select, change:input
+ * @extends {ol.control.Search}
+ * @fires select
  * @param {Object=} Control options. 
  *	@param {string} options.className control class name
  *	@param {Element | string | undefined} options.target Specify a target if you want the control to be rendered outside of the map's viewport.
+ *	@param {string | undefined} options.label Text label to use for the search button, default "search"
  *	@param {string | undefined} options.placeholder placeholder, default "Search..."
- *	@param {number | undefined} options.typing a delay on each typing to start searching (ms) use -1 to prevent autocompletion, default 300.
- *	@param {integer | undefined} options.minLength minimum length to start searching, default 1
+ *	@param {number | undefined} options.typing a delay on each typing to start searching (ms), default 500.
+ *	@param {integer | undefined} options.minLength minimum length to start searching, default 3
  *	@param {integer | undefined} options.maxItems maximum number of items to display in the autocomplete list, default 10
- *	@param {function} options.getTitle a function that takes a feature and return the name to display in the index.
- *	@param {function} options.autocomplete a function that take a search string and callback function to send an array
+ *
+ *	@param {string|undefined} options.url Url to BAN api, default "https://api-adresse.data.gouv.fr/search/"
+ *	@param {boolean} options.position Search, with priority to geo position, default false
+ *	@param {function} options.getTitle a function that takes a feature and return the text to display in the menu, default return label attribute
+ * @see {@link https://adresse.data.gouv.fr/api/}
  */
-ol.control.Search = function(options) 
-{	var self = this;
-	if (!options) options = {};
-	if (options.typing == undefined) options.typing = 300;
-
-	var element;
-	if (options.target) 
-	{	element = $("<div>").addClass((options.className||"")+ " ol-search");
-	}
-	else
-	{	element = $("<div>").addClass((options.className||"") + ' ol-search ol-unselectable ol-control ol-collapsed');
-		this.button = $("<button>")
-					.attr('type','button')
-					.click (function()
-					{	element.toggleClass("ol-collapsed"); 
-						if (!element.hasClass("ol-collapsed")) 
-						{	$("input.search", element).focus();
-							$('li', element).removeClass('select');
-						}
-					})
-					.appendTo(element);
-	}
-	// Search input
-	var tout, cur="";
-	$("<input>").attr('type','search')
-		.addClass("search")
-		.attr('placeholder', options.placeholder||"Search...")
-		.on('change', function(e) 
-		{ 	self.dispatchEvent({ type:"change:input", input:e, value:$(this).val()  }); 
-		})
-		.on('keyup search cut paste input', function(e) 
-		{	// console.log(e.type+" "+e.key)
-			var li  = $("ul.autocomplete li.select", element);
-			var	val = $(this).val();
-			// move up/down
-			if (e.key=='ArrowDown' || e.key=='ArrowUp' || e.key=='Down' || e.key=='Up')
-			{	li.removeClass('select');
-				li = (/Down/.test(e.key)) ? li.next() : li.prev();
-				if (li.length) li.addClass('select');
-				else $("ul.autocomplete li",element).first().addClass('select');
-			}
-			// Clear input
-			else if (e.type=='input' && !val)
-			{	self.drawList_();
-			}
-			// Select in the list
-			else if (li.length && (e.type=="search" || e.key =='Enter'))
-			{	if (element.hasClass("ol-control")) $(this).blur();
-				li.removeClass('select');
-				cur = val;
-				self.select(li.data('search'));
-			}
-			// Search / autocomplete
-			else if ( (e.type=="search" || e.key =='Enter')
-					|| (cur!=val && options.typing>=0))
-			{	// current search
-				cur = val;
-				if (cur)
-				{	// prevent searching on each typing
-					if (tout) clearTimeout(tout);
-					tout = setTimeout(function()
-					{	if (cur.length >= self.get("minLength")) 
-						{	var s = self.autocomplete (cur, function(auto) { self.drawList_(auto); });
-							if (s) self.drawList_(s);
-						}
-						else self.drawList_();
-					}, options.typing);
-				}
-				else self.drawList_();
-			}
-			// Clear list selection
-			else 
-			{	$("ul.autocomplete li", element).removeClass('select');
-			}
-		})
-		.blur(function()
-		{	setTimeout(function(){ element.addClass('ol-collapsed') }, 200);
-		})
-		.focus(function()
-		{	element.removeClass('ol-collapsed')
-		})
-		.appendTo(element);
-	// Autocomplete list
-	$("<ul>").addClass('autocomplete').appendTo(element);
-	
-	ol.control.Control.call(this, 
-		{	element: element.get(0),
-			target: options.target
-		});
-
-	if (typeof (options.getTitle)=='function') this.getTitle = options.getTitle;
-	if (typeof (options.autocomplete)=='function') this.autocomplete = options.autocomplete;
-	
-	// Options
-	this.set('minLength', options.minLength || 1);
-	this.set('maxItems', options.maxItems || 10);
-
+ol.control.SearchBAN = function(options) 
+{	options = options || {};
+	options.typing = options.typing || 500;
+	options.url = options.url || "https://api-adresse.data.gouv.fr/search/";
+	ol.control.SearchPhoton.call(this, options);
 };
-ol.inherits(ol.control.Search, ol.control.Control);
+ol.inherits(ol.control.SearchBAN, ol.control.SearchPhoton);
 
 /** Returns the text to be displayed in the menu
-*	@param {any} f feature to be displayed
-*	@return {string} the text to be displayed in the index, default f.name
+*	@param {ol.Feature} f the feature
+*	@return {string} the text to be displayed in the index
 *	@api
 */
-ol.control.Search.prototype.getTitle = function (f)
-{	return f.name || "No title";
-};
-
-/** Force search to refresh
-*/
-ol.control.Search.prototype.search = function ()
-{	$("input.search", this.element).trigger('search');
-};
-
-/** Set the input value in the form (for initialisation purpose)
-*	@param {string} value
-*	@param {boolean} search to start a search
-*	@api
-*/
-ol.control.Search.prototype.setInput = function (value, search)
-{	$("input.search",this.element).val(value);
-	if (search) $("input.search",this.element).trigger("keyup");
+ol.control.SearchBAN.prototype.getTitle = function (f) {	
+	var p = f.properties;
+	return (p.label);
 };
 
 /** A ligne has been clicked in the menu > dispatch event
 *	@param {any} f the feature, as passed in the autocomplete
 *	@api
 */
-ol.control.Search.prototype.select = function (f)
-{	this.dispatchEvent({ type:"select", search:f });
-};
-
-/** Autocomplete function
-* @param {string} s search string
-* @param {function} cback a callback function that takes an array to display in the autocomplete field (for asynchronous search)
-* @return {Array|false} an array of search solutions or false if the array is send with the cback argument
-* @api
-*/
-ol.control.Search.prototype.autocomplete = function (s, cback)
-{	cback ([]);
-	return false;
-};
-
-/** Draw the list 
-* @param {Array} auto an array of search result
-*/
-ol.control.Search.prototype.drawList_ = function (auto)
-{	var ul = $("ul.autocomplete", this.element).html("");
-	if (!auto) return;
-	var self = this;
-	var max = Math.min (self.get("maxItems"),auto.length);
-	for (var i=0; i<max; i++)
-	{	$("<li>").html(self.getTitle(auto[i]))
-			.data('search', auto[i])
-			.click(function(e)
-			{	self.select($(this).data('search'));
-			})
-			.appendTo(ul);
-	}
+ol.control.SearchBAN.prototype.select = function (f){	
+  var c = f.geometry.coordinates;
+	// Add coordinate to the event
+	try {
+		c = ol.proj.transform (f.geometry.coordinates, 'EPSG:4326', this.getMap().getView().getProjection());
+  } catch(e) {};
+	this.dispatchEvent({ type:"select", search:f, coordinate: c });
 };
 /*	Copyright (c) 2017 Jean-Marc VIGLINO, 
 	released under the CeCILL-B license (French BSD license)
@@ -4029,6 +4245,7 @@ ol.control.Search.prototype.drawList_ = function (auto)
  * @param {Object=} Control options. 
  *	@param {string} options.className control class name
  *	@param {Element | string | undefined} options.target Specify a target if you want the control to be rendered outside of the map's viewport.
+ *	@param {string | undefined} options.label Text label to use for the search button, default "search"
  *	@param {string | undefined} options.placeholder placeholder, default "Search..."
  *	@param {number | undefined} options.typing a delay on each typing to start searching (ms), default 300.
  *	@param {integer | undefined} options.minLength minimum length to start searching, default 1
@@ -4091,106 +4308,6 @@ ol.control.SearchFeature.prototype.autocomplete = function (s, cback)
 	return result;
 };
 
-/*	Copyright (c) 2017 Jean-Marc VIGLINO, 
-	released under the CeCILL-B license (French BSD license)
-	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
-*/
-/**
- * Search places using the photon API.
- *
- * @constructor
- * @extends {ol.control.Search}
- * @fires select
- * @param {Object=} Control options. 
- *	@param {string} options.className control class name
- *	@param {Element | string | undefined} options.target Specify a target if you want the control to be rendered outside of the map's viewport.
- *	@param {string | undefined} options.placeholder placeholder, default "Search..."
- *	@param {number | undefined} options.typing a delay on each typing to start searching (ms), default 1000.
- *	@param {integer | undefined} options.minLength minimum length to start searching, default 3
- *	@param {integer | undefined} options.maxItems maximum number of items to display in the autocomplete list, default 10
- *
- *	@param {string|undefined} options.url Url to photon api, default "http://photon.komoot.de/api/"
- *	@param {string|undefined} options.lang Force preferred language, default none
- *	@param {boolean} options.position Search, with priority to geo position, default false
- *	@param {function} options.getTitle a function that takes a feature and return the name to display in the index, default return street + name + contry 
- */
-ol.control.SearchPhoton = function(options) 
-{	options = options || {};
-	delete options.autocomplete;
-	options.minLength = options.minLength || 3;
-	options.typing = options.typing || 800;
-	options.url = options.url || "http://photon.komoot.de/api/";
-	ol.control.Search.call(this, options);
-	this.set('lang', options.lang);
-	this.set('position', options.position);
-        this.set('url', options.url);
-};
-ol.inherits(ol.control.SearchPhoton, ol.control.Search);
-
-/** Returns the text to be displayed in the menu
-*	@param {ol.Feature} f the feature
-*	@return {string} the text to be displayed in the index
-*	@api
-*/
-ol.control.SearchPhoton.prototype.getTitle = function (f)
-{	var p = f.properties;
-	return (p.housenumber||"")
-		+ " "+(p.street || p.name || "")
-		+ "<i>"
-		+ " "+(p.postcode||"")
-		+ " "+(p.city||"")
-		+ " ("+p.country
-		+ ")</i>";
-};
-
-/** Autocomplete function11
-* @param {string} s search string
-* @param {function} cback a callback function that takes an array of {name, feature} to display in the autocomplete fielad
-* @api
-*/
-ol.control.SearchPhoton.prototype.autocomplete = function (s, cback)
-{	var data = 
-	{	q: s,
-		lang: this.get('lang'),
-		limit: this.get('maxItems')
-	}
-	if (this.get('position'))
-	{	var view = this.getMap().getView();
-		var pt = new ol.geom.Point(view.getCenter());
-		pt = (pt.transform (view.getProjection(), "EPSG:4326")).getCoordinates();
-		
-		data.lon = pt[0];
-		data.lat = pt[1];
-	}
-        // Handle Mix Content Warning
-        // If the current connection is an https connection all other connections must be https either
-        var url = this.get('url');
-        if (window.location.protocol === "https:")
-        {
-          var parser = document.createElement('a');
-          parser.href = url;
-          parser.protocol = window.location.protocol;
-          url = parser.href;
-        }
-	$.ajax(url,
-		{	dataType: "json",
-			data: data,
-			success: function(r) { cback(r.features); }
-		});
-};
-
-/** A ligne has been clicked in the menu > dispatch event
-*	@param {any} f the feature, as passed in the autocomplete
-*	@api
-*/
-ol.control.Search.prototype.select = function (f)
-{	var c = f.geometry.coordinates;
-	// Add coordinate to the event
-	try {
-		c = ol.proj.transform (f.geometry.coordinates, 'EPSG:4326', this.getMap().getView().getProjection());
-	} catch(e) {};
-	this.dispatchEvent({ type:"select", search:f, coordinate: c });
-};
 /*	Copyright (c) 2015 Jean-Marc VIGLINO, 
 	released under the CeCILL-B license (French BSD license)
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
@@ -4406,10 +4523,11 @@ ol.control.Swipe.prototype.postcompose = function(e)
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
 */
 /** ol.control.Target draw a target at the center of the map. 
-* @param {Object}
-*  - style {ol.style.Style|Array<ol.style.Style>} ol.style.Stroke: draw a cross on the map, ol.style.Image: draw the image on the map
-*  - composite {string} composite operation : difference|multiply|xor|screen|overlay|darken|lighter|lighten|...
-*/
+ * @constructor
+ * @param {Object}
+ *  - style {ol.style.Style|Array<ol.style.Style>} ol.style.Stroke: draw a cross on the map, ol.style.Image: draw the image on the map
+ *  - composite {string} composite operation : difference|multiply|xor|screen|overlay|darken|lighter|lighten|...
+ */
 ol.control.Target = function(options) 
 {	options = options || {};
 
@@ -4694,14 +4812,21 @@ ol.control.Toggle.prototype.getInteraction = function()
 	released under the CeCILL license (http://www.cecill.info/).
 	
 */
-/** 
-
-/** Feature aniomation base class
-*	@fire animationstart|animationend
-*	@param {ol.featureAnimationOptions} options
-*		- duration {number}
-*		- revers {bool}
-*		- fade {ol.easing}
+/** Feature animation base class
+ * Use the {@link ol.Map#animateFeature} or {@link ol.layer.Vector#animateFeature} to animate a feature 
+ * on postcompose in a map or a layer
+* @constructor
+* @fires animationstart|animationend
+* @param {ol.featureAnimationOptions} options
+*	@param {Number} options.duration duration of the animation in ms, default 1000
+*	@param {bool} options.revers revers the animation direction
+*	@param {Number} options.repeat number of time to repeat the animation, default 0
+*	@param {oo.style.Style} options.hiddenStyle a style to display the feature when playing the animation
+*		to be used to make the feature selectable when playing animation 
+*		(@see {@link ../examples/map.featureanimation.select.html}), default the feature 
+*		will be hidden when playing (and niot selectable)
+*	@param {ol.easingFunction} options.fade an easing function used to fade in the feature, default none
+*	@param {ol.easingFunction} options.easing an easing function for the animation, default ol.easing.linear
 */
 ol.featureAnimation = function(options)
 {	options = options || {};
@@ -4721,9 +4846,10 @@ ol.featureAnimation = function(options)
 ol.inherits(ol.featureAnimation, ol.Object);
 
 /** Draw a geometry 
-*	@param {olx.animateFeatureEvent} e
-*	@param {ol.geom} geom geometry for shadow
-*	@param {ol.geom} shadow geometry for shadow (ie. style with zIndex = -1)
+* @param {olx.animateFeatureEvent} e
+* @param {ol.geom} geom geometry for shadow
+* @param {ol.geom} shadow geometry for shadow (ie. style with zIndex = -1)
+* @private
 */
 ol.featureAnimation.prototype.drawGeom_ = function (e, geom, shadow)
 {	if (this.fade_) 
@@ -4749,31 +4875,39 @@ ol.featureAnimation.prototype.drawGeom_ = function (e, geom, shadow)
 };
 
 /** Function to perform manipulations onpostcompose. 
-*	This function is called with an olx.animateFeature argument. 
-*	Return true to keep this function for the next frame, false to remove it.
-* @param {ol.featureAnimation.event} e
-* @return {bool} true to continue animation.
-* @api 
-*/
+ * This function is called with an ol.featureAnimationEvent argument. 
+ * The function will be overridden by the child implementation.    
+ * Return true to keep this function for the next frame, false to remove it.
+ * @param {ol.featureAnimationEvent} e
+ * @return {bool} true to continue animation.
+ * @api 
+ */
 ol.featureAnimation.prototype.animate = function (e)
 {	return false;
 };
 
+/** An animation controler object an object to control animation with start, stop and isPlaying function.    
+ * To be used with {@link olx.Map#animateFeature} or {@link ol.layer.Vector#animateFeature}
+ * @typedef {Object} ol.animationControler
+ * @property {function} start - start animation.
+ * @property {function} stop - stop animation option arguments can be passed in animationend event.
+ * @property {function} isPlaying - return true if animation is playing.
+ */
+
 /** Animate feature on a map
-*	@fires animationend
-*	@param {ol.Feature} feature Feature to animate
-*	@param {ol.featureAnimation|Array<ol.featureAnimation>} fanim the animation to play
-*/
+ * @function 
+ * @fires animationstart, animationend
+ * @param {ol.Feature} feature Feature to animate
+ * @param {ol.featureAnimation|Array<ol.featureAnimation>} fanim the animation to play
+ * @return {olx.animationControler} an object to control animation with start, stop and isPlaying function
+ */
 ol.Map.prototype.animateFeature = 
 
 /** Animate feature on a vector layer 
-*	@fires animationend
-*	@param {ol.Feature} feature Feature to animate
-*	@param {ol.featureAnimation|Array<ol.featureAnimation>} fanim the animation to play
-*	@return {animationControler} an object to control animation with start|stop[isPlaying function
-*		- start {function} start animation
-*		- stop {function} stop animation option arguments can be passed and propagate in animationend event
-*		- isPlaying {function} return true if animation is playing
+ * @fires animationstart, animationend
+ * @param {ol.Feature} feature Feature to animate
+ * @param {ol.featureAnimation|Array<ol.featureAnimation>} fanim the animation to play
+ * @return {olx.animationControler} an object to control animation with start, stop and isPlaying function
 */
 ol.layer.Vector.prototype.animateFeature = function(feature, fanim)
 {	var self = this;
@@ -4902,12 +5036,14 @@ ol.layer.Vector.prototype.animateFeature = function(feature, fanim)
 */
 
 /** Bounce animation: 
-*	@param {ol.featureAnimationBounceOptions} options
-*	- bounce {Integer} default 3
-*	- amplitude {Integer} default 40
-*	- easing {ol.easing} easing used for decaying amplitude, use function(){return 0} for no decay, default ol.easing.linear
-*	- duration {Integer} duration in ms, default 1000
-*/
+ * @constructor
+ * @extends {ol.featureAnimation}
+ * @param {ol.featureAnimationBounceOptions} options
+ *	@param {Integer} options.bounce number of bounce, default 3
+ *	@param {Integer} options.amplitude bounce amplitude,default 40
+ *	@param {ol.easing} options.easing easing used for decaying amplitude, use function(){return 0} for no decay, default ol.easing.linear
+ *	@param {Integer} options.duration duration in ms, default 1000
+ */
 ol.featureAnimation.Bounce = function(options)
 {	options = options || {};
 	ol.featureAnimation.call(this, options);
@@ -4941,8 +5077,12 @@ ol.featureAnimation.Bounce.prototype.animate = function (e)
 */
 
 /** Drop animation: drop a feature on the map
-* @param {ol.featureAnimationDropOptions} options
-*/
+ * @constructor
+ * @extends {ol.featureAnimation}
+ * @param {ol.featureAnimationDropOptions} options
+ *  @param {Number} options.speed speed of the feature if 0 the duration parameter will be used instead, default 0
+ *  @param {Number} options.side top or bottom, default top
+ */
 ol.featureAnimation.Drop = function(options)
 {	options = options || {};
 	this.speed_ = options.speed || 0;
@@ -4984,8 +5124,10 @@ ol.featureAnimation.Drop.prototype.animate = function (e)
 */
 
 /** Fade animation: feature fade in
-* @param {ol.featureAnimationFadeOptions} options
-*/
+ * @constructor
+ * @extends {ol.featureAnimation}
+ * @param {ol.featureAnimationOptions} options
+ */
 ol.featureAnimation.Fade = function(options)
 {	options = options || {};
 	this.speed_ = options.speed || 0;
@@ -5008,10 +5150,12 @@ ol.featureAnimation.Fade.prototype.animate = function (e)
 	released under the CeCILL license (http://www.cecill.info/).
 	
 */
-
 /** Do nothing for a given duration
-*	@param {ol.featureAnimationShowOptions} options
-*/
+ * @constructor
+ * @extends {ol.featureAnimation}
+ * @param {ol.featureAnimationShowOptions} options
+ * 
+ */
 ol.featureAnimation.None = function(options)
 {	ol.featureAnimation.call(this, options);
 };
@@ -5030,10 +5174,11 @@ ol.featureAnimation.None.prototype.animate = function (e)
 	released under the CeCILL license (http://www.cecill.info/).
 	
 */
-
 /** Do nothing 
-*	@param {ol.featureAnimationShowOptions} options
-*/
+ * @constructor
+ * @extends {ol.featureAnimation}
+ * @param {ol.featureAnimationShowOptions} options
+ */
 ol.featureAnimation.Null = function(options)
 {	ol.featureAnimation.call(this, { duration:0 });
 };
@@ -5044,10 +5189,13 @@ ol.inherits(ol.featureAnimation.Null, ol.featureAnimation);
 	released under the CeCILL license (http://www.cecill.info/).
 	
 */
-
 /** Path animation: feature follow a path
-* @param {ol.featureAnimationPathOptions} options
-*/
+ * @constructor
+ * @extends {ol.featureAnimation}
+ * @param {ol.featureAnimationPathOptions} options
+ *  @param {Number} options.speed speed of the feature, if 0 the duration parameter will be used instead, default 0
+ *  @param {ol.geom.LineString|ol.Feature} options.path the path to follow
+ */
 ol.featureAnimation.Path = function(options)
 {	options = options || {};
 	ol.featureAnimation.call(this, options);
@@ -5103,12 +5251,13 @@ ol.featureAnimation.Path.prototype.animate = function (e)
 */
 
 /** Shakee animation: 
-* @param {ol.featureAnimationShakeOptions} options
-*	- bounce {Integer} default 6
-*	- amplitude {Integer} default 40
-*	- duration {Integer} default 
-*	- horizontal {bool} shake horizontally default false
-*/
+ * @constructor
+ * @extends {ol.featureAnimation}
+ * @param {ol.featureAnimationShakeOptions} options
+ *	@param {Integer} options.bounce number o bounds, default 6
+ *	@param {Integer} options.amplitude amplitude of the animation, default 40
+ *	@param {bool} options.horizontal shake horizontally default false (vertical)
+ */
 ol.featureAnimation.Shake = function(options)
 {	options = options || {};
 	ol.featureAnimation.call(this, options);
@@ -5146,8 +5295,10 @@ ol.featureAnimation.Shake.prototype.animate = function (e)
 */
 
 /** Show an object for a given duration
-*	@param {ol.featureAnimationShowOptions} options
-*/
+ * @constructor
+ * @extends {ol.featureAnimation}
+ * @param {ol.featureAnimationOptions} options
+ */
 ol.featureAnimation.Show = function(options)
 {	ol.featureAnimation.call(this, options);
 }
@@ -5168,8 +5319,11 @@ ol.featureAnimation.Show.prototype.animate = function (e)
 	
 */
 /** Slice animation: feature enter from left
-* @param {ol.featureAnimationSlideOptions} options
-*/
+ * @constructor
+ * @extends {ol.featureAnimation}
+ * @param {ol.featureAnimationSlideOptions} options
+ *  @param {Number} options.speed speed of the animation, if 0 the duration parameter will be used instead, default 0
+ */
 ol.featureAnimation.Slide = function(options)
 {	options = options || {};
 	this.speed_ = options.speed || 0;
@@ -5203,8 +5357,10 @@ ol.featureAnimation.Slide.prototype.animate = function (e)
 */
 
 /** Teleport a feature at a given place
-* @param {ol.featureAnimationTeleportOptions} options
-*/
+ * @constructor
+ * @extends {ol.featureAnimation}
+ * @param {ol.featureAnimationOptions} options
+ */
 ol.featureAnimation.Teleport = function(options)
 {	ol.featureAnimation.call(this, options);
 }
@@ -5237,9 +5393,11 @@ ol.featureAnimation.Teleport.prototype.animate = function (e)
 	
 */
 /** Slice animation: feature enter from left
-* @param {ol.featureAnimationThrowOptions} options
-* @param {event} e
-*/
+ * @constructor
+ * @extends {ol.featureAnimation}
+ * @param {ol.featureAnimationThrowOptions} options
+ *  @param {left|right} options.side side of the animation, default left
+ */
 ol.featureAnimation.Throw = function(options)
 {	options = options || {};
 	ol.featureAnimation.call(this, options);
@@ -5284,8 +5442,11 @@ ol.featureAnimation.Throw.prototype.animate = function (e)
 */
 
 /** Zoom animation: feature zoom in (for points)
-* @param {ol.featureAnimationZoomOptions} options
-*/
+ * @constructor
+ * @extends {ol.featureAnimation}
+ * @param {ol.featureAnimationZoomOptions} options
+ *  @param {bool} options.zoomOut to zoom out
+ */
 ol.featureAnimation.Zoom = function(options)
 {	options = options || {};
 	ol.featureAnimation.call(this, options);
@@ -5295,8 +5456,10 @@ ol.inherits(ol.featureAnimation.Zoom, ol.featureAnimation);
 
 
 /** Zoom animation: feature zoom out (for points)
-* @param {ol.featureAnimationZoomOptions} options
-*/
+ * @constructor
+ * @extends {ol.featureAnimation}
+ * @param {ol.featureAnimationZoomOptions} options
+ */
 ol.featureAnimation.ZoomOut = function(options)
 {	options = options || {};
 	options.zoomOut = true;
@@ -5361,12 +5524,16 @@ ol.featureAnimation.Zoom.prototype.animate = function (e)
 ol.filter = {};
 /**
  * @classdesc 
- *   Abstract base class; normally only used for creating subclasses and not instantiated in apps. 
- *   Used to create filters
+ * Abstract base class; normally only used for creating subclasses and not instantiated in apps.    
+ * Used to create filters    
+ * Use {@link ol.Map#addFilter}, {@link ol.Map#removeFilter} or {@link ol.Map#getFilters} to handle filters on a map.    
+ * Use {@link ol.layer.Base#addFilter}, {@link ol.layer.Base#removeFilter} or {@link ol.layer.Base#getFilters} 
+ * to handle filters on layers.
  *
  * @constructor
  * @extends {ol.Object}
- * @param {Object=} Control options. The style {ol.style.Style} option is usesd to draw the text.
+ * @param {} options Extend {@link ol.control.Control} options.
+ *  @param {bool} options.active
  */
 ol.filter.Base = function(options) 
 {	ol.Object.call(this);
@@ -5488,6 +5655,7 @@ ol.layer.Base.prototype.getFilters = function ()
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
 */
 /** Mask drawing using an ol.Feature
+* 	@constructor
 *	@requires ol.filter
 *	@extends {ol.filter.Base}
 *	@param {ol.filter.cropOptions}
@@ -5575,6 +5743,7 @@ ol.filter.Mask.prototype.postcompose = function(e)
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
 */
 /** Clip layer or map 
+* 	@constructor
 *	@requires ol.filter
 *	@extends {ol.filter.Base}
 *	@param {ol.filter.clipOptions}
@@ -5687,6 +5856,7 @@ ol.filter.Clip.prototype.postcompose = function(e)
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
 */
 /** Colorize map or layer
+* 	@constructor
 *	@requires ol.filter
 *	@extends {ol.filter.Base}
 *	@author Thomas Tilak https://github.com/thhomas
@@ -5793,6 +5963,7 @@ ol.filter.Colorize.prototype.postcompose = function(e)
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
 */
 /** Colorize map or layer
+* 	@constructor
 *	@requires ol.filter
 *	@extends {ol.filter.Base}
 *	@param {ol.filter.compositeOptions}
@@ -5827,6 +5998,7 @@ ol.filter.Composite.prototype.postcompose = function(e)
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
 */
 /** Crop drawing using an ol.Feature
+* 	@constructor
 *	@requires ol.filter
 *	@requires ol.filter.Mask
 *	@extends {ol.filter.Mask}
@@ -5858,6 +6030,7 @@ ol.filter.Crop.prototype.postcompose = function(e)
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
 */
 /** Fold filer map 
+* 	@constructor
 *	@requires ol.filter
 *	@extends {ol.filter.Base}
 *	@param {ol.filter.foldOptions}
@@ -5967,6 +6140,7 @@ ol.filter.Fold.prototype.postcompose = function(e)
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
 */
 /** Make a map or layer look like made of a set of Lego bricks.
+* 	@constructor
 *	@requires ol.filter
 *	@extends {ol.filter.Base}
 *	@param {ol.filter.LegoOptions}
@@ -6120,6 +6294,7 @@ ol.filter.Lego.prototype.postcompose = function(e)
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
 */
 /** Add texture effects on maps or layers
+* 	@constructor
 *	@requires ol.filter
 *	@extends {ol.filter.Base}
 *	@param {ol.filter.cropOptions}
@@ -6905,7 +7080,15 @@ ol.interaction.DrawRegular.prototype.handleMoveEvent_ = function(evt)
 	{	this.coord_ = evt.coordinate;
 		this.coordPx_ = evt.pixel;
 		var f = this.drawSketch_(evt);
-		this.dispatchEvent({ type:'drawing', feature: f, pixel: evt.pixel, coordinate: evt.coordinate, square: this.square_, centered: this.centered_ });
+		this.dispatchEvent({ 
+			type:'drawing', 
+			feature: f, 
+			pixel: evt.pixel, 
+			startCoordinate: this.center_,
+			coordinate: evt.coordinate, 
+			square: this.square_, 
+			centered: this.centered_ 
+		});
 	}
 	else 
 	{	this.drawPoint_(evt.coordinate);
@@ -7998,7 +8181,6 @@ ol.interaction.DrawHole.prototype._geometryFn = function(coordinates, geometry)
 /** Interaction to handle longtouch events
  * @constructor
  * @extends {ol.interaction.Interaction}
- * @fires  
  * @param {olx.interaction.LongTouchOptions} 
  * 	@param {function | undefined} options.handleLongTouchEvent Function handling "longtouch" events, it will receive a mapBrowserEvent.
  *	@param {interger | undefined} options.delay The delay for a long touch in ms, default is 1000
@@ -8242,7 +8424,6 @@ ol.interaction.Ripple.prototype.postcompose_ = function(e)
 /** Interaction to snap to guidelines
  * @constructor
  * @extends {ol.interaction.Interaction}
- * @fires  
  * @param {olx.interaction.SnapGuidesOptions} 
  *	- pixelTolerance {number | undefined} distance (in px) to snap to a guideline, default 10 px
  *	- style {ol.style.Style | Array<ol.style.Style> | undefined} Style for the sektch features. 
@@ -9833,7 +10014,6 @@ ol.interaction.Transform.prototype.handleUpEvent_ = function(evt)
 * @constructor ol.source.DBPedia
 * @extends {ol.source.Vector}
 * @param {olx.source.DBPedia=} options
-* @todo 
 */
 ol.source.DBPedia = function(opt_options)
 {	var options = opt_options || {};
@@ -9956,18 +10136,19 @@ ol.source.DBPedia.prototype._loaderFn = function(extent, resolution, projection)
 // Style cache
 var styleCache = {};
 
-/** Reset the cache (when fonts are loaded
+/** Reset the cache (when fonts are loaded)
 */
 ol.style.clearDBPediaStyleCache = function()
 {	styleCache = {};
 }
 
 /** Get a default style function for dbpedia
-* options.glyph {string|function|undefined} a glyph name or a function that takes a feature and return a glyph
-* options.radius {number} radius of the symbol, default 8
-* options.fill {ol.style.Fill} style for fill, default navy
-* options.stroke {ol.style.stroke} style for stroke, default 2px white
-* options.prefix {string} a prefix if many style used for the same type
+* @param {} options
+* @param {string|function|undefined} options.glyph a glyph name or a function that takes a feature and return a glyph
+* @param {number} options.radius radius of the symbol, default 8
+* @param {ol.style.Fill} options.fill style for fill, default navy
+* @param {ol.style.stroke} options.stroke style for stroke, default 2px white
+* @param {string} options.prefix a prefix if many style used for the same type
 *
 * @require ol.style.FontSymbol and FontAwesome defs are required for dbPediaStyleFunction()
 */
@@ -10042,11 +10223,10 @@ ol.style.dbPediaStyleFunction = function(options)
 	}
 */
 
-/**
-* @constructor GeoImage
+/** Layer source with georeferencement to place it on a map
+* @constructor 
 * @extends {ol.source.ImageCanvas}
 * @param {olx.source.GeoImageOptions=} options
-* @todo 
 */
 ol.source.GeoImage = function(opt_options)
 {	var options = { 
@@ -10463,7 +10643,6 @@ function hexbinInit(source, options)
 *	@param {ol.coordinate} options.origin orgin of the grid, default [0,0]
 *	@param {pointy|flat} options.layout grid layout, default pointy
 *	@param {function|undefined} options.geometryFunction Function that takes an ol.Feature as argument and returns an ol.geom.Point as feature's center. 
-* @todo 
 */
 ol.source.HexBin = function(options)
 {	options = options || {} ;
@@ -10489,7 +10668,6 @@ ol.source.HexBin.prototype.getSource = function()
 *	@param {ol.coordinate} options.origin orgin of the grid, default [0,0]
 *	@param {pointy|flat} options.layout grid layout, default pointy
 *	@param {function|undefined} options.geometryFunction Function that takes an ol.Feature as argument and returns an ol.geom.Point as feature's center. 
-* @todo 
 */
 ol.source.ImageHexBin = function(options)
 {	options = options || {} ;
@@ -10527,7 +10705,6 @@ ol.source.ImageHexBin.prototype.getOriginSource = function()
 * @constructor ol.source.Mapillary
 * @extends {ol.source.Vector}
 * @param {olx.source.Mapillary=} options
-* @todo 
 */
 ol.source.Mapillary = function(opt_options)
 {	var options = opt_options || {};
@@ -10895,7 +11072,6 @@ ol.render3D.prototype.drawFeature3D_ = function(ctx, build)
 * @constructor ol.source.WikiCommons
 * @extends {ol.source.Vector}
 * @param {olx.source.WikiCommons=} options
-* @todo 
 */
 ol.source.WikiCommons = function(opt_options)
 {	var options = opt_options || {};
@@ -11020,11 +11196,11 @@ ol.Overlay.Magnify = function (options)
 {	var self = this;
 	
 	var elt = $("<div>").addClass("ol-magnify");
-	this.element = elt.get(0);
+	this._element = elt.get(0);
 
 	ol.Overlay.call(this, 
 		{	positioning: options.positioning || "center-center",
-			element: this.element,
+			element: this._element,
 			stopEvent: false
 		});
 
@@ -11032,7 +11208,7 @@ ol.Overlay.Magnify = function (options)
 	this.mgmap_ = new ol.Map(
 	{	controls: new ol.Collection(),
 		interactions: new ol.Collection(),
-		target: options.target || this.element,
+		target: options.target || this._element,
 		view: new ol.View({ projection: options.projection }),
 		layers: options.layers
 	});
@@ -11086,7 +11262,8 @@ ol.Overlay.Magnify.prototype.setActive = function(active)
 }
 
 /** Mouse move
-*/
+ * @private
+ */
 ol.Overlay.Magnify.prototype.onMouseMove_ = function(e)
 {	var self = e.data.self;
 	if (!self.get("active"))
@@ -11096,12 +11273,13 @@ ol.Overlay.Magnify.prototype.onMouseMove_ = function(e)
 	{	var px = self.getMap().getEventCoordinate(e);
 		if (!self.external_) self.setPosition(px);
 		self.mgview_.setCenter(px);
-		if ($("canvas", self.element).css("display")=="none") self.mgmap_.updateSize();
+		if ($("canvas", self._element).css("display")=="none") self.mgmap_.updateSize();
 	}
 }
 
 /** View has changed
-*/
+ * @private
+ */
 ol.Overlay.Magnify.prototype.setView_ = function(e)
 {	if (!this.get("active"))
 	{	this.setPosition();
@@ -11136,32 +11314,29 @@ ol.Overlay.Magnify.prototype.setView_ = function(e)
 /**
  * @classdesc
  * A popup element to be displayed over the map and attached to a single map
- * location.  Like {@link ol.control.Control}, Overlays are visible widgets.
- * Unlike Controls, they are not in a fixed position on the screen, but are tied
- * to a geographical coordinate, so panning the map will move an Overlay but not
- * a Control.
+ * location. The popup are customized using CSS.
  *
- * Example:
- *
- *     var popup = new ol.Overlay.Popup();
- *     map.addOverlay(popup);
- *     popup.show(coordinate, "Hello!");
- *     popup.hide();
+ * @example
+var popup = new ol.Overlay.Popup();
+map.addOverlay(popup);
+popup.show(coordinate, "Hello!");
+popup.hide();
  *
  * @constructor
  * @extends {ol.Overlay}
- * @param {olx.OverlayOptions} options Overlay options 
- *		+ popupClass: the a class for the overlay.
- *		+ closeBox: popup has a close box.
- *		+ onclose: callback when popup is closed
- *		+ onshow: callback when popup is shown
- *		+ positionning: add 'auto' to let the popup choose a good positioning.
+ * @param {} options Extend Overlay options 
+ *	@param {String} options.popupClass the a class of the overlay to style the popup.
+ *	@param {bool} options.closeBox popup has a close box, default false.
+ *	@param {function|undefined} options.onclose: callback function when popup is closed
+ *	@param {function|undefined} options.onshow callback function when popup is shown
+ *	@param {ol.OverlayPositioning | string | undefined} options.positionning 
+ *		the 'auto' positionning let the popup choose its positioning to stay on the map.
  * @api stable
  */
 ol.Overlay.Popup = function (options)
 {	var self = this;
 	var elt = $("<div>");
-	this.element = options.element = elt.get(0);
+	options.element = elt.get(0);
 	this.offsetBox = options.offsetBox;
 	// Anchor div
 	$("<div>").addClass("anchor").appendTo(elt);
@@ -11170,8 +11345,8 @@ ol.Overlay.Popup = function (options)
 	this.content = $("<div>").addClass("content").appendTo(d).get(0);
 	// Closebox
 	this.closeBox = options.closeBox;
-        this.onclose = options.onclose;      
-        this.onshow = options.onshow;      
+	this.onclose = options.onclose;      
+	this.onshow = options.onshow;      
 	$("<button>").addClass("closeBox").addClass(options.closeBox?"hasclosebox":"")
 				.attr('type', 'button')
 				.prependTo(d)
@@ -11179,12 +11354,13 @@ ol.Overlay.Popup = function (options)
 				{	self.hide();
 				});
 	// Stop event
-	options.stopEvent=false;
+	options.stopEvent = true;
 	d.on("mousedown touchstart", function(e){ e.stopPropagation(); })
 
+	this._elt = elt;
 	ol.Overlay.call(this, options);
-	
-        // call setPositioning first in constructor so getClassPositioning is called only once
+			
+	// call setPositioning first in constructor so getClassPositioning is called only once
 	this.setPositioning(options.positioning);
 	this.setPopupClass(options.popupClass);
 }
@@ -11207,54 +11383,54 @@ ol.Overlay.Popup.prototype.getClassPositioning = function ()
 }
 
 /**
- * Set CSS class of the popup.
- * @param {string} class name.
+ * Set a close box to the popup.
+ * @param {bool} b
  * @api stable
  */
 ol.Overlay.Popup.prototype.setClosebox = function (b)
 {	this.closeBox = b;
-	if (b) $(this.element).addClass("hasclosebox");
-	else $(this.element).removeClass("hasclosebox");
+	if (b) this._elt.addClass("hasclosebox");
+	else this._elt.removeClass("hasclosebox");
 }
 
 /**
  * Set the CSS class of the popup.
- * @param {string} class name.
+ * @param {string} c class name.
  * @api stable
  */
 ol.Overlay.Popup.prototype.setPopupClass = function (c)
-{	$(this.element).removeClass()
+{	this._elt.removeClass()
 		.addClass("ol-popup "+(c||"default")+" "+this.getClassPositioning()+(this.closeBox?" hasclosebox":""));
 }
 
 /**
  * Add a CSS class to the popup.
- * @param {string} class name.
+ * @param {string} c class name.
  * @api stable
  */
 ol.Overlay.Popup.prototype.addPopupClass = function (c)
-{	$(this.element).addClass(c);
+{	this._elt.addClass(c);
 }
 
 /**
  * Remove a CSS class to the popup.
- * @param {string} class name.
+ * @param {string} c class name.
  * @api stable
  */
 ol.Overlay.Popup.prototype.removePopupClass = function (c)
-{	$(this.element).removeClass(c);
+{	this._elt.removeClass(c);
 }
 
 /**
- * Remove a CSS class to the popup.
- * @param {string} class name.
+ * Set positionning of the popup
+ * @param {ol.OverlayPositioning | string | undefined} pos an ol.OverlayPositioning 
+ * 		or 'auto' to let the popup choose the best position 
  * @api stable
  */
 ol.Overlay.Popup.prototype.setPositioning = function (pos)
-{	
-        if (pos === undefined)
-            return;
-        if (/auto/.test(pos))
+{	if (pos === undefined)
+		return;
+	if (/auto/.test(pos))
 	{	this.autoPositioning = pos.split('-');
 		if (this.autoPositioning.length==1) this.autoPositioning[1]="auto";
 	}
@@ -11263,23 +11439,35 @@ ol.Overlay.Popup.prototype.setPositioning = function (pos)
 	if (pos=="center") pos = "bottom-center";
 	this.setPositioning_(pos);
 }
+
+/** @private
+ * @param {ol.OverlayPositioning | string | undefined} pos  
+ */
 ol.Overlay.Popup.prototype.setPositioning_ = function (pos)
 {	ol.Overlay.prototype.setPositioning.call(this, pos);
-	$(this.element).removeClass("ol-popup-top ol-popup-bottom ol-popup-left ol-popup-right ol-popup-center ol-popup-middle");
-	$(this.element).addClass(this.getClassPositioning());
+	this._elt.removeClass("ol-popup-top ol-popup-bottom ol-popup-left ol-popup-right ol-popup-center ol-popup-middle");
+	this._elt.addClass(this.getClassPositioning());
 }
 
 /** Check if popup is visible
 * @return {boolean}
 */
 ol.Overlay.Popup.prototype.getVisible = function ()
-{	return $(this.element).hasClass("visible");
+{	return this._elt.hasClass("visible");
 };
 
 /**
  * Set the position and the content of the popup.
- * @param {ol.Coordinate|string} the coordinate of the popup or the HTML content.
- * @param {string|undefined} the HTML content (undefined = previous content).
+ * @param {ol.Coordinate|string} coordinate the coordinate of the popup or the HTML content.
+ * @param {string|undefined} html the HTML content (undefined = previous content).
+ * @example
+var popup = new ol.Overlay.Popup();
+// Show popup
+popup.show([166000, 5992000], "Hello world!");
+// Move popup at coord with the same info
+popup.show([167000, 5990000]);
+// set new info
+popup.show("New informations");
  * @api stable
  */
 ol.Overlay.Popup.prototype.show = function (coordinate, html)
@@ -11321,13 +11509,13 @@ ol.Overlay.Popup.prototype.show = function (coordinate, html)
 		// Show
 		this.setPosition(coordinate);
 		// Set visible class (wait to compute the size/position first)
-		$(this.element).parent().show();
+		this._elt.parent().show();
                 if (typeof (this.onshow) == 'function') this.onshow();
 		this._tout = setTimeout (function()
-		{	$(self.element).addClass("visible"); 
+		{	self._elt.addClass("visible"); 
 		}, 0);
 	}
-}
+};
 
 /**
  * Hide the popup
@@ -11338,14 +11526,11 @@ ol.Overlay.Popup.prototype.hide = function ()
 	if (typeof (this.onclose) == 'function') this.onclose();
 	this.setPosition(undefined);
 	if (this._tout) clearTimeout(this._tout);
-	$(this.element).removeClass("visible");
-}
-
+	this._elt.removeClass("visible");
+};
 /*	Copyright (c) 2015 Jean-Marc VIGLINO, 
 	released under the CeCILL-B license (French BSD license)
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
-
-*  Add a marker style to use with font symbols
 */
 /**
  * @requires ol.style.Circle
@@ -11355,16 +11540,29 @@ ol.Overlay.Popup.prototype.hide = function ()
 
 /**
  * @classdesc
- * Set fontsymbol style for vector features.
+ * A marker style to use with font symbols.
  *
  * @constructor
- * @param {olx.style.FontSymbolOptions=} opt_options Options.
+ * @param {} options Options.
+ *  @param {number} options.glyph the glyph name or a char to display as symbol. 
+ * 		The name must be added using the {@link ol.style.FontSymbol.addDefs} function.
+ *  @param {string} options.form 
+ * 		none|circle|poi|bubble|marker|coma|shield|blazon|bookmark|hexagon|diamond|triangle|sign|ban|lozenge|square
+ * 		a form that will enclose the glyph, default none
+ *  @param {number} options.radius
+ *  @param {number} options.rotation
+ *  @param {number} options.rotateWithView
+ *  @param {number} options.opacity
+ *  @param {number} options.fontSize, default 1
+ *  @param {boolean} options.gradient true to display a gradient on the symbol
+ *  @param {ol.style.Fill} options.fill
+ *  @param {ol.style.Stroke} options.stroke
  * @extends {ol.style.RegularShape}
  * @implements {ol.structs.IHasChecksum}
  * @api
  */
-ol.style.FontSymbol = function(opt_options) 
-{	options = opt_options || {};
+ol.style.FontSymbol = function(options) 
+{	options = options || {};
 	var strokeWidth = 0;
 	if (options.stroke) strokeWidth = options.stroke.getWidth();
 	ol.style.RegularShape.call (this,{ radius: options.radius, fill:options.fill, 
@@ -11402,8 +11600,12 @@ ol.style.Image.prototype.getImagePNG = function()
  */
 ol.style.FontSymbol.prototype.defs = { 'fonts':{}, 'glyphs':{} };
 
-/**
- *	Static function : add new font defs 
+/** Static function : add new font defs 
+ * @param {String|Object} font the font desciption
+ * @param {} glyphs a key / value list of glyph definitions. 
+ * 		Each key is the name of the glyph, 
+ * 		the value is an object that code the font, the caracter code, 
+ * 		the name and a search string for the glyph.
  */
  ol.style.FontSymbol.addDefs = function(font, glyphs)
  {	var thefont = font;
@@ -11473,7 +11675,8 @@ ol.style.FontSymbol.prototype.getStroke = function() {
 };
 
 /**
- * Get the stroke style for the symbol.
+ * Get the glyph definition for the symbol.
+ * @param {string|undefined} name a glyph name to get the definition, default return the glyph definition for the style.
  * @return {ol.style.Stroke} Stroke style.
  * @api
  */
@@ -11503,6 +11706,8 @@ ol.style.FontSymbol.prototype.getFontInfo = function(glyph)
 {	return ol.style.FontSymbol.prototype.defs.fonts[glyph.font];
 }
 
+/** @private
+ */
 ol.style.FontSymbol.prototype.renderMarker_ = function(atlasManager) 
 {
 	var strokeStyle;
@@ -11738,23 +11943,22 @@ ol.style.FontSymbol.prototype.getChecksum = function()
  * @requires ol.style.Circle
  * @requires ol.structs.IHasChecksum
  */
-
-
 /**
  * @classdesc
  * Set chart style for vector features.
  *
  * @constructor
- * @param {olx.style.FontSymbolOptions=} Options.
- *	- type {pie|bar}
- *	- radius {number} chart radius
- *	- rotation {number}
- *	- snapToPixel {bool}
- *	- stroke {ol.style.Stroke} stroke style
- *	- colors {String|Array<color>} predefined color set "classic","dark","pale","pastel","neon" / array of color string, default classic
- *	- offsetX {number}
- *	- offsetY {number}
- *	- animation {number} step in an animation sequence [0,1]
+ * @param {} options
+ *	@param {String} options.type Chart type: pie,pie3D, donut or bar
+ *	@param {number} options.radius Chart radius/size, default 20
+ *	@param {number} options.rotation Rotation in radians (positive rotation clockwise). Default is 0.
+ *	@param {bool} options.snapToPixel use integral numbers of pixels, default true
+ *	@param {ol.style.Stroke} options.stroke stroke style
+ *	@param {String|Array<ol.color>} options.colors predefined color set "classic","dark","pale","pastel","neon" / array of color string, default classic
+ *	@param {number} options.offsetX X offset in px
+ *	@param {number} options.offsetY Y offset in px
+ *	@param {number} options.animation step in an animation sequence [0,1]
+ * @see [Statistic charts example](../../examples/map.style.chart.html)
  * @extends {ol.style.RegularShape}
  * @implements {ol.structs.IHasChecksum}
  * @api
@@ -11791,7 +11995,7 @@ ol.style.Chart = function(opt_options)
 };
 ol.inherits(ol.style.Chart, ol.style.RegularShape);
 
-/** Default color thems
+/** Default color set: classic, dark, pale, pastel, neon
 */
 ol.style.Chart.colors = 
 {	"classic":	["#ffa500","blue","red","green","cyan","magenta","yellow","#0f0"],
@@ -12014,24 +12218,21 @@ ol.style.Chart.prototype.getChecksum = function()
 	(http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.txt).
 */
 /**
- * @requires 
- */
-/**
  * @classdesc
  * Fill style with named pattern
  *
  * @constructor
- * @param {olx.style.FillPatternOption=}  Options
- *	- image {ol.style.Image|undefined} an image pattern, image must be preloaded to draw on first call
- *	- opacity {number|undefined} opacity with image pattern, default:1
- *	- pattern {olx.style.fillPattern} pattern name (override by image option)
- *	- color {ol.color} pattern color
- *	- fill {ol.style.Fill} fill color (background)
- *	- offset {number} pattern offset for hash/dot/circle/cross pattern
- *	- size {number} line size for hash/dot/circle/cross pattern
- *	- spacing {number} spacing for hash/dot/circle/cross pattern
- *	- angle {number|bool} angle for hash pattern / true for 45deg dot/circle/cross
- *	- scale [number} pattern scale 
+ * @param {olx.style.FillPatternOption=}  options
+ *	@param {ol.style.Image|undefined} options.image an image pattern, image must be preloaded to draw on first call
+ *	@param {number|undefined} options.opacity opacity with image pattern, default:1
+ *	@param {olx.style.fillPattern} options.pattern pattern name (override by image option)
+ *	@param {ol.color} options.color pattern color
+ *	@param {ol.style.Fill} options.fill fill color (background)
+ *	@param {number} options.offset pattern offset for hash/dot/circle/cross pattern
+ *	@param {number} options.size line size for hash/dot/circle/cross pattern
+ *	@param {number} options.spacing spacing for hash/dot/circle/cross pattern
+ *	@param {number|bool} options.angle angle for hash pattern / true for 45deg dot/circle/cross
+ *	@param {number} options.scale pattern scale 
  * @extends {ol.style.Fill}
  * @implements {ol.structs.IHasChecksum}
  * @api
@@ -12563,7 +12764,6 @@ ol.style.FillPattern.prototype.patterns =
 
 
 /**
- * @inheritDoc
  * /
 ol.style.FillPattern.prototype.getChecksum = function() 
 {
@@ -12598,31 +12798,28 @@ ol.style.FillPattern.prototype.getChecksum = function()
  * @requires ol.style.RegularShape
  * @requires ol.structs.IHasChecksum
  */
-
-/** olx.style.PhotoSymbolOptions
-*	kind { default | square | round | anchored | folio } 
-*	crop {boolean} crop within square, default is false
-*	radius {Number} symbol size
-*	shadow {boolean} drop a shadow
-*	stroke {ol.style.Stroke}
-*	src {String} image src
-*	crossOrigin {String} The crossOrigin attribute for loaded images. Note that you must provide a crossOrigin value if you want to access pixel data with the Canvas renderer.
-*	offsetX {Number} Horizontal offset in pixels. Default is 0.
-*	offsetY {Number} Vertical offset in pixels. Default is 0.
-*	onload {function} callback when image is loaded (to redraw the layer)
-*/
 /**
  * @classdesc
  * Set Photo style for vector features.
  *
  * @constructor
- * @param {olx.style.PhotoSymbolOptions=} Options.
+ * @param {} options
+ *  @param { default | square | round | anchored | folio } options.kind
+ *  @param {boolean} options.crop crop within square, default is false
+ *  @param {Number} options.radius symbol size
+ *  @param {boolean} options.shadow drop a shadow
+ *  @param {ol.style.Stroke} options.stroke
+ *  @param {String} options.src image src
+ *  @param {String} options.crossOrigin The crossOrigin attribute for loaded images. Note that you must provide a crossOrigin value if you want to access pixel data with the Canvas renderer.
+ *  @param {Number} options.offsetX Horizontal offset in pixels. Default is 0.
+ *  @param {Number} options.offsetY Vertical offset in pixels. Default is 0.
+ *  @param {function} options.onload callback when image is loaded (to redraw the layer)
  * @extends {ol.style.RegularShape}
  * @implements {ol.structs.IHasChecksum}
  * @api
  */
-ol.style.Photo = function(opt_options) 
-{	options = opt_options || {};
+ol.style.Photo = function(options) 
+{	options = options || {};
 	this.sanchor_ = options.kind=="anchored" ? 8:0;
 	this.shadow_ = Number(options.shadow) || 0;
 	if (!options.stroke) 
@@ -12826,8 +13023,8 @@ ol.style.Photo.prototype.renderPhoto_ = function()
 }
 
 /**
- * @private
  * Draw an timage when loaded
+ * @private
  */
 ol.style.Photo.prototype.drawImage_ = function(img) 
 {	var canvas = this.getImage();
@@ -13016,9 +13213,11 @@ ol.layer.Vector.prototype.setTextPathStyle = function(style, maxResolution)
 
 
 /** Add new properties to ol.style.Text
+* to use with ol.layer.Vector.prototype.setTextPathStyle
+* @constructor
 * @param {} options
-*	- textOverflow {visible|ellipsis|string} 
-*	- minWidth {number} minimum width (px) to draw text, default 0
+*	@param {visible|ellipsis|string} textOverflow
+*	@param {number} minWidth minimum width (px) to draw text, default 0
 */
 ol.style.TextPath = function(options)
 {	if (!options) options={};
@@ -13402,7 +13601,10 @@ ol.geom.LineString.prototype.calcCSpline_ = function(options)
 
 	return new ol.geom.LineString(res);
 }
-/** Convert a list of image file or a list of image into geojson
+
+/** Convert a list of image file or a list of image into geojson 
+* reading location in the EXIF tags
+* @constructor
 * @param {Array<Image|File>} img the array to process
 * @param {} options
 *	- camera {boolean} true to get camera info
@@ -13425,7 +13627,7 @@ function getDMS(l)
 	else return null;
 }
 
-//
+// Constructor
 exif2geojson = function (img, options)
 {	options = options || {};
 	if (typeof(options.loading) != "function") options.loading = function(){};
@@ -13495,7 +13697,6 @@ exif2geojson = function (img, options)
 *	@param {Number} options.size size of the exagon in map units, default 80000
 *	@param {ol.coordinate} options.origin orgin of the grid, default [0,0]
 *	@param {pointy|flat} options.layout grid layout, default pointy
-* @todo 
 */
 ol.HexGrid = function (options)
 {	options = options || {};
@@ -14166,8 +14367,8 @@ ol.Map.prototype.animExtent = function(extent, options)
 */
 /** Ordering function for ol.layer.Vector renderOrder parameter
 *	ol.ordering.fn (options)
-*	@param {object} 
-*	@return ordering function (f0,f1)
+*	It will return an ordering function (f0,f1)
+*	@namespace
 */
 ol.ordering = {}
 
@@ -14176,7 +14377,7 @@ ol.ordering = {}
 */
 ol.ordering.yOrdering = function(options)
 {	return function(f0,f1)
-	{	return f0.getGeometry().getExtent()[1] < f1.getGeometry().getExtent()[1] ;
+	{	return f1.getGeometry().getExtent()[1] - f0.getGeometry().getExtent()[1] ;
 	};
 }
 
@@ -14192,15 +14393,17 @@ ol.ordering.zIndex = function(options)
 	if (option.equalFn)
 	{	return function(f0,f1)
 		{	if (f0.get(attr) == f1.get(attr)) return option.equalFn(f0,f1);
-			return f0.get(attr) < f1.get(attr);
+			else return f0.get(attr) < f1.get(attr) ? 1:-1;
 		};
 	}
 	else
 	{	return function(f0,f1)
-		{	return f0.get(attr) < f1.get(attr);
+		{	if (f0.get(attr) == f1.get(attr)) return 0;
+			else return f0.get(attr) < f1.get(attr) ? 1:-1;
 		};
 	}
 }
+
 /** WSynchro object to synchronize windows
 *	- windows: array of windows to synchro (
 *	- source: the window source (undefined if first window)
