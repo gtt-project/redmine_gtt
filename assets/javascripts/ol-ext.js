@@ -11547,7 +11547,7 @@ ol.Overlay.Popup.prototype.hide = function ()
  *  @param {number} options.glyph the glyph name or a char to display as symbol. 
  * 		The name must be added using the {@link ol.style.FontSymbol.addDefs} function.
  *  @param {string} options.form 
- * 		none|circle|poi|bubble|marker|coma|shield|blazon|bookmark|hexagon|diamond|triangle|sign|ban|lozenge|square
+ * 		none|circle|poi|bubble|marker|coma|shield|blazon|mcr|bookmark|hexagon|diamond|triangle|sign|ban|lozenge|square
  * 		a form that will enclose the glyph, default none
  *  @param {number} options.radius
  *  @param {number} options.rotation
@@ -11803,6 +11803,21 @@ ol.style.FontSymbol.prototype.drawPath_ = function(renderOptions, context)
 					pts = [ 0.1,0, 0.9,0, 0.9,0.8, 0.6,0.8, 0.5,1, 0.4,0.8, 0.1,0.8, 0.1,0 ]; 
 					transfo.fac = 0.8;
 					transfo.posY = 0.4*s+w ;
+					break;
+				case "mcr":
+					pts = [
+						0.925,0.16, 0.925,0.715, // right
+						0.9204,0.738, 0.9074,0.7574, 0.888,0.7704, // arc (right-bottom)
+						0.865,0.775, 0.6,0.775, 0.5,0.9, 0.4,0.775, 0.135,0.775, // bottom
+						0.112,0.7704, 0.0926,0.7574, 0.0796,0.738, // arc (bottom-left)
+						0.075,0.715, 0.075,0.16, // left
+						0.0796,0.137, 0.0926,0.1176, 0.112,0.1046, // arc (left-top)
+						0.135,0.1, 0.865,0.1, // top
+						0.888,0.1046, 0.9074,0.1176, 0.9204,0.137, // arc (top-right)
+						0.925,0.16 // right(start)
+					];
+					transfo.fac = 0.85;
+					transfo.posY = 0.45*s+w ;
 					break;
 				case "bookmark": 
 					pts = [ 0.05,0, 0.95,0, 0.95,1, 0.5,0.8, 0.05,1, 0.05,0 ]; 
