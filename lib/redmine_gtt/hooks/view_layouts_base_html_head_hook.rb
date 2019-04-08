@@ -28,11 +28,11 @@ module RedmineGtt
         tags << stylesheet_link_tag("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
         tags << stylesheet_link_tag("fonts.css", :plugin => "redmine_gtt", :media => "all")
         tags << stylesheet_link_tag("ol.css", :plugin => "redmine_gtt", :media => "all")
-        tags << stylesheet_link_tag("ol3-ext.min.css", :plugin => "redmine_gtt", :media => "all")
+        tags << stylesheet_link_tag("ol-ext.min.css", :plugin => "redmine_gtt", :media => "all")
         tags << stylesheet_link_tag("app.css", :plugin => "redmine_gtt", :media => "all")
 
         tags << javascript_include_tag('ol.js', :plugin => 'redmine_gtt')
-        tags << javascript_include_tag('ol3-ext.min.js', :plugin => 'redmine_gtt')
+        tags << javascript_include_tag('ol-ext.min.js', :plugin => 'redmine_gtt')
         tags << javascript_include_tag('app.js', :plugin => 'redmine_gtt')
         tags << javascript_include_tag('fontmaki-def.js', :plugin => 'redmine_gtt')
         return tags.join("\n")
