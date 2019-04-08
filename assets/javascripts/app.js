@@ -349,11 +349,12 @@ var App = (function ($, publ) {
     style.push(
       new ol.style.Style({
         image: new ol.style.FontSymbol({
-          form: "blazon",
+          form: "mcr",
           gradient: false,
           glyph: publ.getSymbol(feature),
-          fontSize: 0.6,
+          fontSize: 0.7,
           radius: 18,
+          offsetY: -9,
           rotation: 0,
           rotateWithView: false,
           color: publ.getFontColor(feature),
