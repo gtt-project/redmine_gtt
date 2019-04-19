@@ -247,9 +247,23 @@ var App = (function ($, publ) {
 
     // To fix an issue with empty map after changing the tracker type
     $('select#issue_tracker_id').on('change', function(evt) {
-      setTimeout( function() {
-        publ.zoomToExtent();
-      }, 1000);
+      $(document).ajaxComplete(function(d){
+        publ.zoomToExtent(true)
+      })
+    });
+
+    // To fix an issue with empty map after changing the status
+    $('select#issue_status_id').on('change', function(evt) {
+      $(document).ajaxComplete(function(d){
+        publ.zoomToExtent(true)
+      })
+    });
+
+    // To fix an issue with empty map after changing the project
+    $('select#issue_project_id').on('change', function(evt) {
+      $(document).ajaxComplete(function(d){
+        publ.zoomToExtent(true)
+      })
     });
 
     // Handle multiple maps per page
