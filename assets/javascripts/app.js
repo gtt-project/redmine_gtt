@@ -268,6 +268,10 @@ var App = (function ($, publ) {
 
     // Handle multiple maps per page
     maps.push(map);
+
+    // Pass map properties before edit to edit map
+    var beforeEditProperties = $(".ol-map").data("geom").properties
+    $("#all_attributes .ol-map").data("geom").properties = beforeEditProperties
   };
 
   /**
