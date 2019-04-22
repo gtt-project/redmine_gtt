@@ -268,10 +268,6 @@ var App = (function ($, publ) {
 
     // Handle multiple maps per page
     maps.push(map);
-
-    // Pass map properties before edit to edit map
-    var beforeEditProperties = $(".ol-map").data("geom").properties
-    $("#all_attributes .ol-map").data("geom").properties = beforeEditProperties
   };
 
   /**
@@ -314,7 +310,7 @@ var App = (function ($, publ) {
     color = "#FFD700";
     var plugin_settings = defaults.pluginSettings
 
-    var status_id = feature.get('status_id');
+    var status_id = $("#issue_status_id").val();
     if (status_id) {
       var key = "status_" + status_id;
       if (key in plugin_settings) {
@@ -333,7 +329,7 @@ var App = (function ($, publ) {
     var symbol = "mcr-icon-write";
 
     var plugin_settings = $("#ol-defaults").data("pluginSettings");
-    var tracker_id = feature.get('tracker_id');
+    var tracker_id = $("#issue_tracker_id").val();
     if (tracker_id) {
       var key = "tracker_" + tracker_id;
       if (key in plugin_settings) {
