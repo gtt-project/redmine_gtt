@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'deface', '>= 1.1.0'
+gem 'deface'
 gem 'immutable-struct'
 gem "rgeo"
 gem "rgeo-geojson"
