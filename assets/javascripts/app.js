@@ -35,10 +35,10 @@ var App = (function ($, publ) {
 
   // Quick hack
   var quick_hack = {
-    lon: 135.1955,
-    lat: 34.6901,
+    lon: 139.691706,
+    lat: 35.689524,
     zoom: 13,
-    maxzoom: 18
+    maxzoom: 19
   };
 
   /**
@@ -170,7 +170,7 @@ var App = (function ($, publ) {
     toolbar.setPosition("bottom-left");
     map.addControl(toolbar);
 
-    // this.setView();
+    this.setView();
     this.setGeolocation();
     this.setGeocoding();
     this.parseHistory();
@@ -431,7 +431,6 @@ var App = (function ($, publ) {
         ol.extent.extend(extent, feature.getGeometry().getExtent());
       });
       maps.forEach(function (m) {
-        m.getView().setMaxZoom(18);
         m.getView().fit(extent, m.getSize());
       });
     }
