@@ -59,16 +59,17 @@ var App = (function ($, publ) {
     defaults = $("#ol-defaults").data();
     defaults.geocoderUrl = "https://geocoder.grp.one/geojson";
 
-    if (defaults.lon === null) {
+    // Check if params are null or undefined (use "==" instead of "===" to detect both)
+    if (defaults.lon == null) {
       defaults.lon = quick_hack.lon;
     }
-    if (defaults.lat === null) {
+    if (defaults.lat == null) {
       defaults.lat = quick_hack.lat;
     }
-    if (defaults.zoom === null) {
+    if (defaults.zoom == null) {
       defaults.zoom = quick_hack.zoom;
     }
-    if (defaults.maxzoom === null) {
+    if (defaults.maxzoom == null) {
       defaults.maxzoom = quick_hack.maxzoom;
     }
 
