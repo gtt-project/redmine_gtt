@@ -42,6 +42,7 @@ en:
   gtt_settings_general_center_lon: "Default map center longitude"
   gtt_settings_general_center_lat: "Default map center latitude"
   gtt_settings_general_zoom_level: "Default map zoom level"
+  gtt_settings_general_maxzoom_level: "Default map maximum zoom level"
 
   gtt_settings_map_url: "API Service URL"
   gtt_settings_map_apikey: "API Key"
@@ -51,6 +52,7 @@ en:
   gtt_settings_geocoder_apikey: "API Key"
 
   select_default_tracker_icon: "Select default tracker icon:"
-  select_default_status_color:  "Select default status color:"
+  select_default_status_color: "Select default status color:"
+  select_default_map_settings: "Select default map settings:"
 
   text_osm_url_sample: For example https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png

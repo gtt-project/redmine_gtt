@@ -19,6 +19,38 @@
 <% end %>
 </div>
 
+<div class="box tabular settings">
+<h3><%= l(:select_default_map_settings) %></h3>
+
+<p>
+  <%= content_tag(:label, l(:gtt_settings_general_center_lon)) %>
+  <%= text_field_tag('settings[default_map_center_longitude]',
+      @settings['default_map_center_longitude'],
+      :size => 10) %>
+</p>
+
+<p>
+  <%= content_tag(:label, l(:gtt_settings_general_center_lat)) %>
+  <%= text_field_tag('settings[default_map_center_latitude]',
+      @settings['default_map_center_latitude'],
+      :size => 10) %>
+</p>
+
+<p>
+  <%= content_tag(:label, l(:gtt_settings_general_zoom_level)) %>
+  <%= text_field_tag('settings[default_map_zoom_level]',
+      @settings['default_map_zoom_level'],
+      :size => 10) %>
+</p>
+
+<p>
+  <%= content_tag(:label, l(:gtt_settings_general_maxzoom_level)) %>
+  <%= text_field_tag('settings[default_map_maxzoom_level]',
+      @settings['default_map_maxzoom_level'],
+      :size => 10) %>
+</p>
+</div>
+
 <%= javascript_tag do %>
   var glyph = ol.style.FontSymbol.prototype.defs.glyphs;
   for (var font in ol.style.FontSymbol.prototype.defs.fonts){
