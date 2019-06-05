@@ -38,11 +38,11 @@
 
 @font-face {
   font-family: "mcr-icons";
-  src: url("../fonts/mcr-icons.eot?75e7536f7f839b0f143e30ad8d0da92d?#iefix") format("embedded-opentype"),
-  url("../fonts/mcr-icons.woff2?75e7536f7f839b0f143e30ad8d0da92d") format("woff2"),
-  url("../fonts/mcr-icons.woff?75e7536f7f839b0f143e30ad8d0da92d") format("woff"),
-  url("../fonts/mcr-icons.ttf?75e7536f7f839b0f143e30ad8d0da92d") format("truetype"),
-  url("../fonts/mcr-icons.svg?75e7536f7f839b0f143e30ad8d0da92d#mcr-icons") format("svg");
+  src: url("../fonts/mcr-icons.eot?b88144ffa3049f78bfa19b5159b89f09?#iefix") format("embedded-opentype"),
+url("../fonts/mcr-icons.woff2?b88144ffa3049f78bfa19b5159b89f09") format("woff2"),
+url("../fonts/mcr-icons.woff?b88144ffa3049f78bfa19b5159b89f09") format("woff"),
+url("../fonts/mcr-icons.ttf?b88144ffa3049f78bfa19b5159b89f09") format("truetype"),
+url("../fonts/mcr-icons.svg?b88144ffa3049f78bfa19b5159b89f09#mcr-icons") format("svg");
 }
 
 [class^="mcr-icon-"]:before, i[class*=" mcr-icon-"]:before {
