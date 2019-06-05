@@ -1,8 +1,8 @@
 # Japanese strings go here for Rails i18n
 ja:
-  error_invalid_json: must be valid JSON
+  error_invalid_json: "正しいJSONにしてください"
 
-  field_default: 新規プロジェクトのデフォルト
+  field_default: "新規プロジェクトのデフォルト"
   field_geometry: "所在地"
   field_location: "場所"
   field_geom: "所在地"
@@ -10,24 +10,25 @@ ja:
   field_options_string: オプション
   field_gtt_tile_source_ids: タイルソース
 
-  label_geotask_map: "知らせて 地図"
+  label_geotask_map: "ジオタスク 地図"
   label_global: グローバル
   label_project_map: "プロジェクト 地図"
   label_user_map: "ユーザ 地図"
   label_name: タイトル
-  label_nearby: "近く(lat,lng)"
+  label_nearby: "近く(緯度,軽度)"
   label_type: タイプ
   label_config: 構成
   label_gtt_settings: GTT
   label_gtt_settings_headline: GTTの設定
 
   gtt_label_geometry: "APIキー"
-  gtt_text_settings_help: "Enter the API key. Leave empty if no key is required."
+  gtt_text_settings_help: "APIキーを入力してください。キーが不要の場合は空白にしてください。"
   gtt_text_settings_geometry_example: "2747491302261fbc47967ba62621af22"
 
   label_gtt: "GTT"
   label_gtt_bbox_filter: 場所
   label_gtt_distance: 距離
+  label_gtt_select_icon: アイコン選択
   label_gtt_tile_source: タイルソース
   label_gtt_tile_source_new: 新しいタイルソース
   label_gtt_tile_source_plural: タイルソース
@@ -41,6 +42,7 @@ ja:
   gtt_settings_general_center_lon: "既定の地図中心経度"
   gtt_settings_general_center_lat: "既定の地図中心緯度"
   gtt_settings_general_zoom_level: "既定の地図ズームレベル"
+  gtt_settings_general_maxzoom_level: "既定の最大地図ズームレベル"
 
   gtt_settings_map_url: "APIサービスのURL"
   gtt_settings_map_apikey: "APIキー"
@@ -49,4 +51,8 @@ ja:
   gtt_settings_geocoder_url: "APIサービスのURL"
   gtt_settings_geocoder_apikey: "APIキー"
 
-  text_osm_url_sample: 例： https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png
+  select_default_tracker_icon: "レポートの分野アイコンを選択:"
+  select_default_status_color: "ステータス色を選択:"
+  select_default_map_settings: "地図の初期値を選択:"
+
+  text_osm_url_sample: "例： https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png"
