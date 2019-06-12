@@ -20,7 +20,9 @@ Redmine::Plugin.register :redmine_gtt do
       'default_map_center_longitude' => 139.691706,
       'default_map_center_latitude' => 35.689524,
       'default_map_zoom_level' => 13,
-      'default_map_maxzoom_level' => 19
+      'default_map_maxzoom_level' => 19,
+      'default_geocoder_address_field_name' => '現地住所',
+      'default_geocoder_district_field_name' => '区名'
     },
     partial: 'settings/gtt/settings'
   )
