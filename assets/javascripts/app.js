@@ -38,7 +38,9 @@ var App = (function ($, publ) {
     lon: 139.691706,
     lat: 35.689524,
     zoom: 13,
-    maxzoom: 19
+    maxzoom: 19,
+    geocoderAddress: "現地住所",
+    geocoderDistrict: "区名"
   };
 
   /**
@@ -71,6 +73,12 @@ var App = (function ($, publ) {
     }
     if (defaults.maxzoom == null) {
       defaults.maxzoom = quick_hack.maxzoom;
+    }
+    if (defaults.geocoderAddress == null) {
+      defaults.geocoderAddress = quick_hack.geocoderAddress;
+    }
+    if (defaults.geocoderDistrict == null) {
+      defaults.geocoderDistrict = quick_hack.geocoderDistrict;
     }
 
     if (contents.geom && contents.geom !== null) {
@@ -592,7 +600,7 @@ var App = (function ($, publ) {
     // Hack to add Geocoding buttons to text fields
     // There should be a better way to do this
     if ( $("#issue-form #attributes button.btn-geocode").length == 0 ) {
-      $("#issue-form #attributes label:contains('現地住所')").parent("p").append(
+      $("#issue-form #attributes label:contains('" + defaults.geocoderAddress + "')").parent("p").append(
         '<button name="button" type="button" class="btn-geocode">住所検索</button>'
       );
 
@@ -605,11 +613,25 @@ var App = (function ($, publ) {
           });
           coords = ol.proj.transform(coords,'EPSG:3857','EPSG:4326')
           $.getJSON("https://geocoder.grp.one/reversegeocode/json/" + coords.join(",") + ",1000", function(data) {
+            var addressInput = $("#issue-form #attributes label:contains('" + defaults.geocoderAddress + "')").parent("p").children("input");
+            var districtInput = $("#issue-form #attributes label:contains('" + defaults.geocoderDistrict + "')").parent("p").children("input");
+            var foundDistrict = false;
             if (data.result.address) {
-              $("#issue-form #attributes label:contains('現地住所')").parent("p").children("input").val(data.result.address);
+              addressInput.val(data.result.address);
+              if (districtInput && data.result.shikuchoson) {
+                var regexp = /^\S+市(\S+区)$/g;
+                var match = regexp.exec(data.result.shikuchoson);
+                if (match && match.length === 2) {
+                  districtInput.val(match[1]);
+                  foundDistrict = true;
+                }
+              }
             }
             else {
-              $("#issue-form #attributes label:contains('現地住所')").parent("p").children("input").val("---");
+              addressInput.val("---");
+            }
+            if (!foundDistrict) {
+              districtInput.val("");
             }
           });
         }

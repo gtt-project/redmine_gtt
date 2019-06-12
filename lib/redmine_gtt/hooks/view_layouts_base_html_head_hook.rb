@@ -47,6 +47,8 @@ module RedmineGtt
           :maxzoom => Setting.plugin_redmine_gtt['default_map_maxzoom_level'],
           :geocoder_url => Setting.plugin_redmine_gtt['default_geocoder_url'],
           :geocoder_apikey => Setting.plugin_redmine_gtt['default_geocoder_apikey'],
+          :geocoder_address => Setting.plugin_redmine_gtt['default_geocoder_address_field_name'],
+          :geocoder_district => Setting.plugin_redmine_gtt['default_geocoder_district_field_name'],
           :plugin_settings => Setting.plugin_redmine_gtt.select{ |key, value| key.to_s.match(/^(?!default).+/) }
         }, :id => 'ol-defaults', :style => 'display:none')
         return tags.join("\n")
