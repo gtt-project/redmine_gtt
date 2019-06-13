@@ -619,7 +619,7 @@ var App = (function ($, publ) {
             if (data.result.address) {
               addressInput.val(data.result.address);
               if (districtInput && data.result.shikuchoson) {
-                var regexp = /^\S+市(\S+区)$/g;
+                var regexp = /^(?:\S+市)?(\S+区)$/g;
                 var match = regexp.exec(data.result.shikuchoson);
                 if (match && match.length === 2) {
                   districtInput.val(match[1]);
