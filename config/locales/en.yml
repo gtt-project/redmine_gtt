@@ -50,9 +50,12 @@ en:
 
   gtt_settings_geocoder_url: "API Service URL"
   gtt_settings_geocoder_apikey: "API Key"
+  gtt_settings_geocoder_address_field_name: "Address field name"
+  gtt_settings_geocoder_district_field_name: "District field name"
 
   select_default_tracker_icon: "Select default tracker icon:"
   select_default_status_color: "Select default status color:"
   select_default_map_settings: "Select default map settings:"
+  select_default_geocoder_settings: "Select default geocoder settings:"
 
   text_osm_url_sample: For example https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png
