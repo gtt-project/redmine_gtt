@@ -634,6 +634,25 @@ var App = (function ($, publ) {
               districtInput.val("");
             }
           });
+        }else{
+          // GEOCODE ADDRESS AND ADD ICON TO MAP
+          if ($("button.btn-geocode").prev("input").val() != ""){
+            coords = $("button.btn-geocode").prev("input").val()
+            $.getJSON("https://geocoder.grp.one/geocode/json/" + coords, function(data) {
+              if(data.result.coordinates){
+                var feature = new ol.Feature({
+                  geometry: new ol.geom.Point(
+                    ol.proj.fromLonLat(Object.values(data.result.coordinates), 'EPSG:3857','EPSG:4326')
+                  )
+                });
+                vector.getSource().getFeatures().push(feature)
+                publ.updateForm(vector.getSource().getFeatures());
+                publ.zoomToExtent();
+              }
+            })
+          }else{
+            alert("Address is empty!")
+          }
         }
       });
 
