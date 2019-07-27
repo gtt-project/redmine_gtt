@@ -605,57 +605,43 @@ var App = (function ($, publ) {
       );
 
       $("button.btn-geocode").on("click", function(evt) {
-        if (vector.getSource().getFeatures().length > 0) {
-          var coords = null
-          vector.getSource().getFeatures().forEach(function (feature) {
-            // Todo: only works with point geometries for now for the last geometry
-            coords = feature.getGeometry().getCoordinates();
-          });
-          coords = ol.proj.transform(coords,'EPSG:3857','EPSG:4326')
-          $.getJSON("https://***REMOVED***/reversegeocode/json/" + coords.join(",") + ",1000", function(data) {
-            var addressInput = $("#issue-form #attributes label:contains('" + defaults.geocoderAddress + "')").parent("p").children("input");
-            var districtInput = $("#issue-form #attributes label:contains('" + defaults.geocoderDistrict + "')").parent("p").children("input");
-            var foundDistrict = false;
-            if (data.result.address) {
-              addressInput.val(data.result.address);
-              if (districtInput && data.result.shikuchoson) {
-                var regexp = /^(?:\S+市)?(\S+区)$/g;
-                var match = regexp.exec(data.result.shikuchoson);
-                if (match && match.length === 2) {
-                  districtInput.val(match[1]);
-                  foundDistrict = true;
+        // Geocode address and add/update icon on map
+        if ($("button.btn-geocode").prev("input").val() != "") {
+          var address = $("button.btn-geocode").prev("input").val()
+          $.getJSON("https://***REMOVED***/geocode/json/" + encodeURIComponent(address), function(data) {
+            if (data.result.code >= 0 && data.result.coordinates) {
+              var geom = new ol.geom.Point(
+                ol.proj.fromLonLat(Object.values(data.result.coordinates), 'EPSG:3857','EPSG:4326')
+              )
+              var features = vector.getSource().getFeatures();
+              if (features.length > 0) {
+                features[features.length - 1].setGeometry(geom);
+              } else {
+                var feature = new ol.Feature({geometry: geom});
+                vector.getSource().getFeatures().push(feature);
+              }
+              publ.updateForm(vector.getSource().getFeatures());
+              publ.zoomToExtent(true);
+
+              var districtInput = $("#issue-form #attributes label:contains('" + defaults.geocoderDistrict + "')").parent("p").children("input");
+              if (districtInput.length > 0) {
+                var foundDistrict = false;
+                if (data.result.shikuchoson) {
+                  var regexp = /^(?:\S+市)?(\S+区)$/g;
+                  var match = regexp.exec(data.result.shikuchoson);
+                  if (match && match.length === 2) {
+                    districtInput.val(match[1]);
+                    foundDistrict = true;
+                  }
+                }
+                if (!foundDistrict) {
+                  districtInput.val("");
                 }
               }
             }
-            else {
-              addressInput.val("---");
-            }
-            if (!foundDistrict) {
-              districtInput.val("");
-            }
-          });
-        }else{
-          // GEOCODE ADDRESS AND ADD ICON TO MAP
-          if ($("button.btn-geocode").prev("input").val() != ""){
-            coords = $("button.btn-geocode").prev("input").val()
-            $.getJSON("https://***REMOVED***/geocode/json/" + coords, function(data) {
-              if(data.result.coordinates){
-                var feature = new ol.Feature({
-                  geometry: new ol.geom.Point(
-                    ol.proj.fromLonLat(Object.values(data.result.coordinates), 'EPSG:3857','EPSG:4326')
-                  )
-                });
-                vector.getSource().getFeatures().push(feature)
-                publ.updateForm(vector.getSource().getFeatures());
-                publ.zoomToExtent();
-              }
-            })
-          }else{
-            alert("Address is empty!")
-          }
+          })
         }
       });
-
     }
 
     if ( $("#issue-form #attributes button.btn-parksearch").length == 0 ) {
@@ -741,7 +727,7 @@ var App = (function ($, publ) {
     });
 
     modify.on('modifyend', function(evt) {
-      this.updateForm(evt.features.getArray());
+      this.updateForm(evt.features.getArray(), true);
     }, publ);
 
     map.addInteraction(modify);
@@ -765,7 +751,7 @@ var App = (function ($, publ) {
 
       draw.on('drawend', function(evt) {
         (vector.getSource()).clear();
-        publ.updateForm([evt.feature]);
+        publ.updateForm([evt.feature], true);
       });
 
       var control = new ol.control.Toggle({
@@ -855,13 +841,45 @@ var App = (function ($, publ) {
   /**
    *
    */
-  publ.updateForm = function (features) {
+  publ.updateForm = function (features, updateAddressFlag) {
     var writer = new ol.format.GeoJSON();
     var geojson = JSON.parse(writer.writeFeatures(features, {
       featureProjection: 'EPSG:3857',
       dataProjection: 'EPSG:4326'
     }));
     $("#geom").val(JSON.stringify(geojson.features[0]));
+
+    if (updateAddressFlag && features && features.length > 0) {
+      var addressInput = $("#issue-form #attributes label:contains('" + defaults.geocoderAddress + "')").parent("p").children("input");
+      if (addressInput.length > 0) {
+        // Todo: only works with point geometries for now for the last geometry
+        var coords = features[features.length - 1].getGeometry().getCoordinates();
+        coords = ol.proj.transform(coords,'EPSG:3857','EPSG:4326')
+        $.getJSON("https://***REMOVED***/reversegeocode/json/" + coords.join(",") + ",1000", function(data) {
+          var districtInput = $("#issue-form #attributes label:contains('" + defaults.geocoderDistrict + "')").parent("p").children("input");
+          var foundDistrict = false;
+          if (data.result.code >= 0 && data.result.address) {
+            addressInput.val(data.result.address);
+            if (districtInput.length > 0 && data.result.shikuchoson) {
+              var regexp = /^(?:\S+市)?(\S+区)$/g;
+              var match = regexp.exec(data.result.shikuchoson);
+              if (match && match.length === 2) {
+                districtInput.val(match[1]);
+                foundDistrict = true;
+              }
+            }
+          }
+          else {
+            addressInput.val("---");
+          }
+          if (!foundDistrict) {
+            if (districtInput.length > 0) {
+              districtInput.val("");
+            }
+          }
+        });
+      }
+    }
   };
 
   publ.getScale = function () {
