@@ -163,11 +163,21 @@ var App = (function ($, publ) {
         }
       });
     }
-
+    // For map div focus settings
+    if (options.target) {
+      if (options.target.getAttribute("tabindex") == null) {
+        options.target.setAttribute("tabindex", "0")
+      }
+    }
     map = new ol.Map({
       target: options.target,
       layers: layerArr,
-      interactions: ol.interaction.defaults({mouseWheelZoom:false}),
+      interactions: ol.interaction.defaults({mouseWheelZoom:false}).extend([
+        new ol.interaction.MouseWheelZoom({
+          constrainResolution: true, // force zooming to a integer zoom
+          condition: ol.events.condition.focus // only wheel/trackpad zoom when the map has the focus
+        })
+      ]),
       controls: ol.control.defaults({
         attributionOptions: ({
           collapsible: false
