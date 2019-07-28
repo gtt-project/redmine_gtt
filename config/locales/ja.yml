@@ -43,6 +43,7 @@ ja:
   gtt_settings_general_center_lat: "既定の地図中心緯度"
   gtt_settings_general_zoom_level: "既定の地図ズームレベル"
   gtt_settings_general_maxzoom_level: "既定の最大地図ズームレベル"
+  gtt_settings_general_fit_maxzoom_level: "フィット時最大地図ズームレベル"
 
   gtt_settings_map_url: "地図APIサービスのURL"
   gtt_settings_map_apikey: "地図APIキー"
