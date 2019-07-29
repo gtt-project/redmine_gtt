@@ -167,6 +167,7 @@ var App = (function ($, publ) {
     map = new ol.Map({
       target: options.target,
       layers: layerArr,
+      interactions: ol.interaction.defaults({mouseWheelZoom:false}),
       controls: ol.control.defaults({
         attributionOptions: ({
           collapsible: false
