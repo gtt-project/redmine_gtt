@@ -45,6 +45,7 @@ module RedmineGtt
           :lat => Setting.plugin_redmine_gtt['default_map_center_latitude'],
           :zoom => Setting.plugin_redmine_gtt['default_map_zoom_level'],
           :maxzoom => Setting.plugin_redmine_gtt['default_map_maxzoom_level'],
+          :fit_maxzoom => Setting.plugin_redmine_gtt['default_map_fit_maxzoom_level'],
           :geocoder_url => Setting.plugin_redmine_gtt['default_geocoder_url'],
           :geocoder_apikey => Setting.plugin_redmine_gtt['default_geocoder_apikey'],
           :geocoder_address => Setting.plugin_redmine_gtt['default_geocoder_address_field_name'],
