@@ -49,6 +49,13 @@
       @settings['default_map_maxzoom_level'],
       :size => 10) %>
 </p>
+
+<p>
+  <%= content_tag(:label, l(:gtt_settings_general_fit_maxzoom_level)) %>
+  <%= text_field_tag('settings[default_map_fit_maxzoom_level]',
+      @settings['default_map_fit_maxzoom_level'],
+      :size => 10) %>
+</p>
 </div>
 
 <div class="box tabular settings">

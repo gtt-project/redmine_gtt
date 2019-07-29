@@ -39,6 +39,7 @@ var App = (function ($, publ) {
     lat: 35.689524,
     zoom: 13,
     maxzoom: 19,
+    fitMaxzoom: 17,
     geocoderAddress: "現地住所",
     geocoderDistrict: "区名"
   };
@@ -73,6 +74,9 @@ var App = (function ($, publ) {
     }
     if (defaults.maxzoom == null) {
       defaults.maxzoom = quick_hack.maxzoom;
+    }
+    if (defaults.fitMaxzoom == null) {
+      defaults.fitMaxzoom = quick_hack.fitMaxzoom;
     }
     if (defaults.geocoderAddress == null) {
       defaults.geocoderAddress = quick_hack.geocoderAddress;
@@ -451,12 +455,18 @@ var App = (function ($, publ) {
         ol.extent.extend(extent, feature.getGeometry().getExtent());
       });
       maps.forEach(function (m) {
-        m.getView().fit(extent, m.getSize());
+        m.getView().fit(extent, {
+          size: getMapSize(m),
+          maxZoom: defaults.fitMaxzoom
+        });
       });
     }
     else if (bounds.getSource().getFeatures().length > 0) {
       maps.forEach(function (m) {
-        m.getView().fit(bounds.getSource().getExtent(), m.getSize());
+        m.getView().fit(bounds.getSource().getExtent(), {
+          size: getMapSize(m),
+          maxZoom: defaults.fitMaxzoom
+        });
       });
     }
     else if (geolocation) {
@@ -964,6 +974,17 @@ var App = (function ($, publ) {
     maps.forEach(function (m) {
       m.updateSize();
     });
+  }
+
+  function getMapSize(map) {
+    var size = map.getSize();
+    if (size.length === 2 && size[0] <= 0 && size[1] <= 0) {
+      size = [
+        $("div#" + map.getTarget().id).width(),
+        $("div#" + map.getTarget().id).height(),
+      ]
+    }
+    return size;
   }
 
   /**
