@@ -639,7 +639,7 @@ var App = (function ($, publ) {
                 features[features.length - 1].setGeometry(geom);
               } else {
                 var feature = new ol.Feature({geometry: geom});
-                vector.getSource().getFeatures().push(feature);
+                vector.getSource().addFeatures([feature]);
               }
               publ.updateForm(vector.getSource().getFeatures());
               publ.zoomToExtent(true);
