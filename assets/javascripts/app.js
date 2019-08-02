@@ -631,8 +631,9 @@ var App = (function ($, publ) {
           var address = $("button.btn-geocode").prev("input").val()
           $.getJSON("https://***REMOVED***/geocode/json/" + encodeURIComponent(address), function(data) {
             if (data.result.code >= 0 && data.result.coordinates) {
+              var coords = [data.result.coordinates.x, data.result.coordinates.y];
               var geom = new ol.geom.Point(
-                ol.proj.fromLonLat(Object.values(data.result.coordinates), 'EPSG:3857','EPSG:4326')
+                ol.proj.fromLonLat(coords, 'EPSG:3857','EPSG:4326')
               )
               var features = vector.getSource().getFeatures();
               if (features.length > 0) {
