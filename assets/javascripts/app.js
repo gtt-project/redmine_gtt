@@ -423,7 +423,8 @@ var App = (function ($, publ) {
   publ.setView = function () {
 
     var view = new ol.View({
-      center: ol.proj.fromLonLat([defaults.lon, defaults.lat]),
+      // Avoid flicker (map move)
+      //center: ol.proj.fromLonLat([defaults.lon, defaults.lat]),
       zoom: defaults.zoom,
       maxZoom: defaults.maxzoom // applies for Mierune Tiles
     });
@@ -469,12 +470,19 @@ var App = (function ($, publ) {
         });
       });
     }
-    else if (geolocation) {
-      geolocation.once('change:position', function (error) {
-        maps.forEach(function (m) {
-          m.getView().setCenter(geolocation.getPosition());
-        });
+    else {
+      // Set default center, once
+      maps.forEach(function (m) {
+        m.getView().setCenter(ol.proj.transform([defaults.lon, defaults.lat],
+          'EPSG:4326', 'EPSG:3857'));
       });
+      if (geolocation) {
+        geolocation.once('change:position', function (error) {
+          maps.forEach(function (m) {
+            m.getView().setCenter(geolocation.getPosition());
+          });
+        });
+      }
     }
   };
 
