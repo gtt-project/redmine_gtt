@@ -29,3 +29,11 @@ Deface::Override.new(
   :insert_after => "erb[loud]:contains('PDF')",
   :partial => "issues/show/geojson"
 )
+
+Deface::Override.new(
+  :virtual_path => "issues/show",
+  :name => "deface_view_handle_geocoder_options",
+  :original => "f8b29d3fa9c4998090a16b8392242cafbc8cbbcf",
+  :insert_after => "div.attributes",
+  :partial => "issues/geocoder/geocoder_options"
+)

@@ -23,7 +23,9 @@ Redmine::Plugin.register :redmine_gtt do
       'default_map_maxzoom_level' => 19,
       'default_map_fit_maxzoom_level' => 17,
       'default_geocoder_address_field_name' => '現地住所',
-      'default_geocoder_district_field_name' => '区名'
+      'default_geocoder_district_field_name' => '区名',
+      'default_park_search_field_name' => '公園検索',
+      'default_geocoder_url' => "https://geocoder.grp.one/"
     },
     partial: 'settings/gtt/settings'
   )
