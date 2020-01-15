@@ -626,18 +626,21 @@ var App = (function ($, publ) {
    */
   publ.setGeocoding = function (){
 
+    var default_park_search_field_name = $("input#default_park_search_field_name").val()
+    var default_geocoder_url = $("input#default_geocoder_url").val()
+    var default_geocoder_address_field_name = $("input#default_geocoder_address_field_name").val()
     // Hack to add Geocoding buttons to text fields
     // There should be a better way to do this
     if ( $("#issue-form #attributes button.btn-geocode").length == 0 ) {
-      $("#issue-form #attributes label:contains('" + defaults.geocoderAddress + "')").parent("p").append(
-        '<button name="button" type="button" class="btn-geocode">住所検索</button>'
+      $("#issue-form #attributes label:contains('" + default_geocoder_address_field_name + "')").parent("p").append(
+        '<button name="button" type="button" class="btn-geocode">' + default_geocoder_address_field_name + '</button>'
       );
 
       $("button.btn-geocode").on("click", function(evt) {
         // Geocode address and add/update icon on map
         if ($("button.btn-geocode").prev("input").val() != "") {
           var address = $("button.btn-geocode").prev("input").val()
-          $.getJSON("https://***REMOVED***/geocode/json/" + encodeURIComponent(address), function(data) {
+          $.getJSON(default_geocoder_url+"/geocode/json/" + encodeURIComponent(address), function(data) {
             if (data.result.code >= 0 && data.result.coordinates) {
               var coords = [data.result.coordinates.x, data.result.coordinates.y];
               var geom = new ol.geom.Point(
@@ -673,10 +676,10 @@ var App = (function ($, publ) {
         }
       });
     }
-
+    
     if ( $("#issue-form #attributes button.btn-parksearch").length == 0 ) {
-      $("#issue-form #attributes label:contains('公園検索')").parent("p").append(
-        '<button name="button" type="button" class="btn-parksearch">公園検索</button>'
+      $("#issue-form #attributes label:contains(" + default_park_search_field_name + ")").parent("p").append(
+        '<button name="button" type="button" class="btn-parksearch">' + default_park_search_field_name + '</button>'
       );
 
       $("button.btn-parksearch").on("click", function(evt) {
@@ -687,14 +690,30 @@ var App = (function ($, publ) {
             coords = feature.getGeometry().getCoordinates();
           });
           coords = ol.proj.transform(coords,'EPSG:3857','EPSG:4326')
-          $.getJSON("https://***REMOVED***/geocoder/service/reversegeocode/json/" + coords.join(",") + ",500?useaddr=true&owner=***REMOVED***&details=true", function(data) {
-            if (data.result.address && data.result.details.id ) {
-              $("#issue-form #attributes label:contains('公園検索')").parent("p").children("input").val(
-                "[" + data.result.details.id + "] " + data.result.address
+          
+          $.getJSON(default_geocoder_url + "/reversegeocode/json_arr/" + coords.join(",") + ",500?useaddr=true&owner=***REMOVED***&details=true&category=park", function(data) {
+            if (data.length){
+              $('#ajax-modal').html(
+                "<h3 class='title'>Park results </h3>" +
+                "<div id='parks'></div>" + 
+                "<p class='buttons'><input type='submit' value='select' onclick='hideModal(this)'/></p>"
               );
-            }
-            else {
-              $("#issue-form #attributes label:contains('公園検索')").parent("p").children("input").val("---");
+              $('#ajax-modal').addClass('park_search_results');
+              data.forEach(function(parkData){
+                if (parkData.result.address && parkData.result.details.id ) {
+                  $("div#parks").append('<input type="radio" name="parks" value="[' + parkData.result.details.id + ']' + parkData.result.address + '">'
+                  + parkData.result.address 
+                  +'<br>')
+                }
+              })
+              showModal('ajax-modal', '400px');
+              $("p.buttons input[type='submit']").click(function(){
+                $("#issue-form #attributes label:contains('" + default_park_search_field_name + "')").parent("p").children("input").val(
+                  $("div#parks input[type='radio']:checked").val()
+                );
+              })
+            }else{
+              $("#issue-form #attributes label:contains('" + default_park_search_field_name + "')").parent("p").children("input").val("---");
             }
           });
         }
@@ -885,7 +904,8 @@ var App = (function ($, publ) {
         // Todo: only works with point geometries for now for the last geometry
         var coords = features[features.length - 1].getGeometry().getCoordinates();
         coords = ol.proj.transform(coords,'EPSG:3857','EPSG:4326')
-        $.getJSON("https://***REMOVED***/reversegeocode/json/" + coords.join(",") + ",1000", function(data) {
+        var default_geocoder_url = $("input#default_geocoder_url").val()
+        $.getJSON(default_geocoder_url + "/reversegeocode/json/" + coords.join(",") + ",1000", function(data) {
           var districtInput = $("#issue-form #attributes label:contains('" + defaults.geocoderDistrict + "')").parent("p").children("input");
           var foundDistrict = false;
           if (data.result.code >= 0 && data.result.address) {
