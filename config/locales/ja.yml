@@ -37,6 +37,8 @@ ja:
   label_tab_geocoder: "ジオコーダー"
   label_tab_map: "タイルソース"
 
+  geocoder_url: "ジオコーダのURL"
+
   gtt_tile_sources_info: このプロジェクトで使用できるタイルソースを選択します。
 
   gtt_settings_general_center_lon: "既定の地図中心経度"
@@ -53,6 +55,7 @@ ja:
   gtt_settings_geocoder_apikey: "ジオコーダAPIキー"
   gtt_settings_geocoder_address_field_name: "住所フィールド名"
   gtt_settings_geocoder_district_field_name: "区フィールド名"
+  gtt_park_search_field_name: "公園検索フィールド名"
 
   select_default_tracker_icon: "レポートの分野アイコンを選択:"
   select_default_status_color: "ステータス色を選択:"

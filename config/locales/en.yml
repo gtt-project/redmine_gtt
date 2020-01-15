@@ -37,6 +37,8 @@ en:
   label_tab_geocoder: "Geocoder"
   label_tab_map: "Tile Sources"
 
+  geocoder_url: "Geocoder URL"
+
   gtt_tile_sources_info: Select the tile sources that should be available in this project.
 
   gtt_settings_general_center_lon: "Default map center longitude"
@@ -53,6 +55,7 @@ en:
   gtt_settings_geocoder_apikey: "API Key"
   gtt_settings_geocoder_address_field_name: "Address field name"
   gtt_settings_geocoder_district_field_name: "District field name"
+  gtt_park_search_field_name: "Park search field name"
 
   select_default_tracker_icon: "Select default tracker icon:"
   select_default_status_color: "Select default status color:"
