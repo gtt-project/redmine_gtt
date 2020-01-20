@@ -701,7 +701,7 @@ var App = (function ($, publ) {
               $('#ajax-modal').addClass('park_search_results');
               data.forEach(function(parkData){
                 if (parkData.result.address && parkData.result.details.id ) {
-                  $("div#parks").append('<input type="radio" name="parks" value="[' + parkData.result.details.id + ']' + parkData.result.address + '">'
+                  $("div#parks").append('<input type="radio" name="parks" value="[' + parkData.result.details.ref_num + ']' + parkData.result.address + '">'
                   + parkData.result.address 
                   +'<br>')
                 }
