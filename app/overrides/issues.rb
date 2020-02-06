@@ -37,3 +37,11 @@ Deface::Override.new(
   :insert_after => "div.attributes",
   :partial => "issues/geocoder/geocoder_options"
 )
+
+Deface::Override.new(
+  :virtual_path => "issues/new",
+  :name => "deface_view_handle_geocoder_options_on_new_issues",
+  :original => '1468c4be09f0521e1854cace7f8d7b444eb32074',
+  :insert_after => "#all_attributes",
+  :partial => "issues/geocoder/geocoder_options"
+)
