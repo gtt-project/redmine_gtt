@@ -34,7 +34,7 @@ class IssueTest < GttTest
     assert_equal 2, center.size
     assert geom = d[:geojson]['geometry']
     assert coords = geom['coordinates']
-    assert_equal 15052703.2783315, coords.flatten.first
+    assert_equal 15052703.278285623, coords.flatten.first
   end
 
   test 'should render properties in as_geojson' do
