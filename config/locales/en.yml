@@ -37,7 +37,7 @@ en:
   label_tab_geocoder: "Geocoder"
   label_tab_map: "Tile Sources"
 
-  geocoder_url: "Geocoder URL"
+  geocoder_options: "Geocoder Options"
 
   gtt_tile_sources_info: Select the tile sources that should be available in this project.
 
@@ -59,7 +59,7 @@ en:
 
   select_default_tracker_icon: "Select default tracker icon:"
   select_default_status_color: "Select default status color:"
-  select_default_map_settings: "Select default map settings:"
-  select_default_geocoder_settings: "Select default geocoder settings:"
+  select_default_map_settings: "Set default map settings:"
+  select_default_geocoder_settings: "Set Geocoder settings:"
 
   text_osm_url_sample: For example https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png
