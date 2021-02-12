@@ -62,31 +62,12 @@
 <h3><%= l(:select_default_geocoder_settings) %></h3>
 
 <p>
-  <%= content_tag(:label, l(:geocoder_url)) %>
-  <%= text_field_tag('settings[default_geocoder_url]',
-      @settings['default_geocoder_url'],
-      :size => 50) %>
-</p>
-
-<p>
-  <%= content_tag(:label, l(:gtt_settings_geocoder_address_field_name)) %>
-  <%= text_field_tag('settings[default_geocoder_address_field_name]',
-      @settings['default_geocoder_address_field_name'],
-      :size => 10) %>
-</p>
-
-<p>
-  <%= content_tag(:label, l(:gtt_settings_geocoder_district_field_name)) %>
-  <%= text_field_tag('settings[default_geocoder_district_field_name]',
-      @settings['default_geocoder_district_field_name'],
-      :size => 10) %>
-</p>
-
-<p>
-  <%= content_tag(:label, l(:gtt_park_search_field_name)) %>
-  <%= text_field_tag('settings[default_park_search_field_name]',
-      @settings['default_park_search_field_name'],
-      :size => 10) %>
+  <%= content_tag(:label, l(:geocoder_options)) %>
+  <%= text_area_tag('settings[default_geocoder_options]',
+      @settings['default_geocoder_options'],
+      :escape => false,
+      :rows => 30,
+      :cols => 100) %>
 </p>
 </div>
 
