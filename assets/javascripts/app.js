@@ -40,8 +40,7 @@ var App = (function ($, publ) {
     zoom: 13,
     maxzoom: 19,
     fitMaxzoom: 17,
-    geocoderAddress: "現地住所",
-    geocoderDistrict: "区名"
+    geocoder: {}
   };
 
   /**
@@ -59,8 +58,7 @@ var App = (function ($, publ) {
     layerArr = [];
 
     contents = $(options.target).data();
-    defaults = $("#ol-defaults").data();
-    defaults.geocoderUrl = "https://geocoder.grp.one/geojson";
+    defaults = $("#gtt-defaults").data();
 
     // Check if params are null or undefined (use "==" instead of "===" to detect both)
     if (defaults.lon == null) {
@@ -78,11 +76,8 @@ var App = (function ($, publ) {
     if (defaults.fitMaxzoom == null) {
       defaults.fitMaxzoom = quick_hack.fitMaxzoom;
     }
-    if (defaults.geocoderAddress == null) {
-      defaults.geocoderAddress = quick_hack.geocoderAddress;
-    }
-    if (defaults.geocoderDistrict == null) {
-      defaults.geocoderDistrict = quick_hack.geocoderDistrict;
+    if (defaults.geocoder == null) {
+      defaults.geocoder = quick_hack.geocoder;
     }
 
     if (contents.geom && contents.geom !== null) {
@@ -352,7 +347,7 @@ var App = (function ($, publ) {
   publ.getSymbol = function (feature) {
     var symbol = "mcr-icon-write";
 
-    var plugin_settings = $("#ol-defaults").data("pluginSettings");
+    var plugin_settings = $("#gtt-defaults").data("pluginSettings");
     var tracker_id = feature.get("tracker_id") || $("#issue_tracker_id").val();
     if (tracker_id) {
       var key = "tracker_" + tracker_id;
@@ -626,23 +621,29 @@ var App = (function ($, publ) {
    */
   publ.setGeocoding = function (){
 
-    var default_park_search_field_name = $("input#default_park_search_field_name").val()
-    var default_geocoder_url = $("input#default_geocoder_url").val()
-    var default_geocoder_address_field_name = $("input#default_geocoder_address_field_name").val()
     // Hack to add Geocoding buttons to text fields
     // There should be a better way to do this
-    if ( $("#issue-form #attributes button.btn-geocode").length == 0 ) {
-      $("#issue-form #attributes label:contains('" + default_geocoder_address_field_name + "')").parent("p").append(
-        '<button name="button" type="button" class="btn-geocode">' + default_geocoder_address_field_name + '</button>'
+    if (defaults.geocoder.geocode_url &&
+        defaults.geocoder.address_field_name &&
+        $("#issue-form #attributes button.btn-geocode").length == 0) {
+
+      $("#issue-form #attributes label:contains('" + defaults.geocoder.address_field_name + "')").parent("p").append(
+        '<button name="button" type="button" class="btn-geocode">' + defaults.geocoder.address_field_name + '</button>'
       );
 
       $("button.btn-geocode").on("click", function(evt) {
         // Geocode address and add/update icon on map
         if ($("button.btn-geocode").prev("input").val() != "") {
           var address = $("button.btn-geocode").prev("input").val()
-          $.getJSON(default_geocoder_url+"/geocode/json/" + encodeURIComponent(address), function(data) {
-            if (data.result.code >= 0 && data.result.coordinates) {
-              var coords = [data.result.coordinates.x, data.result.coordinates.y];
+          var geocode_url = defaults.geocoder.geocode_url.replace("{address}", encodeURIComponent(address));
+          $.getJSON(geocode_url, function(data) {
+            var check = evaluateComparison(getObjectPathValue(data, defaults.geocoder.geocode_result_check_path),
+              defaults.geocoder.geocode_result_check_operator,
+              defaults.geocoder.geocode_result_check_value);
+            if (check) {
+              var lon = getObjectPathValue(data, defaults.geocoder.geocode_result_lon_path);
+              var lat = getObjectPathValue(data, defaults.geocoder.geocode_result_lat_path);
+              var coords = [lon, lat];
               var geom = new ol.geom.Point(
                 ol.proj.fromLonLat(coords, 'EPSG:3857','EPSG:4326')
               )
@@ -656,19 +657,22 @@ var App = (function ($, publ) {
               publ.updateForm(vector.getSource().getFeatures());
               publ.zoomToExtent(true);
 
-              var districtInput = $("#issue-form #attributes label:contains('" + defaults.geocoderDistrict + "')").parent("p").children("input");
+              var districtInput = $("#issue-form #attributes label:contains('" + defaults.geocoder.district_field_name + "')").parent("p").children("input");
+              var foundDistrict = false;
               if (districtInput.length > 0) {
-                var foundDistrict = false;
-                if (data.result.shikuchoson) {
-                  var regexp = /^(?:\S+市)?(\S+区)$/g;
-                  var match = regexp.exec(data.result.shikuchoson);
+                var district = getObjectPathValue(data, defaults.geocoder.geocode_result_district_path);
+                if (district) {
+                  var regexp = new RegExp(defaults.geocoder.geocode_result_district_regexp);
+                  var match = regexp.exec(district);
                   if (match && match.length === 2) {
                     districtInput.val(match[1]);
                     foundDistrict = true;
                   }
                 }
                 if (!foundDistrict) {
-                  districtInput.val("");
+                  if (districtInput.length > 0) {
+                    districtInput.val("");
+                  }
                 }
               }
             }
@@ -676,44 +680,57 @@ var App = (function ($, publ) {
         }
       });
     }
-    
-    if ( $("#issue-form #attributes button.btn-parksearch").length == 0 ) {
-      $("#issue-form #attributes label:contains(" + default_park_search_field_name + ")").parent("p").append(
-        '<button name="button" type="button" class="btn-parksearch">' + default_park_search_field_name + '</button>'
+
+    if (defaults.geocoder.place_search_url &&
+        defaults.geocoder.place_search_field_name &&
+        $("#issue-form #attributes button.btn-placesearch").length == 0 ) {
+
+      $("#issue-form #attributes label:contains(" + defaults.geocoder.place_search_field_name + ")").parent("p").append(
+        '<button name="button" type="button" class="btn-placesearch">' + defaults.geocoder.place_search_field_name + '</button>'
       );
 
-      $("button.btn-parksearch").on("click", function(evt) {
+      $("button.btn-placesearch").on("click", function(evt) {
         if (vector.getSource().getFeatures().length > 0) {
           var coords = null
           vector.getSource().getFeatures().forEach(function (feature) {
             // Todo: only works with point geometries for now for the last geometry
             coords = feature.getGeometry().getCoordinates();
           });
-          coords = ol.proj.transform(coords,'EPSG:3857','EPSG:4326')
-          
-          $.getJSON(default_geocoder_url + "/reversegeocode/json_arr/" + coords.join(",") + ",500?useaddr=true&owner=chiba&details=true&category=park", function(data) {
-            if (data.length){
+          coords = ol.proj.transform(coords,'EPSG:3857','EPSG:4326');
+          var place_search_url = defaults.geocoder.place_search_url.replace("{lon}", coords[0].toString()).replace("{lat}", coords[1].toString());
+          $.getJSON(place_search_url, function(data) {
+            var check = evaluateComparison(getObjectPathValue(data, defaults.geocoder.place_search_result_check_path),
+              defaults.geocoder.place_search_result_check_operator,
+              defaults.geocoder.place_search_result_check_value)
+            var list = getObjectPathValue(data, defaults.geocoder.place_search_result_list_path);
+            if (list.length){
               $('#ajax-modal').html(
-                "<h3 class='title'>Park results </h3>" +
-                "<div id='parks'></div>" + 
-                "<p class='buttons'><input type='submit' value='select' onclick='hideModal(this)'/></p>"
+                "<h3 class='title'>" + defaults.geocoder.place_search_result_ui_title + "</h3>" +
+                "<div id='places'></div>" +
+                "<p class='buttons'><input type='submit' value='" +
+                defaults.geocoder.place_search_result_ui_button +
+                "' onclick='hideModal(this)'/></p>"
               );
-              $('#ajax-modal').addClass('park_search_results');
-              data.forEach(function(parkData){
-                if (parkData.result.address && parkData.result.details.id ) {
-                  $("div#parks").append('<input type="radio" name="parks" value="[' + parkData.result.details.ref_num + ']' + parkData.result.address + '">'
-                  + parkData.result.address 
+              $('#ajax-modal').addClass('place_search_results');
+              list.forEach(function(item){
+                var display = getObjectPathValue(item, defaults.geocoder.place_search_result_display_path);
+                var value = getObjectPathValue(item, defaults.geocoder.place_search_result_value_path);
+                if (display && value != null) {
+                  $("div#places").append('<input type="radio" name="places" value="' + value + '">'
+                  + display 
                   +'<br>')
                 }
               })
               showModal('ajax-modal', '400px');
               $("p.buttons input[type='submit']").click(function(){
-                $("#issue-form #attributes label:contains('" + default_park_search_field_name + "')").parent("p").children("input").val(
-                  $("div#parks input[type='radio']:checked").val()
+                $("#issue-form #attributes label:contains('" + defaults.geocoder.place_search_field_name + "')").parent("p").children("input").val(
+                  $("div#places input[type='radio']:checked").val()
                 );
               })
             }else{
-              $("#issue-form #attributes label:contains('" + default_park_search_field_name + "')").parent("p").children("input").val("---");
+              $("#issue-form #attributes label:contains('" + defaults.geocoder.place_search_field_name + "')").parent("p").children("input").val(
+                defaults.geocoder.empty_field_value
+              );
             }
           });
         }
@@ -898,29 +915,36 @@ var App = (function ($, publ) {
     }));
     $("#geom").val(JSON.stringify(geojson.features[0]));
 
-    if (updateAddressFlag && features && features.length > 0) {
-      var addressInput = $("#issue-form #attributes label:contains('" + defaults.geocoderAddress + "')").parent("p").children("input");
+    if (updateAddressFlag && defaults.geocoder.address_field_name && features && features.length > 0) {
+      var addressInput = $("#issue-form #attributes label:contains('" + defaults.geocoder.address_field_name + "')").parent("p").children("input");
       if (addressInput.length > 0) {
         // Todo: only works with point geometries for now for the last geometry
         var coords = features[features.length - 1].getGeometry().getCoordinates();
-        coords = ol.proj.transform(coords,'EPSG:3857','EPSG:4326')
-        var default_geocoder_url = $("input#default_geocoder_url").val()
-        $.getJSON(default_geocoder_url + "/reversegeocode/json/" + coords.join(",") + ",1000", function(data) {
-          var districtInput = $("#issue-form #attributes label:contains('" + defaults.geocoderDistrict + "')").parent("p").children("input");
+        coords = ol.proj.transform(coords,'EPSG:3857','EPSG:4326');
+        var reverse_geocode_url = defaults.geocoder.reverse_geocode_url.replace("{lon}", coords[0].toString()).replace("{lat}", coords[1].toString());
+        $.getJSON(reverse_geocode_url, function(data) {
+          var check = evaluateComparison(getObjectPathValue(data, defaults.geocoder.reverse_geocode_result_check_path),
+            defaults.geocoder.reverse_geocode_result_check_operator,
+            defaults.geocoder.reverse_geocode_result_check_value);
+          var districtInput = $("#issue-form #attributes label:contains('" + defaults.geocoder.district_field_name + "')").parent("p").children("input");
+          var address = getObjectPathValue(data, defaults.geocoder.reverse_geocode_result_address_path);
           var foundDistrict = false;
-          if (data.result.code >= 0 && data.result.address) {
-            addressInput.val(data.result.address);
-            if (districtInput.length > 0 && data.result.shikuchoson) {
-              var regexp = /^(?:\S+市)?(\S+区)$/g;
-              var match = regexp.exec(data.result.shikuchoson);
-              if (match && match.length === 2) {
-                districtInput.val(match[1]);
-                foundDistrict = true;
+          if (check && address) {
+            addressInput.val(address);
+            if (districtInput.length > 0) {
+              var district = getObjectPathValue(data, defaults.geocoder.reverse_geocode_result_district_path);
+              if (district) {
+                var regexp = new RegExp(defaults.geocoder.reverse_geocode_result_district_regexp);
+                var match = regexp.exec(district);
+                if (match && match.length === 2) {
+                  districtInput.val(match[1]);
+                  foundDistrict = true;
+                }  
               }
             }
           }
           else {
-            addressInput.val("---");
+            addressInput.val(defaults.geocoder.empty_field_value);
           }
           if (!foundDistrict) {
             if (districtInput.length > 0) {
@@ -1014,6 +1038,43 @@ var App = (function ($, publ) {
       ]
     }
     return size;
+  }
+
+  function getObjectPathValue(obj, path, def) {
+    var stringToPath = function (path) {
+      if (typeof path !== 'string') {
+        return path;
+      }
+      var output = [];
+      path.split('.').forEach(function (item, index) {
+        item.split(/\[([^}]+)\]/g).forEach(function (key) {
+          if (key.length > 0) {
+            output.push(key);
+          }
+        });
+      });
+      return output;
+    };
+
+    path = stringToPath(path);
+    var current = obj;  
+    for (var i = 0; i < path.length; i++) {  
+      if (!current[path[i]]) {
+        return def;
+      }
+      current = current[path[i]];
+    }
+
+    return current;
+  }
+
+  function evaluateComparison(left, operator, right) {
+    if (typeof left == 'object') {
+      left = JSON.stringify(left);
+      return Function('"use strict";return (JSON.parse(\'' + left + '\')' + operator + right + ')')();
+    } else {
+      return Function('"use strict";return (' + left + operator + right + ')')();
+    }
   }
 
   /**

@@ -37,7 +37,7 @@ ja:
   label_tab_geocoder: "ジオコーダー"
   label_tab_map: "タイルソース"
 
-  geocoder_url: "ジオコーダのURL"
+  geocoder_options: "ジオコーダのオプション"
 
   gtt_tile_sources_info: このプロジェクトで使用できるタイルソースを選択します。
 
@@ -59,7 +59,7 @@ ja:
 
   select_default_tracker_icon: "レポートの分野アイコンを選択:"
   select_default_status_color: "ステータス色を選択:"
-  select_default_map_settings: "地図の初期値を選択:"
-  select_default_geocoder_settings: "ジオコーダの初期値を選択:"
+  select_default_map_settings: "地図の初期値を設定:"
+  select_default_geocoder_settings: "ジオコーダの設定:"
 
   text_osm_url_sample: "例： https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png"
