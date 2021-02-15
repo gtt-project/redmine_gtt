@@ -1,43 +1,70 @@
-# About redmine_gtt
+# Redmine Geo-Task-Tracker (GTT) Plugin
 
-Description goes here
+The Geo-Task-Tracker (GTT) plugin adds spatial capabilities to Redmine:
+
+- Locate your issues as point, line or polygon
+- Show and filter issues on a map
+- Specify a project area
+- Store the location of a user
+- Extends Redmine API
+- Geocoding
+- and more
+
+## Project health
+
+[TBD]
 
 ## Requirements
 
-Creating a PostGIS-enabled database
+Redmine GTT plugins **require PostgreSQL/PostGIS** and will not work with SQLite or MariaDB/MySQL!!!
+
+- Redmine >= 3.4.0
+- PostgreSQL >= 9.6
+- PostGIS >= 2.4
+
+## Installation
+
+Create a PostGIS-enabled database:
 
 ```
 createdb -U postgres -O redmine redmine
 psql -U postgres -d redmine -c "CREATE EXTENSION postgis;"
 ```
 
-## Installation
+To install Redmine GTT plugin, download or clone this repository in your Redmine installation plugins directory!
 
-Installation goes here
+`git clone https://github.com/gtt-project/redmine_gtt.git`
 
-```
-cd path/to/project
-bundle install --path vendor/bundle --without test
+Then run
 
-RAILS_ENV=production bundle exec rake db:migrate
-RAILS_ENV=production bundle exec rake redmine:plugins:migrate
-RAILS_ENV=production bundle exec rake redmine:load_default_data
+`bundle install`
 
-RAILS_ENV=development bundle exec rake db:migrate
-RAILS_ENV=development bundle exec rake redmine:plugins:migrate
-RAILS_ENV=development bundle exec rake redmine:load_default_data
-```
+followed by
 
-Running test server
+`bundle exec rake redmine:plugins:migrate`
 
-```
-bundle exec rails server webrick -e production
-bundle exec rails server webrick -e development
-```
+After restarting Redmine, you should be able to see the Redmine Resource Manager in the Plugins page.
 
-## Notes
+More information on installing (and uninstalling) Redmine plugins can be found here: http://www.redmine.org/wiki/redmine/Plugins
 
-This plugin uses "deface" Gem to allow more flexibility in view manipulation:
+## How to use
 
-- https://github.com/spree/deface
-- http://jbbarth.com/posts/2015-05-24-redmine-plugins-hooking-anywhere-in-views.html
+[Settings, etc.]
+
+## Contributing and Support
+
+The GTT Project appreciates any [contributions](https://github.com/gtt-project/.github/blob/main/CONTRIBUTING.md)! Feel free to contact us for [reporting problems and support](https://github.com/gtt-project/.github/blob/main/CONTRIBUTING.md).
+
+## Version History
+
+[TBD]
+
+## Authors
+
+  - [Jens Kraemer](https://github.com/jkraemer)
+  - [Daniel Kastl](https://github.com/dkastl)
+  - ... [and others](https://github.com/gtt-project/redmine_gtt/graphs/contributors)
+
+## LICENSE
+
+This program is free software. See [LICENSE](LICENSE) for more information.
