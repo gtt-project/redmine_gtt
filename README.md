@@ -33,15 +33,17 @@ psql -U postgres -d redmine -c "CREATE EXTENSION postgis;"
 
 To install Redmine GTT plugin, download or clone this repository in your Redmine installation plugins directory!
 
-`git clone https://github.com/gtt-project/redmine_gtt.git`
+```
+cd path/to/plugin/directory
+git clone https://github.com/gtt-project/redmine_gtt.git
+```
 
 Then run
 
-`bundle install`
-
-followed by
-
-`bundle exec rake redmine:plugins:migrate`
+```
+bundle install`
+bundle exec rake redmine:plugins:migrate
+```
 
 After restarting Redmine, you should be able to see the Redmine Resource Manager in the Plugins page.
 
@@ -49,7 +51,7 @@ More information on installing (and uninstalling) Redmine plugins can be found h
 
 ## How to use
 
-[Settings, etc.]
+[Settings, screenshots, etc.]
 
 ## Contributing and Support
 
