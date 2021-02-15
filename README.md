@@ -41,11 +41,11 @@ git clone https://github.com/gtt-project/redmine_gtt.git
 Then run
 
 ```
-bundle install`
+bundle install
 bundle exec rake redmine:plugins:migrate
 ```
 
-After restarting Redmine, you should be able to see the Redmine Resource Manager in the Plugins page.
+After restarting Redmine, you should be able to see the Redmine GTT plugin in the Plugins page.
 
 More information on installing (and uninstalling) Redmine plugins can be found here: http://www.redmine.org/wiki/redmine/Plugins
 
