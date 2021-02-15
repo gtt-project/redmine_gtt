@@ -59,7 +59,7 @@ The GTT Project appreciates any [contributions](https://github.com/gtt-project/.
 
 ## Version History
 
-[TBD]
+See [all releases](https://github.com/gtt-project/redmine_gtt/releases) with more details.
 
 ## Authors
 
