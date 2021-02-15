@@ -65,6 +65,8 @@ The GTT Project appreciates any [contributions](https://github.com/gtt-project/.
 
   - [Jens Kraemer](https://github.com/jkraemer)
   - [Daniel Kastl](https://github.com/dkastl)
+  - [Thibault Mutabazi](https://github.com/eyewritecode)
+  - [Ko Nagase](https://github.com/sanak)
   - ... [and others](https://github.com/gtt-project/redmine_gtt/graphs/contributors)
 
 ## LICENSE
