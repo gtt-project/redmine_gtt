@@ -1,19 +1,21 @@
-= About
+# About redmine_gtt
 
 Description goes here
 
-
-= Requirements
+## Requirements
 
 Creating a PostGIS-enabled database
 
+```
 createdb -U postgres -O redmine redmine
 psql -U postgres -d redmine -c "CREATE EXTENSION postgis;"
+```
 
-= Installation
+## Installation
 
 Installation goes here
 
+```
 cd path/to/project
 bundle install --path vendor/bundle --without test
 
@@ -24,14 +26,18 @@ RAILS_ENV=production bundle exec rake redmine:load_default_data
 RAILS_ENV=development bundle exec rake db:migrate
 RAILS_ENV=development bundle exec rake redmine:plugins:migrate
 RAILS_ENV=development bundle exec rake redmine:load_default_data
+```
 
 Running test server
 
+```
 bundle exec rails server webrick -e production
 bundle exec rails server webrick -e development
+```
 
-= Notes
+## Notes
 
 This plugin uses "deface" Gem to allow more flexibility in view manipulation:
+
 - https://github.com/spree/deface
 - http://jbbarth.com/posts/2015-05-24-redmine-plugins-hooking-anywhere-in-views.html
