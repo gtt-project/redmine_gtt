@@ -1,5 +1,7 @@
 # Redmine Geo-Task-Tracker (GTT) Plugin
 
+![CI #develop](https://github.com/gtt-project/redmine_gtt/workflows/Test%20with%20Redmine/badge.svg)
+
 The Geo-Task-Tracker (GTT) plugin adds spatial capabilities to Redmine:
 
 - Locate your issues as point, line or polygon
@@ -9,10 +11,6 @@ The Geo-Task-Tracker (GTT) plugin adds spatial capabilities to Redmine:
 - Extends Redmine API
 - Geocoding
 - and more
-
-## Project health
-
-![CI #develop](https://github.com/gtt-project/redmine_gtt/workflows/Test%20with%20Redmine/badge.svg)
 
 ## Requirements
 
