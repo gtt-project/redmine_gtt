@@ -49,7 +49,13 @@ More information on installing (and uninstalling) Redmine plugins can be found h
 
 ## How to use
 
-[Settings, screenshots, etc.]
+1. Go to plugin configuration for global settings
+2. Configure at least one tile source
+3. Enable `GTT` module in a project
+4. Define the project boundary in `GTT` project settings
+5. Create a new issue with a point, line or polygon
+
+For more information with screenshots see the [Getting Started](doc/getting-started.md) guide.
 
 ## Contributing and Support
 
