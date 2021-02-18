@@ -1,6 +1,6 @@
 # Getting Started with GTT plugin
 
-The following is aa brief overview of the most important settings of the GTT plugin.
+The following is a brief overview of the most important settings of the GTT plugin.
 
 ## Plugin Settings
 
