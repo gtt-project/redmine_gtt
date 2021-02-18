@@ -6,7 +6,7 @@ The following is aa brief overview of the most important settings of the GTT plu
 
 Global settings can be specified in the plugin configuration `/settings/plugin/redmine_gtt`:
 
-|[Plugin Settings](Redmine%20GTT%20plugin%20-%20Plugins%20-%20Redmine.png)
+![Plugin Settings](Redmine%20GTT%20plugin%20-%20Plugins%20-%20Redmine.png)
 
 **Note:** Geocoder options missing. TBD.
 
