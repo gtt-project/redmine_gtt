@@ -3,7 +3,7 @@ require 'redmine'
 Redmine::Plugin.register :redmine_gtt do
   name 'Redmine GTT plugin'
   author 'Georepublic'
-  author_url 'https://hub.georepublic.net/gtt/redmine_gtt'
+  author_url 'https://github.com/gtt-project/redmine_gtt'
   description 'Adds location-based task management and maps'
   version '2.0.2'
 
