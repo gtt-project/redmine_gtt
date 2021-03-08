@@ -43,6 +43,8 @@ bundle install
 bundle exec rake redmine:plugins:migrate
 ```
 
+Before restarting Redmine, you need to set `postgis` adapter instead of `postgres` adapter in your `config/database.yml`.
+
 After restarting Redmine, you should be able to see the Redmine GTT plugin in the Plugins page.
 
 More information on installing (and uninstalling) Redmine plugins can be found here: http://www.redmine.org/wiki/redmine/Plugins
