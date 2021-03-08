@@ -1,0 +1,44 @@
+{
+  "name": "redmine_gtt",
+  "version": "1.0.0",
+  "description": "Plugin that adds spatial capabilities to Redmine",
+  "private": true,
+  "scripts": {
+    "build": "webpack --config webpack.prod.js",
+    "serve": "webpack serve --open --config webpack.dev.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gtt-project/redmine_gtt.git"
+  },
+  "keywords": [
+    "redmine",
+    "geospatial"
+  ],
+  "author": "Georepublic",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/gtt-project/redmine_gtt/issues"
+  },
+  "homepage": "https://github.com/gtt-project/redmine_gtt#readme",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.2",
+    "maki": "^2.1.0",
+    "ol": "^6.5.0",
+    "ol-ext": "^3.1.18"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.13.0",
+    "@babel/core": "^7.13.8",
+    "@babel/preset-env": "^7.13.9",
+    "css-loader": "^5.1.1",
+    "html-webpack-plugin": "^5.3.0",
+    "node-sass": "^5.0.0",
+    "sass-loader": "^11.0.1",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.24.3",
+    "webpack-cli": "^4.5.0",
+    "webpack-dev-server": "^3.11.2"
+  }
+}
