@@ -1,0 +1,39 @@
+{
+  "name": "redmine_gtt",
+  "version": "1.0.0",
+  "description": "Plugin that adds spatial capabilities to Redmine",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gtt-project/redmine_gtt.git"
+  },
+  "keywords": [
+    "redmine",
+    "geospatial"
+  ],
+  "author": "Georepublic",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/gtt-project/redmine_gtt/issues"
+  },
+  "homepage": "https://github.com/gtt-project/redmine_gtt#readme",
+  "dependencies": {
+    "ol": "^6.5.0",
+    "ol-ext": "^3.1.18"
+  },
+  "devDependencies": {
+    "@types/ol": "^6.4.2",
+    "@types/ol-ext": "npm:types-ol-ext",
+    "css-loader": "^5.1.1",
+    "sass": "^1.32.8",
+    "sass-loader": "^11.0.1",
+    "style-loader": "^2.0.0",
+    "ts-loader": "^8.0.17",
+    "types-ol-ext": "^1.0.5",
+    "typescript": "^4.2.3",
+    "webpack": "^5.24.4",
+    "webpack-cli": "^4.5.0"
+  }
+}

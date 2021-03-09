@@ -34,9 +34,13 @@ module GttMapHelper
       content_tag(:div, "", data: data, id: uid, class: 'ol-map'),
       javascript_tag("
         $(document).ready(function(){
+          /*
           App.init({
             target: $('##{uid}')[0]
           });
+          */
+          var target = document.getElementById('#{uid}');
+          window.createGttClient(target);
         });
       ")
     ]
