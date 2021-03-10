@@ -1,10 +1,13 @@
 import { Map, Feature } from 'ol'
 import { Geometry } from 'ol/geom'
 import { GeoJSON } from 'ol/format'
-import { Tile } from 'ol/layer'
+import { Layer, Tile, Vector as VectorLayer } from 'ol/layer'
 import { Tile as TileSource, OSM } from 'ol/source'
+import { Style, Fill, Stroke } from 'ol/style'
 import { FeatureCollection } from 'geojson'
 import { quick_hack } from './quick_hack'
+import Vector from 'ol/source/Vector'
+
 
 interface GttClientOption {
   target: HTMLDivElement | null
@@ -19,7 +22,7 @@ interface LayerObject {
 
 export class GttClient {
   readonly map: Map
-  layerArray: Tile[]
+  layerArray: Layer[]
 
   constructor(options: GttClientOption) {
     // needs target
@@ -87,7 +90,26 @@ export class GttClient {
         this.layerArray.push(l)
       }, this)
     }
+    this.setBasemap()
+
+    // Layer for project boundary
+    const bounds = new VectorLayer({
+      source: new Vector(),
+      style: new Style({
+        fill: new Fill({
+          color: 'rgba(255,255,255,0.0)'
+        }),
+        stroke: new Stroke({
+          color: 'rgba(220,26,26,0.7)',
+          // lineDash: [12,1,12],
+          width: 1
+        })
+      })
+    })
+    bounds.set('displayInLayerSwitcher', false)
+    this.layerArray.push(bounds)
     console.log(this.layerArray)
+
 
     // For map div focus settings
     if (options.target) {
@@ -114,8 +136,40 @@ export class GttClient {
     const geojson = JSON.parse(geojson_str) as FeatureCollection
     geom.value = JSON.stringify(geojson.features[0])
     // TODO implement update address flag
-
   }
+
+  /**
+   * Decide which baselayer to show
+   */
+  setBasemap(): void {
+    if (this.layerArray.length == 0) {
+      console.error("There is no baselayer available!")
+      return
+    }
+
+    let index = 0
+    const cookie = parseInt(getCookie('_redmine_gtt_basemap'))
+    if (cookie) {
+      let lid = 0
+      // Check if layer ID exists in available layers
+      this.layerArray.forEach((layer) => {
+        if (cookie === layer.get("lid")) {
+          lid = cookie
+        }
+      })
+
+      // Set selected layer visible
+      this.layerArray.forEach((layer, idx) => {
+        if (lid === layer.get("lid")) {
+          index = idx
+        }
+      })
+    }
+
+    // Set layer visible
+    this.layerArray[index].setVisible(true)
+  }
+
 }
 
 const getTileSource = (source: string, class_name: string): any => {
@@ -125,4 +179,19 @@ const getTileSource = (source: string, class_name: string): any => {
     }
   }
   return TileSource
+}
+
+const getCookie = (cname:string):string => {
+  var name = cname + '='
+  var ca = document.cookie.split(';')
+  for(var i = 0; i < ca.length; i++) {
+    var c = ca[i]
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1)
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length)
+    }
+  }
+  return ''
 }
