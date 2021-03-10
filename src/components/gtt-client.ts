@@ -4,10 +4,13 @@ import { GeoJSON } from 'ol/format'
 import { Layer, Tile, Vector as VectorLayer } from 'ol/layer'
 import { Tile as TileSource, OSM } from 'ol/source'
 import { Style, Fill, Stroke } from 'ol/style'
+import { OrderFunction } from 'ol/render'
 import { FeatureCollection } from 'geojson'
 import { quick_hack } from './quick_hack'
 import Vector from 'ol/source/Vector'
-
+import Ordering from 'ol-ext/render/Ordering'
+import Shadow from 'ol-ext/style/Shadow'
+import FontSymbol from 'ol-ext/style/FontSymbol'
 
 interface GttClientOption {
   target: HTMLDivElement | null
@@ -23,6 +26,7 @@ interface LayerObject {
 export class GttClient {
   readonly map: Map
   layerArray: Layer[]
+  defaults: DOMStringMap
 
   constructor(options: GttClientOption) {
     // needs target
@@ -34,25 +38,25 @@ export class GttClient {
     if (!gtt_defaults) {
       return
     }
-    const defaults = gtt_defaults.dataset
+    this.defaults = gtt_defaults.dataset
 
-    if (defaults.lon === null || defaults.lon === undefined) {
-      defaults.lon = quick_hack.lon.toString()
+    if (this.defaults.lon === null || this.defaults.lon === undefined) {
+      this.defaults.lon = quick_hack.lon.toString()
     }
-    if (defaults.lat === null || defaults.lat === undefined) {
-      defaults.lat = quick_hack.lat.toString()
+    if (this.defaults.lat === null || this.defaults.lat === undefined) {
+      this.defaults.lat = quick_hack.lat.toString()
     }
-    if (defaults.zoom === null || defaults.zoom === undefined) {
-      defaults.zoom = quick_hack.zoom.toString()
+    if (this.defaults.zoom === null || this.defaults.zoom === undefined) {
+      this.defaults.zoom = quick_hack.zoom.toString()
     }
-    if (defaults.maxzoom === null || defaults.maxzoom === undefined) {
-      defaults.maxzoom = quick_hack.maxzoom.toString()
+    if (this.defaults.maxzoom === null || this.defaults.maxzoom === undefined) {
+      this.defaults.maxzoom = quick_hack.maxzoom.toString()
     }
-    if (defaults.fitMaxzoom === null || defaults.fitMaxzoom === undefined) {
-      defaults.fitMaxzoom = quick_hack.fitMaxzoom.toString()
+    if (this.defaults.fitMaxzoom === null || this.defaults.fitMaxzoom === undefined) {
+      this.defaults.fitMaxzoom = quick_hack.fitMaxzoom.toString()
     }
-    if (defaults.geocorder === null || defaults.geocorder === undefined) {
-      defaults.geocorder = JSON.stringify(quick_hack.geocoder)
+    if (this.defaults.geocorder === null || this.defaults.geocorder === undefined) {
+      this.defaults.geocorder = JSON.stringify(quick_hack.geocoder)
     }
 
     const contents = options.target.dataset
@@ -106,10 +110,24 @@ export class GttClient {
         })
       })
     })
+    bounds.set('title', 'Boundaries')
     bounds.set('displayInLayerSwitcher', false)
     this.layerArray.push(bounds)
-    console.log(this.layerArray)
+    const yOrdering: unknown = Ordering.yOrdering()
 
+    const vector = new VectorLayer({
+      source: new Vector({
+        'features': features,
+        'useSpatialIndex': false
+      }),
+      renderOrder: yOrdering as OrderFunction,
+      style: this.getStyle
+    })
+    vector.set('tilte', 'Features')
+    vector.set('displayInLayerSwitcher', false)
+    this.layerArray.push(vector)
+
+    console.log(this.layerArray)
 
     // For map div focus settings
     if (options.target) {
@@ -168,6 +186,98 @@ export class GttClient {
 
     // Set layer visible
     this.layerArray[index].setVisible(true)
+  }
+
+  getColor(feature: Feature<Geometry>): string {
+    let color = '#FFD700'
+    const plugin_settings = this.defaults
+    const status = document.querySelector('#issue_status_id') as HTMLInputElement
+    const status_id = feature.get('status') || status.value
+    if (status_id) {
+      const key = `status_${status_id}`
+      if (key in plugin_settings) {
+        color = plugin_settings[key]
+      }
+    }
+    return color
+  }
+
+  getFontColor(_: any): string {
+    const color = "#FFFFFF"
+    return color
+  }
+
+  // return string but set return any because upstream jsdoc is wrong
+  getSymbol(feature: Feature<Geometry>):any {
+    let symbol = 'mcr-icon-write'
+
+    const plugin_settings = this.defaults
+    const issue_tracker = document.querySelector('#issue_tracker_id') as HTMLInputElement
+    const tracker_id = feature.get('tracker_id') || issue_tracker.value
+    if (tracker_id) {
+      const key = `tracker_${tracker_id}`
+      if (key in plugin_settings) {
+        symbol = plugin_settings[key]
+      }
+    }
+    return symbol
+  }
+
+  getStyle(feature: Feature<Geometry>, _: any):Style[] {
+    const styles: Style[] = []
+
+    // Apply Shadow
+    styles.push(
+      new Style({
+        image: new Shadow({
+          radius: 15,
+          blur: 5,
+          offsetX: 0,
+          offsetY: 0,
+          fill: new Fill({
+            color: 'rgba(0,0,0,0.5)'
+          })
+        })
+      })
+    )
+
+    // rotateWithView is boolean but upstream set number
+    const rotateWithView: any = false
+
+    // Apply Font Style
+    styles.push(
+      new Style({
+        image: new FontSymbol({
+          form: 'mcr',
+          gradient: false,
+          glyph: this.getSymbol(feature),
+          fontSize: 0.7,
+          radius: 18,
+          // offsetY: -9, // can't set offset because upstream needs to fix jsdoc
+          rotation: 0,
+          rotateWithView: rotateWithView,
+          // color: this.getFontColor(feature), // can't set color because upstream needs to fix jsdoc,
+          fill: new Fill({
+            color: this.getColor(feature)
+          }),
+          stroke: new Stroke({
+            color: '#333333',
+            width: 1
+          }),
+          opacity: 1,
+          fontStyle: 'none'
+        }),
+        stroke: new Stroke({
+          width: 4,
+          color: this.getColor(feature)
+        }),
+        fill: new Fill({
+          color: [255, 136, 0, 0.2]
+        })
+      })
+    )
+
+    return styles
   }
 
 }
