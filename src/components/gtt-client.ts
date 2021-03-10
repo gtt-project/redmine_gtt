@@ -6,6 +6,9 @@ import { Layer, Tile, Vector as VectorLayer } from 'ol/layer'
 import { Tile as TileSource, OSM } from 'ol/source'
 import { Style, Fill, Stroke } from 'ol/style'
 import { OrderFunction } from 'ol/render'
+import { defaults as interactions_defaults, MouseWheelZoom } from 'ol/interaction'
+import { focus as events_condifition_focus } from 'ol/events/condition'
+import { defaults as control_defaults } from 'ol/control'
 import { FeatureCollection } from 'geojson'
 import { quick_hack } from './quick_hack'
 import Vector from 'ol/source/Vector'
@@ -13,6 +16,7 @@ import Ordering from 'ol-ext/render/Ordering'
 import Shadow from 'ol-ext/style/Shadow'
 import FontSymbol from 'ol-ext/style/FontSymbol'
 import Mask from 'ol-ext/filter/Mask'
+import Bar from 'ol-ext/control/Bar'
 
 interface GttClientOption {
   target: HTMLDivElement | null
@@ -158,6 +162,28 @@ export class GttClient {
         options.target.setAttribute('tabindex', '0')
       }
     }
+
+    const map = new Map({
+      target: options.target,
+      layers: this.layerArray,
+      interactions: interactions_defaults({mouseWheelZoom: false}).extend([
+        new MouseWheelZoom({
+          constrainResolution: true, // force zooming to a integer zoom
+          condition: events_condifition_focus // only wheel/trackpad zoom when the map has the focus
+        })
+      ]),
+      controls: control_defaults({
+        attributionOptions: {
+          collapsible: false
+        }
+      })
+    })
+
+    // Add Toolbar
+    const toolbar = new Bar()
+    toolbar.setPosition('bottom-left' as any) // is type.d old?
+    map.addControl(toolbar)
+
   }
 
   updateForm(features: Feature<Geometry>[] | null):void {
