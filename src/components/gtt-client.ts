@@ -1,4 +1,5 @@
 import { Map, Feature } from 'ol'
+import 'ol-ext/filter/Base'
 import { Geometry } from 'ol/geom'
 import { GeoJSON } from 'ol/format'
 import { Layer, Tile, Vector as VectorLayer } from 'ol/layer'
@@ -11,6 +12,7 @@ import Vector from 'ol/source/Vector'
 import Ordering from 'ol-ext/render/Ordering'
 import Shadow from 'ol-ext/style/Shadow'
 import FontSymbol from 'ol-ext/style/FontSymbol'
+import Mask from 'ol-ext/filter/Mask'
 
 interface GttClientOption {
   target: HTMLDivElement | null
@@ -128,6 +130,27 @@ export class GttClient {
     this.layerArray.push(vector)
 
     console.log(this.layerArray)
+
+    // Render project boundary if bounds are available
+    if (contents.bounds && contents.bounds !== null) {
+      const boundary = new GeoJSON().readFeature(
+        contents.bounds, {
+          featureProjection: 'EPSG:3857'
+        }
+      )
+      bounds.getSource().addFeature(boundary)
+      this.layerArray.forEach((layer:Layer) => {
+        if (layer.get('baseLayer')) {
+          layer.addFilter(new Mask({
+            feature: boundary,
+            inner: false,
+            fill: new Fill({
+              color: [220,26,26,.1]
+            })
+          }))
+        }
+      })
+    }
 
     // For map div focus settings
     if (options.target) {
