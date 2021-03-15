@@ -1,14 +1,16 @@
-import { Map, Feature } from 'ol'
+import { Map, Feature, View, Geolocation } from 'ol'
 import 'ol-ext/filter/Base'
-import { Geometry } from 'ol/geom'
-import { GeoJSON } from 'ol/format'
+import { Geometry, Point } from 'ol/geom'
+import { GeoJSON, WKT } from 'ol/format'
 import { Layer, Tile, Vector as VectorLayer } from 'ol/layer'
 import { Tile as TileSource, OSM } from 'ol/source'
-import { Style, Fill, Stroke } from 'ol/style'
+import { Style, Fill, Stroke, Circle } from 'ol/style'
 import { OrderFunction } from 'ol/render'
 import { defaults as interactions_defaults, MouseWheelZoom } from 'ol/interaction'
 import { focus as events_condifition_focus } from 'ol/events/condition'
 import { defaults as control_defaults } from 'ol/control'
+import { transform } from 'ol/proj'
+import { createEmpty, extend } from 'ol/extent'
 import { FeatureCollection } from 'geojson'
 import { quick_hack } from './quick_hack'
 import Vector from 'ol/source/Vector'
@@ -17,6 +19,8 @@ import Shadow from 'ol-ext/style/Shadow'
 import FontSymbol from 'ol-ext/style/FontSymbol'
 import Mask from 'ol-ext/filter/Mask'
 import Bar from 'ol-ext/control/Bar'
+import Toggle from 'ol-ext/control/Toggle'
+import Button from 'ol-ext/control/Button'
 
 interface GttClientOption {
   target: HTMLDivElement | null
@@ -29,12 +33,29 @@ interface LayerObject {
   options: object
 }
 
+interface FilterOption {
+  location: boolean
+  distance: boolean
+}
+
 export class GttClient {
   readonly map: Map
+  maps: Array<Map>
   layerArray: Layer[]
   defaults: DOMStringMap
+  toolbar: Bar
+  filters: FilterOption
+  vector: VectorLayer
+  bounds: VectorLayer
+  geolocation: Geolocation
 
   constructor(options: GttClientOption) {
+    this.filters = {
+      location: false,
+      distance: false
+    }
+    this.maps = []
+
     // needs target
     if (!options.target) {
       return
@@ -103,7 +124,7 @@ export class GttClient {
     this.setBasemap()
 
     // Layer for project boundary
-    const bounds = new VectorLayer({
+    this.bounds = new VectorLayer({
       source: new Vector(),
       style: new Style({
         fill: new Fill({
@@ -116,12 +137,12 @@ export class GttClient {
         })
       })
     })
-    bounds.set('title', 'Boundaries')
-    bounds.set('displayInLayerSwitcher', false)
-    this.layerArray.push(bounds)
+    this.bounds.set('title', 'Boundaries')
+    this.bounds.set('displayInLayerSwitcher', false)
+    this.layerArray.push(this.bounds)
     const yOrdering: unknown = Ordering.yOrdering()
 
-    const vector = new VectorLayer({
+    this.vector = new VectorLayer({
       source: new Vector({
         'features': features,
         'useSpatialIndex': false
@@ -129,9 +150,9 @@ export class GttClient {
       renderOrder: yOrdering as OrderFunction,
       style: this.getStyle
     })
-    vector.set('tilte', 'Features')
-    vector.set('displayInLayerSwitcher', false)
-    this.layerArray.push(vector)
+    this.vector.set('tilte', 'Features')
+    this.vector.set('displayInLayerSwitcher', false)
+    this.layerArray.push(this.vector)
 
     console.log(this.layerArray)
 
@@ -142,7 +163,7 @@ export class GttClient {
           featureProjection: 'EPSG:3857'
         }
       )
-      bounds.getSource().addFeature(boundary)
+      this.bounds.getSource().addFeature(boundary)
       this.layerArray.forEach((layer:Layer) => {
         if (layer.get('baseLayer')) {
           layer.addFilter(new Mask({
@@ -163,7 +184,7 @@ export class GttClient {
       }
     }
 
-    const map = new Map({
+    this.map = new Map({
       target: options.target,
       layers: this.layerArray,
       interactions: interactions_defaults({mouseWheelZoom: false}).extend([
@@ -180,10 +201,28 @@ export class GttClient {
     })
 
     // Add Toolbar
-    const toolbar = new Bar()
-    toolbar.setPosition('bottom-left' as any) // is type.d old?
-    map.addControl(toolbar)
+    this.toolbar = new Bar()
+    this.toolbar.setPosition('bottom-left' as any) // is type.d old?
+    this.map.addControl(this.toolbar)
 
+    this.setView()
+    this.setGeolocation()
+    // TODO: setGeocoding
+    // this.setGeocoding()
+    this.parseHistory()
+
+    // Control button
+    const maximizeCtrl = new Button({
+      html: '<i class="icon-maximize" ></i>',
+      title: "Maximize",
+      handleClick: () => {
+        this.zoomToExtent(true);
+      }
+    } as any)
+    this.toolbar.addControl(maximizeCtrl)
+
+    // Handle multiple maps per page
+    this.maps.push(this.map)
   }
 
   updateForm(features: Feature<Geometry>[] | null):void {
@@ -302,10 +341,10 @@ export class GttClient {
           glyph: this.getSymbol(feature),
           fontSize: 0.7,
           radius: 18,
-          // offsetY: -9, // can't set offset because upstream needs to fix jsdoc
+          offsetY: -9, // can't set offset because upstream needs to fix jsdoc
           rotation: 0,
           rotateWithView: rotateWithView,
-          // color: this.getFontColor(feature), // can't set color because upstream needs to fix jsdoc,
+          color: this.getFontColor(feature), // can't set color because upstream needs to fix jsdoc,
           fill: new Fill({
             color: this.getColor(feature)
           }),
@@ -315,7 +354,7 @@ export class GttClient {
           }),
           opacity: 1,
           fontStyle: 'none'
-        }),
+        } as any),
         stroke: new Stroke({
           width: 4,
           color: this.getColor(feature)
@@ -327,6 +366,167 @@ export class GttClient {
     )
 
     return styles
+  }
+
+  /**
+   *
+   */
+  setView() {
+    const view = new View({
+      // Avoid flicker (map move)
+      //center: ol.proj.fromLonLat([defaults.lon, defaults.lat]),
+      zoom: parseInt(this.defaults.zoom),
+      maxZoom: parseInt(this.defaults.maxzoom) // applies for Mierune Tiles
+    })
+    this.map.setView(view)
+  }
+
+  /**
+   *
+   */
+  zoomToExtent(force: boolean) {
+    if (!force && (this.filters.distance || this.filters.location)) {
+      // Do not zoom to extent but show the previous extent stored as cookie
+      const parts = (getCookie("_redmine_gtt_permalink")).split("/");
+      this.maps.forEach(m => {
+        m.getView().setZoom(parseInt(parts[0], 10))
+        m.getView().setCenter(transform([
+          parseFloat(parts[1]),
+          parseFloat(parts[2])
+        ],'EPSG:4326','EPSG:3857'))
+        m.getView().setRotation(parseFloat(parts[3]))
+      })
+    } else if (this.vector.getSource().getFeatures().length > 0) {
+      let extent = createEmpty()
+      // Because the vector layer is set to "useSpatialIndex": false, we cannot
+      // make use of "vector.getSource().getExtent()"
+      this.vector.getSource().getFeatures().forEach(feature => {
+        extend(extent, feature.getGeometry().getExtent())
+      })
+      this.maps.forEach(m => {
+        m.getView().fit(extent, {
+          size: getMapSize(m),
+          maxZoom: parseInt(this.defaults.fitMaxzoom)
+        })
+      })
+    } else if (this.bounds.getSource().getFeatures().length > 0) {
+      this.maps.forEach(m => {
+        m.getView().fit(this.bounds.getSource().getExtent(), {
+          size: getMapSize(m),
+          maxZoom: parseInt(this.defaults.fitMaxzoom)
+        })
+      })
+    } else {
+      // Set default center, once
+      this.maps.forEach(m => {
+        m.getView().setCenter(transform([parseFloat(this.defaults.lon), parseFloat(this.defaults.lat)],
+          'EPSG:4326', 'EPSG:3857'));
+      })
+      if (this.geolocation) {
+        this.geolocation.once('change:position', (_) => {
+          this.maps.forEach(m => {
+            m.getView().setCenter(this.geolocation.getPosition())
+          })
+        })
+      }
+    }
+
+  }
+
+  /**
+   * Parse page for WKT strings in history
+   */
+  parseHistory() {
+    document.querySelectorAll('div#history ul.details i').forEach((item: Element) => {
+      const regex = new RegExp(/\w+[\s]?(\((-?\d+.\d+\s?-?\d+.\d+,?)+\))+/g)
+      const match = item.innerHTML.match(regex)
+      if (match !== null) {
+        const feature = new WKT().readFeature(
+          match[0], {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+          }
+        )
+        const wkt = new WKT().writeFeature(
+          feature, {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857',
+            decimals: 6
+          }
+        )
+        item.innerHTML = `<a href="#" onclick="event.preventDefault();" class="wkt">${wkt}</a>`
+      }
+    })
+  }
+
+  /**
+   * Add Geolocation functionality
+   */
+  setGeolocation() {
+    this.geolocation = new Geolocation({
+      tracking: false,
+      projection: this.map.getView().getProjection()
+    })
+    this.geolocation.on('change', () => {
+      console.log({
+        accuracy: this.geolocation.getAccuracy(),
+        altitude: this.geolocation.getAltitude(),
+        altitudeAccuracy: this.geolocation.getAltitudeAccuracy(),
+        heading: this.geolocation.getHeading(),
+        speed: this.geolocation.getSpeed()
+      })
+    })
+    this.geolocation.on('error', (_) => {
+      // TBD
+    })
+
+    const accuracyFeature = new Feature()
+    this.geolocation.on('change:accuracyGeometry', (_) => {
+      accuracyFeature.setGeometry(this.geolocation.getAccuracyGeometry())
+    })
+
+    const positionFeature = new Feature()
+    positionFeature.setStyle(new Style({
+      image: new Circle({
+        radius: 6,
+        fill: new Fill({
+          color: '#3399CC'
+        }),
+        stroke: new Stroke({
+          color: '#fff',
+          width: 2
+        })
+      })
+    }))
+
+    this.geolocation.on('change:position', (_) => {
+      const position = this.geolocation.getPosition()
+      positionFeature.setGeometry(position ? new Point(position) : null)
+    })
+
+    const geolocationLayer = new VectorLayer({
+      map: this.map,
+      source: new Vector({
+        features: [accuracyFeature, positionFeature]
+      })
+    })
+    geolocationLayer.set('diplayInLayerSwitcher', false)
+    this.map.addLayer(geolocationLayer)
+
+    // Control button
+    const geolocationCtrl = new Toggle({
+      html: '<i class="icon-compass" ></i>',
+      title: "Geolocation",
+      active: false,
+      onToggle: (active: boolean) => {
+        this.geolocation.setTracking(active)
+        geolocationLayer.setVisible(active)
+        if (active) {
+          this.map.getView().setCenter(this.geolocation.getPosition())
+        }
+      }
+    } as any)
+    this.toolbar.addControl(geolocationCtrl)
   }
 
 }
@@ -353,4 +553,18 @@ const getCookie = (cname:string):string => {
     }
   }
   return ''
+}
+
+const getMapSize = (map: Map) => {
+  let size = map.getSize()
+  if (size.length === 2 && size[0] <= 0 && size[1] <= 0) {
+    const target = map.getTarget() as HTMLElement
+    const target_obj = document.querySelector(`div#${target.id}`)
+    size = [
+      target_obj.clientWidth,
+      target_obj.clientHeight
+    ]
+  }
+  console.log(size)
+  return size
 }
