@@ -9,15 +9,18 @@
     font-weight: normal;
     font-style: normal;
 }
-[class*='icon-']:before{
+[class^='icon-']:before{
 	display: inline-block;
-   font-family: 'Redmine';
-   font-style: normal;
-   font-weight: normal;
-   line-height: 1;
-   -webkit-font-smoothing: antialiased;
-   -moz-osx-font-smoothing: grayscale
+  font-family: 'Redmine';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1em;
+  font-variant: normal;
+  text-transform: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
 .icon-point:before{content:'\0041';}
 .icon-linestring:before{content:'\0042';}
 .icon-polygon:before{content:'\0043';}
@@ -51,7 +54,7 @@ url("../fonts/mcr-icons.svg?b88144ffa3049f78bfa19b5159b89f09#mcr-icons") format(
   font-weight: normal !important;
   font-variant: normal;
   text-transform: none;
-  line-height: 1;
+  line-height: 1em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -121,42 +124,42 @@ url("../fonts/mcr-icons.svg?b88144ffa3049f78bfa19b5159b89f09#mcr-icons") format(
   }
 }
 */
- 
+
  [class^="maki-"]:before, [class*=" maki-"]:before {
   font-family: "fontmaki";
   font-style: normal;
   font-weight: normal;
   speak: none;
- 
+
   display: inline-block;
   text-decoration: inherit;
   width: 1em;
   margin-right: .2em;
   text-align: center;
   /* opacity: .8; */
- 
+
   /* For safety - reset parent styles, that can break glyph codes*/
   font-variant: normal;
   text-transform: none;
- 
+
   /* fix buttons height, for twitter bootstrap */
   line-height: 1em;
- 
+
   /* Animation center compensation - margins should be symmetric */
   /* remove if not needed */
   margin-left: .2em;
- 
+
   /* you can be more comfortable with increased icons size */
   /* font-size: 120%; */
- 
+
   /* Font smoothing. That was taken from TWBS */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
- 
+
   /* Uncomment for 3D effect */
   /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
 }
- 
+
 .maki-bicycle:before { content: '\e800'; } /* '' */
 .maki-building:before { content: '\e801'; } /* '' */
 .maki-bus:before { content: '\e802'; } /* '' */
