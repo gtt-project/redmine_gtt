@@ -9,15 +9,18 @@
   font-weight: normal;
   font-style: normal;
 }
-[class*='icon-']:before{
-  display: inline-block;
+[class^='icon-']:before{
+	display: inline-block;
   font-family: 'Redmine';
   font-style: normal;
   font-weight: normal;
-  line-height: 1;
+  line-height: 1em;
+  font-variant: normal;
+  text-transform: none;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale
+  -moz-osx-font-smoothing: grayscale;
 }
+
 .icon-point:before{content:'\0041';}
 .icon-linestring:before{content:'\0042';}
 .icon-polygon:before{content:'\0043';}
@@ -51,7 +54,7 @@
   font-weight: normal !important;
   font-variant: normal;
   text-transform: none;
-  line-height: 1;
+  line-height: 1em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
