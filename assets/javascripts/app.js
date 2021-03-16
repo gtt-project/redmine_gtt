@@ -338,7 +338,7 @@ var App = (function ($, publ) {
     }
     return color;
   };
-  
+
   publ.getFontColor = function (feature) {
     color = "#FFFFFF"
     return color;
@@ -717,7 +717,7 @@ var App = (function ($, publ) {
                 var value = getObjectPathValue(item, defaults.geocoder.place_search_result_value_path);
                 if (display && value != null) {
                   $("div#places").append('<input type="radio" name="places" value="' + value + '">'
-                  + display 
+                  + display
                   +'<br>')
                 }
               })
@@ -939,7 +939,7 @@ var App = (function ($, publ) {
                 if (match && match.length === 2) {
                   districtInput.val(match[1]);
                   foundDistrict = true;
-                }  
+                }
               }
             }
           }
@@ -1023,6 +1023,7 @@ var App = (function ($, publ) {
   function toggleAndLoadMap(el) {
     var fieldset = $(el).parents('fieldset').first();
     fieldset.toggleClass('collapsed');
+    fieldset.children('legend').toggleClass('icon-expended icon-collapsed');
     fieldset.children('div').toggle();
     maps.forEach(function (m) {
       m.updateSize();
@@ -1057,8 +1058,8 @@ var App = (function ($, publ) {
     };
 
     path = stringToPath(path);
-    var current = obj;  
-    for (var i = 0; i < path.length; i++) {  
+    var current = obj;
+    for (var i = 0; i < path.length; i++) {
       if (!current[path[i]]) {
         return def;
       }
