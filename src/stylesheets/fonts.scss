@@ -9,7 +9,7 @@
   font-weight: normal;
   font-style: normal;
 }
-[class^='icon-']:before{
+[class^='gtt-icon-']:before{
 	display: inline-block;
   font-family: 'Redmine';
   font-style: normal;
@@ -21,23 +21,23 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-point:before{content:'\0041';}
-.icon-linestring:before{content:'\0042';}
-.icon-polygon:before{content:'\0043';}
-.icon-shutter:before{content:'\0044';}
-.icon-camera:before{content:'\0045';}
-.icon-book:before{content:'\0046';}
-.icon-download:before{content:'\0047';}
-.icon-upload:before{content:'\0048';}
-.icon-home:before{content:'\0049';}
-.icon-layer:before{content:'\004a';}
-.icon-info:before{content:'\004b';}
-.icon-compass:before{content:'\004c';}
-.icon-move:before{content:'\004d';}
-.icon-maximize:before{content:'\004e';}
-.icon-trash:before{content:'\004f';}
-.icon-target:before{content:'\0050';}
-.icon-modify:before{content:'\0051';}
+.gtt-icon-point:before{content:'\0041';}
+.gtt-icon-linestring:before{content:'\0042';}
+.gtt-icon-polygon:before{content:'\0043';}
+.gtt-icon-shutter:before{content:'\0044';}
+.gtt-icon-camera:before{content:'\0045';}
+.gtt-icon-book:before{content:'\0046';}
+.gtt-icon-download:before{content:'\0047';}
+.gtt-icon-upload:before{content:'\0048';}
+.gtt-icon-home:before{content:'\0049';}
+.gtt-icon-layer:before{content:'\004a';}
+.gtt-icon-info:before{content:'\004b';}
+.gtt-icon-compass:before{content:'\004c';}
+.gtt-icon-move:before{content:'\004d';}
+.gtt-icon-maximize:before{content:'\004e';}
+.gtt-icon-trash:before{content:'\004f';}
+.gtt-icon-target:before{content:'\0050';}
+.gtt-icon-modify:before{content:'\0051';}
 
 @font-face {
   font-family: "mcr-icons";
