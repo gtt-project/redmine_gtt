@@ -196,7 +196,7 @@ var App = (function ($, publ) {
 
     // Control button
     var maximizeCtrl = new ol.control.Button({
-      html: '<i class="icon-maximize" ></i>',
+      html: '<i class="gtt-icon-maximize" ></i>',
       title: "Maximize",
       handleClick: function () {
         publ.zoomToExtent(true);
@@ -602,7 +602,7 @@ var App = (function ($, publ) {
 
     // Control button
     var geolocationCtrl = new ol.control.Toggle({
-      html: '<i class="icon-compass" ></i>',
+      html: '<i class="gtt-icon-compass" ></i>',
       title: "Geolocation",
       active: false,
       onToggle: function (active) {
@@ -739,7 +739,7 @@ var App = (function ($, publ) {
 
     // Control button
     var geocodingCtrl = new ol.control.Toggle({
-      html: '<i class="icon-info" ></i>',
+      html: '<i class="gtt-icon-info" ></i>',
       title: "Geocoding",
       className: "ctl-geocoding",
       onToggle: function (active) {
@@ -821,7 +821,7 @@ var App = (function ($, publ) {
       });
 
       var control = new ol.control.Toggle({
-        html: '<i class="icon-' + type.toLowerCase() + '" ></i>',
+        html: '<i class="gtt-icon-' + type.toLowerCase() + '" ></i>',
         title: type,
         interaction: draw
       });
@@ -830,7 +830,7 @@ var App = (function ($, publ) {
 
     // Upload button
     editbar.addControl(new ol.control.Button({
-      html: '<i class="icon-book" ></i>',
+      html: '<i class="gtt-icon-book" ></i>',
       title: 'Upload GeoJSON',
       handleClick: function () {
         var data = prompt("Please paste a GeoJSON geometry here");
