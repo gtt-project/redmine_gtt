@@ -109,6 +109,7 @@
   integrity sha512-/Ctrftx/zp4m8JOujM5ZhwzlWLx22nbQJiVqz8/zE15gOeEW+uly3FSX4fGFpcfEvFzXcMCJwq9lGVWgyARXhg==
 
 "@types/ol-ext@npm:types-ol-ext", types-ol-ext@^1.0.5:
+  name "@types/ol-ext"
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/types-ol-ext/-/types-ol-ext-1.0.5.tgz#84d7e95d26dc211e070212f21b5a932c36aea41c"
   integrity sha512-otMe+mN+Lj/lOe4IiTq6xlJ8rTlQ4hBnQC7Y4f89mSEbd06Rl1rp2d5RPDLIbL5OuPmK5kwGoebh1+PvHyvEtw==
@@ -2413,7 +2414,12 @@ object.pick@^1.3.0:
   dependencies:
     isobject "^3.0.1"
 
-ol-ext@^3.1.18, ol-ext@^3.1.6:
+ol-ext@^3.1.19:
+  version "3.1.19"
+  resolved "https://registry.yarnpkg.com/ol-ext/-/ol-ext-3.1.19.tgz#547bbd698de12b7cf4b7be03fda4e8fe82d17adb"
+  integrity sha512-PK1240ySiCNieFCcSid3CNJozQtKlGPmx3T3BHlPqCbL1o6uaKBpDOzhINTcVN8PYF65ht+Ato614uOMqeJObg==
+
+ol-ext@^3.1.6:
   version "3.1.18"
   resolved "https://registry.yarnpkg.com/ol-ext/-/ol-ext-3.1.18.tgz#1fe85eb7c7d0cd151f3380dd85a1a9cd488f55b1"
   integrity sha512-RURs3fFMDn//YDoV7/I7G2YEVjFq8j1JkRF7cuv1exL2oywkgSF6DRrD5EcE2aXR48PaLCpKEbYl8V3IxdsHKw==

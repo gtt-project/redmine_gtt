@@ -21,7 +21,7 @@
   "homepage": "https://github.com/gtt-project/redmine_gtt#readme",
   "dependencies": {
     "ol": "^6.5.0",
-    "ol-ext": "^3.1.18"
+    "ol-ext": "^3.1.19"
   },
   "devDependencies": {
     "@types/ol": "^6.4.2",
