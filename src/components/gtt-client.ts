@@ -30,6 +30,8 @@ import Bar from 'ol-ext/control/Bar'
 import Toggle from 'ol-ext/control/Toggle'
 import Button from 'ol-ext/control/Button'
 import Popup from 'ol-ext/overlay/Popup'
+import './fontmaki-def'
+import './mcricon-def'
 
 interface GttClientOption {
   target: HTMLDivElement | null
@@ -117,15 +119,13 @@ export class GttClient {
     })
 
     let features: Feature<Geometry>[] | null = null
-    if (this.contents.geom && this.contents.geom !== null) {
+    if (this.contents.geom && this.contents.geom !== null && this.contents.geom !== 'null') {
       features = new GeoJSON().readFeatures(
         JSON.parse(this.contents.geom), {
           featureProjection: 'EPSG:3857'
         }
       )
     }
-
-    console.log(this.contents)
 
     this.updateForm(features)
     this.layerArray = []
@@ -739,13 +739,12 @@ export class GttClient {
 }
 
 const getTileSource = (source: string, class_name: string): any => {
-  console.log(`source=${source} class_name=${class_name}`)
   if (source === 'source') {
     if (class_name === 'OSM') {
       return OSM
     }
   }
-  return null
+  return TileSource
 }
 
 const getCookie = (cname:string):string => {

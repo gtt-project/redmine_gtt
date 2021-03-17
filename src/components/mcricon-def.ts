@@ -1,3 +1,4 @@
+import '../stylesheets/fonts.scss'
 import FontSymbol from 'ol-ext/style/FontSymbol'
 
 FontSymbol.addDefs
