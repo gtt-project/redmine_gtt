@@ -7,11 +7,16 @@ import './components/mcricon-def'
 
 
 import { GttClient } from './components/gtt-client'
+import { gtt_setting } from './components/gtt-setting'
 
 interface Window {
   createGttClient(target: HTMLDivElement): void
+  gtt_setting(): void
 }
 declare var window: Window
 window.createGttClient = (target: HTMLDivElement):void => {
   new GttClient({target: target})
+}
+window.gtt_setting = (): void => {
+  gtt_setting()
 }

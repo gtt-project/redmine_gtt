@@ -595,11 +595,11 @@ export class GttClient {
 
   getColor(feature: Feature<Geometry>): string {
     let color = '#FFD700'
-    const plugin_settings = this.defaults
+    const plugin_settings = JSON.parse(this.defaults.pluginSettings)
     const status = document.querySelector('#issue_status_id') as HTMLInputElement
 
     let status_id = feature.get('status')
-    if (status_id === null && status) {
+    if (!status_id && status) {
       status_id = status.value
     }
     if (status_id) {
@@ -620,18 +620,21 @@ export class GttClient {
   getSymbol(feature: Feature<Geometry>):any {
     let symbol = 'mcr-icon-write'
 
-    const plugin_settings = this.defaults
+    const plugin_settings = JSON.parse(this.defaults.pluginSettings)
     const issue_tracker = document.querySelector('#issue_tracker_id') as HTMLInputElement
     let tracker_id = feature.get('tracker_id')
-    if (tracker_id === null && issue_tracker) {
+    if (!tracker_id && issue_tracker) {
       tracker_id = issue_tracker.value
     }
+    console.log(tracker_id)
     if (tracker_id) {
       const key = `tracker_${tracker_id}`
+      console.log(key)
       if (key in plugin_settings) {
         symbol = plugin_settings[key]
       }
     }
+    console.log(plugin_settings)
     return symbol
   }
 
