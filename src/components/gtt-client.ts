@@ -626,15 +626,12 @@ export class GttClient {
     if (!tracker_id && issue_tracker) {
       tracker_id = issue_tracker.value
     }
-    console.log(tracker_id)
     if (tracker_id) {
       const key = `tracker_${tracker_id}`
-      console.log(key)
       if (key in plugin_settings) {
         symbol = plugin_settings[key]
       }
     }
-    console.log(plugin_settings)
     return symbol
   }
 
