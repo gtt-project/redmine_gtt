@@ -88,6 +88,9 @@ var App = (function ($, publ) {
       );
     }
 
+    // Fix FireFox unloaded font issue
+    publ.reloadFontSymbol();
+
     // TODO: this is only necessary because setting the initial form value
     //  through the template causes encoding problems
     publ.updateForm(features);
@@ -182,6 +185,10 @@ var App = (function ($, publ) {
           collapsible: false
         })
       })
+    });
+    // Fix empty map issue
+    map.once('postrender', function(event) {
+      publ.zoomToExtent(true);
     });
 
     // Add Toolbar
@@ -1003,6 +1010,38 @@ var App = (function ($, publ) {
     var url = layer.getSource().getUrls()[0];
     //console.log(url);
     return url;
+  };
+
+  publ.reloadFontSymbol = function () {
+    if ('fonts' in document) {
+      document.fonts.addEventListener('loadingdone', function(e) {
+        var loaded = false;
+        e.fontfaces.forEach(function(f) {
+          if (f.family === '"mcr-icons"' || f.family === '"fontmaki"') {
+            loaded = true;
+          }
+        });
+        if (loaded) {
+          maps.forEach(function(m) {
+            var layers = m.getLayers();
+            layers.forEach(function(layer) {
+              if (layer.type === "VECTOR" &&
+                  layer.getKeys().indexOf("title") >= 0 &&
+                  layer.get("title") === "Features") {
+                var features = layer.getSource().getFeatures();
+                if (features.length >= 0) {
+                  var geom = features[0].getGeometry();
+                  if (geom.getType() == "Point") {
+                    console.log("Reloading Features layer");
+                    layer.changed();  
+                  }
+                }
+              }
+            });
+          });
+        }
+      });
+    }
   };
 
   function getCookie(cname) {
