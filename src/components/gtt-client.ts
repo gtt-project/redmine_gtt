@@ -30,8 +30,6 @@ import Bar from 'ol-ext/control/Bar'
 import Toggle from 'ol-ext/control/Toggle'
 import Button from 'ol-ext/control/Button'
 import Popup from 'ol-ext/overlay/Popup'
-import './fontmaki-def'
-import './mcricon-def'
 
 interface GttClientOption {
   target: HTMLDivElement | null
@@ -77,6 +75,7 @@ export class GttClient {
     if (!gtt_defaults) {
       return
     }
+
     this.defaults = gtt_defaults.dataset
 
     if (this.defaults.lon === null || this.defaults.lon === undefined) {
@@ -186,7 +185,7 @@ export class GttClient {
       renderOrder: yOrdering as OrderFunction,
       style: this.getStyle.bind(this)
     })
-    this.vector.set('tilte', 'Features')
+    this.vector.set('title', 'Features')
     this.vector.set('displayInLayerSwitcher', false)
     this.layerArray.push(this.vector)
     this.map.addLayer(this.vector)
@@ -212,6 +211,10 @@ export class GttClient {
         }
       })
     }
+
+    // Fix FireFox unloaded font issue
+    this.reloadFontSymbol()
+
 
     // For map div focus settings
     if (options.target) {
@@ -734,6 +737,39 @@ export class GttClient {
       }
     } as any)
     this.toolbar.addControl(geolocationCtrl)
+  }
+
+  reloadFontSymbol() {
+    if ('fonts' in document) {
+      (document as any).fonts.ready.then(() => {
+        let loaded = false;
+        (document as any).fonts.forEach((f:any) => {
+          if (f.family === '"mcr-icons"' || f.family === '"fontmaki"') {
+            loaded = true
+          }
+        })
+        if (loaded) {
+          this.maps.forEach(m => {
+            const layers = m.getLayers()
+            layers.forEach(layer => {
+              if (layer instanceof VectorLayer &&
+                  layer.getKeys().indexOf("title") >= 0 &&
+                  layer.get("title") === "Features") {
+                const features = (layer as any).getSource().getFeatures()
+                if (features.length >= 0) {
+                  const geom = features[0].getGeometry()
+                  if (geom.getType() == "Point") {
+                    console.log("Reloading Features layer")
+                    layer.changed()
+                    console.log(FontSymbol.prototype.defs)
+                  }
+                }
+              }
+            })
+          })
+        }
+      })
+    }
   }
 
 }

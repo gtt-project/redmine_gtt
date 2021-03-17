@@ -40,12 +40,12 @@
 .gtt-icon-modify:before{content:'\0051';}
 
 @font-face {
-  font-family: "mcr-icons";
-  src: url("../fonts/mcr-icons.eot?#iefix") format("embedded-opentype"),
-       url("../fonts/mcr-icons.woff2") format("woff2"),
-       url("../fonts/mcr-icons.woff") format("woff"),
-       url("../fonts/mcr-icons.ttf") format("truetype"),
-       url("../fonts/mcr-icons.svg#mcr-icons") format("svg");
+  font-family: 'mcr-icons';
+  src: url('../fonts/mcr-icons.eot?#iefix') format('embedded-opentype'),
+       url('../fonts/mcr-icons.woff2') format('woff2'),
+       url('../fonts/mcr-icons.woff') format('woff'),
+       url('../fonts/mcr-icons.ttf') format('truetype'),
+       url('../fonts/mcr-icons.svg#mcr-icons') format('svg');
 }
 
 [class^="mcr-icon-"]:before, i[class*=" mcr-icon-"]:before {
