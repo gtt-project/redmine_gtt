@@ -17,7 +17,7 @@ import {
 } from 'ol/interaction'
 import { focus as events_condifition_focus } from 'ol/events/condition'
 import { defaults as control_defaults, Control } from 'ol/control'
-import { transform, fromLonLat } from 'ol/proj'
+import { transform, fromLonLat, transformExtent } from 'ol/proj'
 import { createEmpty, extend, getCenter } from 'ol/extent'
 import { FeatureCollection } from 'geojson'
 import { quick_hack } from './quick_hack'
@@ -29,7 +29,9 @@ import Mask from 'ol-ext/filter/Mask'
 import Bar from 'ol-ext/control/Bar'
 import Toggle from 'ol-ext/control/Toggle'
 import Button from 'ol-ext/control/Button'
+import LayerPopup from 'ol-ext/control/LayerPopup'
 import Popup from 'ol-ext/overlay/Popup'
+import { defaultFillStyle } from 'ol/render/canvas'
 
 interface GttClientOption {
   target: HTMLDivElement | null
@@ -258,6 +260,62 @@ export class GttClient {
         m.updateSize()
       })
     })
+
+    // When one or more issues is selected, zoom to selected map features
+    document.querySelectorAll('table.issues tbody tr').forEach((element: HTMLTableRowElement) => {
+      element.addEventListener('click', (evt) => {
+        const currentTarget = evt.currentTarget as HTMLTableRowElement
+        const id = currentTarget.id.split('-')[1]
+        const feature = this.vector.getSource().getFeatureById(id)
+        this.map.getView().fit(feature.getGeometry().getExtent(), {
+          size: this.map.getSize()
+        })
+      })
+    })
+
+    // Need to update size of an invisible map, when the editable form is made
+    // visible. This doesn't look like a good way to do it, but this is more of
+    // a Redmine problem
+    document.querySelectorAll('div.contextual a.icon-edit').forEach((element: HTMLAnchorElement) => {
+      element.addEventListener('click', () => {
+        setTimeout(() => {
+          this.maps.forEach(m => {
+            m.updateSize()
+          })
+        }, 200)
+      })
+    })
+
+    // Redraw the map, when a GTT Tab gets activated
+    document.querySelectorAll('#tab-gtt').forEach((element) => {
+      element.addEventListener('click', () => {
+        this.maps.forEach(m => {
+          m.updateSize()
+        })
+        this.zoomToExtent()
+      })
+    })
+
+    // Add LayerSwitcher Image Toolbar
+    this.map.addControl(new LayerPopup())
+
+    // Because Redmine filter functions are applied later, the Window onload
+    // event provides a workaround to have filters loaded before executing
+    // the following code
+    window.onload = () => {
+      if (document.querySelectorAll('tr#tr_bbox').length > 0) {
+        this.filters.location = true
+      }
+      if (document.querySelectorAll('tr#tr_distance').length > 0) {
+        this.filters.distance = true
+      }
+      document.querySelector('fieldset#location legend').addEventListener('click', (evt) => {
+        const element = evt.currentTarget as HTMLLegendElement
+        this.toggleAndLoadMap(element)
+      })
+      this.zoomToExtent()
+      this.map.on('moveend', this.updateFilter)
+    }
 
     // Handle multiple maps per page
     this.maps.push(this.map)
@@ -645,6 +703,46 @@ export class GttClient {
   }
 
   /**
+   *  Updates map settings for Redmine filter
+   */
+  updateFilter() {
+    let center = this.map.getView().getCenter()
+    let extent = this.map.getView().calculateExtent(this.map.getSize())
+
+    center = transform(center,'EPSG:3857','EPSG:4326')
+    // console.log("Map Center (WGS84): ", center);
+    const fieldset = document.querySelector('fieldset#location') as HTMLFieldSetElement
+    fieldset.dataset.center = center.toString()
+    const value_distance_3 = document.querySelector('#tr_distance #values_distance_3') as HTMLInputElement
+    value_distance_3.value = center[0].toString()
+    const value_distance_4 = document.querySelector('#tr_distance #values_distance_4') as HTMLInputElement
+    value_distance_4.value = center[1].toString()
+
+    // Set Permalink as Cookie
+    const cookie = []
+    const hash = this.map.getView().getZoom() + '/' +
+      Math.round(center[0] * 1000000) / 1000000 + '/' +
+      Math.round(center[1] * 1000000) / 1000000 + '/' +
+      this.map.getView().getRotation()
+    cookie.push("_redmine_gtt_permalink=" + hash)
+    cookie.push("path=" + window.location.pathname)
+    document.cookie = cookie.join(";")
+
+    const extent_str = transformExtent(extent,'EPSG:3857','EPSG:4326').join('|')
+    // console.log("Map Extent (WGS84): ",extent);
+    const option = document.querySelector('select[name="v[bbox][]"]').querySelector('option') as HTMLOptionElement
+    option.value = extent_str
+    // adjust the value of the 'On map' option tag
+    // Also adjust the JSON data that's the basis for building the filter row
+    // html (this is relevant if the map is moved first and then the filter is
+    // added.)
+    if(window.availableFilters && window.availableFilters.bbox) {
+      window.availableFilters.bbox.values = [['On map', extent]]
+    }
+  }
+
+
+  /**
    * Parse page for WKT strings in history
    */
   parseHistory() {
@@ -775,6 +873,18 @@ export class GttClient {
     }
   }
 
+  toggleAndLoadMap(el: HTMLLegendElement) {
+    const fieldset = el.parentElement.querySelector('fieldset')
+    fieldset.classList.toggle('collapsed')
+    fieldset.querySelector('legend').classList.toggle('icon-expended icon-collapsed');
+    const div = fieldset.querySelector('div')
+    div.style.display = div.style.display === 'none' ? '' : 'none'
+    this.maps.forEach(function (m) {
+      m.updateSize()
+    })
+  }
+
+
 }
 
 const getTileSource = (source: string, class_name: string): any => {
@@ -850,3 +960,4 @@ const getObjectPathValue = (obj: any, path: any, def: any = null) => {
 
   return current
 }
+
