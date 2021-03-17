@@ -126,12 +126,16 @@ export class GttClient {
       )
     }
 
+    // Fix FireFox unloaded font issue
+    this.reloadFontSymbol()
+
+    // TODO: this is only necessary because setting the initial form value
+    //  through the template causes encoding problems
     this.updateForm(features)
     this.layerArray = []
 
     if (this.contents.layers) {
       const layers = JSON.parse(this.contents.layers) as [LayerObject]
-      console.log(layers)
       layers.forEach((layer) => {
         const s = layer.type.split('.')
         const l = new Tile({
@@ -141,7 +145,6 @@ export class GttClient {
         l.set('lid', layer.id)
         l.set('title', layer.name)
         l.set('baseLayer', true)
-        console.log(l)
         l.on('change:visible', e => {
           const target = e.target as Tile
           if (target.getVisible()) {
@@ -212,8 +215,6 @@ export class GttClient {
       })
     }
 
-    // Fix FireFox unloaded font issue
-    this.reloadFontSymbol()
 
 
     // For map div focus settings
@@ -563,7 +564,6 @@ export class GttClient {
             width: 1
           }),
           opacity: 1,
-          fontStyle: 'none'
         } as any),
         stroke: new Stroke({
           width: 4,
@@ -745,7 +745,11 @@ export class GttClient {
         let loaded = false;
         (document as any).fonts.forEach((f:any) => {
           if (f.family === '"mcr-icons"' || f.family === '"fontmaki"') {
-            loaded = true
+            if (f.status === 'unloaded') {
+              f.load().then(() => console.log('loaded'))
+            } else {
+              loaded = true
+            }
           }
         })
         if (loaded) {
@@ -761,7 +765,6 @@ export class GttClient {
                   if (geom.getType() == "Point") {
                     console.log("Reloading Features layer")
                     layer.changed()
-                    console.log(FontSymbol.prototype.defs)
                   }
                 }
               }
@@ -808,7 +811,6 @@ const getMapSize = (map: Map) => {
       target_obj.clientHeight
     ]
   }
-  console.log(size)
   return size
 }
 
