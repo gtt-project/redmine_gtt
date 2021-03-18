@@ -298,21 +298,18 @@ export class GttClient {
     // Because Redmine filter functions are applied later, the Window onload
     // event provides a workaround to have filters loaded before executing
     // the following code
-    window.addEventListener('load', () => {
-      console.log('loaded!')
-      if (document.querySelectorAll('tr#tr_bbox').length > 0) {
-        this.filters.location = true
-      }
-      if (document.querySelectorAll('tr#tr_distance').length > 0) {
-        this.filters.distance = true
-      }
-      document.querySelector('fieldset#location legend').addEventListener('click', (evt) => {
-        const element = evt.currentTarget as HTMLLegendElement
-        this.toggleAndLoadMap(element)
-      })
-      this.zoomToExtent()
-      this.map.on('moveend', this.updateFilter)
+    if (document.querySelectorAll('tr#tr_bbox').length > 0) {
+      this.filters.location = true
+    }
+    if (document.querySelectorAll('tr#tr_distance').length > 0) {
+      this.filters.distance = true
+    }
+    document.querySelector('fieldset#location legend').addEventListener('click', (evt) => {
+      const element = evt.currentTarget as HTMLLegendElement
+      this.toggleAndLoadMap(element)
     })
+    this.zoomToExtent()
+    this.map.on('moveend', this.updateFilter.bind(this))
 
     // To fix an issue with empty map after changing the tracker type
     document.querySelectorAll('select#issue_tracker_id').forEach(element => {
@@ -776,9 +773,13 @@ export class GttClient {
     const fieldset = document.querySelector('fieldset#location') as HTMLFieldSetElement
     fieldset.dataset.center = JSON.stringify(center)
     const value_distance_3 = document.querySelector('#tr_distance #values_distance_3') as HTMLInputElement
-    value_distance_3.value = center[0].toString()
+    if (value_distance_3) {
+      value_distance_3.value = center[0].toString()
+    }
     const value_distance_4 = document.querySelector('#tr_distance #values_distance_4') as HTMLInputElement
-    value_distance_4.value = center[1].toString()
+    if (value_distance_4) {
+      value_distance_4.value = center[1].toString()
+    }
 
     // Set Permalink as Cookie
     const cookie = []
@@ -792,8 +793,11 @@ export class GttClient {
 
     const extent_str = transformExtent(extent,'EPSG:3857','EPSG:4326').join('|')
     // console.log("Map Extent (WGS84): ",extent);
-    const option = document.querySelector('select[name="v[bbox][]"]').querySelector('option') as HTMLOptionElement
-    option.value = extent_str
+    const bbox = document.querySelector('select[name="v[bbox][]"]')
+    if (bbox) {
+      const option = bbox.querySelector('option') as HTMLOptionElement
+      option.value = extent_str
+    }
     // adjust the value of the 'On map' option tag
     // Also adjust the JSON data that's the basis for building the filter row
     // html (this is relevant if the map is moved first and then the filter is
@@ -1157,11 +1161,16 @@ export class GttClient {
   }
 
   toggleAndLoadMap(el: HTMLLegendElement) {
-    const fieldset = el.parentElement.querySelector('fieldset')
+    const fieldset = el.parentElement
     fieldset.classList.toggle('collapsed')
-    fieldset.querySelector('legend').classList.toggle('icon-expended icon-collapsed');
+    el.classList.toggle('icon-expended')
+    el.classList.toggle('icon-collapsed')
     const div = fieldset.querySelector('div')
-    div.style.display = div.style.display === 'none' ? '' : 'none'
+    if (div.style.display !== 'block') {
+      div.style.display = 'block'
+    } else {
+      div.style.display = 'none'
+    }
     this.maps.forEach(function (m) {
       m.updateSize()
     })
@@ -1252,11 +1261,11 @@ window.buildFilterRow = function(field, operator, values) {
   if (field == 'distance') {
     buildDistanceFilterRow(operator, values)
   } else {
-    buildFilterRowWithoutDistanceFilter(field, operator, values)
+    window.buildFilterRowWithoutDistanceFilter(field, operator, values)
   }
 }
 
-const buildFilterRowWithoutDistanceFilter = (feild: any, operator: any, values: any):void => {
+const buildDistanceFilterRow = (operator: any, values: any):void => {
   const field = 'distance'
   const fieldId = field
   const filterTable = document.querySelector('#filters-table') as HTMLTableElement
@@ -1329,6 +1338,6 @@ const buildFilterRowWithoutDistanceFilter = (feild: any, operator: any, values: 
     x = xy[0]
     y = xy[1]
   }
-  (document.querySelector(`#values_${fieldId}_3`) as HTMLInputElement).value = x
-  (document.querySelector(`#values_${fieldId}_4`) as HTMLInputElement).value = y
+  (document.querySelector(`#values_${fieldId}_3`) as HTMLInputElement).value = x;
+  (document.querySelector(`#values_${fieldId}_4`) as HTMLInputElement).value = y;
 }
