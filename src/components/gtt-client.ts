@@ -298,7 +298,8 @@ export class GttClient {
     // Because Redmine filter functions are applied later, the Window onload
     // event provides a workaround to have filters loaded before executing
     // the following code
-    window.onload = () => {
+    window.addEventListener('load', () => {
+      console.log('loaded!')
       if (document.querySelectorAll('tr#tr_bbox').length > 0) {
         this.filters.location = true
       }
@@ -311,7 +312,7 @@ export class GttClient {
       })
       this.zoomToExtent()
       this.map.on('moveend', this.updateFilter)
-    }
+    })
 
     // To fix an issue with empty map after changing the tracker type
     document.querySelectorAll('select#issue_tracker_id').forEach(element => {
@@ -512,8 +513,12 @@ export class GttClient {
 
     const geocoder = JSON.parse(this.defaults.geocoder)
     if (updateAddressFlag && geocoder.address_field_name && features && features.length > 0) {
-      const addressInput = document.querySelector(`#issue-form #attributes label:contains('${geocoder.address_field_name}')`)
-        .parentNode.querySelector('p').querySelector('input') as HTMLInputElement
+      let addressInput: HTMLInputElement = null
+      document.querySelectorAll(`#issue-form #attributes label`).forEach(element => {
+        if (element.innerHTML.includes(geocoder.address_field_name)) {
+          addressInput = element.parentNode.querySelector('p').querySelector('input') as HTMLInputElement
+        }
+      })
       if (addressInput) {
         // Todo: only works with point geometries for now for the last geometry
         const feature = features[features.length - 1].getGeometry() as any
@@ -526,8 +531,12 @@ export class GttClient {
             const check = evaluateComparison(getObjectPathValue(data, geocoder.reverse_geocode_result_check_path),
               geocoder.reverse_geocode_result_check_operator,
               geocoder.reverse_geocode_result_check_value)
-            const districtInput = document.querySelector(`#issue-form #attributes label:contains('${geocoder.district_field_name}')"`)
-              .parentNode.querySelector('p').querySelector('input') as HTMLInputElement
+            let districtInput: HTMLInputElement = null
+            document.querySelectorAll(`#issue-form #attributes label`).forEach(element => {
+              if (element.innerHTML.includes(geocoder.district_field_name)) {
+                districtInput = element.parentNode.querySelector('p').querySelector('input') as HTMLInputElement
+              }
+            })
             const address = getObjectPathValue(data, geocoder.reverse_geocode_result_address_path)
             let foundDistrict = false
             if (check && address) {
@@ -765,7 +774,7 @@ export class GttClient {
     center = transform(center,'EPSG:3857','EPSG:4326')
     // console.log("Map Center (WGS84): ", center);
     const fieldset = document.querySelector('fieldset#location') as HTMLFieldSetElement
-    fieldset.dataset.center = center.toString()
+    fieldset.dataset.center = JSON.stringify(center)
     const value_distance_3 = document.querySelector('#tr_distance #values_distance_3') as HTMLInputElement
     value_distance_3.value = center[0].toString()
     const value_distance_4 = document.querySelector('#tr_distance #values_distance_4') as HTMLInputElement
@@ -902,15 +911,17 @@ export class GttClient {
         geocoder.address_field_name &&
         document.querySelectorAll("#issue-form #attributes button.btn-geocode").length == 0)
     {
-      document.querySelectorAll(`#issue-form #attributes label:contains('${geocoder.address_field_name}')`).forEach(element => {
-        element.querySelectorAll('p').forEach(p_element => {
-          const button = document.createElement('button') as HTMLButtonElement
-          button.name = 'button'
-          button.type = 'button'
-          button.className = 'btn-geocode'
-          button.appendChild(document.createTextNode(geocoder.address_field_name))
-          p_element.appendChild(button)
-        })
+      document.querySelectorAll(`#issue-form #attributes label`).forEach(element => {
+        if (element.textContent.includes(geocoder.address_field_name)) {
+          element.querySelectorAll('p').forEach(p_element => {
+            const button = document.createElement('button') as HTMLButtonElement
+            button.name = 'button'
+            button.type = 'button'
+            button.className = 'btn-geocode'
+            button.appendChild(document.createTextNode(geocoder.address_field_name))
+            p_element.appendChild(button)
+          })
+        }
       })
 
       document.querySelectorAll('button.btn-geocode').forEach(element => {
@@ -942,8 +953,13 @@ export class GttClient {
                   this.updateForm(this.vector.getSource().getFeatures())
                   this.zoomToExtent(true)
 
-                  const districtInput = document.querySelector(`#issue-form #attributes label:contains('${geocoder.district_field_name}')"`)
-                    .parentNode.querySelector('p').querySelector('input') as HTMLInputElement
+                  const _districtInput = document.querySelectorAll(`#issue-form #attributes label`)
+                  let districtInput: HTMLInputElement = null
+                  _districtInput.forEach(element => {
+                    if (element.innerHTML.includes(geocoder.district_field_name)) {
+                      districtInput = element.parentNode.querySelector('p').querySelector('input')
+                    }
+                  })
                   let foundDistrict = false
                   if (districtInput) {
                     const district = getObjectPathValue(data, geocoder.geocode_result_district_path)
@@ -972,15 +988,17 @@ export class GttClient {
         geocoder.place_search_field_name &&
         document.querySelectorAll("#issue-form #attributes button.btn-placesearch").length == 0 )
     {
-      document.querySelectorAll(`#issue-form #attributes label:contains('${geocoder.place_search_field_name}')`).forEach(element => {
-        element.querySelectorAll('p').forEach(p_element => {
-          const button = document.createElement('button') as HTMLButtonElement
-          button.name = 'button'
-          button.type = 'button'
-          button.className = 'btn-placesearch'
-          button.appendChild(document.createTextNode(geocoder.place_search_field_name))
-          p_element.appendChild(button)
-        })
+      document.querySelectorAll(`#issue-form #attributes label`).forEach(element => {
+        if (element.innerHTML.includes(geocoder.place_search_field_name)) {
+          element.querySelectorAll('p').forEach(p_element => {
+            const button = document.createElement('button') as HTMLButtonElement
+            button.name = 'button'
+            button.type = 'button'
+            button.className = 'btn-placesearch'
+            button.appendChild(document.createTextNode(geocoder.place_search_field_name))
+            p_element.appendChild(button)
+          })
+        }
       })
 
       document.querySelectorAll("button.btn-placesearch").forEach(element => {
@@ -1023,14 +1041,26 @@ export class GttClient {
                   })
                   window.showModal('ajax-model', '400px')
                   document.querySelector("p.buttons input[type='submit']").addEventListener('click', () => {
-                    const input = document.querySelector(`#issue-form #attributes label:contains('${geocoder.place_search_field_name}')"`)
-                      .parentNode.querySelector('p').querySelector('input') as HTMLInputElement
-                    input.value = (document.querySelector("div#places input[type='radio']:checked") as HTMLInputElement).value
+                    let input: HTMLInputElement = null
+                    document.querySelectorAll(`#issue-form #attributes label`).forEach(element => {
+                      if (element.innerHTML.includes(geocoder.place_search_field_name)) {
+                        input = element.parentNode.querySelector('p').querySelector('input') as HTMLInputElement
+                      }
+                    })
+                    if (input) {
+                      input.value = (document.querySelector("div#places input[type='radio']:checked") as HTMLInputElement).value
+                    }
                   })
                 } else {
-                  const input = document.querySelector(`#issue-form #attributes label:contains('${geocoder.place_search_field_name}')"`)
-                    .parentNode.querySelector('p').querySelector('input') as HTMLInputElement
-                  input.value = geocoder.empty_field_value
+                  let input: HTMLInputElement = null
+                  document.querySelectorAll(`#issue-form #attributes label`).forEach(element => {
+                    if (element.innerHTML.includes(geocoder.place_search_field_name)) {
+                      input = element.parentNode.querySelector('p').querySelector('input') as HTMLInputElement
+                    }
+                  })
+                  if (input) {
+                    input.value = geocoder.empty_field_value
+                  }
                 }
               })
           }
@@ -1214,3 +1244,91 @@ const getObjectPathValue = (obj: any, path: any, def: any = null) => {
   return current
 }
 
+/**
+ * Extend core Redmine's buildFilterRow method
+ */
+window.buildFilterRowWithoutDistanceFilter = window.buildFilterRow;
+window.buildFilterRow = function(field, operator, values) {
+  if (field == 'distance') {
+    buildDistanceFilterRow(operator, values)
+  } else {
+    buildFilterRowWithoutDistanceFilter(field, operator, values)
+  }
+}
+
+const buildFilterRowWithoutDistanceFilter = (feild: any, operator: any, values: any):void => {
+  const field = 'distance'
+  const fieldId = field
+  const filterTable = document.querySelector('#filters-table') as HTMLTableElement
+  const filterOptions = window.availableFilters[field]
+  if (!filterOptions) {
+    return
+  }
+  const operators = window.operatorByType[filterOptions['type']]
+  const filterValues = filterOptions['values']
+
+  const tr = document.createElement('tr') as HTMLTableRowElement
+  tr.className = 'filter'
+  tr.id = `tr_${fieldId}`
+  tr.innerHTML = `
+  <td class="field">
+    <input checked="checked" id="cb_${fieldId}" name="f[]" value="${field}" type="checkbox">
+    <label for="cb_${fieldId}">${filterOptions['name']}</label>
+  </td>
+  <td class="operator">
+    <select id="operators_${fieldId}" name="op[${field}]">
+  </td>
+  <td class="values"></td>
+  `
+  filterTable.appendChild(tr)
+
+  const select = tr.querySelector('td.operator select') as HTMLSelectElement
+  for (let i = 0; i < operators.length; i++) {
+    const option = document.createElement('option')
+    option.value = operators[i]
+    option.text = window.operatorLabels[operators[i]]
+    if (operators[i] == operator) {
+      option.selected = true
+    }
+    select.append(option)
+  }
+  select.addEventListener('change', () => {
+    window.toggleOperator(field)
+  })
+
+  const td = tr.querySelector('td.values') as HTMLTableDataCellElement
+  td.innerHTML = `
+  <span style="display:none;">
+    <input type="text" name="v[${field}][]" id="values_${fieldId}_1" size="14" class="value" />
+  </span>
+  <span style="display:none;">
+    <input type="text" name="v[${field}][]" id="values_${fieldId}_2" size="14" class="value" />
+  </span>
+  <input type="hidden" name="v[${field}][]" id="values_${fieldId}_3" />
+  <input type="hidden" name="v[${field}][]" id="values_${fieldId}_4" />
+  `;
+  (document.querySelector(`#values_${fieldId}_1`) as HTMLInputElement).value = values[0]
+  let base_idx = 1
+  if (values.length == 2 || values.length == 4) {
+    // upper bound for 'between' operator
+    (document.querySelector(`#values_${fieldId}_2`) as HTMLInputElement).value = values[1]
+    base_idx = 2
+  }
+  let x, y
+  if (values.length > 2) {
+    // console.log('distance center point from values: ', values[base_idx], values[base_idx+1]);
+    x = values[base_idx]
+    y = values[base_idx+1]
+  } else {
+    // console.log('taking distance from map fieldset: ', $('fieldset#location').data('center'));
+    const fieldset = document.querySelector('fieldset#location') as HTMLFieldSetElement
+    if (!fieldset.dataset.center) {
+      return
+    }
+    const xy = JSON.parse(fieldset.dataset.center)
+    x = xy[0]
+    y = xy[1]
+  }
+  (document.querySelector(`#values_${fieldId}_3`) as HTMLInputElement).value = x
+  (document.querySelector(`#values_${fieldId}_4`) as HTMLInputElement).value = y
+}
