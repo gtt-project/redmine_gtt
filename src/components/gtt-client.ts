@@ -16,7 +16,7 @@ import {
   Select,
 } from 'ol/interaction'
 import { focus as events_condifition_focus } from 'ol/events/condition'
-import { defaults as control_defaults, Control } from 'ol/control'
+import { defaults as control_defaults} from 'ol/control'
 import { transform, fromLonLat, transformExtent } from 'ol/proj'
 import { createEmpty, extend, getCenter } from 'ol/extent'
 import { FeatureCollection } from 'geojson'
@@ -31,7 +31,6 @@ import Toggle from 'ol-ext/control/Toggle'
 import Button from 'ol-ext/control/Button'
 import LayerPopup from 'ol-ext/control/LayerPopup'
 import Popup from 'ol-ext/overlay/Popup'
-import { defaultFillStyle } from 'ol/render/canvas'
 
 interface GttClientOption {
   target: HTMLDivElement | null
@@ -232,10 +231,7 @@ export class GttClient {
     this.map.addControl(this.toolbar)
     this.setView()
     this.setGeolocation()
-    /*
-    // TODO: setGeocoding
-    // this.setGeocoding()
-    */
+    this.setGeocoding()
     this.parseHistory()
 
     // Control button
@@ -892,6 +888,206 @@ export class GttClient {
       }
     } as any)
     this.toolbar.addControl(geolocationCtrl)
+  }
+
+  /**
+   * Add Geocoding functionality
+   */
+  setGeocoding():void {
+
+    // Hack to add Geocoding buttons to text fields
+    // There should be a better way to do this
+    const geocoder = JSON.parse(this.defaults.geocoder)
+    if (geocoder.geocode_url &&
+        geocoder.address_field_name &&
+        document.querySelectorAll("#issue-form #attributes button.btn-geocode").length == 0)
+    {
+      document.querySelectorAll(`#issue-form #attributes label:contains('${geocoder.address_field_name}')`).forEach(element => {
+        element.querySelectorAll('p').forEach(p_element => {
+          const button = document.createElement('button') as HTMLButtonElement
+          button.name = 'button'
+          button.type = 'button'
+          button.className = 'btn-geocode'
+          button.appendChild(document.createTextNode(geocoder.address_field_name))
+          p_element.appendChild(button)
+        })
+      })
+
+      document.querySelectorAll('button.btn-geocode').forEach(element => {
+        element.addEventListener('click', (evt) => {
+          // Geocode address and add/update icon on map
+          const button = evt.currentTarget as HTMLButtonElement
+          if (button.previousElementSibling.querySelector('input').value != '') {
+            const address = button.previousElementSibling.querySelector('input').value
+            const geocode_url = geocoder.geocode_url.replace("{address}", encodeURIComponent(address))
+            fetch(geocode_url)
+              .then(response => response.json())
+              .then(data => {
+                const check = evaluateComparison(getObjectPathValue(data, geocoder.geocode_result_check_path),
+                  geocoder.geocode_result_check_operator,
+                  geocoder.geocode_result_check_value
+                )
+                if (check) {
+                  const lon = getObjectPathValue(data, geocoder.geocode_result_lon_path)
+                  const lat = getObjectPathValue(data, geocoder.geocode_result_lat_path)
+                  const coords = [lon, lat]
+                  const geom = new Point(fromLonLat(coords, 'EPSG:3857'))
+                  const features = this.vector.getSource().getFeatures()
+                  if (features.length > 0) {
+                    features[features.length - 1].setGeometry(geom)
+                  } else {
+                    const feature = new Feature(geom)
+                    this.vector.getSource().addFeatures([feature])
+                  }
+                  this.updateForm(this.vector.getSource().getFeatures())
+                  this.zoomToExtent(true)
+
+                  const districtInput = document.querySelector(`#issue-form #attributes label:contains('${geocoder.district_field_name}')"`)
+                    .parentNode.querySelector('p').querySelector('input') as HTMLInputElement
+                  let foundDistrict = false
+                  if (districtInput) {
+                    const district = getObjectPathValue(data, geocoder.geocode_result_district_path)
+                    if (district) {
+                      const regexp = new RegExp(geocoder.geocode_result_district_regexp)
+                      const match = regexp.exec(district)
+                      if (match && match.length === 2) {
+                        districtInput.value = match[1]
+                        foundDistrict = true
+                      }
+                    }
+                    if (!foundDistrict) {
+                      if (districtInput) {
+                        districtInput.value = ""
+                      }
+                    }
+                  }
+                }
+              })
+          }
+        })
+      })
+    }
+
+    if (geocoder.place_search_url &&
+        geocoder.place_search_field_name &&
+        document.querySelectorAll("#issue-form #attributes button.btn-placesearch").length == 0 )
+    {
+      document.querySelectorAll(`#issue-form #attributes label:contains('${geocoder.place_search_field_name}')`).forEach(element => {
+        element.querySelectorAll('p').forEach(p_element => {
+          const button = document.createElement('button') as HTMLButtonElement
+          button.name = 'button'
+          button.type = 'button'
+          button.className = 'btn-placesearch'
+          button.appendChild(document.createTextNode(geocoder.place_search_field_name))
+          p_element.appendChild(button)
+        })
+      })
+
+      document.querySelectorAll("button.btn-placesearch").forEach(element => {
+        element.addEventListener('click', () => {
+          if (this.vector.getSource().getFeatures().length > 0) {
+            let coords = null
+            this.vector.getSource().getFeatures().forEach((feature) => {
+              // Todo: only works with point geometries for now for the last geometry
+              coords = getCenter(feature.getGeometry().getExtent())
+            })
+            coords = transform(coords, 'EPSG:3857', 'EPSG:4326')
+            const place_search_url = geocoder.place_search_url.replace("{lon}", coords[0].toString()).replace("{lat}", coords[1].toString())
+            fetch(place_search_url)
+              .then(response => response.json())
+              .then(data => {
+                const list:Array<any> = getObjectPathValue(data, geocoder.place_search_result_list_path)
+                if (list.length > 0) {
+                  const modal = document.querySelector('#ajax-modal') as HTMLDivElement
+                  modal.innerHTML = `
+                  <h3 class='title'>${geocoder.place_search_result_ui_title}</h3>
+                  <div id='places'></div>
+                  <p class='buttons'>
+                  <input type='submit' value='${geocoder.place_search_result_ui_button}' onclick='hideModal(this)'/>
+                  </p>
+                  `
+                  modal.classList.add('place_search_results')
+                  list.forEach(item => {
+                    const display = getObjectPathValue(item, geocoder.place_search_result_display_path)
+                    const value = getObjectPathValue(item, geocoder.place_search_result_value_path)
+                    if (display && value) {
+                      const places = document.querySelector('div#places') as HTMLDivElement
+                      const input = document.createElement('input') as HTMLInputElement
+                      input.type = 'radio'
+                      input.name = 'places'
+                      input.value = value
+                      input.appendChild(document.createTextNode(display))
+                      places.appendChild(input)
+                      places.appendChild(document.createElement('br'))
+                    }
+                  })
+                  window.showModal('ajax-model', '400px')
+                  document.querySelector("p.buttons input[type='submit']").addEventListener('click', () => {
+                    const input = document.querySelector(`#issue-form #attributes label:contains('${geocoder.place_search_field_name}')"`)
+                      .parentNode.querySelector('p').querySelector('input') as HTMLInputElement
+                    input.value = (document.querySelector("div#places input[type='radio']:checked") as HTMLInputElement).value
+                  })
+                } else {
+                  const input = document.querySelector(`#issue-form #attributes label:contains('${geocoder.place_search_field_name}')"`)
+                    .parentNode.querySelector('p').querySelector('input') as HTMLInputElement
+                  input.value = geocoder.empty_field_value
+                }
+              })
+          }
+        })
+      })
+    }
+
+    // disable geocoder control if geocoderUrl is null
+    if (!this.defaults.geocoderUrl) {
+      return
+    }
+
+    // Control button
+    const geocodingCtrl = new Toggle({
+      html: '<i class="gtt-icon-info" ></i>',
+      title: "Geocoding",
+      className: "ctl-geocoding",
+      onToggle: (active: boolean) => {
+        if (active) {
+          (document.querySelector(".ctl-geocoding button input") as HTMLInputElement).focus()
+        }
+      },
+      bar: new Bar({
+        controls: [
+          new Button({
+            html: '<form><input name="address" type="text" /></form>'
+          } as any)
+        ]
+      } as any)
+    } as any)
+    this.toolbar.addControl(geocodingCtrl)
+
+    // Make Geocoding API request
+    document.querySelector(".ctl-geocoding form").addEventListener('submit', (evt) => {
+      evt.preventDefault()
+
+      if (!this.defaults.geocoderUrl) {
+        throw new Error ("No Geocoding service configured!")
+      }
+
+      const url = [
+        this.defaults.geocoderUrl,
+        encodeURIComponent((document.querySelector('.ctl-geocoding form input[name=address]') as HTMLInputElement).value)
+      ]
+
+      fetch(url.join('/'))
+        .then(response => response.json())
+        .then(data => {
+          // TODO, check for valid results
+          const address = new GeoJSON().readFeature(data, {
+            featureProjection: 'EPSG:3857'
+          })
+          this.map.getView().fit(address.getGeometry().getExtent(), {
+            size: this.map.getSize()
+          })
+        })
+    })
   }
 
   reloadFontSymbol() {
