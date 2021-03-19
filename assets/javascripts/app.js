@@ -88,6 +88,9 @@ var App = (function ($, publ) {
       );
     }
 
+    // Fix FireFox unloaded font issue
+    publ.reloadFontSymbol();
+
     // TODO: this is only necessary because setting the initial form value
     //  through the template causes encoding problems
     publ.updateForm(features);
@@ -183,6 +186,10 @@ var App = (function ($, publ) {
         })
       })
     });
+    // Fix empty map issue
+    map.once('postrender', function(event) {
+      publ.zoomToExtent(true);
+    });
 
     // Add Toolbar
     toolbar = new ol.control.Bar();
@@ -196,7 +203,7 @@ var App = (function ($, publ) {
 
     // Control button
     var maximizeCtrl = new ol.control.Button({
-      html: '<i class="icon-maximize" ></i>',
+      html: '<i class="gtt-icon-maximize" ></i>',
       title: "Maximize",
       handleClick: function () {
         publ.zoomToExtent(true);
@@ -338,7 +345,7 @@ var App = (function ($, publ) {
     }
     return color;
   };
-  
+
   publ.getFontColor = function (feature) {
     color = "#FFFFFF"
     return color;
@@ -602,7 +609,7 @@ var App = (function ($, publ) {
 
     // Control button
     var geolocationCtrl = new ol.control.Toggle({
-      html: '<i class="icon-compass" ></i>',
+      html: '<i class="gtt-icon-compass" ></i>',
       title: "Geolocation",
       active: false,
       onToggle: function (active) {
@@ -717,7 +724,7 @@ var App = (function ($, publ) {
                 var value = getObjectPathValue(item, defaults.geocoder.place_search_result_value_path);
                 if (display && value != null) {
                   $("div#places").append('<input type="radio" name="places" value="' + value + '">'
-                  + display 
+                  + display
                   +'<br>')
                 }
               })
@@ -739,7 +746,7 @@ var App = (function ($, publ) {
 
     // Control button
     var geocodingCtrl = new ol.control.Toggle({
-      html: '<i class="icon-info" ></i>',
+      html: '<i class="gtt-icon-info" ></i>',
       title: "Geocoding",
       className: "ctl-geocoding",
       onToggle: function (active) {
@@ -821,7 +828,7 @@ var App = (function ($, publ) {
       });
 
       var control = new ol.control.Toggle({
-        html: '<i class="icon-' + type.toLowerCase() + '" ></i>',
+        html: '<i class="gtt-icon-' + type.toLowerCase() + '" ></i>',
         title: type,
         interaction: draw
       });
@@ -830,7 +837,7 @@ var App = (function ($, publ) {
 
     // Upload button
     editbar.addControl(new ol.control.Button({
-      html: '<i class="icon-book" ></i>',
+      html: '<i class="gtt-icon-book" ></i>',
       title: 'Upload GeoJSON',
       handleClick: function () {
         var data = prompt("Please paste a GeoJSON geometry here");
@@ -939,7 +946,7 @@ var App = (function ($, publ) {
                 if (match && match.length === 2) {
                   districtInput.val(match[1]);
                   foundDistrict = true;
-                }  
+                }
               }
             }
           }
@@ -1005,6 +1012,38 @@ var App = (function ($, publ) {
     return url;
   };
 
+  publ.reloadFontSymbol = function () {
+    if ('fonts' in document) {
+      document.fonts.addEventListener('loadingdone', function(e) {
+        var loaded = false;
+        e.fontfaces.forEach(function(f) {
+          if (f.family === '"mcr-icons"' || f.family === '"fontmaki"') {
+            loaded = true;
+          }
+        });
+        if (loaded) {
+          maps.forEach(function(m) {
+            var layers = m.getLayers();
+            layers.forEach(function(layer) {
+              if (layer.type === "VECTOR" &&
+                  layer.getKeys().indexOf("title") >= 0 &&
+                  layer.get("title") === "Features") {
+                var features = layer.getSource().getFeatures();
+                if (features.length >= 0) {
+                  var geom = features[0].getGeometry();
+                  if (geom.getType() == "Point") {
+                    console.log("Reloading Features layer");
+                    layer.changed();  
+                  }
+                }
+              }
+            });
+          });
+        }
+      });
+    }
+  };
+
   function getCookie(cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');
@@ -1023,6 +1062,7 @@ var App = (function ($, publ) {
   function toggleAndLoadMap(el) {
     var fieldset = $(el).parents('fieldset').first();
     fieldset.toggleClass('collapsed');
+    fieldset.children('legend').toggleClass('icon-expended icon-collapsed');
     fieldset.children('div').toggle();
     maps.forEach(function (m) {
       m.updateSize();
@@ -1057,8 +1097,8 @@ var App = (function ($, publ) {
     };
 
     path = stringToPath(path);
-    var current = obj;  
-    for (var i = 0; i < path.length; i++) {  
+    var current = obj;
+    for (var i = 0; i < path.length; i++) {
       if (!current[path[i]]) {
         return def;
       }
