@@ -19,6 +19,8 @@ Redmine GTT plugins **require PostgreSQL/PostGIS** and will not work with SQLite
 - Redmine >= 4.0.0
 - PostgreSQL >= 9.6
 - PostGIS >= 2.4
+- NodeJS v14
+- yarn
 
 ## Installation
 
@@ -34,11 +36,15 @@ To install Redmine GTT plugin, download or clone this repository in your Redmine
 ```
 cd path/to/plugin/directory
 git clone https://github.com/gtt-project/redmine_gtt.git
+cd redmine_gtt
+yarn
+npx webpack
 ```
 
 Then run
 
 ```
+export GEM_PG_VERSION=your-pg-version # skip this line if redmine use pg 1.1.4.
 bundle install
 bundle exec rake redmine:plugins:migrate
 ```
