@@ -236,7 +236,7 @@ export class GttClient {
 
     // Control button
     const maximizeCtrl = new Button({
-      html: '<i class="icon-maximize" ></i>',
+      html: '<i class="gtt-icon-maximize" ></i>',
       title: "Maximize",
       handleClick: () => {
         this.zoomToExtent(true);
@@ -304,10 +304,13 @@ export class GttClient {
     if (document.querySelectorAll('tr#tr_distance').length > 0) {
       this.filters.distance = true
     }
-    document.querySelector('fieldset#location legend').addEventListener('click', (evt) => {
-      const element = evt.currentTarget as HTMLLegendElement
-      this.toggleAndLoadMap(element)
-    })
+    const legend = document.querySelector('fieldset#location legend') as HTMLLegendElement
+    if (legend) {
+      legend.addEventListener('click', (evt) => {
+        const element = evt.currentTarget as HTMLLegendElement
+        this.toggleAndLoadMap(element)
+      })
+    }
     this.zoomToExtent()
     this.map.on('moveend', this.updateFilter.bind(this))
 
@@ -409,7 +412,7 @@ export class GttClient {
       })
 
       const control = new Toggle({
-        html: `<i class="icon-${type.toLowerCase()}" ></i>`,
+        html: `<i class="gtt-icon-${type.toLowerCase()}" ></i>`,
         title: type,
         interaction: draw
       } as any)
@@ -418,7 +421,7 @@ export class GttClient {
 
     // Upload button
     editbar.addControl(new Button({
-      html: '<i class="icon-book" ></i>',
+      html: '<i class="gtt-icon-book" ></i>',
       title: 'Upload GeoJSON',
       handleClick: () => {
         const data = prompt("Please paste a GeoJSON geometry here")
@@ -771,7 +774,9 @@ export class GttClient {
     center = transform(center,'EPSG:3857','EPSG:4326')
     // console.log("Map Center (WGS84): ", center);
     const fieldset = document.querySelector('fieldset#location') as HTMLFieldSetElement
-    fieldset.dataset.center = JSON.stringify(center)
+    if (fieldset) {
+      fieldset.dataset.center = JSON.stringify(center)
+    }
     const value_distance_3 = document.querySelector('#tr_distance #values_distance_3') as HTMLInputElement
     if (value_distance_3) {
       value_distance_3.value = center[0].toString()
@@ -889,7 +894,7 @@ export class GttClient {
 
     // Control button
     const geolocationCtrl = new Toggle({
-      html: '<i class="icon-compass" ></i>',
+      html: '<i class="gtt-icon-compass" ></i>',
       title: "Geolocation",
       active: false,
       onToggle: (active: boolean) => {
