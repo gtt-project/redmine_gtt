@@ -476,7 +476,7 @@ export class GttClient {
       const url = popup_contents.href.replace(/\[(.+?)\]/g, feature.get('id'))
       content.push(`<a href="${url}">Edit</a>`)
 
-      popup.show(getCenter(feature.getGeometry().getExtent()), content as any)
+      popup.show(feature.getGeometry().getFirstCoordinate(), content as any)
     })
 
     select.getFeatures().on(['remove'], _ => {
