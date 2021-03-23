@@ -1180,6 +1180,7 @@ export class GttClient {
     this.maps.forEach(function (m) {
       m.updateSize()
     })
+    this.zoomToExtent()
   }
 
 
