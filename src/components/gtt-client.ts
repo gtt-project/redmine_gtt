@@ -193,7 +193,6 @@ export class GttClient {
     this.vector.set('displayInLayerSwitcher', false)
     this.layerArray.push(this.vector)
     this.map.addLayer(this.vector)
-    console.log(this.layerArray)
 
     // Render project boundary if bounds are available
     if (this.contents.bounds && this.contents.bounds !== null) {
@@ -298,21 +297,23 @@ export class GttClient {
     // Because Redmine filter functions are applied later, the Window onload
     // event provides a workaround to have filters loaded before executing
     // the following code
-    if (document.querySelectorAll('tr#tr_bbox').length > 0) {
-      this.filters.location = true
-    }
-    if (document.querySelectorAll('tr#tr_distance').length > 0) {
-      this.filters.distance = true
-    }
-    const legend = document.querySelector('fieldset#location legend') as HTMLLegendElement
-    if (legend) {
-      legend.addEventListener('click', (evt) => {
-        const element = evt.currentTarget as HTMLLegendElement
-        this.toggleAndLoadMap(element)
-      })
-    }
-    this.zoomToExtent()
-    this.map.on('moveend', this.updateFilter.bind(this))
+    window.addEventListener('load', () => {
+      if (document.querySelectorAll('tr#tr_bbox').length > 0) {
+        this.filters.location = true
+      }
+      if (document.querySelectorAll('tr#tr_distance').length > 0) {
+        this.filters.distance = true
+      }
+      const legend = document.querySelector('fieldset#location legend') as HTMLLegendElement
+      if (legend) {
+        legend.addEventListener('click', (evt) => {
+          const element = evt.currentTarget as HTMLLegendElement
+          this.toggleAndLoadMap(element)
+        })
+      }
+      this.zoomToExtent()
+      this.map.on('moveend', this.updateFilter.bind(this))
+    })
 
     // To fix an issue with empty map after changing the tracker type
     document.querySelectorAll('select#issue_tracker_id').forEach(element => {
@@ -475,7 +476,7 @@ export class GttClient {
       const url = popup_contents.href.replace(/\[(.+?)\]/g, feature.get('id'))
       content.push(`<a href="${url}">Edit</a>`)
 
-      popup.show(getCenter(feature.getGeometry().getExtent()), content as any)
+      popup.show(feature.getGeometry().getFirstCoordinate(), content as any)
     })
 
     select.getFeatures().on(['remove'], _ => {
@@ -1179,6 +1180,7 @@ export class GttClient {
     this.maps.forEach(function (m) {
       m.updateSize()
     })
+    this.zoomToExtent()
   }
 
 
