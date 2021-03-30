@@ -224,6 +224,11 @@ export class GttClient {
       }
     }
 
+    // Fix empty map issue
+    this.map.once('postrender', e => {
+      this.zoomToExtent(true);
+    })
+
     // Add Toolbar
     this.toolbar = new Bar()
     this.toolbar.setPosition('bottom-left' as any) // is type.d old?
@@ -604,7 +609,7 @@ export class GttClient {
     const plugin_settings = JSON.parse(this.defaults.pluginSettings)
     const status = document.querySelector('#issue_status_id') as HTMLInputElement
 
-    let status_id = feature.get('status')
+    let status_id = feature.get('status_id')
     if (!status_id && status) {
       status_id = status.value
     }
@@ -762,7 +767,6 @@ export class GttClient {
         })
       }
     }
-
   }
 
   /**
@@ -1347,4 +1351,13 @@ const buildDistanceFilterRow = (operator: any, values: any):void => {
   }
   (document.querySelector(`#values_${fieldId}_3`) as HTMLInputElement).value = x;
   (document.querySelector(`#values_${fieldId}_4`) as HTMLInputElement).value = y;
+}
+
+window.replaceIssueFormWithInitMap = window.replaceIssueFormWith
+window.replaceIssueFormWith = (html) => {
+  window.replaceIssueFormWithInitMap(html)
+  const ol_maps = document.querySelector('div#update div.ol-map') as HTMLDivElement
+  if (ol_maps) {
+    new GttClient({target: ol_maps})
+  }
 }
