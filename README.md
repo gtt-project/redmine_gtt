@@ -39,6 +39,9 @@ git clone https://github.com/gtt-project/redmine_gtt.git
 Then run
 
 ```
+export GEM_PG_VERSION=your-pg-version # skip this line if redmine use pg 1.1.4.
+export GEM_RGEO_ACTIVERECORD_VERSION=your-rgeo-activerecord-version # skip this line if using rgeo-activerecord 6.2.2.
+export GEM_ACTIVERECORD_POSTGIS_ADAPTER_VERSION=your-activerecord-postgis-adapter-version # skip this line if using activerecord-postgis-adapter 5.2.3.
 bundle install
 bundle exec rake redmine:plugins:migrate
 ```
