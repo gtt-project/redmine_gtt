@@ -1,6 +1,7 @@
 # Japanese strings go here for Rails i18n
 ja:
   error_invalid_json: "正しいJSONにしてください"
+  error_unable_to_update_project_gtt_settings: "プロジェクトのGTTの設定を更新できません (%{value})"
 
   field_default: "新規プロジェクトのデフォルト"
   field_geometry: "所在地"
