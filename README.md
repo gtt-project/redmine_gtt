@@ -50,6 +50,14 @@ After restarting Redmine, you should be able to see the Redmine GTT plugin in th
 
 More information on installing (and uninstalling) Redmine plugins can be found here: http://www.redmine.org/wiki/redmine/Plugins
 
+## How to run test
+
+After the installation, you can run the plugin test by the following command:
+
+```
+RAILS_ENV=test NAME=redmine_gtt bundle exec rake redmine:plugins:test
+```
+
 ## How to use
 
 1. Go to plugin configuration for global settings
