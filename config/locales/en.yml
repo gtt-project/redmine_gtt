@@ -1,6 +1,7 @@
 # English strings go here for Rails i18n
 en:
   error_invalid_json: must be valid JSON
+  error_unable_to_update_project_gtt_settings: "Unable to update project GTT settings (%{value})"
 
   field_default: Default for new projects
   field_geometry: "Geometry"

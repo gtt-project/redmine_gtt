@@ -47,7 +47,7 @@ module RedmineGtt
             if r.settings_saved?
               flash.now[:notice] = l(:notice_successful_update)
             else
-              flash.now[:error] = r.error
+              flash.now[:error] = l(:error_unable_to_update_project_gtt_settings, "#{r.error}")
             end
 
           end
