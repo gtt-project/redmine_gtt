@@ -45,6 +45,8 @@ Then run
 
 ```
 export GEM_PG_VERSION=your-pg-version # skip this line if redmine use pg 1.1.4.
+export GEM_RGEO_ACTIVERECORD_VERSION=your-rgeo-activerecord-version # skip this line if using rgeo-activerecord 6.2.2.
+export GEM_ACTIVERECORD_POSTGIS_ADAPTER_VERSION=your-activerecord-postgis-adapter-version # skip this line if using activerecord-postgis-adapter 5.2.3.
 bundle install
 bundle exec rake redmine:plugins:migrate
 ```
@@ -54,6 +56,14 @@ Before restarting Redmine, you need to set `postgis` adapter instead of `postgre
 After restarting Redmine, you should be able to see the Redmine GTT plugin in the Plugins page.
 
 More information on installing (and uninstalling) Redmine plugins can be found here: http://www.redmine.org/wiki/redmine/Plugins
+
+## How to run test
+
+After the installation, you can run the plugin test by the following command:
+
+```
+RAILS_ENV=test NAME=redmine_gtt bundle exec rake redmine:plugins:test
+```
 
 ## How to use
 

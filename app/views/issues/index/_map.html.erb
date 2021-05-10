@@ -1,7 +1,7 @@
 <% if @project and @project.module_enabled?(:gtt) %>
 
-<fieldset id="location" class="collapsible collapsed">
-<legend class="icon icon-collapsed"><%= l(:field_location) %></legend>
+<fieldset id="location" class="collapsible">
+  <legend class="icon icon-expended"><%= l(:field_location) %></legend>
 
   <%= map_tag map: @project.map, geom: (Issue.array_to_geojson(@issues, include_properties: { only: %i(id subject tracker_id status_id) }) if @issues), popup: { href: '/issues/[id]' } %>
 </fieldset>

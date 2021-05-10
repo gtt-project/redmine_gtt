@@ -26,7 +26,13 @@ module RedmineGtt
         if tile_source_ids = @form.gtt_tile_source_ids
           @project.gtt_tile_source_ids = tile_source_ids
         end
-        @project.geojson = @form.geojson
+
+        begin
+          @project.geojson = @form.geojson
+        rescue RGeo::Error::InvalidGeometry => e
+          @project.errors.add(:geom, :invalid)
+          return false
+        end
 
         @project.save
       end
