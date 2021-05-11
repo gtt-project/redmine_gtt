@@ -1176,7 +1176,7 @@ export class GttClient {
     el.classList.toggle('icon-expended')
     el.classList.toggle('icon-collapsed')
     const div = fieldset.querySelector('div')
-    if (div.style.display !== 'block') {
+    if (div.style.display === 'none') {
       div.style.display = 'block'
     } else {
       div.style.display = 'none'
@@ -1184,10 +1184,7 @@ export class GttClient {
     this.maps.forEach(function (m) {
       m.updateSize()
     })
-    this.zoomToExtent()
   }
-
-
 }
 
 const getTileSource = (source: string, class_name: string): any => {
