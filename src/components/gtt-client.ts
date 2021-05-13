@@ -1132,15 +1132,11 @@ export class GttClient {
 
   reloadFontSymbol() {
     if ('fonts' in document) {
-      (document as any).fonts.ready.then(() => {
+      (document as any).fonts.addEventListener('loadingdone', () => {
         let loaded = false;
         (document as any).fonts.forEach((f:any) => {
-          if (f.family === '"mcr-icons"' || f.family === '"fontmaki"') {
-            if (f.status === 'unloaded') {
-              f.load().then(() => console.log('loaded'))
-            } else {
-              loaded = true
-            }
+          if (f.family === 'fontmaki') {
+            loaded = true
           }
         })
         if (loaded) {
