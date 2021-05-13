@@ -8,7 +8,7 @@ export const gtt_setting = ():void => {
     for (let i in glyph) {
       if (glyph[i].font == font) {
         document.querySelectorAll("[id^='settings_tracker_']").forEach((element: HTMLSelectElement) => {
-          element.append(new Option(glyph[i].name, i))
+          element.append(new Option(i, i))
         })
       }
     }
