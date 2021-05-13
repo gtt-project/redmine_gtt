@@ -664,24 +664,21 @@ export class GttClient {
       })
     )
 
-    // rotateWithView is boolean but upstream set number
-    const rotateWithView: any = false
-
     const self = this
 
     // Apply Font Style
     styles.push(
       new Style({
         image: new FontSymbol({
-          form: 'mcr',
+          form: 'blazon',
           gradient: false,
           glyph: self.getSymbol(feature),
           fontSize: 0.7,
           radius: 18,
-          offsetY: -9, // can't set offset because upstream needs to fix jsdoc
+          offsetY: -9,
           rotation: 0,
-          rotateWithView: rotateWithView,
-          color: self.getFontColor(feature), // can't set color because upstream needs to fix jsdoc,
+          rotateWithView: false,
+          color: self.getFontColor(feature),
           fill: new Fill({
             color: self.getColor(feature)
           }),
