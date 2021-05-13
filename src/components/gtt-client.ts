@@ -890,7 +890,7 @@ export class GttClient {
         features: [accuracyFeature, positionFeature]
       })
     })
-    geolocationLayer.set('diplayInLayerSwitcher', false)
+    geolocationLayer.set('displayInLayerSwitcher', false)
     this.map.addLayer(geolocationLayer)
 
     // Control button
