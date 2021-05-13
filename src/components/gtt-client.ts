@@ -622,13 +622,12 @@ export class GttClient {
     return color
   }
 
-  getFontColor(_: any): string {
+  getFontColor(_: unknown): string {
     const color = "#FFFFFF"
     return color
   }
 
-  // return string but set return any because upstream jsdoc is wrong
-  getSymbol(feature: Feature<Geometry>):any {
+  getSymbol(feature: Feature<Geometry>) {
     let symbol = 'mcr-icon-write'
 
     const plugin_settings = JSON.parse(this.defaults.pluginSettings)
@@ -646,7 +645,7 @@ export class GttClient {
     return symbol
   }
 
-  getStyle(feature: Feature<Geometry>, _: any):Style[] {
+  getStyle(feature: Feature<Geometry>, _: unknown):Style[] {
     const styles: Style[] = []
 
     // Apply Shadow
