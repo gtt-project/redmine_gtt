@@ -605,7 +605,7 @@ export class GttClient {
   }
 
   getColor(feature: Feature<Geometry>): string {
-    let color = '#FFD700'
+    let color = '#000000'
     const plugin_settings = JSON.parse(this.defaults.pluginSettings)
     const status = document.querySelector('#issue_status_id') as HTMLInputElement
 
@@ -674,7 +674,7 @@ export class GttClient {
           glyph: self.getSymbol(feature),
           fontSize: 0.7,
           radius: 18,
-          offsetY: -9,
+          offsetY: -18,
           rotation: 0,
           rotateWithView: false,
           color: self.getFontColor(feature),
