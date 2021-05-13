@@ -1135,7 +1135,7 @@ export class GttClient {
       (document as any).fonts.addEventListener('loadingdone', () => {
         let loaded = false;
         (document as any).fonts.forEach((f:any) => {
-          if (f.family === 'fontmaki') {
+          if (f.family === 'mcr-icons' || f.family === 'fontmaki') {
             loaded = true
           }
         })
