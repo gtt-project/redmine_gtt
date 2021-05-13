@@ -79,3 +79,8 @@ div.usermap h3 {
 /* fieldset#location > div.ol-map{
   display: none;
 } */
+
+i[id^='icon_settings_tracker_'] {
+  font-size: 1.5em;
+  vertical-align: middle;
+}
