@@ -481,7 +481,7 @@ export class GttClient {
       const url = popup_contents.href.replace(/\[(.+?)\]/g, feature.get('id'))
       content.push(`<a href="${url}">Edit</a>`)
 
-      popup.show(feature.getGeometry().getFirstCoordinate(), content as any)
+      popup.show(feature.getGeometry().getFirstCoordinate(), content.join(' ') as any)
     })
 
     select.getFeatures().on(['remove'], _ => {
@@ -605,7 +605,7 @@ export class GttClient {
   }
 
   getColor(feature: Feature<Geometry>): string {
-    let color = '#FFD700'
+    let color = '#000000'
     const plugin_settings = JSON.parse(this.defaults.pluginSettings)
     const status = document.querySelector('#issue_status_id') as HTMLInputElement
 
@@ -622,13 +622,12 @@ export class GttClient {
     return color
   }
 
-  getFontColor(_: any): string {
+  getFontColor(_: unknown): string {
     const color = "#FFFFFF"
     return color
   }
 
-  // return string but set return any because upstream jsdoc is wrong
-  getSymbol(feature: Feature<Geometry>):any {
+  getSymbol(feature: Feature<Geometry>) {
     let symbol = 'mcr-icon-write'
 
     const plugin_settings = JSON.parse(this.defaults.pluginSettings)
@@ -646,7 +645,7 @@ export class GttClient {
     return symbol
   }
 
-  getStyle(feature: Feature<Geometry>, _: any):Style[] {
+  getStyle(feature: Feature<Geometry>, _: unknown):Style[] {
     const styles: Style[] = []
 
     // Apply Shadow
@@ -664,24 +663,21 @@ export class GttClient {
       })
     )
 
-    // rotateWithView is boolean but upstream set number
-    const rotateWithView: any = false
-
     const self = this
 
     // Apply Font Style
     styles.push(
       new Style({
         image: new FontSymbol({
-          form: 'mcr',
+          form: 'blazon',
           gradient: false,
           glyph: self.getSymbol(feature),
           fontSize: 0.7,
           radius: 18,
-          offsetY: -9, // can't set offset because upstream needs to fix jsdoc
+          offsetY: -18,
           rotation: 0,
-          rotateWithView: rotateWithView,
-          color: self.getFontColor(feature), // can't set color because upstream needs to fix jsdoc,
+          rotateWithView: false,
+          color: self.getFontColor(feature),
           fill: new Fill({
             color: self.getColor(feature)
           }),
@@ -894,7 +890,7 @@ export class GttClient {
         features: [accuracyFeature, positionFeature]
       })
     })
-    geolocationLayer.set('diplayInLayerSwitcher', false)
+    geolocationLayer.set('displayInLayerSwitcher', false)
     this.map.addLayer(geolocationLayer)
 
     // Control button
@@ -1136,15 +1132,11 @@ export class GttClient {
 
   reloadFontSymbol() {
     if ('fonts' in document) {
-      (document as any).fonts.ready.then(() => {
+      (document as any).fonts.addEventListener('loadingdone', () => {
         let loaded = false;
         (document as any).fonts.forEach((f:any) => {
-          if (f.family === '"mcr-icons"' || f.family === '"fontmaki"') {
-            if (f.status === 'unloaded') {
-              f.load().then(() => console.log('loaded'))
-            } else {
-              loaded = true
-            }
+          if (f.family === 'mcr-icons' || f.family === 'fontmaki') {
+            loaded = true
           }
         })
         if (loaded) {
@@ -1176,7 +1168,7 @@ export class GttClient {
     el.classList.toggle('icon-expended')
     el.classList.toggle('icon-collapsed')
     const div = fieldset.querySelector('div')
-    if (div.style.display !== 'block') {
+    if (div.style.display === 'none') {
       div.style.display = 'block'
     } else {
       div.style.display = 'none'
@@ -1184,10 +1176,7 @@ export class GttClient {
     this.maps.forEach(function (m) {
       m.updateSize()
     })
-    this.zoomToExtent()
   }
-
-
 }
 
 const getTileSource = (source: string, class_name: string): any => {
