@@ -2,7 +2,6 @@ import 'ol/ol.css'
 import 'ol-ext/dist/ol-ext.min.css'
 import './stylesheets/fonts.scss'
 import './stylesheets/app.scss'
-import './components/mcricon-def'
 import './components/fontmaki-def'
 
 

@@ -36,67 +36,6 @@
 .gtt-icon-target:before{content:'\0050';}
 .gtt-icon-modify:before{content:'\0051';}
 
-@font-face {
-  font-family: "mcr-icons";
-  src: url("../fonts/mcr-icons.woff2") format("woff2"),
-       url("../fonts/mcr-icons.woff") format("woff"),
-       url("../fonts/mcr-icons.ttf") format("truetype");
-}
-
-[class^="mcr-icon-"]:before, i[class*=" mcr-icon-"]:before {
-  font-family: mcr-icons !important;
-  font-style: normal;
-  font-weight: normal !important;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1em;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.mcr-icon-bulp:before {
-  content: "\f101";
-}
-.mcr-icon-douro:before {
-  content: "\f102";
-}
-.mcr-icon-gomi:before {
-  content: "\f103";
-}
-.mcr-icon-kaiketsu:before {
-  content: "\f104";
-}
-.mcr-icon-kouen:before {
-  content: "\f105";
-}
-.mcr-icon-kyoudou:before {
-  content: "\f106";
-}
-.mcr-icon-park:before {
-  content: "\f107";
-}
-.mcr-icon-pen:before {
-  content: "\f108";
-}
-.mcr-icon-river:before {
-  content: "\f109";
-}
-.mcr-icon-road:before {
-  content: "\f10a";
-}
-.mcr-icon-street:before {
-  content: "\f10b";
-}
-.mcr-icon-theme_report:before {
-  content: "\f10c";
-}
-.mcr-icon-trash:before {
-  content: "\f10d";
-}
-.mcr-icon-write:before {
-  content: "\f10e";
-}
-
 /** Maki is a clean point of interest icon set made for web cartography
   by Mapbox https://www.mapbox.com/maki/
 */
