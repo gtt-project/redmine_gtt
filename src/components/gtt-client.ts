@@ -1147,9 +1147,9 @@ export class GttClient {
                   layer.getKeys().indexOf("title") >= 0 &&
                   layer.get("title") === "Features") {
                 const features = (layer as any).getSource().getFeatures()
-                if (features.length >= 0) {
+                if (features.length > 0) {
                   const geom = features[0].getGeometry()
-                  if (geom.getType() == "Point") {
+                  if (geom.getType() === "Point") {
                     console.log("Reloading Features layer")
                     layer.changed()
                   }
