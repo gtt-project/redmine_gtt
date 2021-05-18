@@ -1134,8 +1134,8 @@ export class GttClient {
     if ('fonts' in document) {
       (document as any).fonts.addEventListener('loadingdone', () => {
         let loaded = false;
-        (document as any).fonts.forEach((f:any) => {
-          if (f.family === 'mcr-icons' || f.family === 'fontmaki') {
+        (document as any).fonts.forEach((font: any) => {
+          if (font.family === 'mcr-icons' || font.family === 'fontmaki') {
             loaded = true
           }
         })
@@ -1147,12 +1147,12 @@ export class GttClient {
                   layer.getKeys().indexOf("title") >= 0 &&
                   layer.get("title") === "Features") {
                 const features = (layer as any).getSource().getFeatures()
-                if (features.length >= 0) {
-                  const geom = features[0].getGeometry()
-                  if (geom.getType() == "Point") {
-                    console.log("Reloading Features layer")
-                    layer.changed()
-                  }
+                const index = features.findIndex((feature: any) => {
+                  return feature.getGeometry().getType() === "Point"
+                })
+                if (index >= 0) {
+                  console.log("Reloading Features layer")
+                  layer.changed()
                 }
               }
             })
