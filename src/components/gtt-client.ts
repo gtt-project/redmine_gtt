@@ -202,6 +202,9 @@ export class GttClient {
         }
       )
       this.bounds.getSource().addFeature(boundary)
+      if (this.contents.bounds === this.contents.geom) {
+        this.vector.setVisible(false)
+      }
       this.layerArray.forEach((layer:Layer) => {
         if (layer.get('baseLayer')) {
           layer.addFilter(new Mask({

@@ -2,10 +2,10 @@
 
 module GttMapHelper
 
-  def map_form_field(form, map, field: :geojson, edit_mode:)
+  def map_form_field(form, map, field: :geojson, bounds: nil, edit_mode: nil)
     safe_join [
       form.hidden_field(field, id: 'geom'),
-      map_tag(map: map, bounds: map.bounds, edit: edit_mode)
+      map_tag(map: map, bounds: bounds, edit: edit_mode)
     ]
   end
 
