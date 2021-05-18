@@ -23,7 +23,7 @@ module RedmineGtt
       def map
         json = as_geojson
         GttMap.new json: json, layers: project.gtt_tile_sources.sorted,
-          bounds: (new_record? ? project.map.json : json)
+          bounds: project.map.json
       end
 
       # Check if geometry change aren't small and ignore it

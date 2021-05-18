@@ -146,7 +146,7 @@ var App = (function ($, publ) {
     layerArr.push(vector);
 
     // Render project boundary if bounds are available
-    if (contents.bounds && contents.bounds !== null) {
+    if (contents.bounds && contents.bounds.geometry) {
 
       var boundary = new ol.format.GeoJSON().readFeature(
         contents.bounds, {
@@ -154,7 +154,12 @@ var App = (function ($, publ) {
         }
       );
       bounds.getSource().addFeature(boundary);
-
+      if (contents.geom && contents.geom.geometry
+        && contents.geom.geometry.type === 'Polygon'
+        && JSON.stringify(contents.bounds.geometry.coordinates)
+            === JSON.stringify(contents.geom.geometry.coordinates)) {
+        vector.setVisible(false)
+      }
       layerArr.forEach(function(layer) {
         if(layer.get("baseLayer")) {
           layer.addFilter(new ol.filter.Mask({
