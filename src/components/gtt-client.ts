@@ -604,8 +604,11 @@ export class GttClient {
     this.layerArray[index].setVisible(true)
   }
 
-  getColor(feature: Feature<Geometry>): string {
+  getColor(feature: Feature<Geometry>, isFill: boolean = false): string {
     let color = '#000000'
+    if (feature.getGeometry().getType() !== 'Point') {
+      color = '#FFD700'
+    }
     const plugin_settings = JSON.parse(this.defaults.pluginSettings)
     const status = document.querySelector('#issue_status_id') as HTMLInputElement
 
@@ -618,6 +621,9 @@ export class GttClient {
       if (key in plugin_settings) {
         color = plugin_settings[key]
       }
+    }
+    if (isFill && color !== null && color.length === 7) {
+      color = color + '33' // Add alpha: 0.2
     }
     return color
   }
@@ -692,7 +698,7 @@ export class GttClient {
           color: self.getColor(feature)
         }),
         fill: new Fill({
-          color: [255, 136, 0, 0.2]
+          color: self.getColor(feature, true),
         })
       })
     )
