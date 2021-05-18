@@ -1029,12 +1029,17 @@ var App = (function ($, publ) {
                   layer.getKeys().indexOf("title") >= 0 &&
                   layer.get("title") === "Features") {
                 var features = layer.getSource().getFeatures();
-                if (features.length > 0) {
-                  var geom = features[0].getGeometry();
+                var found = false;
+                for (var i = 0; i < features.length; i++) {
+                  var geom = features[i].getGeometry();
                   if (geom.getType() === "Point") {
-                    console.log("Reloading Features layer");
-                    layer.changed();
+                    found = true;
+                    break;
                   }
+                }
+                if (found) {
+                  console.log("Reloading Features layer");
+                  layer.changed();
                 }
               }
             });
