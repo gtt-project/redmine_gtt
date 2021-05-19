@@ -6,6 +6,9 @@ import './stylesheets/app.scss'
 // fontmaki
 import './stylesheets/fontmaki.scss'
 import 'ol-ext/style/FontMakiDef.js'
+// fontmaki2
+import './stylesheets/fontmaki2.scss'
+import 'ol-ext/style/FontMaki2Def.js'
 // FontAwesome
 import 'font-awesome/css/font-awesome.min.css'
 import 'ol-ext/style/FontAwesomeDef.js'
