@@ -83,4 +83,6 @@ div.usermap h3 {
 i[id^='icon_settings_tracker_'] {
   font-size: 1.5em;
   vertical-align: middle;
+  width: 1.5em;
+  text-align: center;
 }
