@@ -2,7 +2,10 @@ import 'ol/ol.css'
 import 'ol-ext/dist/ol-ext.min.css'
 import './stylesheets/fonts.scss'
 import './stylesheets/app.scss'
-import './components/fontmaki-def'
+
+// fontmaki
+import './stylesheets/fontmaki.scss'
+import "ol-ext/style/FontMakiDef.js"
 
 
 import { GttClient } from './components/gtt-client'

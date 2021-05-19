@@ -3,11 +3,8 @@
 */
 @font-face {
   font-family: 'fontmaki';
-  src: url('../font/fontmaki.eot?66752613');
-  src: url('../font/fontmaki.eot?66752613#iefix') format('embedded-opentype'),
-       url('../font/fontmaki.woff?66752613') format('woff'),
-       url('../font/fontmaki.ttf?66752613') format('truetype'),
-       url('../font/fontmaki.svg?66752613#fontmaki') format('svg');
+  src: url('../fonts/fontmaki.woff') format('woff'),
+       url('../fonts/fontmaki.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -26,7 +23,7 @@
   font-family: "fontmaki";
   font-style: normal;
   font-weight: normal;
-  speak: none;
+  /* speak: none; */
  
   display: inline-block;
   text-decoration: inherit;
