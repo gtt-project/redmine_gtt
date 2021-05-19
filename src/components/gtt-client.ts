@@ -1141,33 +1141,36 @@ export class GttClient {
 
   reloadFontSymbol() {
     if ('fonts' in document) {
-      (document as any).fonts.addEventListener('loadingdone', () => {
-        let loaded = false;
-        (document as any).fonts.forEach((font: any) => {
-          if (font.family === 'mcr-icons' || font.family === 'fontmaki') {
-            loaded = true
+      const symbolFonts: Array<String> = []
+      for (const font in FontSymbol.prototype.defs.fonts) {
+        symbolFonts.push(font)
+      }
+      if (symbolFonts.length > 0) {
+        (document as any).fonts.addEventListener('loadingdone', (e: any) => {
+          const fontIndex = e.fontfaces.findIndex((font: any) => {
+            return symbolFonts.indexOf(font.family) >= 0
+          })
+          if (fontIndex >= 0) {
+            this.maps.forEach(m => {
+              const layers = m.getLayers()
+              layers.forEach(layer => {
+                if (layer instanceof VectorLayer &&
+                    layer.getKeys().indexOf("title") >= 0 &&
+                    layer.get("title") === "Features") {
+                  const features = (layer as any).getSource().getFeatures()
+                  const pointIndex = features.findIndex((feature: any) => {
+                    return feature.getGeometry().getType() === "Point"
+                  })
+                  if (pointIndex >= 0) {
+                    console.log("Reloading Features layer")
+                    layer.changed()
+                  }
+                }
+              })
+            })
           }
         })
-        if (loaded) {
-          this.maps.forEach(m => {
-            const layers = m.getLayers()
-            layers.forEach(layer => {
-              if (layer instanceof VectorLayer &&
-                  layer.getKeys().indexOf("title") >= 0 &&
-                  layer.get("title") === "Features") {
-                const features = (layer as any).getSource().getFeatures()
-                const index = features.findIndex((feature: any) => {
-                  return feature.getGeometry().getType() === "Point"
-                })
-                if (index >= 0) {
-                  console.log("Reloading Features layer")
-                  layer.changed()
-                }
-              }
-            })
-          })
-        }
-      })
+      }
     }
   }
 

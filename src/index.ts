@@ -2,9 +2,16 @@ import 'ol/ol.css'
 import 'ol-ext/dist/ol-ext.min.css'
 import './stylesheets/fonts.scss'
 import './stylesheets/app.scss'
-import './components/mcricon-def'
-import './components/fontmaki-def'
 
+// fontmaki
+import './stylesheets/fontmaki.scss'
+import 'ol-ext/style/FontMakiDef.js'
+// fontmaki2
+import './stylesheets/fontmaki2.scss'
+import 'ol-ext/style/FontMaki2Def.js'
+// FontAwesome
+import 'font-awesome/css/font-awesome.min.css'
+import 'ol-ext/style/FontAwesomeDef.js'
 
 import { GttClient } from './components/gtt-client'
 import { gtt_setting } from './components/gtt-setting'

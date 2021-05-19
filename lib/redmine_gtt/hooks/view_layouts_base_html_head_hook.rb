@@ -7,7 +7,6 @@ module RedmineGtt
       def view_layouts_base_html_head(context={})
         tags = [];
 
-        tags << stylesheet_link_tag("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
         tags << javascript_include_tag('main.js', :plugin => 'redmine_gtt')
         return tags.join("\n")
       end
