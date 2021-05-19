@@ -5,8 +5,10 @@ import './stylesheets/app.scss'
 
 // fontmaki
 import './stylesheets/fontmaki.scss'
-import "ol-ext/style/FontMakiDef.js"
-
+import 'ol-ext/style/FontMakiDef.js'
+// FontAwesome
+import 'font-awesome/css/font-awesome.min.css'
+import 'ol-ext/style/FontAwesomeDef.js'
 
 import { GttClient } from './components/gtt-client'
 import { gtt_setting } from './components/gtt-setting'
