@@ -6,8 +6,9 @@ export const gtt_setting = ():void => {
   const glyph = FontSymbol.prototype.defs.glyphs
   document.querySelectorAll("[id^='settings_tracker_']").forEach((element: HTMLSelectElement) => {
     const selectedValue = element.value
-    if (element.length === 1) {
+    if (element.length === 1 && selectedValue !== "") {
       element.remove(0)
+      element.append(new Option("", "", false, false))
     }
     for (let font in FontSymbol.prototype.defs.fonts) {
       for (let i in glyph) {
