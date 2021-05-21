@@ -2,10 +2,10 @@
 
 module GttMapHelper
 
-  def map_form_field(form, map, field: :geojson, edit_mode:)
+  def map_form_field(form, map, field: :geojson, bounds: nil, edit_mode: nil)
     safe_join [
       form.hidden_field(field, id: 'geom'),
-      map_tag(map: map, bounds: map.bounds, edit: edit_mode)
+      map_tag(map: map, bounds: bounds, edit: edit_mode)
     ]
   end
 
@@ -33,10 +33,9 @@ module GttMapHelper
     safe_join [
       content_tag(:div, "", data: data, id: uid, class: 'ol-map'),
       javascript_tag("
-        $(document).ready(function(){
-          App.init({
-            target: $('##{uid}')[0]
-          });
+        document.addEventListener('DOMContentLoaded', function(){
+          var target = document.getElementById('#{uid}');
+          window.createGttClient(target);
         });
       ")
     ]

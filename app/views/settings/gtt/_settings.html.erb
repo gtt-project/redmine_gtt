@@ -3,7 +3,7 @@
 <% Tracker.all.each do |t| %>
   <p>
     <%= content_tag :label, t.name %>
-    <%= select_tag "settings[tracker_#{t.id}]", "<option>#{@settings["tracker_#{t.id}"]}</option>".html_safe %> 
+    <%= select_tag "settings[tracker_#{t.id}]", "<option>#{@settings["tracker_#{t.id}"]}</option>".html_safe %>
     <i id="icon_settings_tracker_<%= t.id %>"></i>
   </p>
 <% end %>
@@ -72,16 +72,5 @@
 </div>
 
 <%= javascript_tag do %>
-  var glyph = ol.style.FontSymbol.prototype.defs.glyphs;
-  for (var font in ol.style.FontSymbol.prototype.defs.fonts){
-    for (var i in glyph){
-      if (glyph[i].font == font){
-        $("[id^='settings_tracker_']").append(new Option(glyph[i].name, i))
-      }
-    }
-  }
-  $("[id^='settings_tracker_']").change(function(){
-    var trackerId = $(this).attr("id")
-    $("#icon_" + trackerId).attr("class", $(this).val())
-  })
+  window.gtt_setting()
 <% end %>
