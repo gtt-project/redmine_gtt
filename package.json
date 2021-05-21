@@ -1,6 +1,6 @@
 {
   "name": "redmine_gtt",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "description": "Plugin that adds spatial capabilities to Redmine",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
