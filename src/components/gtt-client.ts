@@ -323,63 +323,6 @@ export class GttClient {
       this.map.on('moveend', this.updateFilter.bind(this))
     })
 
-    // To fix an issue with empty map after changing the tracker type
-    document.querySelectorAll('select#issue_tracker_id').forEach(element => {
-      const self = this
-      element.addEventListener('change', () => {
-        // https://stackoverflow.com/questions/45340281/ajaxcomplete-in-pure-javascript
-        (function() {
-          const send = XMLHttpRequest.prototype.send
-          XMLHttpRequest.prototype.send = function() {
-            this.addEventListener('load', () => {
-              self.zoomToExtent(true)
-            }, {
-              once: true
-            })
-            return send.apply(this, arguments)
-          }
-        })()
-      })
-    })
-
-    // To fix an issue with empty map after changing the status
-    document.querySelectorAll('select#issue_status_id').forEach(element => {
-      const self = this
-      element.addEventListener('change', () => {
-        // https://stackoverflow.com/questions/45340281/ajaxcomplete-in-pure-javascript
-        (function() {
-          const send = XMLHttpRequest.prototype.send
-          XMLHttpRequest.prototype.send = function() {
-            this.addEventListener('load', () => {
-              self.zoomToExtent(true)
-            }, {
-              once: true
-            })
-            return send.apply(this, arguments)
-          }
-        })()
-      })
-    })
-
-    // To fix an issue with empty map after changing the project
-    document.querySelectorAll('select#issue_project_id').forEach(element => {
-      const self = this
-      element.addEventListener('change', () => {
-        // https://stackoverflow.com/questions/45340281/ajaxcomplete-in-pure-javascript
-        (function() {
-          const send = XMLHttpRequest.prototype.send
-          XMLHttpRequest.prototype.send = function() {
-            this.addEventListener('load', () => {
-              self.zoomToExtent(true)
-            }, {
-              once: true
-            })
-            return send.apply(this, arguments)
-          }
-        })()
-      })
-    })
-
     // Handle multiple maps per page
     this.maps.push(this.map)
   }
@@ -1357,7 +1300,7 @@ const buildDistanceFilterRow = (operator: any, values: any):void => {
 window.replaceIssueFormWithInitMap = window.replaceIssueFormWith
 window.replaceIssueFormWith = (html) => {
   window.replaceIssueFormWithInitMap(html)
-  const ol_maps = document.querySelector('div#update div.ol-map') as HTMLDivElement
+  const ol_maps = document.querySelector("form[class$='_issue'] div.ol-map") as HTMLDivElement
   if (ol_maps) {
     new GttClient({target: ol_maps})
   }
