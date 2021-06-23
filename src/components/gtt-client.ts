@@ -5,7 +5,7 @@ import 'ol-ext/filter/Base'
 import { Geometry, Point } from 'ol/geom'
 import { GeoJSON, WKT } from 'ol/format'
 import { Layer, Tile, Vector as VectorLayer } from 'ol/layer'
-import { Tile as TileSource, OSM } from 'ol/source'
+import { OSM, XYZ } from 'ol/source'
 import { Style, Fill, Stroke, Circle } from 'ol/style'
 import { OrderFunction } from 'ol/render'
 import {
@@ -139,22 +139,25 @@ export class GttClient {
       const layers = JSON.parse(this.contents.layers) as [LayerObject]
       layers.forEach((layer) => {
         const s = layer.type.split('.')
-        const l = new Tile({
-          visible: true,
-          source: new (getTileSource(s[1], s[2]))(layer.options)
-        })
-        l.set('lid', layer.id)
-        l.set('title', layer.name)
-        l.set('baseLayer', true)
-        l.on('change:visible', e => {
-          const target = e.target as Tile
-          if (target.getVisible()) {
-            const lid = target.get('lid')
-            document.cookie = `_redmine_gtt_basemap=${lid};path=/`
-          }
-        })
-        this.layerArray.push(l)
-        this.map.addLayer(l)
+        const tileSource = getTileSource(s[1], s[2])
+        if (tileSource) {
+          const l = new Tile({
+            visible: false,
+            source: new (tileSource)(layer.options)
+          })
+          l.set('lid', layer.id)
+          l.set('title', layer.name)
+          l.set('baseLayer', true)
+          l.on('change:visible', e => {
+            const target = e.target as Tile
+            if (target.getVisible()) {
+              const lid = target.get('lid')
+              document.cookie = `_redmine_gtt_basemap=${lid};path=/`
+            }
+          })
+          this.layerArray.push(l)
+          this.map.addLayer(l)
+        }
       }, this)
     }
 
@@ -1138,9 +1141,11 @@ const getTileSource = (source: string, class_name: string): any => {
   if (source === 'source') {
     if (class_name === 'OSM') {
       return OSM
+    } else if (class_name === 'XYZ') {
+      return XYZ
     }
   }
-  return TileSource
+  return undefined
 }
 
 const getCookie = (cname:string):string => {
