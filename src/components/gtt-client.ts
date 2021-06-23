@@ -5,7 +5,7 @@ import 'ol-ext/filter/Base'
 import { Geometry, Point } from 'ol/geom'
 import { GeoJSON, WKT } from 'ol/format'
 import { Layer, Tile, Vector as VectorLayer } from 'ol/layer'
-import { Tile as TileSource, OSM } from 'ol/source'
+import { Tile as TileSource, OSM, XYZ } from 'ol/source'
 import { Style, Fill, Stroke, Circle } from 'ol/style'
 import { OrderFunction } from 'ol/render'
 import {
@@ -1138,6 +1138,8 @@ const getTileSource = (source: string, class_name: string): any => {
   if (source === 'source') {
     if (class_name === 'OSM') {
       return OSM
+    } else if (class_name === 'XYZ') {
+      return XYZ
     }
   }
   return TileSource
