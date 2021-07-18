@@ -22,10 +22,10 @@
   "dependencies": {
     "font-awesome": "^4.7.0",
     "ol": "^6.5.0",
-    "ol-ext": "^3.1.19"
+    "ol-ext": "^3.2.3"
   },
   "devDependencies": {
-    "@types/ol": "^6.4.2",
+    "@types/ol": "^6.5.3",
     "@types/ol-ext": "npm:@siedlerchr/types-ol-ext",
     "css-loader": "^5.1.1",
     "sass": "^1.32.8",
