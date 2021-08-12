@@ -32,6 +32,7 @@ import Toggle from 'ol-ext/control/Toggle'
 import Button from 'ol-ext/control/Button'
 import TextButton from 'ol-ext/control/TextButton'
 import LayerPopup from 'ol-ext/control/LayerPopup'
+import LayerSwitcher from 'ol-ext/control/LayerSwitcher'
 import Popup from 'ol-ext/overlay/Popup'
 import { position } from 'ol-ext/control/control'
 import { ResizeObserver } from '@juggle/resize-observer'
@@ -46,6 +47,7 @@ interface LayerObject {
   type: string
   id: number
   name: string
+  baselayer: boolean
   options: object
 }
 
@@ -151,21 +153,45 @@ export class GttClient {
           const l = new Tile({
             visible: false,
             source: new (tileSource)(layer.options)
-          })
+          })          
+
           l.set('lid', layer.id)
           l.set('title', layer.name)
-          l.set('baseLayer', true)
-          l.on('change:visible', e => {
-            const target = e.target as Tile<XYZ>
-            if (target.getVisible()) {
-              const lid = target.get('lid')
-              document.cookie = `_redmine_gtt_basemap=${lid};path=/`
-            }
-          })
+          l.set('baseLayer', layer.baselayer)
+          if( layer.baselayer ) {
+            l.on('change:visible', e => {
+              const target = e.target as Tile<XYZ>
+              if (target.getVisible()) {
+                const lid = target.get('lid')
+                document.cookie = `_redmine_gtt_basemap=${lid};path=/`
+              }
+            })
+          }
           this.layerArray.push(l)
-          this.map.addLayer(l)
+          //this.map.addLayer(l)
         }
       }, this)
+
+      /**
+       * Ordering the Layers for the LayerSwitcher Control.
+       * BaseLayers are added first.
+       */
+      this.layerArray.forEach( (l:Layer) => {
+          if( l.get("baseLayer") ) {
+            this.map.addLayer(l)
+          } 
+        } 
+      )
+
+      var containsOverlay = false;
+
+      this.layerArray.forEach( (l:Layer) => {
+          if( !l.get("baseLayer") ) {
+            this.map.addLayer(l)
+            containsOverlay = true
+          } 
+        } 
+      )
     }
 
     this.setBasemap()
@@ -331,7 +357,13 @@ export class GttClient {
     })
 
     // Add LayerSwitcher Image Toolbar
-    this.map.addControl(new LayerPopup())
+    if( containsOverlay) {
+      this.map.addControl(new LayerSwitcher())
+    }
+    else {
+      this.map.addControl(new LayerPopup())
+    }
+        
 
     // Because Redmine filter functions are applied later, the Window onload
     // event provides a workaround to have filters loaded before executing
