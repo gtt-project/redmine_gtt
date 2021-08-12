@@ -1,5 +1,5 @@
-class AddDefaultToTileSources < ActiveRecord::Migration[5.2]
+class AddBaselayerToTileSources < ActiveRecord::Migration[5.2]
   def change
-    add_column :baselayer, :default, :boolean, default: true
+    add_column :gtt_tile_sources, :baselayer, :boolean, default: true
   end
 end
