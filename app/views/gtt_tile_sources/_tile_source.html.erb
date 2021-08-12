@@ -1,6 +1,7 @@
 <tr class="<%= cycle("odd", "even") %>">
   <td><%= tile_source.type %></td>
   <td><%= link_to tile_source.name, edit_gtt_tile_source_path(tile_source) %></td>
+  <td><%= checked_image tile_source.baselayer? %></td>
   <td><%= checked_image tile_source.global? %></td>
   <td><%= checked_image tile_source.default? %></td>
   <td><%= tile_source_options tile_source %></td>
