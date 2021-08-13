@@ -6,7 +6,7 @@ import { Geometry, Point } from 'ol/geom'
 import { GeoJSON, WKT } from 'ol/format'
 import { Layer, Tile } from 'ol/layer'
 import VectorLayer from 'ol/layer/Vector'
-import { OSM, XYZ } from 'ol/source'
+import { OSM, XYZ, TileWMS, ImageWMS } from 'ol/source'
 import { Style, Fill, Stroke, Circle } from 'ol/style'
 import { OrderFunction } from 'ol/render'
 import {
@@ -1232,6 +1232,10 @@ const getTileSource = (source: string, class_name: string): any => {
       return OSM
     } else if (class_name === 'XYZ') {
       return XYZ
+    } else if (class_name === 'TileWMS') {
+      return TileWMS
+    } else if (class_name === 'ImageWMS') {
+      return ImageWMS
     }
   }
   return undefined
