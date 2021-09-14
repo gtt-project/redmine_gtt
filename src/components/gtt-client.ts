@@ -29,6 +29,7 @@ import Mask from 'ol-ext/filter/Mask'
 import Bar from 'ol-ext/control/Bar'
 import Toggle from 'ol-ext/control/Toggle'
 import Button from 'ol-ext/control/Button'
+import TextButton from 'ol-ext/control/TextButton'
 import LayerPopup from 'ol-ext/control/LayerPopup'
 import Popup from 'ol-ext/overlay/Popup'
 
@@ -241,7 +242,7 @@ export class GttClient {
     this.map.addControl(this.toolbar)
     this.setView()
     this.setGeolocation()
-    this.setGeocoding()
+    this.setGeocoding(this.map)
     this.parseHistory()
 
     // Control button
@@ -867,7 +868,7 @@ export class GttClient {
   /**
    * Add Geocoding functionality
    */
-  setGeocoding():void {
+  setGeocoding(currentMap: Map):void {
 
     // Hack to add Geocoding buttons to text fields
     // There should be a better way to do this
@@ -1034,23 +1035,30 @@ export class GttClient {
     }
 
     // disable geocoder control if geocoderUrl is null
-    if (!this.defaults.geocoderUrl) {
+    if (!geocoder.geocode_url) {
       return
     }
 
+    const mapId = currentMap.getTargetElement().getAttribute("id")
+
     // Control button
     const geocodingCtrl = new Toggle({
-      html: '<i class="gtt-icon-info" ></i>',
+      html: '<i class="gtt-icon-search" ></i>',
       title: "Geocoding",
       className: "ctl-geocoding",
       onToggle: (active: boolean) => {
+        const text = (document.querySelector("div#" + mapId + " .ctl-geocoding div input") as HTMLInputElement)
         if (active) {
-          (document.querySelector(".ctl-geocoding button input") as HTMLInputElement).focus()
+          text.focus()
+        } else {
+          text.blur()
+          const button = document.querySelector<HTMLButtonElement>("div#" + mapId + " .ctl-geocoding button")
+          button.blur()
         }
       },
       bar: new Bar({
         controls: [
-          new Button({
+          new TextButton({
             html: '<form><input name="address" type="text" /></form>'
           } as any)
         ]
@@ -1059,29 +1067,42 @@ export class GttClient {
     this.toolbar.addControl(geocodingCtrl)
 
     // Make Geocoding API request
-    document.querySelector(".ctl-geocoding form").addEventListener('submit', (evt) => {
-      evt.preventDefault()
+    document.querySelector<HTMLInputElement>("div#" + mapId + " .ctl-geocoding div input").addEventListener('keydown', (evt) => {
+      if (evt.keyCode === 13) {
+        evt.preventDefault()
+        evt.stopPropagation()
+      } else {
+        return true
+      }
 
-      if (!this.defaults.geocoderUrl) {
+      if (!geocoder.geocode_url) {
         throw new Error ("No Geocoding service configured!")
       }
 
-      const url = [
-        this.defaults.geocoderUrl,
-        encodeURIComponent((document.querySelector('.ctl-geocoding form input[name=address]') as HTMLInputElement).value)
-      ]
+      const url = geocoder.geocode_url.replace("{address}", encodeURIComponent(
+        (document.querySelector("div#" + mapId + " .ctl-geocoding form input[name=address]") as HTMLInputElement).value)
+      )
 
-      fetch(url.join('/'))
+      fetch(url)
         .then(response => response.json())
         .then(data => {
-          // TODO, check for valid results
-          const address = new GeoJSON().readFeature(data, {
-            featureProjection: 'EPSG:3857'
-          })
-          this.map.getView().fit(address.getGeometry().getExtent(), {
-            size: this.map.getSize()
-          })
+          const check = evaluateComparison(getObjectPathValue(data, geocoder.geocode_result_check_path),
+            geocoder.geocode_result_check_operator,
+            geocoder.geocode_result_check_value
+          )
+          if (check) {
+            const lon = getObjectPathValue(data, geocoder.geocode_result_lon_path)
+            const lat = getObjectPathValue(data, geocoder.geocode_result_lat_path)
+            const coords = [lon, lat]
+            const geom = new Point(fromLonLat(coords, 'EPSG:3857'))
+            currentMap.getView().fit(geom.getExtent(), {
+              size: currentMap.getSize(),
+              maxZoom: parseInt(this.defaults.fitMaxzoom)
+            })
+          }
         })
+
+      return false
     })
   }
 
