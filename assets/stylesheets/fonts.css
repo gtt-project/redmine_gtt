@@ -35,6 +35,8 @@
 .gtt-icon-trash:before{content:'\004f';}
 .gtt-icon-target:before{content:'\0050';}
 .gtt-icon-modify:before{content:'\0051';}
+.gtt-icon-settings:before{content:'\0052';}
+.gtt-icon-search:before{content:'\0053';}
 
 @font-face {
   font-family: "mcr-icons";
