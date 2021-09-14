@@ -18,7 +18,7 @@ import {
 import { focus as events_condifition_focus } from 'ol/events/condition'
 import { defaults as control_defaults} from 'ol/control'
 import { transform, fromLonLat, transformExtent } from 'ol/proj'
-import { createEmpty, extend, getCenter } from 'ol/extent'
+import { createEmpty, extend, getCenter, containsCoordinate } from 'ol/extent'
 import { FeatureCollection } from 'geojson'
 import { quick_hack } from './quick_hack'
 import Vector from 'ol/source/Vector'
@@ -59,7 +59,7 @@ export class GttClient {
   filters: FilterOption
   vector: VectorLayer
   bounds: VectorLayer
-  geolocation: Geolocation
+  geolocations: Array<Geolocation>
 
   constructor(options: GttClientOption) {
     this.filters = {
@@ -67,6 +67,7 @@ export class GttClient {
       distance: false
     }
     this.maps = []
+    this.geolocations = []
 
     // needs target
     if (!options.target) {
@@ -241,7 +242,7 @@ export class GttClient {
     this.toolbar.setPosition('bottom-left' as any) // is type.d old?
     this.map.addControl(this.toolbar)
     this.setView()
-    this.setGeolocation()
+    this.setGeolocation(this.map)
     this.setGeocoding(this.map)
     this.parseHistory()
 
@@ -711,13 +712,13 @@ export class GttClient {
         m.getView().setCenter(transform([parseFloat(this.defaults.lon), parseFloat(this.defaults.lat)],
           'EPSG:4326', 'EPSG:3857'));
       })
-      if (this.geolocation) {
-        this.geolocation.once('change:position', (_) => {
+      this.geolocations.forEach(g => {
+        g.once('change:position', (evt) => {
           this.maps.forEach(m => {
-            m.getView().setCenter(this.geolocation.getPosition())
+            m.getView().setCenter(g.getPosition())
           })
         })
-      }
+      })
     }
   }
 
@@ -799,27 +800,30 @@ export class GttClient {
   /**
    * Add Geolocation functionality
    */
-  setGeolocation() {
-    this.geolocation = new Geolocation({
+  setGeolocation(currentMap: Map) {
+    const geolocation = new Geolocation({
       tracking: false,
-      projection: this.map.getView().getProjection()
+      projection: currentMap.getView().getProjection()
     })
-    this.geolocation.on('change', () => {
+    this.geolocations.push(geolocation)
+
+    geolocation.on('change', (evt) => {
       console.log({
-        accuracy: this.geolocation.getAccuracy(),
-        altitude: this.geolocation.getAltitude(),
-        altitudeAccuracy: this.geolocation.getAltitudeAccuracy(),
-        heading: this.geolocation.getHeading(),
-        speed: this.geolocation.getSpeed()
+        accuracy: geolocation.getAccuracy(),
+        altitude: geolocation.getAltitude(),
+        altitudeAccuracy: geolocation.getAltitudeAccuracy(),
+        heading: geolocation.getHeading(),
+        speed: geolocation.getSpeed()
       })
     })
-    this.geolocation.on('error', (_) => {
+    geolocation.on('error', (error) => {
       // TBD
+      console.error(error)
     })
 
     const accuracyFeature = new Feature()
-    this.geolocation.on('change:accuracyGeometry', (_) => {
-      accuracyFeature.setGeometry(this.geolocation.getAccuracyGeometry())
+    geolocation.on('change:accuracyGeometry', (evt) => {
+      accuracyFeature.setGeometry(geolocation.getAccuracyGeometry())
     })
 
     const positionFeature = new Feature()
@@ -836,9 +840,14 @@ export class GttClient {
       })
     }))
 
-    this.geolocation.on('change:position', (_) => {
-      const position = this.geolocation.getPosition()
+    geolocation.on('change:position', (evt) => {
+      const position = geolocation.getPosition()
       positionFeature.setGeometry(position ? new Point(position) : null)
+
+      const extent = currentMap.getView().calculateExtent(currentMap.getSize())
+      if (!containsCoordinate(extent, position)) {
+        currentMap.getView().setCenter(position)
+      }
     })
 
     const geolocationLayer = new VectorLayer({
@@ -847,7 +856,7 @@ export class GttClient {
       })
     })
     geolocationLayer.set('displayInLayerSwitcher', false)
-    this.map.addLayer(geolocationLayer)
+    currentMap.addLayer(geolocationLayer)
 
     // Control button
     const geolocationCtrl = new Toggle({
@@ -855,11 +864,8 @@ export class GttClient {
       title: "Geolocation",
       active: false,
       onToggle: (active: boolean) => {
-        this.geolocation.setTracking(active)
+        geolocation.setTracking(active)
         geolocationLayer.setVisible(active)
-        if (active) {
-          this.map.getView().setCenter(this.geolocation.getPosition())
-        }
       }
     } as any)
     this.toolbar.addControl(geolocationCtrl)
