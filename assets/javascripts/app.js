@@ -28,6 +28,7 @@ var App = (function ($, publ) {
   var maps = [];
   var features = [];
   var layerArr = [];
+  var geolocations = [];
   var filters = {
     location: false,
     distance: false
@@ -52,7 +53,6 @@ var App = (function ($, publ) {
     vector = null;
     bounds = null;
     toolbar = null;
-    geolocation = null;
 
     features = [];
     layerArr = [];
@@ -202,7 +202,7 @@ var App = (function ($, publ) {
     map.addControl(toolbar);
 
     this.setView();
-    this.setGeolocation();
+    this.setGeolocation(map);
     this.setGeocoding(map);
     this.parseHistory();
 
@@ -483,13 +483,13 @@ var App = (function ($, publ) {
         m.getView().setCenter(ol.proj.transform([defaults.lon, defaults.lat],
           'EPSG:4326', 'EPSG:3857'));
       });
-      if (geolocation) {
-        geolocation.once('change:position', function (error) {
+      geolocations.forEach(function (g) {
+        g.once('change:position', function (evt) {
           maps.forEach(function (m) {
-            m.getView().setCenter(geolocation.getPosition());
+            m.getView().setCenter(g.getPosition());
           });
         });
-      }
+      });
     }
   };
 
@@ -558,25 +558,27 @@ var App = (function ($, publ) {
   /**
    * Add Geolocation functionality
    */
-  publ.setGeolocation = function () {
+  publ.setGeolocation = function (currentMap) {
 
-    geolocation = new ol.Geolocation({
+    var geolocation = new ol.Geolocation({
       tracking: false,
-      projection: map.getView().getProjection()
+      projection: currentMap.getView().getProjection()
     });
+    geolocations.push(geolocation);
 
     geolocation.on('change', function() {
-      // console.log({
-      //   accuracy: geolocation.getAccuracy(),
-      //   altitude: geolocation.getAltitude(),
-      //   altitudeAccuracy: geolocation.getAltitudeAccuracy(),
-      //   heading: geolocation.getHeading(),
-      //   speed: geolocation.getSpeed()
-      // });
+      console.log({
+        accuracy: geolocation.getAccuracy(),
+        altitude: geolocation.getAltitude(),
+        altitudeAccuracy: geolocation.getAltitudeAccuracy(),
+        heading: geolocation.getHeading(),
+        speed: geolocation.getSpeed()
+      });
     });
 
     geolocation.on('error', function (error) {
       // TBD
+      console.error(error);
     });
 
     var accuracyFeature = new ol.Feature();
@@ -598,19 +600,24 @@ var App = (function ($, publ) {
       })
     }));
 
-    geolocation.on('change:position', function (error) {
+    geolocation.on('change:position', function (evt) {
       var position = geolocation.getPosition();
       positionFeature.setGeometry(position ? new ol.geom.Point(position) : null);
+
+      var extent = currentMap.getView().calculateExtent(currentMap.getSize());
+      if (!ol.extent.containsCoordinate(extent, position)) {
+        currentMap.getView().setCenter(position);
+      }
     });
 
     var geolocationLayer = new ol.layer.Vector({
       displayInLayerSwitcher: false,
-      map: map,
+      map: currentMap,
       source: new ol.source.Vector({
         features: [accuracyFeature, positionFeature]
       })
     });
-    map.addLayer(geolocationLayer);
+    currentMap.addLayer(geolocationLayer);
 
     // Control button
     var geolocationCtrl = new ol.control.Toggle({
@@ -620,9 +627,6 @@ var App = (function ($, publ) {
       onToggle: function (active) {
         geolocation.setTracking(active);
         geolocationLayer.setVisible(active);
-        if (active) {
-          map.getView().setCenter(geolocation.getPosition());
-        }
       }
     });
     toolbar.addControl(geolocationCtrl);
