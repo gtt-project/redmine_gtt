@@ -203,7 +203,7 @@ var App = (function ($, publ) {
 
     this.setView();
     this.setGeolocation();
-    this.setGeocoding();
+    this.setGeocoding(map);
     this.parseHistory();
 
     // Control button
@@ -631,7 +631,7 @@ var App = (function ($, publ) {
   /**
    * Add Geocoding functionality
    */
-  publ.setGeocoding = function (){
+  publ.setGeocoding = function (currentMap){
 
     // Hack to add Geocoding buttons to text fields
     // There should be a better way to do this
@@ -749,19 +749,29 @@ var App = (function ($, publ) {
       });
     }
 
+    if (!defaults.geocoder.geocode_url) {
+      return;
+    }
+
+    var mapId =  currentMap.getTargetElement().getAttribute("id");
     // Control button
     var geocodingCtrl = new ol.control.Toggle({
-      html: '<i class="gtt-icon-info" ></i>',
+      html: '<i class="gtt-icon-search" ></i>',
       title: "Geocoding",
       className: "ctl-geocoding",
       onToggle: function (active) {
+        var text = $("div#" + mapId + " .ctl-geocoding div input");
         if (active) {
-          $(".ctl-geocoding button input").focus();
+          text.focus();
+        } else {
+          text.blur();
+          var button = $("div#" + mapId + " .ctl-geocoding button");
+          button.blur();
         }
       },
       bar: new ol.control.Bar({
         controls: [
-          new ol.control.Button({
+          new ol.control.TextButton({
             html: '<form><input name="address" type="text" /></form>'
           })
         ]
@@ -770,26 +780,37 @@ var App = (function ($, publ) {
     toolbar.addControl(geocodingCtrl);
 
     // Make Geocoding API request
-    $(".ctl-geocoding form").submit(function (evt) {
-      evt.preventDefault();
+    $("div#" + mapId + " .ctl-geocoding div input").keydown(function (evt) {
+      if (evt.keyCode === 13) {
+        evt.preventDefault();
+        evt.stopPropagation();
+      } else {
+        return true;
+      }
 
-      if (!defaults.geocoderUrl) {
+      if (!defaults.geocoder.geocode_url) {
         throw new Error ("No Geocoding service configured!");
       }
 
-      var url = [
-        defaults.geocoderUrl,
-        ($(this).serializeArray())[0].value
-      ];
+      var url = defaults.geocoder.geocode_url.replace("{address}", encodeURIComponent(
+          $("div#" + mapId + " .ctl-geocoding form input[name=address]").val())
+      );
 
-      $.getJSON(url.join("/"), function(geojson) {
-        // TODO, check for valid results
-        var address = new ol.format.GeoJSON().readFeature(
-          geojson, {
-            featureProjection: 'EPSG:3857'
-          }
+      $.getJSON(url, function(data) {
+        var check = evaluateComparison(getObjectPathValue(data, defaults.geocoder.geocode_result_check_path),
+          defaults.geocoder.geocode_result_check_operator,
+          defaults.geocoder.geocode_result_check_value
         );
-        map.getView().fit(address.getGeometry().getExtent(), map.getSize());
+        if (check) {
+          var lon = getObjectPathValue(data, defaults.geocoder.geocode_result_lon_path);
+          var lat = getObjectPathValue(data, defaults.geocoder.geocode_result_lat_path);
+          var coords = [lon, lat];
+          var geom = new ol.geom.Point(ol.proj.fromLonLat(coords, 'EPSG:3857','EPSG:4326'));
+          currentMap.getView().fit(geom.getExtent(), {
+            size: currentMap.getSize(),
+            maxZoom: parseInt(defaults.fitMaxzoom)
+          });
+        }
       });
     });
   };
