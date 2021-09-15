@@ -58,9 +58,16 @@ en:
   # gtt_settings_geocoder_district_field_name: "District field name"
   # gtt_park_search_field_name: "Park search field name"
 
+  label_gtt_point: "Point"
+  label_gtt_linestring: "LineString"
+  label_gtt_polygon: "Polygon"
+  label_editable_geometry_types_on_issue_map: "Editable geometry types on issue map"
+  label_enable_geojson_upload_on_issue_map: "Enable GeoJSON upload on issue map"
+
   select_default_tracker_icon: "Select default tracker icon:"
   select_default_status_color: "Select default status color:"
   select_default_map_settings: "Set default map settings:"
+  select_edit_geometry_settings: "Set edit geometry settings:"
   select_default_geocoder_settings: "Set Geocoder settings:"
 
   # text_osm_url_sample: For example https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png

@@ -866,24 +866,26 @@ var App = (function ($, publ) {
     });
 
     // Upload button
-    editbar.addControl(new ol.control.Button({
-      html: '<i class="gtt-icon-book" ></i>',
-      title: 'Upload GeoJSON',
-      handleClick: function () {
-        var data = prompt("Please paste a GeoJSON geometry here");
-        if (data !== null) {
-          var features = new ol.format.GeoJSON().readFeatures(
-            JSON.parse(data), {
-              featureProjection: 'EPSG:3857'
-            }
-          );
-          (vector.getSource()).clear();
-          (vector.getSource()).addFeatures(features);
-          publ.updateForm(features);
-          publ.zoomToExtent();
+    if (contents.upload) {
+      editbar.addControl(new ol.control.Button({
+        html: '<i class="gtt-icon-book" ></i>',
+        title: 'Upload GeoJSON',
+        handleClick: function () {
+          var data = prompt("Please paste a GeoJSON geometry here");
+          if (data !== null) {
+            var features = new ol.format.GeoJSON().readFeatures(
+              JSON.parse(data), {
+                featureProjection: 'EPSG:3857'
+              }
+            );
+            (vector.getSource()).clear();
+            (vector.getSource()).addFeatures(features);
+            publ.updateForm(features);
+            publ.zoomToExtent();
+          }
         }
-      }
-    }));
+      }));
+    }
 
     var controls = editbar.getControls();
     controls[0].setActive(true);
