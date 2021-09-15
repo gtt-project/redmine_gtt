@@ -2,6 +2,8 @@
       ((issue.new_record? && User.current.allowed_to?(:add_issues, issue.project)) ||
         User.current.allowed_to?(:edit_issues, issue.project))
 %>
-  <%= map_form_field form, issue.map, bounds: issue.project.map.bounds, edit_mode: 'Point LineString Polygon' %>
+  <%= map_form_field form, issue.map, bounds: issue.project.map.bounds,
+        edit_mode: Setting.plugin_redmine_gtt['editable_geometry_types_on_issue_map'].join(' '),
+        upload: Setting.plugin_redmine_gtt['enable_geojson_upload_on_issue_map'] == "true" %>
 <% end %>
 

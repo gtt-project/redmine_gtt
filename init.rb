@@ -23,7 +23,9 @@ Redmine::Plugin.register :redmine_gtt do
       'default_map_zoom_level' => 13,
       'default_map_maxzoom_level' => 19,
       'default_map_fit_maxzoom_level' => 17,
-      'default_geocoder_options' => '{}'
+      'default_geocoder_options' => '{}',
+      'editable_geometry_types_on_issue_map' => ["Point"],
+      'enable_geojson_upload_on_issue_map' => false
     },
     partial: 'settings/gtt/settings'
   )

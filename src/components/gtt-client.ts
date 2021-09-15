@@ -380,24 +380,26 @@ export class GttClient {
     })
 
     // Upload button
-    editbar.addControl(new Button({
-      html: '<i class="gtt-icon-book" ></i>',
-      title: 'Upload GeoJSON',
-      handleClick: () => {
-        const data = prompt("Please paste a GeoJSON geometry here")
-        if (data !== null) {
-          const features = new GeoJSON().readFeatures(
-            JSON.parse(data), {
-              featureProjection: 'EPSG:3857'
-            }
-          )
-          this.vector.getSource().clear()
-          this.vector.getSource().addFeatures(features)
-          this.updateForm(features)
-          this.zoomToExtent()
+    if (this.contents.upload === "true") {
+      editbar.addControl(new Button({
+        html: '<i class="gtt-icon-book" ></i>',
+        title: 'Upload GeoJSON',
+        handleClick: () => {
+          const data = prompt("Please paste a GeoJSON geometry here")
+          if (data !== null) {
+            const features = new GeoJSON().readFeatures(
+              JSON.parse(data), {
+                featureProjection: 'EPSG:3857'
+              }
+            )
+            this.vector.getSource().clear()
+            this.vector.getSource().addFeatures(features)
+            this.updateForm(features)
+            this.zoomToExtent()
+          }
         }
-      }
-    }))
+      }))
+    }
   }
 
   setPopover() {

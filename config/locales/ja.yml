@@ -58,9 +58,16 @@ ja:
   # gtt_settings_geocoder_district_field_name: "区フィールド名"
   # gtt_park_search_field_name: "公園検索フィールド名"
 
+  label_gtt_point: "ポイント"
+  label_gtt_linestring: "ライン"
+  label_gtt_polygon: "ポリゴン"
+  label_editable_geometry_types_on_issue_map: "チケット地図上で編集可能なジオメトリ種別"
+  label_enable_geojson_upload_on_issue_map: "チケット地図上でGeoJSONアップロードを有効化"
+
   select_default_tracker_icon: "トラッカーアイコンを選択:"
   select_default_status_color: "ステータス色を選択:"
   select_default_map_settings: "地図の初期値を設定:"
+  select_edit_geometry_settings: "ジオメトリ編集時の設定:"
   select_default_geocoder_settings: "ジオコーダの設定:"
 
   # text_osm_url_sample: "例： https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png"
