@@ -16,7 +16,7 @@ import {
   Select,
 } from 'ol/interaction'
 import { focus as events_condifition_focus } from 'ol/events/condition'
-import { defaults as control_defaults} from 'ol/control'
+import { defaults as control_defaults } from 'ol/control'
 import { transform, fromLonLat, transformExtent } from 'ol/proj'
 import { createEmpty, extend, getCenter, containsCoordinate } from 'ol/extent'
 import { FeatureCollection } from 'geojson'
@@ -32,6 +32,8 @@ import Button from 'ol-ext/control/Button'
 import TextButton from 'ol-ext/control/TextButton'
 import LayerPopup from 'ol-ext/control/LayerPopup'
 import Popup from 'ol-ext/overlay/Popup'
+import { position } from 'ol-ext/control/control'
+import GeometryType from 'ol/geom/GeometryType';
 
 interface GttClientOption {
   target: HTMLDivElement | null
@@ -239,7 +241,7 @@ export class GttClient {
 
     // Add Toolbar
     this.toolbar = new Bar()
-    this.toolbar.setPosition('bottom-left' as any) // is type.d old?
+    this.toolbar.setPosition('bottom-left' as position)
     this.map.addControl(this.toolbar)
     this.setView()
     this.setGeolocation(this.map)
@@ -253,7 +255,7 @@ export class GttClient {
       handleClick: () => {
         this.zoomToExtent(true);
       }
-    } as any)
+    })
     this.toolbar.addControl(maximizeCtrl)
 
     if (this.contents.edit) {
@@ -348,18 +350,18 @@ export class GttClient {
     this.map.addInteraction(modify)
 
     const mainbar = new Bar()
-    mainbar.setPosition("top-left" as any)
+    mainbar.setPosition("top-left" as position)
     this.map.addControl(mainbar)
 
     const editbar = new Bar({
-      toggleOne: true,	// one control active at the same time
-			group: true			  // group controls together
-    } as any)
+      toggleOne: true,  // one control active at the same time
+      group: true       // group controls together
+    })
     mainbar.addControl(editbar)
 
-    types.forEach(type => {
+    types.forEach((type, idx) => {
       const draw = new Draw({
-        type: type as any,
+        type: type as GeometryType,
         source: this.vector.getSource()
       })
 
@@ -371,8 +373,9 @@ export class GttClient {
       const control = new Toggle({
         html: `<i class="gtt-icon-${type.toLowerCase()}" ></i>`,
         title: type,
-        interaction: draw
-      } as any)
+        interaction: draw,
+        active: (idx === 0)
+      })
       editbar.addControl(control)
     })
 
@@ -394,12 +397,7 @@ export class GttClient {
           this.zoomToExtent()
         }
       }
-    } as any))
-
-    // Control has no setActive
-    // const _controls = editbar.getControls() as unknown
-    // const controls = _controls as Array<Control>
-    // controls[0].setActive(true)
+    }))
   }
 
   setPopover() {
@@ -407,10 +405,9 @@ export class GttClient {
       popupClass: 'default',
       closeBox: true,
       onclose: () => {},
-      positionning: 'auto',
-      autoPan: true,
-      autoPanAnimation: { duration: 250 }
-    } as any)
+      positioning: 'auto',
+      anim: true
+    })
     this.map.addOverlay(popup)
 
     // Control Select
@@ -432,7 +429,7 @@ export class GttClient {
       const url = popup_contents.href.replace(/\[(.+?)\]/g, feature.get('id'))
       content.push(`<a href="${url}">Edit</a>`)
 
-      popup.show(feature.getGeometry().getFirstCoordinate(), content.join(' ') as any)
+      popup.show(feature.getGeometry().getFirstCoordinate(), content.join(' '))
     })
 
     select.getFeatures().on(['remove'], _ => {
@@ -478,8 +475,11 @@ export class GttClient {
       })
       if (addressInput) {
         // Todo: only works with point geometries for now for the last geometry
-        const feature = features[features.length - 1].getGeometry() as any
-        let coords = feature.getCoordinates()
+        const geom = features[features.length - 1].getGeometry() as Point
+        if (geom === null) {
+          return
+        }
+        let coords = geom.getCoordinates()
         coords = transform(coords, 'EPSG:3857', 'EPSG:4326')
         const reverse_geocode_url = geocoder.reverse_geocode_url.replace("{lon}", coords[0].toString()).replace("{lat}", coords[1].toString())
         fetch(reverse_geocode_url)
@@ -643,7 +643,7 @@ export class GttClient {
             width: 1
           }),
           opacity: 1,
-        } as any),
+        }),
         stroke: new Stroke({
           width: 4,
           color: self.getColor(feature)
@@ -867,7 +867,7 @@ export class GttClient {
         geolocation.setTracking(active)
         geolocationLayer.setVisible(active)
       }
-    } as any)
+    })
     this.toolbar.addControl(geolocationCtrl)
   }
 
@@ -1066,10 +1066,10 @@ export class GttClient {
         controls: [
           new TextButton({
             html: '<form><input name="address" type="text" /></form>'
-          } as any)
+          })
         ]
-      } as any)
-    } as any)
+      })
+    })
     this.toolbar.addControl(geocodingCtrl)
 
     // Make Geocoding API request
@@ -1130,8 +1130,8 @@ export class GttClient {
                 if (layer instanceof VectorLayer &&
                     layer.getKeys().indexOf("title") >= 0 &&
                     layer.get("title") === "Features") {
-                  const features = (layer as any).getSource().getFeatures()
-                  const pointIndex = features.findIndex((feature: any) => {
+                  const features = layer.getSource().getFeatures()
+                  const pointIndex = features.findIndex((feature: Feature) => {
                     return feature.getGeometry().getType() === "Point"
                   })
                   if (pointIndex >= 0) {
