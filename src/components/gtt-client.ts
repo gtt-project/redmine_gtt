@@ -1331,6 +1331,19 @@ const buildDistanceFilterRow = (operator: any, values: any):void => {
   (document.querySelector(`#values_${fieldId}_4`) as HTMLInputElement).value = y;
 }
 
+/**
+ * Extend core Redmine's showAndScrollTo method
+ */
+const $ = window.$
+window.showAndScrollToWithoutGtt = window.showAndScrollTo
+window.showAndScrollTo = function(id: string, focus?: string | null) {
+  $('#'+id).show();
+  if (!(focus === null || focus === undefined) && focus !== 'issue_notes') {
+    $('#'+focus).focus();
+  }
+  $('html, body').animate({scrollTop: $('#'+id).offset().top}, 100);
+}
+
 window.replaceIssueFormWithInitMap = window.replaceIssueFormWith
 window.replaceIssueFormWith = (html) => {
   window.replaceIssueFormWithInitMap(html)
