@@ -22,9 +22,9 @@ en:
   label_gtt_settings: GTT
   label_gtt_settings_headline: GTT Settings
 
-  gtt_label_geometry: "API Key"
-  gtt_text_settings_help: "Enter the API key. Leave empty if no key is required."
-  gtt_text_settings_geometry_example: "2747491302261fbc47967ba62621af22"
+  # gtt_label_geometry: "API Key"
+  # gtt_text_settings_help: "Enter the API key. Leave empty if no key is required."
+  # gtt_text_settings_geometry_example: "2747491302261fbc47967ba62621af22"
 
   label_gtt: "GTT"
   label_gtt_bbox_filter: Location
@@ -48,19 +48,26 @@ en:
   gtt_settings_general_maxzoom_level: "Default map maximum zoom level"
   gtt_settings_general_fit_maxzoom_level: "Default map fit maximum zoom level"
 
-  gtt_settings_map_url: "API Service URL"
-  gtt_settings_map_apikey: "API Key"
-  gtt_settings_map_maxzoom_level: "Maximum map zoom level"
+  # gtt_settings_map_url: "API Service URL"
+  # gtt_settings_map_apikey: "API Key"
+  # gtt_settings_map_maxzoom_level: "Maximum map zoom level"
 
-  gtt_settings_geocoder_url: "API Service URL"
-  gtt_settings_geocoder_apikey: "API Key"
-  gtt_settings_geocoder_address_field_name: "Address field name"
-  gtt_settings_geocoder_district_field_name: "District field name"
-  gtt_park_search_field_name: "Park search field name"
+  # gtt_settings_geocoder_url: "API Service URL"
+  # gtt_settings_geocoder_apikey: "API Key"
+  # gtt_settings_geocoder_address_field_name: "Address field name"
+  # gtt_settings_geocoder_district_field_name: "District field name"
+  # gtt_park_search_field_name: "Park search field name"
+
+  label_gtt_point: "Point"
+  label_gtt_linestring: "LineString"
+  label_gtt_polygon: "Polygon"
+  label_editable_geometry_types_on_issue_map: "Editable geometry types on issue map"
+  label_enable_geojson_upload_on_issue_map: "Enable GeoJSON upload on issue map"
 
   select_default_tracker_icon: "Select default tracker icon:"
   select_default_status_color: "Select default status color:"
   select_default_map_settings: "Set default map settings:"
+  select_edit_geometry_settings: "Set edit geometry settings:"
   select_default_geocoder_settings: "Set Geocoder settings:"
 
-  text_osm_url_sample: For example https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png
+  # text_osm_url_sample: For example https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png
