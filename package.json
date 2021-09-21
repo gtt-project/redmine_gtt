@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/gtt-project/redmine_gtt#readme",
   "dependencies": {
+    "core-js": "^3.18.0",
     "font-awesome": "^4.7.0",
     "ol": "^6.5.0",
     "ol-ext": "^3.2.3"

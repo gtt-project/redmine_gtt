@@ -2,6 +2,7 @@ const path = require('path')
 
 module.exports = {
   mode: 'production',
+  target: ['web', 'es5'],
   entry: path.resolve(__dirname, 'src', 'index.ts'),
   module: {
     rules: [

@@ -13,6 +13,7 @@ import 'ol-ext/style/FontMaki2Def.js'
 import 'font-awesome/css/font-awesome.min.css'
 import 'ol-ext/style/FontAwesomeDef.js'
 
+import 'core-js/stable'
 import { GttClient } from './components/gtt-client'
 import { gtt_setting } from './components/gtt-setting'
 
