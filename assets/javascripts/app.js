@@ -224,11 +224,12 @@ var App = (function ($, publ) {
     }
 
     // Sidebar hack
-    $("#sidebar").on('hideSidebar', function (evt) {
+    var resizeObserver = new ResizeObserver(function (entries, observer) {
       maps.forEach(function (m) {
         m.updateSize();
       });
-    })
+    });
+    resizeObserver.observe(map.getTargetElement());
 
     // When one or more issues is selected, zoom to selected map features
     $("table.issues tbody tr").on('click', function (evt) {

@@ -25,6 +25,7 @@ module RedmineGtt
 
         tags << javascript_include_tag('ol.js', :plugin => 'redmine_gtt')
         tags << javascript_include_tag('ol-ext.min.js', :plugin => 'redmine_gtt')
+        tags << javascript_include_tag('resize-observer.js', :plugin => 'redmine_gtt')
         tags << javascript_include_tag('app.js', :plugin => 'redmine_gtt')
         tags << javascript_include_tag('fontmaki-def.js', :plugin => 'redmine_gtt')
         return tags.join("\n")
