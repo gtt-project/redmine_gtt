@@ -14,10 +14,13 @@ module RedmineGtt
       def view_layouts_base_body_bottom(context={})
         tags = [];
         geocoder = {}
-        begin
-          geocoder = JSON.parse(Setting.plugin_redmine_gtt['default_geocoder_options'])
-        rescue JSON::ParserError => exception
-          Rails.logger.warn "Failed to parse setting's 'geocoder_options' as JSON: #{exception}\nUse default '{}' instead."
+        geocoder_options = Setting.plugin_redmine_gtt['default_geocoder_options']
+        if geocoder_options.present?
+          begin
+            geocoder = JSON.parse()
+          rescue JSON::ParserError => exception
+            Rails.logger.warn "Failed to parse setting's 'geocoder_options' as JSON: #{exception}\nUse default '{}' instead."
+          end
         end
         tags.push(tag.div :data => {
           :lon => Setting.plugin_redmine_gtt['default_map_center_longitude'],
