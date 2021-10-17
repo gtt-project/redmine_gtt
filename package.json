@@ -22,7 +22,7 @@
   "dependencies": {
     "font-awesome": "^4.7.0",
     "ol": "^6.5.0",
-    "ol-ext": "^3.2.3"
+    "ol-ext": "^3.2.10"
   },
   "devDependencies": {
     "@types/ol": "^6.5.3",
