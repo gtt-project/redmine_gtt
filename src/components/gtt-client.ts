@@ -265,6 +265,25 @@ export class GttClient {
       this.setPopover()
     }
 
+    // Zoom to extent when map collapsed => expended
+    if (this.contents.collapsed) {
+      const self = this
+      const collapsedObserver = new MutationObserver((mutations) => {
+        // const currentMap = this.map
+        mutations.forEach(function(mutation) {
+          if (mutation.attributeName !== 'style') {
+            return
+          }
+          const mapDiv = mutation.target as HTMLDivElement
+          if (mapDiv && mapDiv.style.display === 'block') {
+            self.zoomToExtent(true)
+            collapsedObserver.disconnect()
+          }
+        })
+      })
+      collapsedObserver.observe(self.map.getTargetElement(), { attributes: true, attributeFilter: ['style'] })
+    }
+
     // Sidebar hack
     const resizeObserver = new ResizeObserver((entries, observer) => {
       this.maps.forEach(m => {

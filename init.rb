@@ -18,6 +18,7 @@ Redmine::Plugin.register :redmine_gtt do
 
   settings(
     :default => {
+      'default_collapsed_issues_page_map' => false,
       'default_map_center_longitude' => 139.691706,
       'default_map_center_latitude' => 35.689524,
       'default_map_zoom_level' => 13,
