@@ -33,7 +33,8 @@ import TextButton from 'ol-ext/control/TextButton'
 import LayerPopup from 'ol-ext/control/LayerPopup'
 import Popup from 'ol-ext/overlay/Popup'
 import { position } from 'ol-ext/control/control'
-import GeometryType from 'ol/geom/GeometryType';
+import GeometryType from 'ol/geom/GeometryType'
+import { ResizeObserver } from '@juggle/resize-observer'
 
 interface GttClientOption {
   target: HTMLDivElement | null
@@ -265,11 +266,12 @@ export class GttClient {
     }
 
     // Sidebar hack
-    document.querySelector('#sidebar').addEventListener('hideSidebar', _ => {
+    const resizeObserver = new ResizeObserver((entries, observer) => {
       this.maps.forEach(m => {
         m.updateSize()
       })
     })
+    resizeObserver.observe(this.map.getTargetElement())
 
     // When one or more issues is selected, zoom to selected map features
     document.querySelectorAll('table.issues tbody tr').forEach((element: HTMLTableRowElement) => {
