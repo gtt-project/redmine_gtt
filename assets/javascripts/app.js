@@ -223,6 +223,24 @@ var App = (function ($, publ) {
       this.setPopover();
     }
 
+    // Zoom to extent when map collapsed => expended
+    if (contents.collapsed) {
+      var self = this;
+      var collapsedObserver = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.attributeName !== 'style') {
+            return;
+          }
+          var mapDiv = mutation.target;
+          if (mapDiv && mapDiv.style.display === 'block') {
+            self.zoomToExtent(true);
+            collapsedObserver.disconnect();
+          }
+        })
+      })
+      collapsedObserver.observe(map.getTargetElement(), { attributes: true, attributeFilter: ['style'] });
+    }
+
     // Sidebar hack
     var resizeObserver = new ResizeObserver(function (entries, observer) {
       maps.forEach(function (m) {

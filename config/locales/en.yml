@@ -58,6 +58,7 @@ en:
   # gtt_settings_geocoder_district_field_name: "District field name"
   # gtt_park_search_field_name: "Park search field name"
 
+  label_default_collapsed_issues_page_map: "Default collapsed issues page map"
   label_gtt_point: "Point"
   label_gtt_linestring: "LineString"
   label_gtt_polygon: "Polygon"
