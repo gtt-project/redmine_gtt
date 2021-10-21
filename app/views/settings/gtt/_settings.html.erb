@@ -23,6 +23,11 @@
 <h3><%= l(:select_default_map_settings) %></h3>
 
 <p>
+  <%= content_tag(:label, l(:label_default_collapsed_issues_page_map)) %>
+  <%= check_box_tag 'settings[default_collapsed_issues_page_map]', true, @settings[:default_collapsed_issues_page_map] %>
+</p>
+
+<p>
   <%= content_tag(:label, l(:gtt_settings_general_center_lon)) %>
   <%= text_field_tag('settings[default_map_center_longitude]',
       @settings['default_map_center_longitude'],

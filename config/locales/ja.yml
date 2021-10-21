@@ -58,6 +58,7 @@ ja:
   # gtt_settings_geocoder_district_field_name: "区フィールド名"
   # gtt_park_search_field_name: "公園検索フィールド名"
 
+  label_default_collapsed_issues_page_map: "チケット一覧の地図を既定で非表示"
   label_gtt_point: "ポイント"
   label_gtt_linestring: "ライン"
   label_gtt_polygon: "ポリゴン"
