@@ -64,3 +64,6 @@ ja:
   select_default_geocoder_settings: "ジオコーダの設定:"
 
   text_osm_url_sample: "例： https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png"
+
+  project_module_gtt: "GTT"
+  permission_manage_gtt_settings: "GTT設定の管理"
