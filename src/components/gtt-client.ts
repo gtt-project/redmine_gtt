@@ -5,7 +5,7 @@ import 'ol-ext/filter/Base'
 import { Geometry, Point } from 'ol/geom'
 import { GeoJSON, WKT } from 'ol/format'
 import { Layer, Tile, Vector as VectorLayer } from 'ol/layer'
-import { Tile as TileSource, OSM } from 'ol/source'
+import { OSM, XYZ } from 'ol/source'
 import { Style, Fill, Stroke, Circle } from 'ol/style'
 import { OrderFunction } from 'ol/render'
 import {
@@ -16,9 +16,9 @@ import {
   Select,
 } from 'ol/interaction'
 import { focus as events_condifition_focus } from 'ol/events/condition'
-import { defaults as control_defaults} from 'ol/control'
+import { defaults as control_defaults } from 'ol/control'
 import { transform, fromLonLat, transformExtent } from 'ol/proj'
-import { createEmpty, extend, getCenter } from 'ol/extent'
+import { createEmpty, extend, getCenter, containsCoordinate } from 'ol/extent'
 import { FeatureCollection } from 'geojson'
 import { quick_hack } from './quick_hack'
 import Vector from 'ol/source/Vector'
@@ -29,8 +29,12 @@ import Mask from 'ol-ext/filter/Mask'
 import Bar from 'ol-ext/control/Bar'
 import Toggle from 'ol-ext/control/Toggle'
 import Button from 'ol-ext/control/Button'
+import TextButton from 'ol-ext/control/TextButton'
 import LayerPopup from 'ol-ext/control/LayerPopup'
 import Popup from 'ol-ext/overlay/Popup'
+import { position } from 'ol-ext/control/control'
+import GeometryType from 'ol/geom/GeometryType'
+import { ResizeObserver } from '@juggle/resize-observer'
 
 interface GttClientOption {
   target: HTMLDivElement | null
@@ -58,7 +62,7 @@ export class GttClient {
   filters: FilterOption
   vector: VectorLayer
   bounds: VectorLayer
-  geolocation: Geolocation
+  geolocations: Array<Geolocation>
 
   constructor(options: GttClientOption) {
     this.filters = {
@@ -66,6 +70,7 @@ export class GttClient {
       distance: false
     }
     this.maps = []
+    this.geolocations = []
 
     // needs target
     if (!options.target) {
@@ -139,22 +144,25 @@ export class GttClient {
       const layers = JSON.parse(this.contents.layers) as [LayerObject]
       layers.forEach((layer) => {
         const s = layer.type.split('.')
-        const l = new Tile({
-          visible: true,
-          source: new (getTileSource(s[1], s[2]))(layer.options)
-        })
-        l.set('lid', layer.id)
-        l.set('title', layer.name)
-        l.set('baseLayer', true)
-        l.on('change:visible', e => {
-          const target = e.target as Tile
-          if (target.getVisible()) {
-            const lid = target.get('lid')
-            document.cookie = `_redmine_gtt_basemap=${lid};path=/`
-          }
-        })
-        this.layerArray.push(l)
-        this.map.addLayer(l)
+        const tileSource = getTileSource(s[1], s[2])
+        if (tileSource) {
+          const l = new Tile({
+            visible: false,
+            source: new (tileSource)(layer.options)
+          })
+          l.set('lid', layer.id)
+          l.set('title', layer.name)
+          l.set('baseLayer', true)
+          l.on('change:visible', e => {
+            const target = e.target as Tile
+            if (target.getVisible()) {
+              const lid = target.get('lid')
+              document.cookie = `_redmine_gtt_basemap=${lid};path=/`
+            }
+          })
+          this.layerArray.push(l)
+          this.map.addLayer(l)
+        }
       }, this)
     }
 
@@ -234,11 +242,11 @@ export class GttClient {
 
     // Add Toolbar
     this.toolbar = new Bar()
-    this.toolbar.setPosition('bottom-left' as any) // is type.d old?
+    this.toolbar.setPosition('bottom-left' as position)
     this.map.addControl(this.toolbar)
     this.setView()
-    this.setGeolocation()
-    this.setGeocoding()
+    this.setGeolocation(this.map)
+    this.setGeocoding(this.map)
     this.parseHistory()
 
     // Control button
@@ -248,7 +256,7 @@ export class GttClient {
       handleClick: () => {
         this.zoomToExtent(true);
       }
-    } as any)
+    })
     this.toolbar.addControl(maximizeCtrl)
 
     if (this.contents.edit) {
@@ -257,12 +265,32 @@ export class GttClient {
       this.setPopover()
     }
 
+    // Zoom to extent when map collapsed => expended
+    if (this.contents.collapsed) {
+      const self = this
+      const collapsedObserver = new MutationObserver((mutations) => {
+        // const currentMap = this.map
+        mutations.forEach(function(mutation) {
+          if (mutation.attributeName !== 'style') {
+            return
+          }
+          const mapDiv = mutation.target as HTMLDivElement
+          if (mapDiv && mapDiv.style.display === 'block') {
+            self.zoomToExtent(true)
+            collapsedObserver.disconnect()
+          }
+        })
+      })
+      collapsedObserver.observe(self.map.getTargetElement(), { attributes: true, attributeFilter: ['style'] })
+    }
+
     // Sidebar hack
-    document.querySelector('#sidebar').addEventListener('hideSidebar', _ => {
+    const resizeObserver = new ResizeObserver((entries, observer) => {
       this.maps.forEach(m => {
         m.updateSize()
       })
     })
+    resizeObserver.observe(this.map.getTargetElement())
 
     // When one or more issues is selected, zoom to selected map features
     document.querySelectorAll('table.issues tbody tr').forEach((element: HTMLTableRowElement) => {
@@ -323,63 +351,6 @@ export class GttClient {
       this.map.on('moveend', this.updateFilter.bind(this))
     })
 
-    // To fix an issue with empty map after changing the tracker type
-    document.querySelectorAll('select#issue_tracker_id').forEach(element => {
-      const self = this
-      element.addEventListener('change', () => {
-        // https://stackoverflow.com/questions/45340281/ajaxcomplete-in-pure-javascript
-        (function() {
-          const send = XMLHttpRequest.prototype.send
-          XMLHttpRequest.prototype.send = function() {
-            this.addEventListener('load', () => {
-              self.zoomToExtent(true)
-            }, {
-              once: true
-            })
-            return send.apply(this, arguments)
-          }
-        })()
-      })
-    })
-
-    // To fix an issue with empty map after changing the status
-    document.querySelectorAll('select#issue_status_id').forEach(element => {
-      const self = this
-      element.addEventListener('change', () => {
-        // https://stackoverflow.com/questions/45340281/ajaxcomplete-in-pure-javascript
-        (function() {
-          const send = XMLHttpRequest.prototype.send
-          XMLHttpRequest.prototype.send = function() {
-            this.addEventListener('load', () => {
-              self.zoomToExtent(true)
-            }, {
-              once: true
-            })
-            return send.apply(this, arguments)
-          }
-        })()
-      })
-    })
-
-    // To fix an issue with empty map after changing the project
-    document.querySelectorAll('select#issue_project_id').forEach(element => {
-      const self = this
-      element.addEventListener('change', () => {
-        // https://stackoverflow.com/questions/45340281/ajaxcomplete-in-pure-javascript
-        (function() {
-          const send = XMLHttpRequest.prototype.send
-          XMLHttpRequest.prototype.send = function() {
-            this.addEventListener('load', () => {
-              self.zoomToExtent(true)
-            }, {
-              once: true
-            })
-            return send.apply(this, arguments)
-          }
-        })()
-      })
-    })
-
     // Handle multiple maps per page
     this.maps.push(this.map)
   }
@@ -400,18 +371,18 @@ export class GttClient {
     this.map.addInteraction(modify)
 
     const mainbar = new Bar()
-    mainbar.setPosition("top-left" as any)
+    mainbar.setPosition("top-left" as position)
     this.map.addControl(mainbar)
 
     const editbar = new Bar({
-      toggleOne: true,	// one control active at the same time
-			group: true			  // group controls together
-    } as any)
+      toggleOne: true,  // one control active at the same time
+      group: true       // group controls together
+    })
     mainbar.addControl(editbar)
 
-    types.forEach(type => {
+    types.forEach((type, idx) => {
       const draw = new Draw({
-        type: type as any,
+        type: type as GeometryType,
         source: this.vector.getSource()
       })
 
@@ -423,35 +394,33 @@ export class GttClient {
       const control = new Toggle({
         html: `<i class="gtt-icon-${type.toLowerCase()}" ></i>`,
         title: type,
-        interaction: draw
-      } as any)
+        interaction: draw,
+        active: (idx === 0)
+      })
       editbar.addControl(control)
     })
 
     // Upload button
-    editbar.addControl(new Button({
-      html: '<i class="gtt-icon-book" ></i>',
-      title: 'Upload GeoJSON',
-      handleClick: () => {
-        const data = prompt("Please paste a GeoJSON geometry here")
-        if (data !== null) {
-          const features = new GeoJSON().readFeatures(
-            JSON.parse(data), {
-              featureProjection: 'EPSG:3857'
-            }
-          )
-          this.vector.getSource().clear()
-          this.vector.getSource().addFeatures(features)
-          this.updateForm(features)
-          this.zoomToExtent()
+    if (this.contents.upload === "true") {
+      editbar.addControl(new Button({
+        html: '<i class="gtt-icon-book" ></i>',
+        title: 'Upload GeoJSON',
+        handleClick: () => {
+          const data = prompt("Please paste a GeoJSON geometry here")
+          if (data !== null) {
+            const features = new GeoJSON().readFeatures(
+              JSON.parse(data), {
+                featureProjection: 'EPSG:3857'
+              }
+            )
+            this.vector.getSource().clear()
+            this.vector.getSource().addFeatures(features)
+            this.updateForm(features)
+            this.zoomToExtent()
+          }
         }
-      }
-    } as any))
-
-    // Control has no setActive
-    // const _controls = editbar.getControls() as unknown
-    // const controls = _controls as Array<Control>
-    // controls[0].setActive(true)
+      }))
+    }
   }
 
   setPopover() {
@@ -459,10 +428,9 @@ export class GttClient {
       popupClass: 'default',
       closeBox: true,
       onclose: () => {},
-      positionning: 'auto',
-      autoPan: true,
-      autoPanAnimation: { duration: 250 }
-    } as any)
+      positioning: 'auto',
+      anim: true
+    })
     this.map.addOverlay(popup)
 
     // Control Select
@@ -484,7 +452,7 @@ export class GttClient {
       const url = popup_contents.href.replace(/\[(.+?)\]/g, feature.get('id'))
       content.push(`<a href="${url}">Edit</a>`)
 
-      popup.show(feature.getGeometry().getFirstCoordinate(), content.join(' ') as any)
+      popup.show(feature.getGeometry().getFirstCoordinate(), content.join(' '))
     })
 
     select.getFeatures().on(['remove'], _ => {
@@ -530,8 +498,11 @@ export class GttClient {
       })
       if (addressInput) {
         // Todo: only works with point geometries for now for the last geometry
-        const feature = features[features.length - 1].getGeometry() as any
-        let coords = feature.getCoordinates()
+        const geom = features[features.length - 1].getGeometry() as Point
+        if (geom === null) {
+          return
+        }
+        let coords = geom.getCoordinates()
         coords = transform(coords, 'EPSG:3857', 'EPSG:4326')
         const reverse_geocode_url = geocoder.reverse_geocode_url.replace("{lon}", coords[0].toString()).replace("{lat}", coords[1].toString())
         fetch(reverse_geocode_url)
@@ -695,7 +666,7 @@ export class GttClient {
             width: 1
           }),
           opacity: 1,
-        } as any),
+        }),
         stroke: new Stroke({
           width: 4,
           color: self.getColor(feature)
@@ -764,13 +735,13 @@ export class GttClient {
         m.getView().setCenter(transform([parseFloat(this.defaults.lon), parseFloat(this.defaults.lat)],
           'EPSG:4326', 'EPSG:3857'));
       })
-      if (this.geolocation) {
-        this.geolocation.once('change:position', (_) => {
+      this.geolocations.forEach(g => {
+        g.once('change:position', (evt) => {
           this.maps.forEach(m => {
-            m.getView().setCenter(this.geolocation.getPosition())
+            m.getView().setCenter(g.getPosition())
           })
         })
-      }
+      })
     }
   }
 
@@ -852,27 +823,30 @@ export class GttClient {
   /**
    * Add Geolocation functionality
    */
-  setGeolocation() {
-    this.geolocation = new Geolocation({
+  setGeolocation(currentMap: Map) {
+    const geolocation = new Geolocation({
       tracking: false,
-      projection: this.map.getView().getProjection()
+      projection: currentMap.getView().getProjection()
     })
-    this.geolocation.on('change', () => {
+    this.geolocations.push(geolocation)
+
+    geolocation.on('change', (evt) => {
       console.log({
-        accuracy: this.geolocation.getAccuracy(),
-        altitude: this.geolocation.getAltitude(),
-        altitudeAccuracy: this.geolocation.getAltitudeAccuracy(),
-        heading: this.geolocation.getHeading(),
-        speed: this.geolocation.getSpeed()
+        accuracy: geolocation.getAccuracy(),
+        altitude: geolocation.getAltitude(),
+        altitudeAccuracy: geolocation.getAltitudeAccuracy(),
+        heading: geolocation.getHeading(),
+        speed: geolocation.getSpeed()
       })
     })
-    this.geolocation.on('error', (_) => {
+    geolocation.on('error', (error) => {
       // TBD
+      console.error(error)
     })
 
     const accuracyFeature = new Feature()
-    this.geolocation.on('change:accuracyGeometry', (_) => {
-      accuracyFeature.setGeometry(this.geolocation.getAccuracyGeometry())
+    geolocation.on('change:accuracyGeometry', (evt) => {
+      accuracyFeature.setGeometry(geolocation.getAccuracyGeometry())
     })
 
     const positionFeature = new Feature()
@@ -889,9 +863,14 @@ export class GttClient {
       })
     }))
 
-    this.geolocation.on('change:position', (_) => {
-      const position = this.geolocation.getPosition()
+    geolocation.on('change:position', (evt) => {
+      const position = geolocation.getPosition()
       positionFeature.setGeometry(position ? new Point(position) : null)
+
+      const extent = currentMap.getView().calculateExtent(currentMap.getSize())
+      if (!containsCoordinate(extent, position)) {
+        currentMap.getView().setCenter(position)
+      }
     })
 
     const geolocationLayer = new VectorLayer({
@@ -900,7 +879,7 @@ export class GttClient {
       })
     })
     geolocationLayer.set('displayInLayerSwitcher', false)
-    this.map.addLayer(geolocationLayer)
+    currentMap.addLayer(geolocationLayer)
 
     // Control button
     const geolocationCtrl = new Toggle({
@@ -908,20 +887,17 @@ export class GttClient {
       title: "Geolocation",
       active: false,
       onToggle: (active: boolean) => {
-        this.geolocation.setTracking(active)
+        geolocation.setTracking(active)
         geolocationLayer.setVisible(active)
-        if (active) {
-          this.map.getView().setCenter(this.geolocation.getPosition())
-        }
       }
-    } as any)
+    })
     this.toolbar.addControl(geolocationCtrl)
   }
 
   /**
    * Add Geocoding functionality
    */
-  setGeocoding():void {
+  setGeocoding(currentMap: Map):void {
 
     // Hack to add Geocoding buttons to text fields
     // There should be a better way to do this
@@ -1088,54 +1064,74 @@ export class GttClient {
     }
 
     // disable geocoder control if geocoderUrl is null
-    if (!this.defaults.geocoderUrl) {
+    if (!geocoder.geocode_url) {
       return
     }
 
+    const mapId = currentMap.getTargetElement().getAttribute("id")
+
     // Control button
     const geocodingCtrl = new Toggle({
-      html: '<i class="gtt-icon-info" ></i>',
+      html: '<i class="gtt-icon-search" ></i>',
       title: "Geocoding",
       className: "ctl-geocoding",
       onToggle: (active: boolean) => {
+        const text = (document.querySelector("div#" + mapId + " .ctl-geocoding div input") as HTMLInputElement)
         if (active) {
-          (document.querySelector(".ctl-geocoding button input") as HTMLInputElement).focus()
+          text.focus()
+        } else {
+          text.blur()
+          const button = document.querySelector<HTMLButtonElement>("div#" + mapId + " .ctl-geocoding button")
+          button.blur()
         }
       },
       bar: new Bar({
         controls: [
-          new Button({
+          new TextButton({
             html: '<form><input name="address" type="text" /></form>'
-          } as any)
+          })
         ]
-      } as any)
-    } as any)
+      })
+    })
     this.toolbar.addControl(geocodingCtrl)
 
     // Make Geocoding API request
-    document.querySelector(".ctl-geocoding form").addEventListener('submit', (evt) => {
-      evt.preventDefault()
+    document.querySelector<HTMLInputElement>("div#" + mapId + " .ctl-geocoding div input").addEventListener('keydown', (evt) => {
+      if (evt.keyCode === 13) {
+        evt.preventDefault()
+        evt.stopPropagation()
+      } else {
+        return true
+      }
 
-      if (!this.defaults.geocoderUrl) {
+      if (!geocoder.geocode_url) {
         throw new Error ("No Geocoding service configured!")
       }
 
-      const url = [
-        this.defaults.geocoderUrl,
-        encodeURIComponent((document.querySelector('.ctl-geocoding form input[name=address]') as HTMLInputElement).value)
-      ]
+      const url = geocoder.geocode_url.replace("{address}", encodeURIComponent(
+        (document.querySelector("div#" + mapId + " .ctl-geocoding form input[name=address]") as HTMLInputElement).value)
+      )
 
-      fetch(url.join('/'))
+      fetch(url)
         .then(response => response.json())
         .then(data => {
-          // TODO, check for valid results
-          const address = new GeoJSON().readFeature(data, {
-            featureProjection: 'EPSG:3857'
-          })
-          this.map.getView().fit(address.getGeometry().getExtent(), {
-            size: this.map.getSize()
-          })
+          const check = evaluateComparison(getObjectPathValue(data, geocoder.geocode_result_check_path),
+            geocoder.geocode_result_check_operator,
+            geocoder.geocode_result_check_value
+          )
+          if (check) {
+            const lon = getObjectPathValue(data, geocoder.geocode_result_lon_path)
+            const lat = getObjectPathValue(data, geocoder.geocode_result_lat_path)
+            const coords = [lon, lat]
+            const geom = new Point(fromLonLat(coords, 'EPSG:3857'))
+            currentMap.getView().fit(geom.getExtent(), {
+              size: currentMap.getSize(),
+              maxZoom: parseInt(this.defaults.fitMaxzoom)
+            })
+          }
         })
+
+      return false
     })
   }
 
@@ -1157,8 +1153,8 @@ export class GttClient {
                 if (layer instanceof VectorLayer &&
                     layer.getKeys().indexOf("title") >= 0 &&
                     layer.get("title") === "Features") {
-                  const features = (layer as any).getSource().getFeatures()
-                  const pointIndex = features.findIndex((feature: any) => {
+                  const features = layer.getSource().getFeatures()
+                  const pointIndex = features.findIndex((feature: Feature) => {
                     return feature.getGeometry().getType() === "Point"
                   })
                   if (pointIndex >= 0) {
@@ -1195,9 +1191,11 @@ const getTileSource = (source: string, class_name: string): any => {
   if (source === 'source') {
     if (class_name === 'OSM') {
       return OSM
+    } else if (class_name === 'XYZ') {
+      return XYZ
     }
   }
-  return TileSource
+  return undefined
 }
 
 const getCookie = (cname:string):string => {
@@ -1357,7 +1355,7 @@ const buildDistanceFilterRow = (operator: any, values: any):void => {
 window.replaceIssueFormWithInitMap = window.replaceIssueFormWith
 window.replaceIssueFormWith = (html) => {
   window.replaceIssueFormWithInitMap(html)
-  const ol_maps = document.querySelector('div#update div.ol-map') as HTMLDivElement
+  const ol_maps = document.querySelector("form[class$='_issue'] div.ol-map") as HTMLDivElement
   if (ol_maps) {
     new GttClient({target: ol_maps})
   }
