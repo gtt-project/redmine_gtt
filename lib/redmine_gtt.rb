@@ -11,9 +11,7 @@ require 'redmine_gtt/view_hooks'
 
 # Configure View Overrides
 Rails.application.paths["app/overrides"] ||= []
-Dir.glob("#{Rails.root}/plugins/*/app/overrides").each do |dir|
-  Rails.application.paths["app/overrides"] << dir unless Rails.application.paths["app/overrides"].include?(dir)
-end
+Rails.application.paths["app/overrides"] << File.expand_path("../../app/overrides", __FILE__)
 
 # Register MIME Types
 Mime::Type.register_alias "application/json", :geojson
