@@ -36,7 +36,7 @@ module RedmineGtt
         geocoder_options = Setting.plugin_redmine_gtt['default_geocoder_options']
         if geocoder_options.present?
           begin
-            geocoder = JSON.parse()
+            geocoder = JSON.parse(geocoder_options)
           rescue JSON::ParserError => exception
             Rails.logger.warn "Failed to parse setting's 'geocoder_options' as JSON: #{exception}\nUse default '{}' instead."
           end
