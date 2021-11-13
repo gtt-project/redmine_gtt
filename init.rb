@@ -42,7 +42,7 @@ ActiveSupport::Reloader.to_prepare do
   # Automatically encode points to geojson with as_json in rails3
   RGeo::ActiveRecord::GeometryMixin.set_json_generator(:geojson)
 
-  RedmineGtt.setup
+  RedmineGtt.setup_normal_patches
 
   # ActiveRecord::Base.include_root_in_json = true
   # module RGeo
@@ -54,6 +54,10 @@ ActiveSupport::Reloader.to_prepare do
   #     end
   #   end
   # end
+end
+
+Rails.configuration.to_prepare do
+  RedmineGtt.setup_controller_patches
 end
 
 class GttListener < Redmine::Hook::ViewListener
