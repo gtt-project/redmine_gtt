@@ -88,6 +88,11 @@
 <h3><%= l(:select_default_geocoder_settings) %></h3>
 
 <p>
+  <%= content_tag(:label, l(:label_enable_geocoding_on_map)) %>
+  <%= check_box_tag 'settings[enable_geocoding_on_map]', true, @settings[:enable_geocoding_on_map] %>
+</p>
+
+<p>
   <%= content_tag(:label, l(:geocoder_options)) %>
   <%= text_area_tag('settings[default_geocoder_options]',
       @settings['default_geocoder_options'],

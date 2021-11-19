@@ -772,7 +772,8 @@ var App = (function ($, publ) {
       });
     }
 
-    if (!defaults.geocoder.geocode_url) {
+    // disable geocoding control if plugin setting is not true
+    if (!contents.geocoding) {
       return;
     }
 

@@ -64,6 +64,7 @@ en:
   label_gtt_polygon: "Polygon"
   label_editable_geometry_types_on_issue_map: "Editable geometry types on issue map"
   label_enable_geojson_upload_on_issue_map: "Enable GeoJSON upload on issue map"
+  label_enable_geocoding_on_map: "Enable geocoding on map"
 
   select_default_tracker_icon: "Select default tracker icon:"
   select_default_status_color: "Select default status color:"
