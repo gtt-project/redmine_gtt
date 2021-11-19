@@ -1063,8 +1063,8 @@ export class GttClient {
       })
     }
 
-    // disable geocoder control if geocoderUrl is null
-    if (!geocoder.geocode_url) {
+    // disable geocoding control if plugin setting is not true
+    if (this.contents.geocoding !== "true") {
       return
     }
 
