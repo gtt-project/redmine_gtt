@@ -64,6 +64,7 @@ ja:
   label_gtt_polygon: "ポリゴン"
   label_editable_geometry_types_on_issue_map: "チケット地図上で編集可能なジオメトリ種別"
   label_enable_geojson_upload_on_issue_map: "チケット地図上でGeoJSONアップロードを有効化"
+  label_enable_geocoding_on_map: "地図上でジオコーディングを有効化"
 
   select_default_tracker_icon: "トラッカーアイコンを選択:"
   select_default_status_color: "ステータス色を選択:"
