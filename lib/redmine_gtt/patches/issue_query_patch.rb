@@ -141,7 +141,7 @@ module RedmineGtt
       end
 
       def distance_query(lng, lat)
-        "ST_DistanceSphere(#{Issue.table_name}.geom, ST_GeomFromText('POINT(#{lng} #{lat})',4326))"
+        Arel.sql("ST_DistanceSphere(#{Issue.table_name}.geom, ST_GeomFromText('POINT(#{lng.to_f} #{lat.to_f})',4326))")
       end
 
       def load_distances(issues, center_point)
@@ -149,7 +149,7 @@ module RedmineGtt
         distances = Hash[
           Issue.
             where(id: issues.map(&:id)).
-            pluck(:id, Arel.sql("#{distance_query(lng, lat)}"))
+            pluck(:id, distance_query(lng, lat))
         ]
         issues.each{|i| i.instance_variable_set :@distance, distances[i.id]}
       end
