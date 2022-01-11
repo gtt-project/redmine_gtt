@@ -41,3 +41,13 @@ label_gtt_point: Punkt
 label_gtt_linestring: Linie
 label_gtt_polygon: Polygon
 error_invalid_json: muss gültiges JSON sein
+label_editable_geometry_types_on_issue_map: Editierbare Geometrietypen auf der Ausgabekarte
+select_default_tracker_icon: 'Auswahl des Standard-Tracker-Symbols:'
+label_enable_geojson_upload_on_issue_map: Aktivieren von GeoJSON-Upload auf der Themenkarte
+label_enable_geocoding_on_map: Geokodierung auf der Karte aktivieren
+select_default_status_color: 'Auswahl der Standard-Statusfarbe:'
+select_default_map_settings: 'Standardmäßige Kartenvoreinstellungen festlegen:'
+select_edit_geometry_settings: 'Einstellungen für die Geometriebearbeitung:'
+select_default_geocoder_settings: 'Geocoder-Einstellungen:'
+project_module_gtt: GTT
+permission_manage_gtt_settings: Konfiguration der GTT-Einstellungen
