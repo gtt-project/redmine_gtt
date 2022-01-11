@@ -1,6 +1,7 @@
 # Redmine Geo-Task-Tracker (GTT) Plugin
 
 ![CI #develop](https://github.com/gtt-project/redmine_gtt/workflows/Test%20with%20Redmine/badge.svg)
+[![Translation status](https://weblate.osgeo.org/widgets/gtt-project/-/redmine_gtt/svg-badge.svg)](https://weblate.osgeo.org/engage/gtt-project/)
 
 The Geo-Task-Tracker (GTT) plugin adds spatial capabilities to Redmine:
 
@@ -70,6 +71,12 @@ For more information with screenshots see the [Getting Started](doc/getting-star
 ## Contributing and Support
 
 The GTT Project appreciates any [contributions](https://github.com/gtt-project/.github/blob/main/CONTRIBUTING.md)! Feel free to contact us for [reporting problems and support](https://github.com/gtt-project/.github/blob/main/CONTRIBUTING.md).
+
+Help us to translate GTT Project using [OSGeo Weblate](https://weblate.osgeo.org/engage/gtt-project/):
+
+<a href="https://weblate.osgeo.org/engage/gtt-project/">
+<img src="https://weblate.osgeo.org/widgets/gtt-project/-/redmine_gtt/multi-auto.svg" alt="Translation status" />
+</a>
 
 ### How to debug frontend
 
