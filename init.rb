@@ -65,6 +65,7 @@ if Rails.version > '6.0' && Rails.autoloaders.zeitwerk_enabled?
     RedmineGtt.setup_controller_patches
   end
 else
+  require 'redmine_gtt'
   # Configure View Overrides
   Rails.application.paths["app/overrides"] ||= []
   Rails.application.paths["app/overrides"] << File.expand_path("../app/overrides", __FILE__)
