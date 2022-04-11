@@ -11,15 +11,19 @@ module RedmineGtt
         respond_to do |format|
           format.api {
             @include_geometry = params[:include] == 'geometry'
-            query = RedmineGtt::SpatialProjectsQuery.new(
-              contains: params[:contains],
-              geometry: @include_geometry,
-              projects: Project.visible.sorted
-            )
-            scope = query.scope
-            @project_count = query.count
-            @offset, @limit = api_offset_and_limit
-            @projects = scope.offset(@offset).limit(@limit).to_a
+            if @include_geometry || params[:contains].present?
+              query = RedmineGtt::SpatialProjectsQuery.new(
+                contains: params[:contains],
+                geometry: @include_geometry,
+                projects: Project.visible.sorted
+              )
+              scope = query.scope
+              @project_count = query.count
+              @offset, @limit = api_offset_and_limit
+              @projects = scope.offset(@offset).limit(@limit).to_a
+            else
+              super
+            end
           }
           format.any { super }
         end
