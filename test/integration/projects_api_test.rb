@@ -9,7 +9,7 @@ class ProjectsApiTest < Redmine::IntegrationTest
     @project.enabled_modules.create name: 'gtt'
   end
 
-  test 'should should filter projects by geometry' do
+  test 'should filter projects by geometry' do
     get '/projects.xml'
     assert_response :success
     xml = xml_data
@@ -78,6 +78,68 @@ class ProjectsApiTest < Redmine::IntegrationTest
     assert json = JSON.parse(@response.body)
     hsh = JSON.parse json['projects'].detect{|p|p['id'] == @project.id}['geojson']
     assert_equal geo['geometry'], hsh['geometry']
+  end
+
+  test 'should filter projects by query, when neither param includes geometry nor contains wkt' do
+    # default
+    get '/projects.xml'
+    assert_response :success
+    xml = xml_data
+    assert projects = xml.xpath('/projects/project')
+    assert projects.any?
+    assert_equal Project.visible.count, projects.size
+
+    # query filter (only sub projects)
+    get '/projects.xml', params: {
+      'f[]': 'parent_id',
+      'op[parent_id]': '=',
+      'v[parent_id][]': '1'
+    }
+    assert_response :success
+    xml = xml_data
+    assert projects = xml.xpath('/projects/project')
+    assert projects.any?
+    assert_equal Project.where(parent_id: 1).where(is_public: true).count, projects.size
+
+    # set geometry to ecookbook
+    @project.update_attribute :geojson, {
+      'type' => 'Feature',
+      'geometry' => {
+        'type' => 'Polygon',
+        'coordinates' => [
+          [[123.269691,9.305099], [123.279691,9.305099],[123.279691,9.405099],[123.269691,9.405099]]
+        ]
+      }
+    }.to_json
+
+    assert @project.visible?
+
+    # include=geometry => ignore query filter
+    get '/projects.xml', params: {
+      'f[]': 'parent_id',
+      'op[parent_id]': '=',
+      'v[parent_id][]': '1',
+      include: 'geometry'
+    }
+    assert_response :success
+    xml = xml_data
+    assert projects = xml.xpath('/projects/project')
+    assert projects.any?
+    assert_equal Project.visible.count, projects.size
+
+    # contains=(wkt) => ignore query filter
+    get '/projects.xml', params: {
+      'f[]': 'parent_id',
+      'op[parent_id]': '=',
+      'v[parent_id][]': '1',
+      contains: 'POINT(123.271 9.35)'
+    }
+    assert_response :success
+    xml = xml_data
+    assert projects = xml.xpath('/projects/project')
+    assert_equal 1, projects.size, xml.to_s
+    assert_equal 'ecookbook', projects.xpath('identifier').text
+    assert_equal 0, projects.xpath('geojson').size, projects.to_s
   end
 
   def xml_data
