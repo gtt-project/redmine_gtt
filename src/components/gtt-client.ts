@@ -34,7 +34,6 @@ import TextButton from 'ol-ext/control/TextButton'
 import LayerPopup from 'ol-ext/control/LayerPopup'
 import Popup from 'ol-ext/overlay/Popup'
 import { position } from 'ol-ext/control/control'
-import GeometryType from 'ol/geom/GeometryType'
 import { ResizeObserver } from '@juggle/resize-observer'
 import VectorSource from 'ol/source/Vector'
 import { FeatureLike } from 'ol/Feature'
@@ -385,7 +384,7 @@ export class GttClient {
 
     types.forEach((type, idx) => {
       const draw = new Draw({
-        type: type as GeometryType,
+        type: type,
         source: this.vector.getSource()
       })
 
@@ -1322,7 +1321,7 @@ const buildDistanceFilterRow = (operator: any, values: any):void => {
     window.toggleOperator(field)
   })
 
-  const td = tr.querySelector('td.values') as HTMLTableDataCellElement
+  const td = tr.querySelector('td.values') as HTMLTableCellElement
   td.innerHTML = `
   <span style="display:none;">
     <input type="text" name="v[${field}][]" id="values_${fieldId}_1" size="14" class="value" />
