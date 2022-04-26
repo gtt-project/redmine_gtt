@@ -92,7 +92,8 @@ RAILS_ENV=test NAME=redmine_gtt bundle exec rake redmine:plugins:test
 
 ## Version History
 
-See [all releases](https://github.com/gtt-project/redmine_gtt/releases) with release notes.
+- **4.0.0**: Support Redmine >= 5.0 and drop Redmine <= 4.1 support
+- See [all releases](https://github.com/gtt-project/redmine_gtt/releases) with release notes.
 
 ## Authors
 
