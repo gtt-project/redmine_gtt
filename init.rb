@@ -8,9 +8,9 @@ Redmine::Plugin.register :redmine_gtt do
   author_url 'https://github.com/georepublic'
   url 'https://github.com/gtt-project/redmine_gtt'
   description 'Adds location-based task management and maps'
-  version '3.0.0' # TODO: 4.0.0?
+  version '4.0.0'
 
-  requires_redmine :version_or_higher => '4.0.0'
+  requires_redmine :version_or_higher => '4.2.0'
 
   project_module :gtt do
     permission :manage_gtt_settings, {
