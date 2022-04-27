@@ -264,6 +264,7 @@ var App = (function ($, publ) {
         maps.forEach(function (m) {
           m.updateSize();
         });
+        publ.zoomToExtent();
       }, 200);
     });
 
