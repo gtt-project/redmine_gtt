@@ -34,6 +34,11 @@ module RedmineGtt
           if geom_change[0].geometry_type == geom_change[1].geometry_type
             old_value = geom_change[0].coordinates
             new_value = geom_change[1].coordinates
+            if old_value.instance_of?(Array)
+              if old_value.length != new_value.length
+                return true
+              end
+            end
             self.geom = geom_change[0] if new_value.zip(old_value).map { |a, b| (a-b).abs }.map {|x| x < 0.00000001}.all?
           end
         end
