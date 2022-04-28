@@ -4,7 +4,8 @@ import { Map, Feature, View, Geolocation } from 'ol'
 import 'ol-ext/filter/Base'
 import { Geometry, Point } from 'ol/geom'
 import { GeoJSON, WKT } from 'ol/format'
-import { Layer, Tile, Vector as VectorLayer } from 'ol/layer'
+import { Layer, Tile } from 'ol/layer'
+import VectorLayer from 'ol/layer/Vector'
 import { OSM, XYZ } from 'ol/source'
 import { Style, Fill, Stroke, Circle } from 'ol/style'
 import { OrderFunction } from 'ol/render'
@@ -33,8 +34,9 @@ import TextButton from 'ol-ext/control/TextButton'
 import LayerPopup from 'ol-ext/control/LayerPopup'
 import Popup from 'ol-ext/overlay/Popup'
 import { position } from 'ol-ext/control/control'
-import GeometryType from 'ol/geom/GeometryType'
 import { ResizeObserver } from '@juggle/resize-observer'
+import VectorSource from 'ol/source/Vector'
+import { FeatureLike } from 'ol/Feature'
 
 interface GttClientOption {
   target: HTMLDivElement | null
@@ -60,8 +62,8 @@ export class GttClient {
   contents: DOMStringMap
   toolbar: Bar
   filters: FilterOption
-  vector: VectorLayer
-  bounds: VectorLayer
+  vector: VectorLayer<VectorSource<Geometry>>
+  bounds: VectorLayer<VectorSource<Geometry>>
   geolocations: Array<Geolocation>
 
   constructor(options: GttClientOption) {
@@ -154,7 +156,7 @@ export class GttClient {
           l.set('title', layer.name)
           l.set('baseLayer', true)
           l.on('change:visible', e => {
-            const target = e.target as Tile
+            const target = e.target as Tile<XYZ>
             if (target.getVisible()) {
               const lid = target.get('lid')
               document.cookie = `_redmine_gtt_basemap=${lid};path=/`
@@ -189,7 +191,7 @@ export class GttClient {
 
     const yOrdering: unknown = Ordering.yOrdering()
 
-    this.vector = new VectorLayer({
+    this.vector = new VectorLayer<VectorSource<Geometry>>({
       source: new Vector({
         'features': features,
         'useSpatialIndex': false
@@ -313,6 +315,7 @@ export class GttClient {
           this.maps.forEach(m => {
             m.updateSize()
           })
+          this.zoomToExtent()
         }, 200)
       })
     })
@@ -382,7 +385,7 @@ export class GttClient {
 
     types.forEach((type, idx) => {
       const draw = new Draw({
-        type: type as GeometryType,
+        type: type,
         source: this.vector.getSource()
       })
 
@@ -442,7 +445,7 @@ export class GttClient {
 
     // On selected => show/hide popup
     select.getFeatures().on(['add'], evt => {
-      const feature = evt.element
+      const feature = evt.target
 
       const content: Array<string> = []
       content.push(`<b>${feature.get('subject')}</b><br/>`)
@@ -471,7 +474,7 @@ export class GttClient {
     })
   }
 
-  updateForm(features: Feature<Geometry>[] | null, updateAddressFlag: boolean = false):void {
+  updateForm(features: FeatureLike[] | null, updateAddressFlag: boolean = false):void {
     if (features == null) {
       return
     }
@@ -481,7 +484,11 @@ export class GttClient {
     }
 
     const writer = new GeoJSON()
-    const geojson_str = writer.writeFeatures(features, {
+    // Convert to Feature<Geometry> type for GeoJSON writer
+    const new_features: Feature<Geometry>[] = features.map((feature => {
+      return new Feature<Geometry>({geometry: feature.getGeometry() as Geometry})
+    }))
+    const geojson_str = writer.writeFeatures(new_features, {
       featureProjection: 'EPSG:3857',
       dataProjection: 'EPSG:4326'
     })
@@ -1315,7 +1322,7 @@ const buildDistanceFilterRow = (operator: any, values: any):void => {
     window.toggleOperator(field)
   })
 
-  const td = tr.querySelector('td.values') as HTMLTableDataCellElement
+  const td = tr.querySelector('td.values') as HTMLTableCellElement
   td.innerHTML = `
   <span style="display:none;">
     <input type="text" name="v[${field}][]" id="values_${fieldId}_1" size="14" class="value" />
