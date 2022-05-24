@@ -42,6 +42,13 @@ module RedmineGtt
         end
       end
 
+      # Zeitwerk tweek
+      def action_missing(action_name, *args)
+        if action_name == 'update_gtt_configuration'
+          self.update_gtt_configuration
+        end
+      end
+
       def update_gtt_configuration
         if request.put? and User.current.allowed_to?(:manage_gtt_settings, @project)
           @form = GttConfiguration.from_params(params[:gtt_configuration])
