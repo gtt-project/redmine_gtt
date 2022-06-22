@@ -43,6 +43,8 @@ ja:
   geocoder_options: "ジオコーダのオプション"
 
   gtt_tile_sources_info: このプロジェクトで使用できるタイルソースを選択します。
+  gtt_tile_sources_select: "-- Select type --"
+  gtt_tile_sources_load_example: "Load example configuration"
 
   gtt_settings_general_center_lon: "既定の地図中心経度"
   gtt_settings_general_center_lat: "既定の地図中心緯度"

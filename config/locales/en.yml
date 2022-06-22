@@ -42,7 +42,9 @@ en:
 
   geocoder_options: "Geocoder Options"
 
-  gtt_tile_sources_info: Select the tile sources that should be available in this project.
+  gtt_tile_sources_info: "Select the tile sources that should be available in this project."
+  gtt_tile_sources_select: "-- Select type --"
+  gtt_tile_sources_load_example: "Load example configuration"
 
   gtt_settings_general_center_lon: "Default map center longitude"
   gtt_settings_general_center_lat: "Default map center latitude"
