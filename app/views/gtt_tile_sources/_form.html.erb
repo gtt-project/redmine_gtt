@@ -5,6 +5,7 @@
   <p>
     <%= f.select :type,
       options_for_select([
+        ['ol.source.ImageWMS', 'ol.source.ImageWMS'],
         ['ol.source.OSM', 'ol.source.OSM'],
         ['ol.source.TileWMS', 'ol.source.TileWMS'],
         ['ol.source.XYZ', 'ol.source.XYZ']
@@ -23,6 +24,14 @@
 
 <script>
   const tile_source_examples = {
+    'ol.source.ImageWMS': {
+      "url": "https://www.example.com/geoserver/wms",
+      "params": {
+        "LAYERS": "schema:mydata"
+      },
+      "ratio": 1,
+      "serverType": "geoserver"
+    },
     'ol.source.OSM': {
       "url": "https://tile.openstreetmap.jp/{z}/{x}/{y}.png",
       "custom": "19/34.74701/135.35740",
@@ -33,7 +42,7 @@
       "url": "https://www.example.com/geoserver/wms",
       "params": {
         "TILED": true,
-        "LAYERS": "raster:mydata"
+        "LAYERS": "schema:mydata"
       },
       "serverType": "geoserver"
     },
