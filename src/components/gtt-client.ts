@@ -4,7 +4,7 @@ import { Map, Feature, View, Geolocation } from 'ol'
 import 'ol-ext/filter/Base'
 import { Geometry, Point } from 'ol/geom'
 import { GeoJSON, WKT } from 'ol/format'
-import { Layer, Tile } from 'ol/layer'
+import { Layer, Tile, Image } from 'ol/layer'
 import VectorLayer from 'ol/layer/Vector'
 import { OSM, XYZ, TileWMS, ImageWMS } from 'ol/source'
 import { Style, Fill, Stroke, Circle } from 'ol/style'
@@ -38,6 +38,9 @@ import { position } from 'ol-ext/control/control'
 import { ResizeObserver } from '@juggle/resize-observer'
 import VectorSource from 'ol/source/Vector'
 import { FeatureLike } from 'ol/Feature'
+import TileSource from 'ol/source/Tile'
+import ImageSource from 'ol/source/Image'
+import { Options as ImageWMSOptions } from 'ol/source/ImageWMS'
 
 interface GttClientOption {
   target: HTMLDivElement | null
@@ -54,6 +57,16 @@ interface LayerObject {
 interface FilterOption {
   location: boolean
   distance: boolean
+}
+
+interface TileLayerSource {
+  layer: typeof Tile
+  source: typeof OSM | typeof XYZ
+}
+
+interface ImageLayerSource {
+  layer: typeof Image
+  source: typeof ImageWMS
 }
 
 export class GttClient {
@@ -148,19 +161,20 @@ export class GttClient {
       const layers = JSON.parse(this.contents.layers) as [LayerObject]
       layers.forEach((layer) => {
         const s = layer.type.split('.')
-        const tileSource = getTileSource(s[1], s[2])
-        if (tileSource) {
-          const l = new Tile({
+        const layerSource = getLayerSource(s[1], s[2])
+        const tileLayerSource = layerSource as TileLayerSource
+        if (tileLayerSource) {
+          const l = new (tileLayerSource.layer)({
             visible: false,
-            source: new (tileSource)(layer.options)
-          })          
+            source: new (tileLayerSource.source)(layer.options)
+          })
 
           l.set('lid', layer.id)
           l.set('title', layer.name)
           l.set('baseLayer', layer.baselayer)
           if( layer.baselayer ) {
             l.on('change:visible', e => {
-              const target = e.target as Tile<XYZ>
+              const target = e.target as Tile<TileSource>
               if (target.getVisible()) {
                 const lid = target.get('lid')
                 document.cookie = `_redmine_gtt_basemap=${lid};path=/`
@@ -168,7 +182,26 @@ export class GttClient {
             })
           }
           this.layerArray.push(l)
-          //this.map.addLayer(l)
+        } else if (layerSource as ImageLayerSource) {
+          const imageLayerSource = layerSource as ImageLayerSource
+          const l = new (imageLayerSource.layer)({
+            visible: false,
+            source: new (imageLayerSource.source)(layer.options as ImageWMSOptions)
+          })
+
+          l.set('lid', layer.id)
+          l.set('title', layer.name)
+          l.set('baseLayer', layer.baselayer)
+          if( layer.baselayer ) {
+            l.on('change:visible', e => {
+              const target = e.target as Image<ImageSource>
+              if (target.getVisible()) {
+                const lid = target.get('lid')
+                document.cookie = `_redmine_gtt_basemap=${lid};path=/`
+              }
+            })
+          }
+          this.layerArray.push(l)
         }
       }, this)
 
@@ -1228,16 +1261,16 @@ export class GttClient {
   }
 }
 
-const getTileSource = (source: string, class_name: string): any => {
+const getLayerSource = (source: string, class_name: string): TileLayerSource | ImageLayerSource | undefined => {
   if (source === 'source') {
     if (class_name === 'OSM') {
-      return OSM
+      return { layer: Tile, source: OSM }
     } else if (class_name === 'XYZ') {
-      return XYZ
+      return { layer: Tile, source: XYZ }
     } else if (class_name === 'TileWMS') {
-      return TileWMS
+      return { layer: Tile, source: TileWMS }
     } else if (class_name === 'ImageWMS') {
-      return ImageWMS
+      return { layer: Image, source: ImageWMS }
     }
   }
   return undefined
