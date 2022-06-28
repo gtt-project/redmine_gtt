@@ -5,10 +5,10 @@
   <p>
     <%= f.select :type,
       options_for_select([
-        ['ol.source.ImageWMS', 'ol.source.ImageWMS'],
-        ['ol.source.OSM', 'ol.source.OSM'],
-        ['ol.source.TileWMS', 'ol.source.TileWMS'],
-        ['ol.source.XYZ', 'ol.source.XYZ']
+        [l(:gtt_tile_sources_select_imagewms), 'ol.source.ImageWMS'],
+        [l(:gtt_tile_sources_select_osm), 'ol.source.OSM'],
+        [l(:gtt_tile_sources_select_tilewms), 'ol.source.TileWMS'],
+        [l(:gtt_tile_sources_select_xyz), 'ol.source.XYZ']
       ], selected: f.object.type ),
       { include_blank: l(:gtt_tile_sources_select), required: true }
     %>
