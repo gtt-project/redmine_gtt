@@ -358,7 +358,9 @@ export class GttClient {
 
     // Add LayerSwitcher Image Toolbar
     if( containsOverlay) {
-      this.map.addControl(new LayerSwitcher())
+      this.map.addControl(new LayerSwitcher({
+        reordering: false
+      }))
     }
     else {
       this.map.addControl(new LayerPopup())
