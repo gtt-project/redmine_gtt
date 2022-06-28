@@ -16,6 +16,9 @@ Redmine::Plugin.register :redmine_gtt do
     permission :manage_gtt_settings, {
       projects: [ :update_gtt_configuration ]
     }, require: :member
+    permission :view_gtt_settings, {
+      gtt_configuration: %i( default_setting_configuration )
+    }, require: :member, read: true
   end
 
   settings(
