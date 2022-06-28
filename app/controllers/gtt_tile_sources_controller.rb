@@ -61,7 +61,7 @@ class GttTileSourcesController < ApplicationController
   def tile_source_params
     return {} unless params[:tile_source]
 
-    params[:tile_source].permit( :name, :type, :global, :position,
+    params[:tile_source].permit( :name, :type, :baselayer, :global, :position,
                                 :default, :options_string )
   end
 end

@@ -8,6 +8,7 @@ en:
   field_location: "Location"
   field_geom: "Geometry"
   field_global: Globally available
+  field_baselayer: BaseLayer
   field_options_string: Options
   field_gtt_tile_source_ids: Tile Sources
 
@@ -16,6 +17,7 @@ en:
   label_project_map: "Project Map"
   label_user_map: "User Map"
   label_name: Name
+  label_baselayer: BaseLayer
   label_nearby: "nearby(lat,lng)"
   label_type: Type
   label_config: Configuration

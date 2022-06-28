@@ -8,6 +8,7 @@ ja:
   field_location: "場所"
   field_geom: "所在地"
   field_global: 世界的に利用可能
+  field_baselayer: 背景レイヤー
   field_options_string: オプション
   field_gtt_tile_source_ids: タイルソース
 
@@ -16,6 +17,7 @@ ja:
   label_project_map: "プロジェクト 地図"
   label_user_map: "ユーザ 地図"
   label_name: タイトル
+  label_baselayer: 背景レイヤー
   label_nearby: "近く(緯度,経度)"
   label_type: タイプ
   label_config: 構成
