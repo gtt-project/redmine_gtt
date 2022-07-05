@@ -1,5 +1,7 @@
 class GttConfigurationController < ApplicationController
 
+    before_action :find_optional_project_and_authorize
+
     accept_api_auth :default_setting_configuration
 
     def default_setting_configuration
@@ -13,7 +15,6 @@ class GttConfigurationController < ApplicationController
         default_tracker_icon = []
         default_status_color = []
         gtt_tile_source = []
-        tracker_project_ids = []
 
         Tracker.all.sort.each {|tracker|
             default_tracker_icon.append({
@@ -29,7 +30,7 @@ class GttConfigurationController < ApplicationController
                 color: Setting.plugin_redmine_gtt['status_'+status.id.to_s]
             })
         }
-        GttTileSource.all.sort.each {|tileSource|
+        GttTileSource.where(global: true).sort.each {|tileSource|
             gtt_tile_source.append({
                 id: tileSource.id,
                 name: tileSource.name,
@@ -55,8 +56,19 @@ class GttConfigurationController < ApplicationController
                     geocoderOptions: Setting.plugin_redmine_gtt['default_geocoder_options']
                 },
             },
-            gttLayer: gtt_tile_source
+            gttLayer: gtt_tile_source,
         }
         return mapConfig
+    end
+
+    private
+
+    def find_optional_project_and_authorize
+        if params[:project_id]
+            @project = Project.find params[:project_id]
+            authorize
+        else
+            authorize_global
+        end
     end
 end
