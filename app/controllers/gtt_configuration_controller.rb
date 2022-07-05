@@ -17,36 +17,24 @@ class GttConfigurationController < ApplicationController
 
         Tracker.all.sort.each {|tracker|
             default_tracker_icon.append({
-                trackerID: tracker.id.to_s,
+                trackerID: tracker.id,
                 trackerName: tracker.name,
                 icon: Setting.plugin_redmine_gtt['tracker_'+tracker.id.to_s]
             })
         }
         IssueStatus.all.sort.each {|status|
             default_status_color.append({
-                statusID: status.id.to_s,
+                statusID: status.id,
                 statusName: status.name,
                 color: Setting.plugin_redmine_gtt['status_'+status.id.to_s]
             })
         }
         GttTileSource.all.sort.each {|tileSource|
-            tile_source_project = []
-            
-            Project.all.sort.each {|project|
-                project.gtt_tile_sources.where(id: tileSource.id).sort.each {|tilesSource|
-                    tile_source_project.append({
-                        id: project.id.to_s,
-                        name: project.name
-                    })
-                }
-            }
-
             gtt_tile_source.append({
                 id: tileSource.id,
                 name: tileSource.name,
                 type: tileSource.type,
-                options: tileSource.options,
-                projects: tile_source_project
+                options: tileSource.options
             })
         }
 
@@ -60,16 +48,14 @@ class GttConfigurationController < ApplicationController
                 },
                 geometrySetting: {
                     geometryTypes: Setting.plugin_redmine_gtt['editable_geometry_types_on_issue_map'],
-                    GeoJsonUpload: Setting.plugin_redmine_gtt['enable_geojson_upload_on_issue_map'],
+                    GeoJsonUpload: (Setting.plugin_redmine_gtt['enable_geojson_upload_on_issue_map'] == 'true'),
                 },
                 geocoderSetting: {
-                    enableGeocodingOnMap: Setting.plugin_redmine_gtt['enable_geocoding_on_map'],
+                    enableGeocodingOnMap: (Setting.plugin_redmine_gtt['enable_geocoding_on_map'] == 'true'),
                     geocoderOptions: Setting.plugin_redmine_gtt['default_geocoder_options']
                 },
             },
-            gttSetting: {
-                gttTileSourceIds: gtt_tile_source
-            }
+            gttLayer: gtt_tile_source
         }
         return mapConfig
     end
