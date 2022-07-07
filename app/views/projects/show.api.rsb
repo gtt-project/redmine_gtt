@@ -14,6 +14,10 @@ api.project do
     api.geojson ""
   end
 
+  if @project.gtt_tile_sources.present?
+    api.gtt_tile_sources @project.gtt_tile_sources
+  end
+
   render_api_custom_values @project.visible_custom_field_values, api
   render_api_includes(@project, api)
 
