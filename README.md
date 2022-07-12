@@ -26,14 +26,14 @@ Redmine GTT plugins **require PostgreSQL/PostGIS** and will not work with SQLite
 
 Create a PostGIS-enabled database:
 
-```
+```sh
 createdb -U postgres -O redmine redmine
 psql -U postgres -d redmine -c "CREATE EXTENSION postgis;"
 ```
 
 To install Redmine GTT plugin, download or clone this repository in your Redmine installation plugins directory!
 
-```
+```sh
 cd path/to/plugin/directory
 git clone https://github.com/gtt-project/redmine_gtt.git
 cd redmine_gtt
@@ -43,7 +43,7 @@ npx webpack
 
 Then run
 
-```
+```sh
 export GEM_PG_VERSION=your-pg-version # skip this line if redmine use pg 1.2.2.
 export GEM_RGEO_ACTIVERECORD_VERSION=your-rgeo-activerecord-version # skip this line if using rgeo-activerecord 6.2.2.
 export GEM_ACTIVERECORD_POSTGIS_ADAPTER_VERSION=your-activerecord-postgis-adapter-version # skip this line if using activerecord-postgis-adapter 5.2.3.
@@ -55,9 +55,8 @@ Before restarting Redmine, you need to set `postgis` adapter instead of `postgre
 
 After restarting Redmine, you should be able to see the Redmine GTT plugin in the Plugins page.
 
-More information on installing (and uninstalling) Redmine plugins can be found here: http://www.redmine.org/wiki/redmine/Plugins
-## API
-[Redmine GTT API](doc/api.md)
+More information on installing (and uninstalling) Redmine plugins can be found in the [Redmine Plugin docs](http://www.redmine.org/wiki/redmine/Plugins).
+
 ## How to use
 
 1. Go to plugin configuration for global settings
@@ -68,6 +67,10 @@ More information on installing (and uninstalling) Redmine plugins can be found h
 
 For more information with screenshots see the [Getting Started](doc/getting-started.md) guide.
 
+## Plugin API
+
+For more information see the [Redmine GTT API](doc/api.md) docs.
+
 ## Contributing and Support
 
 The GTT Project appreciates any [contributions](https://github.com/gtt-project/.github/blob/main/CONTRIBUTING.md)! Feel free to contact us for [reporting problems and support](https://github.com/gtt-project/.github/blob/main/CONTRIBUTING.md).
@@ -76,7 +79,7 @@ The GTT Project appreciates any [contributions](https://github.com/gtt-project/.
 
 You can debug frontend by running the following command on another console:
 
-```
+```sh
 npx webpack --watch --mode=development
 ```
 
@@ -84,7 +87,7 @@ npx webpack --watch --mode=development
 
 You can run the plugin test on rails test environment by the following command:
 
-```
+```sh
 bundle exec rake db:create
 RAILS_ENV=test bundle exec rake db:migrate
 RAILS_ENV=test bundle exec rake redmine:plugins:migrate
@@ -93,8 +96,7 @@ RAILS_ENV=test NAME=redmine_gtt bundle exec rake redmine:plugins:test
 
 ## Version History
 
-- **4.0.0**: Support Redmine >= 5.0 and drop Redmine <= 4.1 support
-- See [all releases](https://github.com/gtt-project/redmine_gtt/releases) with release notes.
+See [all releases](https://github.com/gtt-project/redmine_gtt/releases) with release notes.
 
 ## Authors
 
