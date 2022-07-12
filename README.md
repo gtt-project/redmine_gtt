@@ -56,7 +56,8 @@ Before restarting Redmine, you need to set `postgis` adapter instead of `postgre
 After restarting Redmine, you should be able to see the Redmine GTT plugin in the Plugins page.
 
 More information on installing (and uninstalling) Redmine plugins can be found here: http://www.redmine.org/wiki/redmine/Plugins
-
+## API
+[Redmine GTT API](doc/api.md)
 ## How to use
 
 1. Go to plugin configuration for global settings
