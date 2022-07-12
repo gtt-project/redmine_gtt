@@ -23,14 +23,14 @@ http://localhost:3000/gtt/settings.json
     "gttDefaultSetting": {
         "defaultTrackerIcon": [
             {
-                "trackerID": "1",
+                "trackerID": 1,
                 "trackerName": "Task",
                 "icon": "maki-square"
             },
         ],
         "defaultStatusColor": [
             {
-                "statusID": "1",
+                "statusID": 1,
                 "statusName": "New",
                 "color": "#00ff00"
             },
@@ -45,10 +45,10 @@ http://localhost:3000/gtt/settings.json
                 "LineString",
                 "Polygon"
             ],
-            "GeoJsonUpload": null
+            "GeoJsonUpload": false
         },
         "geocoderSetting": {
-            "enableGeocodingOnMap": "true",
+            "enableGeocodingOnMap": true,
             "geocoderOptions": "{}"
         }
     },
