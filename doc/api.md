@@ -1,18 +1,23 @@
 # GTT API
 
 ## Global Level API Endpoint
-### API Endpoint
-```
+
+### Plugin settings API Endpoint
+
+```text
 GET /gtt/settings.json
 ```
+
 Get all the GTT default settings and also all the global GTT layers data.
 
 ***Request***
-```
+
+```text
 http://localhost:3000/gtt/settings.json
 ```
 
 ***Response***
+
 ```json
 {
     "gttDefaultSetting": {
@@ -61,7 +66,7 @@ http://localhost:3000/gtt/settings.json
       },
       {
          "id": 2,
-         "name": "GIS Satellite Map",
+         "name": "Satellite Map",
          "type": "ol.source.XYZ",
          "options": {
              "url": "https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg",
@@ -75,23 +80,29 @@ http://localhost:3000/gtt/settings.json
 ```
 
 ## Project Level API Endpoint
-### API Endpoint
-```
+
+### Project settings API Endpoint
+
+```text
 GET /projects/{project_identifier}.json
 ```
+
 Get project and selected GTT layer data of a specific project.
 
 ***Request***
-```
+
+```text
 http://localhost:3000/projects/1.json
 ```
+
 ***Response***
+
 ```json
 {
     "project": {
         "id": 1,
-        "name": "first testing project ",
-        "identifier": "first-testing-project",
+        "name": "My Project ",
+        "identifier": "my-project",
         "description": "",
         "homepage": "",
         "status": 1,
@@ -121,4 +132,3 @@ http://localhost:3000/projects/1.json
     }
 }
 ```
-
