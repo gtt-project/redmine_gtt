@@ -10,7 +10,7 @@ class GttConfigurationController < ApplicationController
           format.api { render json: build_default_setting_config}
         end
     end
-      
+
     def build_default_setting_config
         default_tracker_icon = []
         default_status_color = []
