@@ -105,6 +105,8 @@ See [all releases](https://github.com/gtt-project/redmine_gtt/releases) with rel
 - [Thibault Mutabazi](https://github.com/eyewritecode)
 - [Ko Nagase](https://github.com/sanak)
 - [Taro Matsuzawa](https://github.com/smellman)
+- [Mario Basa](https://github.com/mbasa)
+- [Nisai Nob](https://github.com/nobnisai)
 - ... [and others](https://github.com/gtt-project/redmine_gtt/graphs/contributors)
 
 ## LICENSE
