@@ -38,6 +38,8 @@ module RedmineGtt
               if old_value.length != new_value.length
                 return true
               end
+              old_value = old_value.flatten
+              new_value = new_value.flatten
             end
             self.geom = geom_change[0] if new_value.zip(old_value).map { |a, b| (a-b).abs }.map {|x| x < 0.00000001}.all?
           end
