@@ -14,6 +14,14 @@ module GttTestData
     {'type'=>'Feature','geometry'=>{ 'type'=>'Point','coordinates'=> coordinates}}.to_json
   end
 
+  def linestring_geojson(coordinates)
+    {'type'=>'Feature','geometry'=>{ 'type'=>'LineString','coordinates'=> coordinates}}.to_json
+  end
+
+  def polygon_geojson(coordinates)
+    {'type'=>'Feature','geometry'=>{ 'type'=>'Polygon','coordinates'=> coordinates}}.to_json
+  end
+
   def multipolygon_geojson(coordinates)
     {'type'=>'Feature','geometry'=>{ 'type'=>'MultiPolygon','coordinates'=> coordinates}}.to_json
   end
