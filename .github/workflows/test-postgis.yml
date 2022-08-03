@@ -1,4 +1,4 @@
-name: Test with Postgres
+name: Test with PostGIS
 
 env:
   PLUGIN_NAME: ${{ github.event.repository.name }}
@@ -15,7 +15,7 @@ on:
 
 jobs:
   test:
-    name: redmine:${{ matrix.redmine_version }} ruby:${{ matrix.ruby_version }} postgres:${{ matrix.db_version }}
+    name: redmine:${{ matrix.redmine_version }} ruby:${{ matrix.ruby_version }} postgis:${{ matrix.db_version }}
     runs-on: ubuntu-22.04
 
     container:
@@ -26,7 +26,7 @@ jobs:
       matrix:
         redmine_version: [4.2-stable, 5.0-stable, master]
         ruby_version: [2.7, 3.0, 3.1]
-        db_version: [10, 14]
+        db_version: [10-2.5, 14-3.2]
         exclude:
           - redmine_version: 4.2-stable
             ruby_version: 3.0
@@ -35,7 +35,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:${{ matrix.db_version }}
+        image: postgis/postgis:${{ matrix.db_version }}
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -63,19 +63,43 @@ jobs:
         run: >
           apt-get install --yes --quiet
           postgresql-client
+          gcc libpq-dev make patch libgeos-dev curl
+
+      - name: Install Node/Yarn packages
+        run: |
+          curl -sL https://deb.nodesource.com/setup_16.x | bash -
+          curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+          echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+          apt-get update --yes --quiet
+          apt-get install --yes --quiet --no-install-recommends nodejs yarn
+
+      - name: Prepare Plugin
+        working-directory: redmine/plugins/redmine_gtt
+        run: |
+          yarn
+          npx webpack
 
       - name: Prepare Redmine source
         working-directory: redmine
         run: |
           cat <<EOF > config/database.yml
             test:
-              adapter: postgresql
+              adapter: postgis
               database: redmine
               host: postgres
               username: postgres
               password: postgres
               encoding: utf8
           EOF
+
+      - name: Adjust Gem environment
+        run: |
+          case "${{ matrix.redmine_version }}" in
+            4.2-stable)
+              echo "GEM_RGEO_ACTIVERECORD_VERSION=6.2.2" >> ${GITHUB_ENV}
+              echo "GEM_ACTIVERECORD_POSTGIS_ADAPTER_VERSION=5.2.3" >> ${GITHUB_ENV}
+              ;;
+          esac
 
       - name: Install Ruby dependencies
         working-directory: redmine
