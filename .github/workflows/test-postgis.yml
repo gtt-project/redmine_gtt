@@ -1,28 +1,114 @@
-name: Test with Redmine
+name: Test with Postgres
+
+env:
+  PLUGIN_NAME: ${{ github.event.repository.name }}
 
 on:
   push:
     branches:
-      - develop
       - main
+      - master
   pull_request:
+    branches:
+      - main
+      - master
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        redmine: [v4.0,v4.1]
-        ruby: [v2.6]
-        database: [postgresql]
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    name: redmine:${{ matrix.redmine_version }} ruby:${{ matrix.ruby_version }} postgres:${{ matrix.db_version }}
+    runs-on: ubuntu-22.04
 
-    # - name: Redmine plugin test
-    #   uses: two-pack/redmine-plugin-test-action@v2
-    #   with:
-    #     plugin_name: redmine_text_blocks
-    #     redmine_version: ${{ matrix.redmine }}
-    #     ruby_version: ${{ matrix.ruby }}
-    #     database: ${{ matrix.database }}
+    container:
+      image: ruby:${{ matrix.ruby_version }}-bullseye
+
+    strategy:
+      fail-fast: false
+      matrix:
+        redmine_version: [4.2-stable, 5.0-stable, master]
+        ruby_version: [2.7, 3.0, 3.1]
+        db_version: [10, 14]
+        exclude:
+          - redmine_version: 4.2-stable
+            ruby_version: 3.0
+          - redmine_version: 4.2-stable
+            ruby_version: 3.1
+
+    services:
+      postgres:
+        image: postgres:${{ matrix.db_version }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - name: Checkout Redmine
+        uses: actions/checkout@v2
+        with:
+          repository: redmine/redmine
+          ref: ${{ matrix.redmine_version }}
+          path: redmine
+
+      - name: Checkout Plugin
+        uses: actions/checkout@v2
+        with:
+          path: redmine/plugins/${{ env.PLUGIN_NAME }}
+
+      - name: Update package archives
+        run: apt-get update --yes --quiet
+
+      - name: Install package dependencies
+        run: >
+          apt-get install --yes --quiet
+          postgresql-client
+
+      - name: Prepare Redmine source
+        working-directory: redmine
+        run: |
+          cat <<EOF > config/database.yml
+            test:
+              adapter: postgresql
+              database: redmine
+              host: postgres
+              username: postgres
+              password: postgres
+              encoding: utf8
+          EOF
+
+      - name: Install Ruby dependencies
+        working-directory: redmine
+        run: |
+          bundle config set --local without 'development'
+          bundle install --jobs=4 --retry=3
+
+      - name: Run Redmine rake tasks
+        env:
+          RAILS_ENV: test
+        working-directory: redmine
+        run: |
+          bundle exec rake generate_secret_token
+          bundle exec rake db:create db:migrate redmine:plugins:migrate
+
+      - name: Zeitwerk check
+        env:
+          RAILS_ENV: test
+        working-directory: redmine
+        run: |
+          if grep -q zeitwerk config/application.rb ; then
+            bundle exec rake zeitwerk:check
+          fi
+        shell: bash
+
+      - name: Run tests
+        env:
+          RAILS_ENV: test
+        working-directory: redmine
+        run: bundle exec rake redmine:plugins:test NAME=${{ env.PLUGIN_NAME }} RUBYOPT="-W0"
+
+      - name: Run uninstall test
+        env:
+          RAILS_ENV: test
+        working-directory: redmine
+        run: bundle exec rake redmine:plugins:migrate NAME=${{ env.PLUGIN_NAME }} VERSION=0
