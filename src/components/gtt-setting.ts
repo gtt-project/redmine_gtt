@@ -16,7 +16,8 @@ export const gtt_setting = ():void => {
           const selected = selectedValue === i
           element.append(new Option(i, i, selected, selected))
           if (selected) {
-            element.nextElementSibling.className = "fa " + i
+            element.nextElementSibling.className = "material-icons"
+            element.nextElementSibling.textContent = i
           }
         }
       }
@@ -26,7 +27,8 @@ export const gtt_setting = ():void => {
     element.addEventListener('change', (ev) => {
       const currentTarget = ev.currentTarget as HTMLSelectElement
       const trackerId = currentTarget.id
-      document.querySelector(`#icon_${trackerId}`).className = "fa " + currentTarget.value
+      document.querySelector(`#icon_${trackerId}`).className = "material-icons"
+      document.querySelector(`#icon_${trackerId}`).textContent = currentTarget.value
     })
   })
 }

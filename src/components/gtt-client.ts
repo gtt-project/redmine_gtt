@@ -212,8 +212,8 @@ export class GttClient {
       this.layerArray.forEach( (l:Layer) => {
           if( l.get("baseLayer") ) {
             this.map.addLayer(l)
-          } 
-        } 
+          }
+        }
       )
 
       var containsOverlay = false;
@@ -222,8 +222,8 @@ export class GttClient {
           if( !l.get("baseLayer") ) {
             this.map.addLayer(l)
             containsOverlay = true
-          } 
-        } 
+          }
+        }
       )
     }
 
@@ -398,7 +398,7 @@ export class GttClient {
     else {
       this.map.addControl(new LayerPopup())
     }
-        
+
 
     // Because Redmine filter functions are applied later, the Window onload
     // event provides a workaround to have filters loaded before executing
@@ -682,7 +682,7 @@ export class GttClient {
   }
 
   getSymbol(feature: Feature<Geometry>) {
-    let symbol = 'mcr-icon-write'
+    let symbol = 'info'
 
     const plugin_settings = JSON.parse(this.defaults.pluginSettings)
     const issue_tracker = document.querySelector('#issue_tracker_id') as HTMLInputElement
