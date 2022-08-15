@@ -34,7 +34,8 @@ class IssueTest < GttTest
     assert_equal 2, center.size
     assert geom = d[:geojson]['geometry']
     assert coords = geom['coordinates']
-    assert_equal 15052703.278285623, coords.flatten.first
+    # round(1) for PostGIS 2.5 ST_AsGeoJSON - maxdecimaldigits argument issue
+    assert_equal 15052703.278285623.round(1), coords.flatten.first.round(1)
   end
 
   test 'should render properties in as_geojson' do
