@@ -26,7 +26,7 @@ jobs:
       matrix:
         redmine_version: [4.2-stable, 5.0-stable, master]
         ruby_version: [2.7, 3.0, 3.1]
-        db_version: [10-2.5, 14-3.2]
+        db_version: [11-2.5, 14-3.2]
         exclude:
           - redmine_version: 4.2-stable
             ruby_version: 3.0
