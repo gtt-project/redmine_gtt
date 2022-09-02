@@ -16,7 +16,7 @@ class GttTileSourcesController < ApplicationController
   def create
     r = RedmineGtt::Actions::CreateTileSource.(tile_source_params)
     if r.tile_source_created?
-      redirect_to gtt_tile_sources_path
+      redirect_to(params[:continue] ? new_gtt_tile_source_path : gtt_tile_sources_path)
     else
       @tile_source = r.tile_source
       render 'new'
