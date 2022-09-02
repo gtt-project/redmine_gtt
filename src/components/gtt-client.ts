@@ -682,7 +682,7 @@ export class GttClient {
   }
 
   getSymbol(feature: Feature<Geometry>) {
-    let symbol = 'info'
+    let symbol = 'home'
 
     const plugin_settings = JSON.parse(this.defaults.pluginSettings)
     const issue_tracker = document.querySelector('#issue_tracker_id') as HTMLInputElement

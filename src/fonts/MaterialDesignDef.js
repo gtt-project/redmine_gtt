@@ -1,8 +1,8 @@
 import ol_style_FontSymbol from 'ol-ext/style/FontSymbol'
 
 ol_style_FontSymbol.addDefs(
-{	"font":"MaterialIcons",
-	"name":"MaterialIcons",
+{	"font":"Material Icons",
+	"name":"Material Icons",
 	"copyright":"Apache-2.0",
 	"prefix": "mdi"
 },
