@@ -8,9 +8,28 @@ module RedmineGtt
     module ProjectsHelperPatch
 
       def self.apply
+        ProjectsHelper.prepend self unless ProjectsHelper < self
         ProjectsController.class_eval do
           helper SettingsMenuItem
         end
+      end
+
+      def render_api_includes(project, api)
+        super
+        api.array :layers do
+          project.gtt_tile_sources.each do |gtt_tile_source|
+            api.layer(
+              :id => gtt_tile_source.id,
+              :name => gtt_tile_source.name,
+              :type => gtt_tile_source.type,
+              :options => gtt_tile_source.options,
+              :global => gtt_tile_source.global,
+              :default => gtt_tile_source.default,
+              :position => gtt_tile_source.position,
+              :baselayer => gtt_tile_source.baselayer
+            )
+          end
+        end if include_in_api_response?('layers')
       end
 
       module SettingsMenuItem
