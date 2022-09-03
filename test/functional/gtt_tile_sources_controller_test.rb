@@ -30,16 +30,41 @@ class GttTileSourcesControllerTest < ActionController::TestCase
 
   test 'should create tile source' do
     assert_difference 'GttTileSource.count' do
-      post :create, params: { tile_source: {
-        name: 'test',
-        type: 'GttOsmTileSource',
-        options_string: {
-          attributions: 'test',
-          url: 'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png'
-        }.to_json
-      }}
+      post :create, params: {
+        tile_source: {
+          name: 'test',
+          type: 'GttOsmTileSource',
+          options_string: {
+            attributions: 'test',
+            url: 'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png'
+          }.to_json
+        }
+      }
     end
 
+    assert_redirected_to '/gtt_tile_sources'
+    assert ts = GttTileSource.last
+    assert_equal 'test', ts.options['attributions']
+    assert_equal 'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
+      ts.options['url']
+  end
+
+  test 'should create tile source and continue' do
+    assert_difference 'GttTileSource.count' do
+      post :create, params: {
+        tile_source: {
+          name: 'test',
+          type: 'GttOsmTileSource',
+          options_string: {
+            attributions: 'test',
+            url: 'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png'
+          }.to_json
+        },
+        continue: 'Create and continue'
+      }
+    end
+
+    assert_redirected_to '/gtt_tile_sources/new'
     assert ts = GttTileSource.last
     assert_equal 'test', ts.options['attributions']
     assert_equal 'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
