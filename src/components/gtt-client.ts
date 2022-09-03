@@ -905,13 +905,13 @@ export class GttClient {
     this.geolocations.push(geolocation)
 
     geolocation.on('change', (evt) => {
-      console.log({
-        accuracy: geolocation.getAccuracy(),
-        altitude: geolocation.getAltitude(),
-        altitudeAccuracy: geolocation.getAltitudeAccuracy(),
-        heading: geolocation.getHeading(),
-        speed: geolocation.getSpeed()
-      })
+      // console.log({
+      //   accuracy: geolocation.getAccuracy(),
+      //   altitude: geolocation.getAltitude(),
+      //   altitudeAccuracy: geolocation.getAltitudeAccuracy(),
+      //   heading: geolocation.getHeading(),
+      //   speed: geolocation.getSpeed()
+      // })
     })
     geolocation.on('error', (error) => {
       // TBD
@@ -1232,7 +1232,7 @@ export class GttClient {
                     return feature.getGeometry().getType() === "Point"
                   })
                   if (pointIndex >= 0) {
-                    console.log("Reloading Features layer")
+                    // console.log("Reloading Features layer")
                     layer.changed()
                   }
                 }
