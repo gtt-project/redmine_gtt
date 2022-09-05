@@ -120,7 +120,6 @@ export class GttClient {
       this.defaults.geocoder = JSON.stringify(quick_hack.geocoder)
     }
 
-
     this.contents = options.target.dataset
 
     // create map at first
@@ -134,6 +133,7 @@ export class GttClient {
         })
       ]),
       controls: control_defaults({
+        rotateOptions: {},
         attributionOptions: {
           collapsible: false
         }
@@ -212,8 +212,8 @@ export class GttClient {
       this.layerArray.forEach( (l:Layer) => {
           if( l.get("baseLayer") ) {
             this.map.addLayer(l)
-          } 
-        } 
+          }
+        }
       )
 
       var containsOverlay = false;
@@ -222,8 +222,8 @@ export class GttClient {
           if( !l.get("baseLayer") ) {
             this.map.addLayer(l)
             containsOverlay = true
-          } 
-        } 
+          }
+        }
       )
     }
 
@@ -287,8 +287,6 @@ export class GttClient {
       })
     }
 
-
-
     // For map div focus settings
     if (options.target) {
       if (options.target.getAttribute('tabindex') == null) {
@@ -319,6 +317,15 @@ export class GttClient {
       }
     })
     this.toolbar.addControl(maximizeCtrl)
+
+    // Map rotation
+    this.map.getView().on('change:rotation', (evt) => {
+      const degrees = evt.target.getRotation() * 180 / Math.PI
+      document.querySelector('#settings_project_map_rotation').setAttribute(
+        'value',
+        String(Math.round(degrees % 360))
+      )
+    })
 
     if (this.contents.edit) {
       this.setControls(this.contents.edit.split(' '))
@@ -398,7 +405,6 @@ export class GttClient {
     else {
       this.map.addControl(new LayerPopup())
     }
-        
 
     // Because Redmine filter functions are applied later, the Window onload
     // event provides a workaround to have filters loaded before executing

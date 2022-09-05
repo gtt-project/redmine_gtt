@@ -50,6 +50,8 @@ en:
   gtt_tile_sources_select_xyz: "XYZ Tiles"
   gtt_tile_sources_load_example: "Load example configuration"
 
+  gtt_map_rotate_info: "Hold down <code>Shift+Alt</code> and drag to rotate."
+
   gtt_settings_general_center_lon: "Default map center longitude"
   gtt_settings_general_center_lat: "Default map center latitude"
   gtt_settings_general_zoom_level: "Default map zoom level"
