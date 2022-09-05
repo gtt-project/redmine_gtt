@@ -319,13 +319,16 @@ export class GttClient {
     this.toolbar.addControl(maximizeCtrl)
 
     // Map rotation
-    this.map.getView().on('change:rotation', (evt) => {
-      const degrees = evt.target.getRotation() * 180 / Math.PI
-      document.querySelector('#settings_project_map_rotation').setAttribute(
-        'value',
-        String(Math.round(degrees % 360))
-      )
-    })
+    const rotation_field = document.querySelector('#settings_project_map_rotation')
+    if (rotation_field !== null) {
+      this.map.getView().on('change:rotation', (evt) => {
+        const degrees = evt.target.getRotation() * 180 / Math.PI
+        rotation_field.setAttribute(
+          'value',
+          String(Math.round(degrees % 360))
+        )
+      })
+    }
 
     if (this.contents.edit) {
       this.setControls(this.contents.edit.split(' '))
