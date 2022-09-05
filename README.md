@@ -77,9 +77,7 @@ The GTT Project appreciates any [contributions](https://github.com/gtt-project/.
 
 Help us to translate GTT Project using [OSGeo Weblate](https://weblate.osgeo.org/engage/gtt-project/):
 
-<a href="https://weblate.osgeo.org/engage/gtt-project/">
-<img src="https://weblate.osgeo.org/widgets/gtt-project/-/redmine_gtt/multi-auto.svg" alt="Translation status" />
-</a>
+[![Translation status](https://weblate.osgeo.org/widgets/gtt-project/-/redmine_gtt/multi-auto.svg)](https://weblate.osgeo.org/engage/gtt-project/)
 
 ### How to debug frontend
 
