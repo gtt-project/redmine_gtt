@@ -51,3 +51,11 @@ select_edit_geometry_settings: 'Einstellungen für die Geometriebearbeitung:'
 select_default_geocoder_settings: 'Geocoder-Einstellungen:'
 project_module_gtt: GTT
 permission_manage_gtt_settings: Konfiguration der GTT-Einstellungen
+field_baselayer: Basislayer
+gtt_tile_sources_select: -- Typ auswählen --
+gtt_tile_sources_select_osm: OpenStreetMap
+gtt_tile_sources_select_tilewms: Tiled WMS
+gtt_tile_sources_load_example: Beispielkonfiguration laden
+label_baselayer: Basislayer
+gtt_tile_sources_select_imagewms: Image WMS
+gtt_tile_sources_select_xyz: XYZ Tiles
