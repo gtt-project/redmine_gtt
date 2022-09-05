@@ -35,6 +35,8 @@ module RedmineGtt
             old_value = geom_change[0].coordinates
             new_value = geom_change[1].coordinates
             if old_value.instance_of?(Array)
+              old_value = old_value.flatten
+              new_value = new_value.flatten
               if old_value.length != new_value.length
                 return true
               end

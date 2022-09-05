@@ -8,6 +8,7 @@ ja:
   field_location: "場所"
   field_geom: "所在地"
   field_global: 世界的に利用可能
+  field_baselayer: 背景レイヤー
   field_options_string: オプション
   field_gtt_tile_source_ids: タイルソース
 
@@ -16,6 +17,7 @@ ja:
   label_project_map: "プロジェクト 地図"
   label_user_map: "ユーザ 地図"
   label_name: タイトル
+  label_baselayer: 背景レイヤー
   label_nearby: "近く(緯度,経度)"
   label_type: タイプ
   label_config: 構成
@@ -41,6 +43,12 @@ ja:
   geocoder_options: "ジオコーダのオプション"
 
   gtt_tile_sources_info: このプロジェクトで使用できるタイルソースを選択します。
+  gtt_tile_sources_select: "-- タイプを選択 --"
+  gtt_tile_sources_select_imagewms: "Image WMS"
+  gtt_tile_sources_select_osm: "OpenStreetMap"
+  gtt_tile_sources_select_tilewms: "Tiled WMS"
+  gtt_tile_sources_select_xyz: "XYZ Tiles"
+  gtt_tile_sources_load_example: "サンプル設定をロード"
 
   gtt_settings_general_center_lon: "既定の地図中心経度"
   gtt_settings_general_center_lat: "既定の地図中心緯度"

@@ -1,13 +1,62 @@
 <%= error_messages_for 'tile_source' %>
 
-
 <div class="box tabular">
   <p><%= f.text_field :name, required: true, size: 25  %></p>
-  <p><%= f.text_field :type, required: true, size: 25  %></p>
+  <p>
+    <%= f.select :type,
+      options_for_select([
+        [l(:gtt_tile_sources_select_imagewms), 'ol.source.ImageWMS'],
+        [l(:gtt_tile_sources_select_osm), 'ol.source.OSM'],
+        [l(:gtt_tile_sources_select_tilewms), 'ol.source.TileWMS'],
+        [l(:gtt_tile_sources_select_xyz), 'ol.source.XYZ']
+      ], selected: f.object.type ),
+      { include_blank: l(:gtt_tile_sources_select), required: true }
+    %>
+  </p>
+  <p><%= f.check_box :baselayer %></p>
   <p><%= f.check_box :global %></p>
   <p><%= f.check_box :default %></p>
-  <p> <%= f.text_area :options_string, rows: 10, cols: 80 %> </p>
+  <p>
+    <%= f.text_area :options_string, rows: 10, cols: 80 %>
+    <em class="info"><a href="#" onclick="loadExampleConfiguration(this);return false;"><%= l(:gtt_tile_sources_load_example) %></a></em>.
+  </p>
 </div>
 
+<script>
+  const tile_source_examples = {
+    'ol.source.ImageWMS': {
+      "url": "https://www.example.com/geoserver/wms",
+      "params": {
+        "LAYERS": "schema:mydata"
+      },
+      "ratio": 1,
+      "serverType": "geoserver"
+    },
+    'ol.source.OSM': {
+      "url": "https://tile.openstreetmap.jp/{z}/{x}/{y}.png",
+      "custom": "19/34.74701/135.35740",
+      "crossOrigin": null,
+      "attributions": "<a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>"
+    },
+    'ol.source.TileWMS': {
+      "url": "https://www.example.com/geoserver/wms",
+      "params": {
+        "TILED": true,
+        "LAYERS": "schema:mydata"
+      },
+      "serverType": "geoserver"
+    },
+    'ol.source.XYZ': {
+      "url": "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
+      "projection": "EPSG:3857",
+      "attributions": "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+    }
+  };
 
-
+  function loadExampleConfiguration(obj) {
+    var config = tile_source_examples[document.getElementById("tile_source_type").value];
+    if (config) {
+      document.getElementById("tile_source_options_string").innerHTML = JSON.stringify(config, undefined, 2);;
+    }
+  }
+</script>

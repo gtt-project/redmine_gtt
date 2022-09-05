@@ -8,6 +8,7 @@ en:
   field_location: "Location"
   field_geom: "Geometry"
   field_global: Globally available
+  field_baselayer: BaseLayer
   field_options_string: Options
   field_gtt_tile_source_ids: Tile Sources
 
@@ -16,6 +17,7 @@ en:
   label_project_map: "Project Map"
   label_user_map: "User Map"
   label_name: Name
+  label_baselayer: BaseLayer
   label_nearby: "nearby(lat,lng)"
   label_type: Type
   label_config: Configuration
@@ -40,7 +42,13 @@ en:
 
   geocoder_options: "Geocoder Options"
 
-  gtt_tile_sources_info: Select the tile sources that should be available in this project.
+  gtt_tile_sources_info: "Select the tile sources that should be available in this project."
+  gtt_tile_sources_select: "-- Select type --"
+  gtt_tile_sources_select_imagewms: "Image WMS"
+  gtt_tile_sources_select_osm: "OpenStreetMap"
+  gtt_tile_sources_select_tilewms: "Tiled WMS"
+  gtt_tile_sources_select_xyz: "XYZ Tiles"
+  gtt_tile_sources_load_example: "Load example configuration"
 
   gtt_settings_general_center_lon: "Default map center longitude"
   gtt_settings_general_center_lat: "Default map center latitude"

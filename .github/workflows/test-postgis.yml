@@ -1,0 +1,138 @@
+name: Test with PostGIS
+
+env:
+  PLUGIN_NAME: ${{ github.event.repository.name }}
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  test:
+    name: redmine:${{ matrix.redmine_version }} ruby:${{ matrix.ruby_version }} postgis:${{ matrix.db_version }}
+    runs-on: ubuntu-22.04
+
+    container:
+      image: ruby:${{ matrix.ruby_version }}-bullseye
+
+    strategy:
+      fail-fast: false
+      matrix:
+        redmine_version: [4.2-stable, 5.0-stable, master]
+        ruby_version: [2.7, 3.0, 3.1]
+        db_version: [11-2.5, 14-3.2]
+        exclude:
+          - redmine_version: 4.2-stable
+            ruby_version: 3.0
+          - redmine_version: 4.2-stable
+            ruby_version: 3.1
+
+    services:
+      postgres:
+        image: postgis/postgis:${{ matrix.db_version }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - name: Checkout Redmine
+        uses: actions/checkout@v2
+        with:
+          repository: redmine/redmine
+          ref: ${{ matrix.redmine_version }}
+          path: redmine
+
+      - name: Checkout Plugin
+        uses: actions/checkout@v2
+        with:
+          path: redmine/plugins/${{ env.PLUGIN_NAME }}
+
+      - name: Update package archives
+        run: apt-get update --yes --quiet
+
+      - name: Install package dependencies
+        run: >
+          apt-get install --yes --quiet
+          postgresql-client
+          gcc libpq-dev make patch libgeos-dev curl
+
+      - name: Install Node/Yarn packages
+        run: |
+          curl -sL https://deb.nodesource.com/setup_16.x | bash -
+          curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+          echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+          apt-get update --yes --quiet
+          apt-get install --yes --quiet --no-install-recommends nodejs yarn
+
+      - name: Prepare Plugin
+        working-directory: redmine/plugins/redmine_gtt
+        run: |
+          yarn
+          npx webpack
+
+      - name: Prepare Redmine source
+        working-directory: redmine
+        run: |
+          cat <<EOF > config/database.yml
+            test:
+              adapter: postgis
+              database: redmine
+              host: postgres
+              username: postgres
+              password: postgres
+              encoding: utf8
+          EOF
+
+      - name: Adjust Gem environment
+        run: |
+          case "${{ matrix.redmine_version }}" in
+            4.2-stable)
+              echo "GEM_RGEO_ACTIVERECORD_VERSION=6.2.2" >> ${GITHUB_ENV}
+              echo "GEM_ACTIVERECORD_POSTGIS_ADAPTER_VERSION=5.2.3" >> ${GITHUB_ENV}
+              ;;
+          esac
+
+      - name: Install Ruby dependencies
+        working-directory: redmine
+        run: |
+          bundle config set --local without 'development'
+          bundle install --jobs=4 --retry=3
+
+      - name: Run Redmine rake tasks
+        env:
+          RAILS_ENV: test
+        working-directory: redmine
+        run: |
+          bundle exec rake generate_secret_token
+          bundle exec rake db:create db:migrate redmine:plugins:migrate
+
+      - name: Zeitwerk check
+        env:
+          RAILS_ENV: test
+        working-directory: redmine
+        run: |
+          if grep -q zeitwerk config/application.rb ; then
+            bundle exec rake zeitwerk:check
+          fi
+        shell: bash
+
+      - name: Run tests
+        env:
+          RAILS_ENV: test
+        working-directory: redmine
+        run: bundle exec rake redmine:plugins:test NAME=${{ env.PLUGIN_NAME }} RUBYOPT="-W0"
+
+      - name: Run uninstall test
+        env:
+          RAILS_ENV: test
+        working-directory: redmine
+        run: bundle exec rake redmine:plugins:migrate NAME=${{ env.PLUGIN_NAME }} VERSION=0
