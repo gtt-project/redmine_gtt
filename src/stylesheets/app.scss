@@ -18,10 +18,19 @@
 }
 
 .ol-control button {
-    background-color: rgba(40, 40, 40, 0.8);
+  background-color: rgba(40, 40, 40, 0.8);
 }
 .ol-control button:hover {
-    background-color: rgba(40, 40, 40, 1);
+  background-color: rgba(40, 40, 40, 1);
+}
+
+.tabular .ol-layerswitcher label {
+  font-weight: initial;
+  float: initial;
+  text-align: initial;
+  margin-left: initial;
+  width: initial;
+  line-height: initial;
 }
 
 #admin-menu a.gtt {
