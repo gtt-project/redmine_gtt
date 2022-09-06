@@ -17,7 +17,7 @@ import {
   Select,
 } from 'ol/interaction'
 import { focus as events_condifition_focus } from 'ol/events/condition'
-import { defaults as control_defaults, FullScreen } from 'ol/control'
+import { defaults as control_defaults, FullScreen, Rotate } from 'ol/control'
 import { transform, fromLonLat, transformExtent } from 'ol/proj'
 import { createEmpty, extend, getCenter, containsCoordinate } from 'ol/extent'
 import { FeatureCollection } from 'geojson'
@@ -137,9 +137,7 @@ export class GttClient {
         attributionOptions: {
           collapsible: false
         }
-      }).extend([
-        new FullScreen()
-      ])
+      })
     })
 
     let features: Feature<Geometry>[] | null = null
@@ -306,6 +304,8 @@ export class GttClient {
     // Add Toolbar
     this.toolbar = new Bar()
     this.toolbar.setPosition('bottom-left' as position)
+    this.toolbar.addControl (new FullScreen())
+    this.toolbar.addControl (new Rotate())
     this.map.addControl(this.toolbar)
     this.setView()
     this.setGeolocation(this.map)
