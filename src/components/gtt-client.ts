@@ -17,7 +17,7 @@ import {
   Select,
 } from 'ol/interaction'
 import { focus as events_condifition_focus } from 'ol/events/condition'
-import { defaults as control_defaults } from 'ol/control'
+import { defaults as control_defaults, FullScreen } from 'ol/control'
 import { transform, fromLonLat, transformExtent } from 'ol/proj'
 import { createEmpty, extend, getCenter, containsCoordinate } from 'ol/extent'
 import { FeatureCollection } from 'geojson'
@@ -137,7 +137,9 @@ export class GttClient {
         attributionOptions: {
           collapsible: false
         }
-      })
+      }).extend([
+        new FullScreen()
+      ])
     })
 
     let features: Feature<Geometry>[] | null = null
@@ -212,8 +214,8 @@ export class GttClient {
       this.layerArray.forEach( (l:Layer) => {
           if( l.get("baseLayer") ) {
             this.map.addLayer(l)
-          } 
-        } 
+          }
+        }
       )
 
       var containsOverlay = false;
@@ -222,8 +224,8 @@ export class GttClient {
           if( !l.get("baseLayer") ) {
             this.map.addLayer(l)
             containsOverlay = true
-          } 
-        } 
+          }
+        }
       )
     }
 
@@ -398,7 +400,6 @@ export class GttClient {
     else {
       this.map.addControl(new LayerPopup())
     }
-        
 
     // Because Redmine filter functions are applied later, the Window onload
     // event provides a workaround to have filters loaded before executing
