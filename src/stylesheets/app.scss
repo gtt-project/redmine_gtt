@@ -17,10 +17,10 @@
   margin: 1em auto;
 }
 
-.ol-control button{
+.ol-control button {
     background-color: rgba(40, 40, 40, 0.8);
 }
-.ol-control button:hover{
+.ol-control button:hover {
     background-color: rgba(40, 40, 40, 1);
 }
 
@@ -38,4 +38,8 @@ i[id^='icon_settings_tracker_'] {
   vertical-align: middle;
   width: 1.5em;
   text-align: center;
+}
+
+.ol-control button .material-icons {
+  font-size: inherit;
 }

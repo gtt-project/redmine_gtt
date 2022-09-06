@@ -312,7 +312,7 @@ export class GttClient {
 
     // Control button
     const maximizeCtrl = new Button({
-      html: '<i class="gtt-icon-maximize" ></i>',
+      html: '<i class="material-icons" >zoom_out_map</i>',
       title: "Maximize",
       handleClick: () => {
         this.zoomToExtent(true);
@@ -461,8 +461,21 @@ export class GttClient {
         this.updateForm([evt.feature], true)
       })
 
+      // Material design icon
+      let mdi = 'place'
+
+      switch (type.toLowerCase()) {
+         case 'linestring':
+          mdi = 'polyline'
+          break;
+
+        case 'polygon':
+          mdi = 'format_shapes'
+          break;
+        }
+
       const control = new Toggle({
-        html: `<i class="gtt-icon-${type.toLowerCase()}" ></i>`,
+        html: `<i class="material-icons" >${mdi}</i>`,
         title: type,
         interaction: draw,
         active: (idx === 0)
@@ -473,7 +486,7 @@ export class GttClient {
     // Upload button
     if (this.contents.upload === "true") {
       editbar.addControl(new Button({
-        html: '<i class="gtt-icon-book" ></i>',
+        html: '<i class="material-icons">file_upload</i>',
         title: 'Upload GeoJSON',
         handleClick: () => {
           const data = prompt("Please paste a GeoJSON geometry here")
@@ -957,7 +970,7 @@ export class GttClient {
 
     // Control button
     const geolocationCtrl = new Toggle({
-      html: '<i class="gtt-icon-compass" ></i>',
+      html: '<i class="material-icons">my_location</i>',
       title: "Geolocation",
       active: false,
       onToggle: (active: boolean) => {
@@ -1146,7 +1159,7 @@ export class GttClient {
 
     // Control button
     const geocodingCtrl = new Toggle({
-      html: '<i class="gtt-icon-search" ></i>',
+      html: '<i class="material-icons">manage_search</i>',
       title: "Geocoding",
       className: "ctl-geocoding",
       onToggle: (active: boolean) => {
