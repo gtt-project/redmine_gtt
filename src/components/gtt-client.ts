@@ -509,7 +509,7 @@ export class GttClient {
   setPopover() {
     const popup = new Popup({
       popupClass: 'default',
-      closeBox: true,
+      closeBox: false,
       onclose: () => {},
       positioning: 'auto',
       anim: true
@@ -535,7 +535,7 @@ export class GttClient {
       const url = popup_contents.href.replace(/\[(.+?)\]/g, feature.get('id'))
       content.push(`<a href="${url}">Edit</a>`)
 
-      popup.show(feature.getGeometry().getFirstCoordinate(), content.join(' '))
+      popup.show(feature.getGeometry().getFirstCoordinate(), content.join('') as any)
     })
 
     select.getFeatures().on(['remove'], _ => {
