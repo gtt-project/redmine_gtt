@@ -28,6 +28,8 @@ export const gtt_setting = ():void => {
       element.append(new Option("", "", false, false))
     }
     for (let font in FontSymbol.prototype.defs.fonts) {
+      const optgroup = document.createElement("optgroup")
+      optgroup.label = font
       for (let i in glyph) {
         if (glyph[i].font == font) {
           const selected = selectedValue === i
@@ -35,20 +37,21 @@ export const gtt_setting = ():void => {
           const text = words.map((word) => {
             return word[0].toUpperCase() + word.substring(1)
           }).join(" ")
-          element.append(new Option(text, i, selected, selected))
+          optgroup.appendChild(new Option(text, i, selected, selected))
           if (selected) {
             element.nextElementSibling.className = "material-icons"
             element.nextElementSibling.textContent = i
           }
         }
       }
+      element.append(optgroup)
     }
 
     // Apply better Selector styling with jQuery UI (available in Redmine)
     $(element)
       .selectmenu({
         change: function(event: any, data: any) {
-          console.log(data.item.value)
+          document.querySelector(`#icon_${element.id}`).className = "material-icons"
           document.querySelector(`#icon_${element.id}`).textContent = data.item.value
         }
       })

@@ -2,6 +2,10 @@ import 'ol/ol.css'
 import 'ol-ext/dist/ol-ext.min.css'
 import './stylesheets/app.scss'
 
+// Custom Icons
+import './stylesheets/icons.css'
+import './fonts/IconsDef.js'
+
 // Material Design Icons
 // https://github.com/marella/material-design-icons/tree/main/font#readme
 import '@material-design-icons/font/filled.css'
