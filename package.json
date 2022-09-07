@@ -28,6 +28,8 @@
   },
   "devDependencies": {
     "@types/geojson": "^7946.0.8",
+    "@types/jquery": "^3.5.14",
+    "@types/jqueryui": "^1.12.16",
     "@types/ol-ext": "npm:@siedlerchr/types-ol-ext",
     "css-loader": "^5.1.1",
     "sass": "^1.32.8",
