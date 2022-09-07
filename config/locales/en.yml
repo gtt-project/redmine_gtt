@@ -48,7 +48,7 @@ en:
   gtt_tile_sources_select_osm: "OpenStreetMap"
   gtt_tile_sources_select_tilewms: "Tiled WMS"
   gtt_tile_sources_select_xyz: "XYZ Tiles"
-  gtt_tile_sources_load_example: "Load example configuration"
+  gtt_tile_sources_load_example: "Load example configuration."
 
   gtt_map_rotate_info: "Hold down <code>Shift+Alt</code> and drag to rotate."
 
