@@ -75,6 +75,10 @@ For more information see the [Redmine GTT API](doc/api.md) docs.
 
 The GTT Project appreciates any [contributions](https://github.com/gtt-project/.github/blob/main/CONTRIBUTING.md)! Feel free to contact us for [reporting problems and support](https://github.com/gtt-project/.github/blob/main/CONTRIBUTING.md).
 
+Help us to translate GTT Project using [OSGeo Weblate](https://weblate.osgeo.org/engage/gtt-project/):
+
+[![Translation status](https://weblate.osgeo.org/widgets/gtt-project/-/redmine_gtt/multi-auto.svg)](https://weblate.osgeo.org/engage/gtt-project/)
+
 ### How to debug frontend
 
 You can debug frontend by running the following command on another console:
