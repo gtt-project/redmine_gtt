@@ -14,7 +14,11 @@ export const gtt_setting = ():void => {
       for (let i in glyph) {
         if (glyph[i].font == font) {
           const selected = selectedValue === i
-          element.append(new Option(i, i, selected, selected))
+          const words = i.split('_')
+          const text = words.map((word) => {
+            return word[0].toUpperCase() + word.substring(1)
+          }).join(" ")
+          element.append(new Option(text, i, selected, selected))
           if (selected) {
             element.nextElementSibling.className = "material-icons"
             element.nextElementSibling.textContent = i
