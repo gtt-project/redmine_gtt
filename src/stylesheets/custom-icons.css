@@ -3,7 +3,7 @@
   font-style: normal;
   font-weight: 400;
   font-display: block;
-  src: url("./custom-icons.woff2?1109fa2dad74e02707a8301474f34d5d") format("woff2");
+  src: url("./custom-icons.woff2") format("woff2");
 }
 
 i[class^="icon-"]:before, i[class*=" icon-"]:before {
