@@ -15,7 +15,7 @@ export const gtt_setting = ():void => {
       switch (style) {
         case 'material-icons':
           $('<i>', {
-            class: "ui-icons " + style,
+            class: 'ui-icons ' + style,
             title: item.label,
             text: item.value
           }).prependTo(wrapper)
@@ -23,8 +23,9 @@ export const gtt_setting = ():void => {
 
         default:
           $('<i>', {
-            class: "ui-icons icon-" + item.value,
-            title: item.label
+            class: 'ui-icons ' + style + ' icon-' + item.value,
+            title: item.label,
+            text: ''
           }).prependTo(wrapper)
           break;
       }
@@ -41,7 +42,7 @@ export const gtt_setting = ():void => {
     }
     for (let font in FontSymbol.prototype.defs.fonts) {
       const optgroup = document.createElement('optgroup')
-      optgroup.label = font
+      optgroup.label = FontSymbol.prototype.defs.fonts[font].name
       for (let i in glyph) {
         if (glyph[i].font == font) {
           const selected = selectedValue === i
@@ -59,7 +60,8 @@ export const gtt_setting = ():void => {
                 break;
 
               default:
-                element.nextElementSibling.className = "icon-" + i
+                element.nextElementSibling.className = style + ' icon-' + i
+                element.nextElementSibling.textContent = ''
                 break;
             }
           }
@@ -80,7 +82,8 @@ export const gtt_setting = ():void => {
               break;
 
             default:
-              document.querySelector(`#icon_${element.id}`).className = 'icon-' + data.item.value
+              document.querySelector(`#icon_${element.id}`).className = style + ' icon-' + data.item.value
+              document.querySelector(`#icon_${element.id}`).textContent = ''
               break;
           }
         }
@@ -89,13 +92,4 @@ export const gtt_setting = ():void => {
       .addClass('select-overflow')
       .addClass('ui-menu-icons customicons')
   })
-
-  // document.querySelectorAll("[id^='settings_tracker_']").forEach((element: HTMLSelectElement) => {
-  //   element.addEventListener('change', (ev) => {
-  //     const currentTarget = ev.currentTarget as HTMLSelectElement
-  //     const trackerId = currentTarget.id
-  //     document.querySelector(`#icon_${trackerId}`).className = "material-icons"
-  //     document.querySelector(`#icon_${trackerId}`).textContent = currentTarget.value
-  //   })
-  // })
 }
