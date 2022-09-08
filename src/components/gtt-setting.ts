@@ -12,7 +12,7 @@ export const gtt_setting = ():void => {
         text: ''
       })
       $('<i>', {
-        class: "ui-icons material-icons",
+        class: "ui-icons " + item.optgroup.toLowerCase().split(' ').join('-'),
         title: item.label,
         text: item.value
       }).prependTo(wrapper)
@@ -25,10 +25,10 @@ export const gtt_setting = ():void => {
     const selectedValue = element.value
     if (element.length === 1 && selectedValue !== "") {
       element.remove(0)
-      element.append(new Option("", "", false, false))
+      // element.append(new Option("", "", false, false))
     }
     for (let font in FontSymbol.prototype.defs.fonts) {
-      const optgroup = document.createElement("optgroup")
+      const optgroup = document.createElement('optgroup')
       optgroup.label = font
       for (let i in glyph) {
         if (glyph[i].font == font) {
@@ -36,10 +36,10 @@ export const gtt_setting = ():void => {
           const words = i.split('_')
           const text = words.map((word) => {
             return word[0].toUpperCase() + word.substring(1)
-          }).join(" ")
+          }).join(' ')
           optgroup.appendChild(new Option(text, i, selected, selected))
           if (selected) {
-            element.nextElementSibling.className = "material-icons"
+            element.nextElementSibling.className = font.toLowerCase().split(' ').join('-')
             element.nextElementSibling.textContent = i
           }
         }
@@ -51,7 +51,7 @@ export const gtt_setting = ():void => {
     $(element)
       .selectmenu({
         change: function(event: any, data: any) {
-          document.querySelector(`#icon_${element.id}`).className = "material-icons"
+          document.querySelector(`#icon_${element.id}`).className = data.item.optgroup.toLowerCase().split(' ').join('-')
           document.querySelector(`#icon_${element.id}`).textContent = data.item.value
         }
       })
