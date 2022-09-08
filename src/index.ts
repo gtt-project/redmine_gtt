@@ -1,17 +1,11 @@
 import 'ol/ol.css'
 import 'ol-ext/dist/ol-ext.min.css'
-import './stylesheets/fonts.scss'
 import './stylesheets/app.scss'
 
-// fontmaki
-import './stylesheets/fontmaki.scss'
-import 'ol-ext/style/FontMakiDef.js'
-// fontmaki2
-import './stylesheets/fontmaki2.scss'
-import 'ol-ext/style/FontMaki2Def.js'
-// FontAwesome
-import 'font-awesome/css/font-awesome.min.css'
-import 'ol-ext/style/FontAwesomeDef.js'
+// Material Design Icons
+// https://github.com/marella/material-design-icons/tree/main/font#readme
+import '@material-design-icons/font/filled.css'
+import './fonts/MaterialDesignDef.js'
 
 import { GttClient } from './components/gtt-client'
 import { gtt_setting } from './components/gtt-setting'
