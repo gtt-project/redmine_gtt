@@ -304,12 +304,12 @@ export class GttClient {
     // Add Toolbar
     this.toolbar = new Bar()
     this.toolbar.setPosition('bottom-left' as position)
-    this.toolbar.addControl (new FullScreen())
-    this.toolbar.addControl (new Rotate())
     this.map.addControl(this.toolbar)
     this.setView()
-    this.setGeolocation(this.map)
     this.setGeocoding(this.map)
+    this.setGeolocation(this.map)
+    this.toolbar.addControl (new FullScreen())
+    this.toolbar.addControl (new Rotate())
     this.parseHistory()
 
     // Control button
