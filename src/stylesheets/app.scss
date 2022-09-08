@@ -3,7 +3,7 @@
  */
 .ol-map {
   width: 100%;
-  height: 400px;
+  height: 420px;
   border: 1px solid #E4E4E4;
 }
 #issue-form .ol-map {
@@ -12,10 +12,25 @@
 }
 
 .ol-control button {
-  background-color: rgba(40, 40, 40, 0.8);
+  background-color: rgba(52, 73, 94, 0.8);
 }
 .ol-control button:hover {
-  background-color: rgba(40, 40, 40, 1);
+  background-color: rgba(52, 73, 94, 1);
+}
+
+.ol-zoom button.ol-zoom-in,
+.ol-zoom button.ol-zoom-out,
+.ol-full-screen button.ol-full-screen-true,
+.ol-full-screen button.ol-full-screen-false,
+.ol-rotate button.ol-rotate-reset,
+.ol-bar .ol-button button {
+  height: 32px;
+  width: 32px;
+  font-size: 1.6em;
+}
+
+.ol-control.ol-bar.ol-top.ol-left, .ol-control.ol-bar.ol-top.ol-right {
+  top: 5.2em;
 }
 
 .tabular .ol-layerswitcher label {
