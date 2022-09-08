@@ -18,7 +18,7 @@ module RedmineGtt
         super
         api.array :layers do
           project.gtt_tile_sources.each do |gtt_tile_source|
-            api.layer(gtt_tile_source)
+            api.layer(gtt_tile_source.attributes)
           end
         end if include_in_api_response?('layers')
       end
