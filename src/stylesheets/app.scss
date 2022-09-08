@@ -46,3 +46,25 @@ i[id^='icon_settings_tracker_'] {
 .ol-control button .material-icons {
   font-size: inherit;
 }
+
+/* JQuery UI styles */
+.select-overflow {
+  height: 300px;
+}
+
+.ui-selectmenu-menu .ui-menu.customicons li.ui-menu-item,
+.ui-selectmenu-menu .ui-menu.customicons li.ui-menu-item div {
+  display: inline;
+  font-size: 1.5em;
+}
+
+.ui-selectmenu-menu .ui-menu.customicons .ui-menu-item .ui-icons {
+  height: 24px;
+  width: 24px;
+  padding-right: 0.2em;
+}
+
+.ui-widget.ui-widget-content {
+  max-width: 510px;
+  padding: 0.5em;
+}
