@@ -164,6 +164,28 @@ class ProjectsApiTest < Redmine::IntegrationTest
     assert_equal 1, projects.xpath('geojson').size, projects.to_s
   end
 
+  test 'GET /projects.xml with include=layers should return layers' do
+    ts = RedmineGtt::Actions::CreateTileSource.(type: 'ol.source.OSM', name: 'default', default: true).tile_source
+    @project.gtt_tile_sources = [ts]
+    get '/projects.xml?include=layers'
+    assert_response :success
+    xml = xml_data
+    assert projects = xml.xpath('/projects/project')
+    assert layer = projects.xpath('layers/layer').first
+    assert_equal 'ol.source.OSM', layer['type']
+  end
+
+  test 'GET /projects/1.xml with include=layers should return layers' do
+    ts = RedmineGtt::Actions::CreateTileSource.(type: 'ol.source.OSM', name: 'default', default: true).tile_source
+    @project.gtt_tile_sources = [ts]
+    get '/projects/1.xml?include=layers'
+    assert_response :success
+    xml = xml_data
+    assert project = xml.xpath('/project')
+    assert layer = project.xpath('layers/layer').first
+    assert_equal 'ol.source.OSM', layer['type']
+  end
+
   def xml_data
     Nokogiri::XML(@response.body)
   end
