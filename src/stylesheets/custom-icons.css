@@ -1,14 +1,16 @@
 @font-face {
-  font-family: "Custom Icons";
+  font-family: "custom-icons";
   font-style: normal;
   font-weight: 400;
   font-display: block;
-  src: url("./custom-icons.woff2") format("woff2");
+  src: url("./custom-icons.woff2?1109fa2dad74e02707a8301474f34d5d") format("woff2");
 }
-.custom-icons {
-  font-family: "Custom Icons";
-  font-weight: normal;
+
+i[class^="icon-"]:before, i[class*=" icon-"]:before {
+  font-family: custom-icons !important;
   font-style: normal;
+  font-weight: normal !important;
+  font-variant: normal;
   font-size: 24px;
   line-height: 1;
   letter-spacing: normal;
@@ -23,26 +25,10 @@
   font-feature-settings: "liga";
 }
 
-/* @font-face {
-  font-family: "custom-icons";
-  src: url("./custom-icons.woff2?1109fa2dad74e02707a8301474f34d5d") format("woff2");
-}
-
-i[class^="icon-"]:before, i[class*=" icon-"]:before {
-  font-family: custom-icons !important;
-  font-style: normal;
-  font-weight: normal !important;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 .icon-lobsta:before {
   content: "\f101";
 }
-.icon-park_bench:before {
+.icon-park-bench:before {
   content: "\f102";
 }
 .icon-road:before {
@@ -50,4 +36,4 @@ i[class^="icon-"]:before, i[class*=" icon-"]:before {
 }
 .icon-waste:before {
   content: "\f104";
-} */
+}

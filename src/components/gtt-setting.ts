@@ -11,11 +11,23 @@ export const gtt_setting = ():void => {
       const wrapper = $('<div>', {
         text: ''
       })
-      $('<i>', {
-        class: "ui-icons " + item.optgroup.toLowerCase().split(' ').join('-'),
-        title: item.label,
-        text: item.value
-      }).prependTo(wrapper)
+      const style = item.optgroup.toLowerCase().split(' ').join('-')
+      switch (style) {
+        case 'material-icons':
+          $('<i>', {
+            class: "ui-icons " + style,
+            title: item.label,
+            text: item.value
+          }).prependTo(wrapper)
+          break;
+
+        default:
+          $('<i>', {
+            class: "ui-icons icon-" + item.value,
+            title: item.label
+          }).prependTo(wrapper)
+          break;
+      }
       return li.append(wrapper).appendTo(ul)
     }
   });
@@ -39,8 +51,17 @@ export const gtt_setting = ():void => {
           }).join(' ')
           optgroup.appendChild(new Option(text, i, selected, selected))
           if (selected) {
-            element.nextElementSibling.className = font.toLowerCase().split(' ').join('-')
-            element.nextElementSibling.textContent = i
+            const style = font.toLowerCase().split(' ').join('-')
+            switch (style) {
+              case 'material-icons':
+                element.nextElementSibling.className = style
+                element.nextElementSibling.textContent = i
+                break;
+
+              default:
+                element.nextElementSibling.className = "icon-" + i
+                break;
+            }
           }
         }
       }
@@ -51,8 +72,17 @@ export const gtt_setting = ():void => {
     $(element)
       .selectmenu({
         change: function(event: any, data: any) {
-          document.querySelector(`#icon_${element.id}`).className = data.item.optgroup.toLowerCase().split(' ').join('-')
-          document.querySelector(`#icon_${element.id}`).textContent = data.item.value
+          const style = data.item.optgroup.toLowerCase().split(' ').join('-')
+          switch (style) {
+            case 'material-icons':
+              document.querySelector(`#icon_${element.id}`).className = style
+              document.querySelector(`#icon_${element.id}`).textContent = data.item.value
+              break;
+
+            default:
+              document.querySelector(`#icon_${element.id}`).className = 'icon-' + data.item.value
+              break;
+          }
         }
       })
       .selectmenu('menuWidget')
