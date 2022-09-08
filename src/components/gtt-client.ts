@@ -314,7 +314,7 @@ export class GttClient {
 
     // Control button
     const maximizeCtrl = new Button({
-      html: '<i class="gtt-icon-maximize" ></i>',
+      html: '<i class="material-icons" >zoom_out_map</i>',
       title: "Maximize",
       handleClick: () => {
         this.zoomToExtent(true);
@@ -401,6 +401,7 @@ export class GttClient {
       this.map.addControl(new LayerPopup())
     }
 
+
     // Because Redmine filter functions are applied later, the Window onload
     // event provides a workaround to have filters loaded before executing
     // the following code
@@ -462,8 +463,21 @@ export class GttClient {
         this.updateForm([evt.feature], true)
       })
 
+      // Material design icon
+      let mdi = 'place'
+
+      switch (type.toLowerCase()) {
+         case 'linestring':
+          mdi = 'polyline'
+          break;
+
+        case 'polygon':
+          mdi = 'format_shapes'
+          break;
+        }
+
       const control = new Toggle({
-        html: `<i class="gtt-icon-${type.toLowerCase()}" ></i>`,
+        html: `<i class="material-icons" >${mdi}</i>`,
         title: type,
         interaction: draw,
         active: (idx === 0)
@@ -474,7 +488,7 @@ export class GttClient {
     // Upload button
     if (this.contents.upload === "true") {
       editbar.addControl(new Button({
-        html: '<i class="gtt-icon-book" ></i>',
+        html: '<i class="material-icons">file_upload</i>',
         title: 'Upload GeoJSON',
         handleClick: () => {
           const data = prompt("Please paste a GeoJSON geometry here")
@@ -497,7 +511,7 @@ export class GttClient {
   setPopover() {
     const popup = new Popup({
       popupClass: 'default',
-      closeBox: true,
+      closeBox: false,
       onclose: () => {},
       positioning: 'auto',
       anim: true
@@ -523,7 +537,7 @@ export class GttClient {
       const url = popup_contents.href.replace(/\[(.+?)\]/g, feature.get('id'))
       content.push(`<a href="${url}">Edit</a>`)
 
-      popup.show(feature.getGeometry().getFirstCoordinate(), content.join(' '))
+      popup.show(feature.getGeometry().getFirstCoordinate(), content.join('') as any)
     })
 
     select.getFeatures().on(['remove'], _ => {
@@ -683,7 +697,7 @@ export class GttClient {
   }
 
   getSymbol(feature: Feature<Geometry>) {
-    let symbol = 'mcr-icon-write'
+    let symbol = 'home'
 
     const plugin_settings = JSON.parse(this.defaults.pluginSettings)
     const issue_tracker = document.querySelector('#issue_tracker_id') as HTMLInputElement
@@ -906,13 +920,13 @@ export class GttClient {
     this.geolocations.push(geolocation)
 
     geolocation.on('change', (evt) => {
-      console.log({
-        accuracy: geolocation.getAccuracy(),
-        altitude: geolocation.getAltitude(),
-        altitudeAccuracy: geolocation.getAltitudeAccuracy(),
-        heading: geolocation.getHeading(),
-        speed: geolocation.getSpeed()
-      })
+      // console.log({
+      //   accuracy: geolocation.getAccuracy(),
+      //   altitude: geolocation.getAltitude(),
+      //   altitudeAccuracy: geolocation.getAltitudeAccuracy(),
+      //   heading: geolocation.getHeading(),
+      //   speed: geolocation.getSpeed()
+      // })
     })
     geolocation.on('error', (error) => {
       // TBD
@@ -958,7 +972,7 @@ export class GttClient {
 
     // Control button
     const geolocationCtrl = new Toggle({
-      html: '<i class="gtt-icon-compass" ></i>',
+      html: '<i class="material-icons">my_location</i>',
       title: "Geolocation",
       active: false,
       onToggle: (active: boolean) => {
@@ -1147,7 +1161,7 @@ export class GttClient {
 
     // Control button
     const geocodingCtrl = new Toggle({
-      html: '<i class="gtt-icon-search" ></i>',
+      html: '<i class="material-icons">manage_search</i>',
       title: "Geocoding",
       className: "ctl-geocoding",
       onToggle: (active: boolean) => {
@@ -1233,7 +1247,7 @@ export class GttClient {
                     return feature.getGeometry().getType() === "Point"
                   })
                   if (pointIndex >= 0) {
-                    console.log("Reloading Features layer")
+                    // console.log("Reloading Features layer")
                     layer.changed()
                   }
                 }
