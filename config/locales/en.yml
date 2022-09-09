@@ -93,9 +93,14 @@ en:
   # Localize for use in Javascript
   gtt_js:
     control:
-      geocoding: "Geocoding"
+      geocoding: "Location search"
+      geolocation: "My location"
       maximize: "Zoom to all features"
       upload: "Upload GeoJSON"
+      fullscreen: "Toggle full-screen"
+      rotate: "Reset rotation"
+      zoom-in: "Zoom in"
+      zoom-out: "Zoom out"
     modal:
       load: "Load"
       cancel: "Cancel"

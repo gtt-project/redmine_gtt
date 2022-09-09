@@ -309,8 +309,12 @@ export class GttClient {
     this.setGeolocation(this.map)
     this.parseHistory()
 
-    this.map.addControl (new FullScreen())
-    this.map.addControl (new Rotate())
+    this.map.addControl (new FullScreen({
+      tipLabel: this.i18n.control.fullscreen
+    }))
+    this.map.addControl (new Rotate({
+      tipLabel: this.i18n.control.rotate
+    }))
 
     // Control button
     const maximizeCtrl = new Button({
@@ -494,7 +498,7 @@ export class GttClient {
       width: 380,
       modal: true,
       buttons: {
-        'Load': function() {
+        [mapObj.i18n.modal.load]: function() {
           const geojson_input = document.querySelector('#dialog-geojson-upload textarea') as HTMLInputElement
           const data = geojson_input.value
           if (data !== null) {
@@ -510,7 +514,7 @@ export class GttClient {
           }
           $(this).dialog('close')
         },
-        'Cancel': function() {
+        [mapObj.i18n.modal.cancel]: function() {
           $(this).dialog('close')
         }
       }
