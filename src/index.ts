@@ -2,10 +2,14 @@ import 'ol/ol.css'
 import 'ol-ext/dist/ol-ext.min.css'
 import './stylesheets/app.scss'
 
+// Custom Icons
+import './stylesheets/custom-icons.css'
+import './stylesheets/CustomIconsDef.js'
+
 // Material Design Icons
 // https://github.com/marella/material-design-icons/tree/main/font#readme
 import '@material-design-icons/font/filled.css'
-import './fonts/MaterialDesignDef.js'
+import './stylesheets/MaterialDesignDef.js'
 
 import { GttClient } from './components/gtt-client'
 import { gtt_setting } from './components/gtt-setting'

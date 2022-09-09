@@ -1,6 +1,6 @@
 <h3><%= l(:select_default_tracker_icon) %></h3>
 
-<% Tracker.all.each do |t| %>
+<% Tracker.sorted.each do |t| %>
   <p>
     <%= content_tag :label, t.name %>
     <%= select_tag "settings[tracker_#{t.id}]", "<option>#{@settings["tracker_#{t.id}"]}</option>".html_safe %>
@@ -11,7 +11,7 @@
 <div class="box tabular settings">
 <h3><%= l(:select_default_status_color) %></h3>
 
-<% IssueStatus.all.sort.each do |t| %>
+<% IssueStatus.sorted.each do |t| %>
   <p>
     <%= content_tag :label, t.name %>
     <%= color_field_tag "settings[status_#{t.id}]", @settings["status_#{t.id}"] %>

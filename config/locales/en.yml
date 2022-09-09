@@ -1,7 +1,8 @@
 # English strings go here for Rails i18n
 en:
-  error_invalid_json: must be valid JSON
-  error_unable_to_update_project_gtt_settings: "Unable to update project GTT settings (%{value})"
+  error_invalid_json: Must be valid JSON
+  error_unable_to_update_project_gtt_settings: "Unable to update project GTT settings\
+    \ (%{value})"
 
   field_default: Default for new projects
   field_geometry: "Geometry"
@@ -42,7 +43,8 @@ en:
 
   geocoder_options: "Geocoder Options"
 
-  gtt_tile_sources_info: "Select the tile sources that should be available in this project."
+  gtt_tile_sources_info: "Select the tile sources that should be available in this\
+    \ project."
   gtt_tile_sources_select: "-- Select type --"
   gtt_tile_sources_select_imagewms: "Image WMS"
   gtt_tile_sources_select_osm: "OpenStreetMap"
