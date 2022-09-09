@@ -86,3 +86,6 @@ en:
 
   project_module_gtt: "GTT"
   permission_manage_gtt_settings: "Manage GTT settings"
+
+  title_geojson_upload: "Import GeoJSON"
+  placeholder_geojson_upload: "Please paste a GeoJSON geometry here, or import the GeoJSON data from a file."

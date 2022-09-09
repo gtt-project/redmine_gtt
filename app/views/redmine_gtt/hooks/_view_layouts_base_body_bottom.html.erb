@@ -1,0 +1,6 @@
+<% if Setting.plugin_redmine_gtt['enable_geojson_upload_on_issue_map'] == "true" %>
+  <div id="dialog-geojson-upload" title="<%= l(:title_geojson_upload) %>">
+    <textarea placeholder="<%= l(:placeholder_geojson_upload) %>" class="ui-widget ui-state-default ui-corner-all"></textarea>
+    <input type="file" id="file-selector" accept=".json,.geojson">
+  </div>
+<% end %>

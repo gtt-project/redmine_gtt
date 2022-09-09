@@ -486,24 +486,61 @@ export class GttClient {
       editbar.addControl(control)
     })
 
-    // Upload button
-    if (this.contents.upload === "true") {
-      editbar.addControl(new Button({
-        html: '<i class="material-icons">file_upload</i>',
-        title: 'Upload GeoJSON',
-        handleClick: () => {
-          const data = prompt("Please paste a GeoJSON geometry here")
+    // Uses jQuery UI for GeoJSON Upload modal window
+    const mapObj = this
+    const dialog = $("#dialog-geojson-upload").dialog({
+      autoOpen: false,
+      resizable: true,
+      height: 'auto',
+      width: 380,
+      modal: true,
+      buttons: {
+        'Load': function() {
+          const geojson_input = document.querySelector('#dialog-geojson-upload textarea') as HTMLInputElement
+          const data = geojson_input.value
           if (data !== null) {
             const features = new GeoJSON().readFeatures(
               JSON.parse(data), {
                 featureProjection: 'EPSG:3857'
               }
             )
-            this.vector.getSource().clear()
-            this.vector.getSource().addFeatures(features)
-            this.updateForm(features)
-            this.zoomToExtent()
+            mapObj.vector.getSource().clear()
+            mapObj.vector.getSource().addFeatures(features)
+            mapObj.updateForm(features)
+            mapObj.zoomToExtent()
           }
+          $(this).dialog('close')
+        },
+        'Cancel': function() {
+          $(this).dialog('close')
+        }
+      }
+    });
+
+    // Upload button
+    if (this.contents.upload === "true") {
+
+      const fileSelector = document.getElementById('file-selector')
+      fileSelector.addEventListener('change', (event: any) => {
+        const file = event.target.files[0]
+          // Check if the file is GeoJSON.
+        if (file.type && !file.type.startsWith('application/geo')) {
+          console.log('File is not a GeoJSON document.', file.type, file);
+          return;
+        }
+        const fileReader = new FileReader();
+        fileReader.addEventListener('load', (event: any) => {
+          const geojson_input = document.querySelector('#dialog-geojson-upload textarea') as HTMLInputElement
+          geojson_input.value = JSON.stringify(event.target.result, null, 2)
+        });
+        fileReader.readAsText(file);
+      });
+
+      editbar.addControl(new Button({
+        html: '<i class="material-icons">file_upload</i>',
+        title: 'Upload GeoJSON',
+        handleClick: () => {
+          dialog.dialog('open')
         }
       }))
     }
