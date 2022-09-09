@@ -308,9 +308,10 @@ export class GttClient {
     this.setView()
     this.setGeocoding(this.map)
     this.setGeolocation(this.map)
-    this.toolbar.addControl (new FullScreen())
-    this.toolbar.addControl (new Rotate())
     this.parseHistory()
+
+    this.map.addControl (new FullScreen())
+    this.map.addControl (new Rotate())
 
     // Control button
     const maximizeCtrl = new Button({
