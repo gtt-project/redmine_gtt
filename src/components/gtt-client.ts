@@ -75,6 +75,7 @@ export class GttClient {
   layerArray: Layer[]
   defaults: DOMStringMap
   contents: DOMStringMap
+  i18n: any
   toolbar: Bar
   filters: FilterOption
   vector: VectorLayer<VectorSource<Geometry>>
@@ -120,8 +121,8 @@ export class GttClient {
       this.defaults.geocoder = JSON.stringify(quick_hack.geocoder)
     }
 
-
     this.contents = options.target.dataset
+    this.i18n = JSON.parse(this.defaults.i18n)
 
     // create map at first
     this.map = new Map({
@@ -287,8 +288,6 @@ export class GttClient {
       })
     }
 
-
-
     // For map div focus settings
     if (options.target) {
       if (options.target.getAttribute('tabindex') == null) {
@@ -316,7 +315,7 @@ export class GttClient {
     // Control button
     const maximizeCtrl = new Button({
       html: '<i class="material-icons" >zoom_out_map</i>',
-      title: "Maximize",
+      title: this.i18n.control.maximize,
       handleClick: () => {
         this.zoomToExtent(true);
       }
@@ -538,7 +537,7 @@ export class GttClient {
 
       editbar.addControl(new Button({
         html: '<i class="material-icons">file_upload</i>',
-        title: 'Upload GeoJSON',
+        title: this.i18n.control.geojson,
         handleClick: () => {
           dialog.dialog('open')
         }
@@ -1011,7 +1010,7 @@ export class GttClient {
     // Control button
     const geolocationCtrl = new Toggle({
       html: '<i class="material-icons">my_location</i>',
-      title: "Geolocation",
+      title: this.i18n.control.geolocation,
       active: false,
       onToggle: (active: boolean) => {
         geolocation.setTracking(active)
@@ -1200,7 +1199,7 @@ export class GttClient {
     // Control button
     const geocodingCtrl = new Toggle({
       html: '<i class="material-icons">manage_search</i>',
-      title: "Geocoding",
+      title: this.i18n.control.geocoding,
       className: "ctl-geocoding",
       onToggle: (active: boolean) => {
         const text = (document.querySelector("div#" + mapId + " .ctl-geocoding div input") as HTMLInputElement)

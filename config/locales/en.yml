@@ -89,3 +89,13 @@ en:
 
   title_geojson_upload: "Import GeoJSON"
   placeholder_geojson_upload: "Please paste a GeoJSON geometry here, or import the GeoJSON data from a file."
+
+  # Localize for use in Javascript
+  gtt_js:
+    control:
+      geocoding: "Geocoding"
+      maximize: "Zoom to all features"
+      upload: "Upload GeoJSON"
+    modal:
+      load: "Load"
+      cancel: "Cancel"
