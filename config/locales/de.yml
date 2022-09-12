@@ -74,7 +74,6 @@ de:
       upload: GeoJSON hochladen
       fullscreen: Vollbildmodus umschalten
       rotate: Drehung zurücksetzen
-      zoom-in: Heranzoomen
       zoom-out: Herauszoomen
     modal:
       load: Laden
