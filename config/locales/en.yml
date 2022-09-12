@@ -88,3 +88,21 @@ en:
 
   project_module_gtt: "GTT"
   permission_manage_gtt_settings: "Manage GTT settings"
+
+  title_geojson_upload: "Import GeoJSON"
+  placeholder_geojson_upload: "Please paste a GeoJSON geometry here, or import the GeoJSON data from a file."
+
+  # Localize for use in Javascript
+  gtt_js:
+    control:
+      geocoding: "Location search"
+      geolocation: "My location"
+      maximize: "Zoom to all features"
+      upload: "Upload GeoJSON"
+      fullscreen: "Toggle full-screen"
+      rotate: "Reset rotation"
+      zoom-in: "Zoom in"
+      zoom-out: "Zoom out"
+    modal:
+      load: "Load"
+      cancel: "Cancel"
