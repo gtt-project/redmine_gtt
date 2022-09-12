@@ -64,7 +64,7 @@ interface FilterOption {
 
 interface TileLayerSource {
   layer: typeof Tile
-  source: typeof OSM | typeof XYZ
+  source: typeof OSM | typeof XYZ | typeof TileWMS
 }
 
 interface ImageLayerSource {
@@ -141,6 +141,10 @@ export class GttClient {
         rotateOptions: {},
         attributionOptions: {
           collapsible: false
+        },
+        zoomOptions: {
+          zoomInTipLabel: this.i18n.control.zoom_in,
+          zoomOutTipLabel: this.i18n.control.zoom_out
         }
       })
     })
@@ -171,7 +175,7 @@ export class GttClient {
         if (tileLayerSource) {
           const l = new (tileLayerSource.layer)({
             visible: false,
-            source: new (tileLayerSource.source)(layer.options)
+            source: new (tileLayerSource.source)(layer.options as any)
           })
 
           l.set('lid', layer.id)
@@ -472,7 +476,7 @@ export class GttClient {
     })
     mainbar.addControl(editbar)
 
-    types.forEach((type, idx) => {
+    types.forEach((type: any, idx) => {
       const draw = new Draw({
         type: type,
         source: this.vector.getSource()
@@ -498,7 +502,7 @@ export class GttClient {
 
       const control = new Toggle({
         html: `<i class="material-icons" >${mdi}</i>`,
-        title: type,
+        title: this.i18n.control[type.toLowerCase()],
         interaction: draw,
         active: (idx === 0)
       })
@@ -557,7 +561,7 @@ export class GttClient {
 
       editbar.addControl(new Button({
         html: '<i class="material-icons">file_upload</i>',
-        title: this.i18n.control.geojson,
+        title: this.i18n.control.upload,
         handleClick: () => {
           dialog.dialog('open')
         }

@@ -101,8 +101,11 @@ en:
       upload: "Upload GeoJSON"
       fullscreen: "Toggle full-screen"
       rotate: "Reset rotation"
-      zoom-in: "Zoom in"
-      zoom-out: "Zoom out"
+      zoom_in: "Zoom in"
+      zoom_out: "Zoom out"
+      point: "Point editor"
+      linestring: "Line editor"
+      polygon: "Area editor"
     modal:
       load: "Load"
       cancel: "Cancel"
