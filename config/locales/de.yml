@@ -74,7 +74,11 @@ de:
       upload: GeoJSON hochladen
       fullscreen: Vollbildmodus umschalten
       rotate: Drehung zurücksetzen
-      zoom-out: Herauszoomen
+      zoom_in: Heranzoomen
+      zoom_out: Herauszoomen
+      point: Punkteditor
+      linestring: Linieneditor
+      polygon: Flächeneditor
     modal:
       load: Laden
       cancel: Abbrechen
