@@ -140,6 +140,10 @@ export class GttClient {
       controls: control_defaults({
         attributionOptions: {
           collapsible: false
+        },
+        zoomOptions: {
+          zoomInTipLabel: this.i18n.control.zoom_in,
+          zoomOutTipLabel: this.i18n.control.zoom_out
         }
       })
     })
@@ -485,7 +489,7 @@ export class GttClient {
 
       const control = new Toggle({
         html: `<i class="material-icons" >${mdi}</i>`,
-        title: type,
+        title: this.i18n.control[type.toLowerCase()],
         interaction: draw,
         active: (idx === 0)
       })
@@ -544,7 +548,7 @@ export class GttClient {
 
       editbar.addControl(new Button({
         html: '<i class="material-icons">file_upload</i>',
-        title: this.i18n.control.geojson,
+        title: this.i18n.control.upload,
         handleClick: () => {
           dialog.dialog('open')
         }
