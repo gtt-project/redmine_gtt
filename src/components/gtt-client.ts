@@ -17,7 +17,7 @@ import {
   Select,
 } from 'ol/interaction'
 import { focus as events_condifition_focus } from 'ol/events/condition'
-import { defaults as control_defaults } from 'ol/control'
+import { defaults as control_defaults, FullScreen, Rotate } from 'ol/control'
 import { transform, fromLonLat, transformExtent } from 'ol/proj'
 import { createEmpty, extend, getCenter, containsCoordinate } from 'ol/extent'
 import { FeatureCollection } from 'geojson'
@@ -306,9 +306,12 @@ export class GttClient {
     this.toolbar.setPosition('bottom-left' as position)
     this.map.addControl(this.toolbar)
     this.setView()
-    this.setGeolocation(this.map)
     this.setGeocoding(this.map)
+    this.setGeolocation(this.map)
     this.parseHistory()
+
+    this.map.addControl (new FullScreen())
+    this.map.addControl (new Rotate())
 
     // Control button
     const maximizeCtrl = new Button({
