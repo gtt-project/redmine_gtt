@@ -64,7 +64,7 @@ interface FilterOption {
 
 interface TileLayerSource {
   layer: typeof Tile
-  source: typeof OSM | typeof XYZ
+  source: typeof OSM | typeof XYZ | typeof TileWMS
 }
 
 interface ImageLayerSource {
@@ -174,7 +174,7 @@ export class GttClient {
         if (tileLayerSource) {
           const l = new (tileLayerSource.layer)({
             visible: false,
-            source: new (tileLayerSource.source)(layer.options)
+            source: new (tileLayerSource.source)(layer.options as any)
           })
 
           l.set('lid', layer.id)
@@ -463,7 +463,7 @@ export class GttClient {
     })
     mainbar.addControl(editbar)
 
-    types.forEach((type, idx) => {
+    types.forEach((type: any, idx) => {
       const draw = new Draw({
         type: type,
         source: this.vector.getSource()
