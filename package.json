@@ -23,11 +23,11 @@
     "@juggle/resize-observer": "^3.4.0",
     "@material-design-icons/font": "^0.12.1",
     "geojson": "^0.5.0",
-    "ol": "^6.14.1",
-    "ol-ext": "^3.2.22"
+    "ol": "^6.15.1",
+    "ol-ext": "^3.2.30"
   },
   "devDependencies": {
-    "@types/geojson": "^7946.0.8",
+    "@types/geojson": "^7946.0.10",
     "@types/jquery": "^3.5.14",
     "@types/jqueryui": "^1.12.16",
     "@types/ol-ext": "npm:@siedlerchr/types-ol-ext",
