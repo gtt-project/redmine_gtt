@@ -1,8 +1,8 @@
 import 'ol/ol.css'
 import 'ol-ext/dist/ol-ext.min.css'
-import { Map, Feature, View, Geolocation } from 'ol'
+import { Map, Feature, View, Geolocation, Collection } from 'ol'
 import 'ol-ext/filter/Base'
-import { Geometry, Point } from 'ol/geom'
+import { Geometry, GeometryCollection, Point } from 'ol/geom'
 import { GeoJSON, WKT } from 'ol/format'
 import { Layer, Tile, Image } from 'ol/layer'
 import VectorLayer from 'ol/layer/Vector'
@@ -17,7 +17,7 @@ import {
   Select,
 } from 'ol/interaction'
 import { focus as events_condifition_focus } from 'ol/events/condition'
-import { defaults as control_defaults } from 'ol/control'
+import { defaults as control_defaults, FullScreen, Rotate } from 'ol/control'
 import { transform, fromLonLat, transformExtent } from 'ol/proj'
 import { createEmpty, extend, getCenter, containsCoordinate } from 'ol/extent'
 import { FeatureCollection } from 'geojson'
@@ -41,6 +41,9 @@ import { FeatureLike } from 'ol/Feature'
 import TileSource from 'ol/source/Tile'
 import ImageSource from 'ol/source/Image'
 import { Options as ImageWMSOptions } from 'ol/source/ImageWMS'
+import JSONFeature from 'ol/format/JSONFeature'
+import BaseEvent from 'ol/events/Event'
+import { CollectionEvent } from 'ol/Collection'
 
 interface GttClientOption {
   target: HTMLDivElement | null
@@ -306,9 +309,12 @@ export class GttClient {
     this.toolbar.setPosition('bottom-left' as position)
     this.map.addControl(this.toolbar)
     this.setView()
-    this.setGeolocation(this.map)
     this.setGeocoding(this.map)
+    this.setGeolocation(this.map)
     this.parseHistory()
+
+    this.map.addControl (new FullScreen())
+    this.map.addControl (new Rotate())
 
     // Control button
     const maximizeCtrl = new Button({
@@ -519,13 +525,14 @@ export class GttClient {
     // Control Select
     const select = new Select({
       layers: [this.vector],
+      style: null,
       multi: false
     })
     this.map.addInteraction(select)
 
     // On selected => show/hide popup
-    select.getFeatures().on(['add'], evt => {
-      const feature = evt.target
+    select.getFeatures().on(['add'], (evt: any) => {
+      const feature = evt.element
 
       const content: Array<string> = []
       content.push(`<b>${feature.get('subject')}</b><br/>`)
