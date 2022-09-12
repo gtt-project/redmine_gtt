@@ -78,6 +78,7 @@ export class GttClient {
   layerArray: Layer[]
   defaults: DOMStringMap
   contents: DOMStringMap
+  i18n: any
   toolbar: Bar
   filters: FilterOption
   vector: VectorLayer<VectorSource<Geometry>>
@@ -123,8 +124,8 @@ export class GttClient {
       this.defaults.geocoder = JSON.stringify(quick_hack.geocoder)
     }
 
-
     this.contents = options.target.dataset
+    this.i18n = JSON.parse(this.defaults.i18n)
 
     // create map at first
     this.map = new Map({
@@ -290,8 +291,6 @@ export class GttClient {
       })
     }
 
-
-
     // For map div focus settings
     if (options.target) {
       if (options.target.getAttribute('tabindex') == null) {
@@ -313,13 +312,17 @@ export class GttClient {
     this.setGeolocation(this.map)
     this.parseHistory()
 
-    this.map.addControl (new FullScreen())
-    this.map.addControl (new Rotate())
+    this.map.addControl (new FullScreen({
+      tipLabel: this.i18n.control.fullscreen
+    }))
+    this.map.addControl (new Rotate({
+      tipLabel: this.i18n.control.rotate
+    }))
 
     // Control button
     const maximizeCtrl = new Button({
       html: '<i class="material-icons" >zoom_out_map</i>',
-      title: "Maximize",
+      title: this.i18n.control.maximize,
       handleClick: () => {
         this.zoomToExtent(true);
       }
@@ -489,24 +492,61 @@ export class GttClient {
       editbar.addControl(control)
     })
 
-    // Upload button
-    if (this.contents.upload === "true") {
-      editbar.addControl(new Button({
-        html: '<i class="material-icons">file_upload</i>',
-        title: 'Upload GeoJSON',
-        handleClick: () => {
-          const data = prompt("Please paste a GeoJSON geometry here")
+    // Uses jQuery UI for GeoJSON Upload modal window
+    const mapObj = this
+    const dialog = $("#dialog-geojson-upload").dialog({
+      autoOpen: false,
+      resizable: true,
+      height: 'auto',
+      width: 380,
+      modal: true,
+      buttons: {
+        [mapObj.i18n.modal.load]: function() {
+          const geojson_input = document.querySelector('#dialog-geojson-upload textarea') as HTMLInputElement
+          const data = geojson_input.value
           if (data !== null) {
             const features = new GeoJSON().readFeatures(
               JSON.parse(data), {
                 featureProjection: 'EPSG:3857'
               }
             )
-            this.vector.getSource().clear()
-            this.vector.getSource().addFeatures(features)
-            this.updateForm(features)
-            this.zoomToExtent()
+            mapObj.vector.getSource().clear()
+            mapObj.vector.getSource().addFeatures(features)
+            mapObj.updateForm(features)
+            mapObj.zoomToExtent()
           }
+          $(this).dialog('close')
+        },
+        [mapObj.i18n.modal.cancel]: function() {
+          $(this).dialog('close')
+        }
+      }
+    });
+
+    // Upload button
+    if (this.contents.upload === "true") {
+
+      const fileSelector = document.getElementById('file-selector')
+      fileSelector.addEventListener('change', (event: any) => {
+        const file = event.target.files[0]
+          // Check if the file is GeoJSON.
+        if (file.type && !file.type.startsWith('application/geo')) {
+          console.log('File is not a GeoJSON document.', file.type, file);
+          return;
+        }
+        const fileReader = new FileReader();
+        fileReader.addEventListener('load', (event: any) => {
+          const geojson_input = document.querySelector('#dialog-geojson-upload textarea') as HTMLInputElement
+          geojson_input.value = JSON.stringify(event.target.result, null, 2)
+        });
+        fileReader.readAsText(file);
+      });
+
+      editbar.addControl(new Button({
+        html: '<i class="material-icons">file_upload</i>',
+        title: this.i18n.control.geojson,
+        handleClick: () => {
+          dialog.dialog('open')
         }
       }))
     }
@@ -983,7 +1023,7 @@ export class GttClient {
     // Control button
     const geolocationCtrl = new Toggle({
       html: '<i class="material-icons">my_location</i>',
-      title: "Geolocation",
+      title: this.i18n.control.geolocation,
       active: false,
       onToggle: (active: boolean) => {
         geolocation.setTracking(active)
@@ -1172,7 +1212,7 @@ export class GttClient {
     // Control button
     const geocodingCtrl = new Toggle({
       html: '<i class="material-icons">manage_search</i>',
-      title: "Geocoding",
+      title: this.i18n.control.geocoding,
       className: "ctl-geocoding",
       onToggle: (active: boolean) => {
         const text = (document.querySelector("div#" + mapId + " .ctl-geocoding div input") as HTMLInputElement)

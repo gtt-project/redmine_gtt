@@ -106,3 +106,16 @@ i[id^='icon_settings_tracker_'] {
   max-width: 510px;
   padding: 0.5em;
 }
+
+.ui-dialog .ui-dialog-buttonpane button {
+  height: inherit;
+}
+
+.ui-dialog .ui-dialog-content {
+  padding: 0.5em 0 0 0;
+}
+
+.ui-dialog .ui-dialog-content textarea {
+  width: 100%;
+  height: 300px;
+}
