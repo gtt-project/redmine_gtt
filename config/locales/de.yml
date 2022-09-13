@@ -63,3 +63,22 @@ de:
   label_baselayer: Basislayer
   gtt_tile_sources_select_imagewms: Image WMS
   gtt_tile_sources_select_xyz: XYZ Tiles
+  title_geojson_upload: GeoJSON importieren
+  placeholder_geojson_upload: Bitte fügen Sie hier eine GeoJSON-Geometrie ein, oder
+    importieren Sie die GeoJSON-Daten aus einer Datei.
+  gtt_js:
+    control:
+      geocoding: Standort-Suche
+      geolocation: Mein Standort
+      maximize: Zoom auf alle Objekte
+      upload: GeoJSON hochladen
+      fullscreen: Vollbildmodus umschalten
+      rotate: Drehung zurücksetzen
+      zoom_in: Heranzoomen
+      zoom_out: Herauszoomen
+      point: Punkteditor
+      linestring: Linieneditor
+      polygon: Flächeneditor
+    modal:
+      load: Laden
+      cancel: Abbrechen
