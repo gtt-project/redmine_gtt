@@ -937,23 +937,28 @@ export class GttClient {
    */
   parseHistory() {
     document.querySelectorAll('div#history ul.details i').forEach((item: Element) => {
-      const regex = new RegExp(/\w+[\s]?(\((-?\d+.\d+\s?-?\d+.\d+,?)+\))+/g)
+      const regex = new RegExp(/\b(?:POINT|LINESTRING|POLYGON)\b\s?(\({1,}[-]?\d+([,. ]\s?[-]?\d+)*\){1,})/gi)
       const match = item.innerHTML.match(regex)
       if (match !== null) {
         const feature = new WKT().readFeature(
-          match[0], {
+          match.join(''), {
             dataProjection: 'EPSG:4326',
             featureProjection: 'EPSG:3857'
           }
         )
-        const wkt = new WKT().writeFeature(
+        let wkt = new WKT().writeFeature(
           feature, {
             dataProjection: 'EPSG:4326',
             featureProjection: 'EPSG:3857',
-            decimals: 6
+            decimals: 5
           }
         )
-        item.innerHTML = `<a href="#" onclick="event.preventDefault();" class="wkt">${wkt}</a>`
+        // Shorten long WKT's
+        if (wkt.length > 30) {
+          const parts = wkt.split(' ')
+          wkt = parts[0] + '...' + parts[parts.length - 1]
+        }
+        item.innerHTML = `<a href="#" onclick="event.preventDefault();" class="wkt" data-feature="${match.join('')}">${wkt}</a>`
       }
     })
   }
