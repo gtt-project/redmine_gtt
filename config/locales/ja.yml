@@ -84,3 +84,21 @@ ja:
 
   project_module_gtt: "GTT"
   permission_manage_gtt_settings: "GTT設定の管理"
+  placeholder_geojson_upload: GeoJSONのジオメトリをここにペーストするか、ファイルからGeoJSONデータをインポートしてください。
+  gtt_js:
+    control:
+      geocoding: 住所検索
+      geolocation: 現在地へ移動
+      maximize: 地物にズーム
+      upload: GeoJSONのアップロード
+      fullscreen: フルスクリーン切り替え
+      rotate: 回転のリセット
+      zoom_in: 拡大
+      zoom_out: 縮小
+      point: ポイント編集
+      linestring: ライン編集
+      polygon: エリア編集
+    modal:
+      load: 読み込み
+      cancel: キャンセル
+  title_geojson_upload: GeoJSONのインポート
