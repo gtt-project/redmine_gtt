@@ -937,7 +937,7 @@ export class GttClient {
    */
   parseHistory() {
     document.querySelectorAll('div#history ul.details i').forEach((item: Element) => {
-      const regex = new RegExp(/\b(?:POINT|LINESTRING|POLYGON)\b\s?(\({1,}\d+(?:[,. ]\s?\d+)*\){1,})/g)
+      const regex = new RegExp(/\b(?:POINT|LINESTRING|POLYGON)\b\s?(\({1,}[-]?\d+([,. ]\s?[-]?\d+)*\){1,})/gi)
       const match = item.innerHTML.match(regex)
       if (match !== null) {
         const feature = new WKT().readFeature(
