@@ -12,7 +12,7 @@ module RedmineGtt
           format.api {
             retrieve_project_query
             scope = project_scope
-            @include_geometry = params[:include] == 'geometry'
+            @include_geometry = include_in_api_response?('geometry')
             if @include_geometry || params[:contains].present?
               query = RedmineGtt::SpatialProjectsQuery.new(
                 contains: params[:contains],
