@@ -82,7 +82,7 @@ class ProjectsApiTest < Redmine::IntegrationTest
     get '/projects.json?include=geometry'
     assert_response :success
     assert json = JSON.parse(@response.body)
-    hsh = JSON.parse json['projects'].detect{|p|p['id'] == @project.id}['geojson']
+    hsh = json['projects'].detect{|p|p['id'] == @project.id}['geojson']
     assert_equal geo['geometry'], hsh['geometry']
   end
 

@@ -11,9 +11,9 @@ api.array :projects, api_meta(:total_count => @project_count, :offset => @offset
 
       if @include_geometry
         if project.geom
-          api.geojson project.geojson.to_json
+          api.geojson (params[:format] == "json") ? project.geojson : project.geojson.to_json
         else
-          api.geojson ""
+          api.geojson nil
         end
       end
 
