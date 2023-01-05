@@ -24,7 +24,7 @@ api.issue do
   end
 
   if @issue.geom
-    api.geojson @issue.geojson
+    api.geojson (params[:format] == "json") ? @issue.geojson : @issue.geojson.to_json
   else
     api.geojson ""
   end
