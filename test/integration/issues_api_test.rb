@@ -1,15 +1,16 @@
 require_relative '../test_helper'
 
-class IssuesApiTest < Redmine::IntegrationTest
+class IssuesApiTest < Redmine::ApiTest::Base
   fixtures :projects,
     :users,
     :roles,
     :members,
     :member_roles,
-    :issues
+    :issues,
+    :issue_statuses,
+    :enabled_modules
 
   setup do
-    # User.current = nil
     @project = Project.find 'ecookbook'
     @project.enabled_modules.create name: 'gtt'
   end
@@ -26,6 +27,7 @@ class IssuesApiTest < Redmine::IntegrationTest
 
     issue = @project.issues.find 1
     issue.update_attribute :geojson, geojson
+
     # xml format - index api
     get '/issues.xml'
     assert_response :success
