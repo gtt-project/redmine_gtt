@@ -56,7 +56,7 @@ class ProjectsApiTest < Redmine::IntegrationTest
 
   end
 
-  test 'should include geojson on demand' do
+  test 'should include geojson (on demand)' do
     geo = {
       'type' => 'Feature',
       'geometry' => {
@@ -69,21 +69,64 @@ class ProjectsApiTest < Redmine::IntegrationTest
     geojson = geo.to_json
 
     @project.update_attribute :geojson, geojson
-    @subproject1.update_attribute :geojson, geojson
+    # xml format - index api
     get '/projects.xml?include=geometry'
     assert_response :success
     xml = xml_data
-    assert projects = xml.xpath('/projects/project')
-    assert json = projects.xpath('geojson').first.text
+    assert json = xml.xpath('/projects/project[id=1]/geojson').text
+    assert json.present?
+    assert_match(/123\.269691/, json)
+    assert_equal geo['geometry'], JSON.parse(json)['geometry'], json
+    # xml format - show api
+    get '/projects/1.xml'
+    assert_response :success
+    xml = xml_data
+    assert json = xml.xpath('/project/geojson').text
     assert json.present?
     assert_match(/123\.269691/, json)
     assert_equal geo['geometry'], JSON.parse(json)['geometry'], json
 
+    # json format - index api
     get '/projects.json?include=geometry'
     assert_response :success
     assert json = JSON.parse(@response.body)
-    hsh = JSON.parse json['projects'].detect{|p|p['id'] == @project.id}['geojson']
+    hsh = json['projects'].detect{|p|p['id'] == @project.id}['geojson']
     assert_equal geo['geometry'], hsh['geometry']
+    # json format - show api
+    get '/projects/1.json'
+    assert_response :success
+    assert json = JSON.parse(@response.body)
+    hsh = json['project']['geojson']
+    assert_equal geo['geometry'], hsh['geometry']
+  end
+
+  test 'should include empty geojson (on demand)' do
+    @project.update_attribute :geojson, nil
+    # xml format - index api
+    get '/projects.xml?include=geometry'
+    assert_response :success
+    xml = xml_data
+    assert json = xml.xpath('/projects/project[id=1]/geojson').text
+    assert_equal "", json
+    # xml format - show api
+    get '/projects/1.xml'
+    assert_response :success
+    xml = xml_data
+    assert json = xml.xpath('/project/geojson').text
+    assert_equal "", json
+
+    # json format - index api
+    get '/projects.json?include=geometry'
+    assert_response :success
+    assert json = JSON.parse(@response.body)
+    hsh = json['projects'].detect{|p|p['id'] == @project.id}['geojson']
+    assert_nil hsh
+    # json format - show api
+    get '/projects/1.json'
+    assert_response :success
+    assert json = JSON.parse(@response.body)
+    hsh = json['project']['geojson']
+    assert_nil hsh
   end
 
   test 'should filter projects by query and geometry' do

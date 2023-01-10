@@ -10,9 +10,9 @@ api.user do
   api.status     @user.status if User.current.admin?
 
   if @user.geom
-    api.geojson @user.geojson
+    api.geojson (params[:format] == "json") ? @user.geojson : @user.geojson.to_json
   else
-    api.geojson ""
+    api.geojson nil
   end
 
   render_api_custom_values @user.visible_custom_field_values, api
