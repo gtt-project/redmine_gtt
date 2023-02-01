@@ -37,19 +37,15 @@ $breakpoint-tablet: 899px;
 }
 
 div.ol-full-screen {
-  right: 3.0em;
+  right: 2.55rem;
 }
 
 div.ol-rotate {
-  right: 5.5em;
-}
-
-div.ol-full-screen {
-  right: 3.0em;
+  right: 4.7rem;
 }
 
 .ol-control.ol-bar.ol-top.ol-left, .ol-control.ol-bar.ol-top.ol-right {
-  top: 5.2em;
+  top: 5.0rem;
 }
 
 .tabular .ol-layerswitcher label {
@@ -59,6 +55,10 @@ div.ol-full-screen {
   margin-left: initial;
   width: initial;
   line-height: initial;
+}
+
+.tabular .ol-layerswitcher>button {
+  font-size: 1.5rem;
 }
 
 #admin-menu a.gtt {
