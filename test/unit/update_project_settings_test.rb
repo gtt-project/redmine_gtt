@@ -59,5 +59,3 @@ class UpdateProjectSettingsTest < GttTest
   end
 
 end
-
-
