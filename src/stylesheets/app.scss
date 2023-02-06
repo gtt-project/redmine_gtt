@@ -36,16 +36,17 @@ $breakpoint-tablet: 899px;
   font-size: 1.6em;
 }
 
-div.ol-rotate {
-  right: 80px;
+div.ol-full-screen {
+  right: 2.55rem;
 }
 
-div.ol-full-screen {
-  right: 44px;
+div.ol-rotate {
+  right: 4.7rem;
 }
 
 .ol-control.ol-bar.ol-top.ol-left, .ol-control.ol-bar.ol-top.ol-right {
-  top: 80px;
+  top: 5.0rem;
+
 }
 
 .tabular .ol-layerswitcher label {
@@ -55,6 +56,10 @@ div.ol-full-screen {
   margin-left: initial;
   width: initial;
   line-height: initial;
+}
+
+.tabular .ol-layerswitcher>button {
+  font-size: 1.5rem;
 }
 
 #admin-menu a.gtt {
@@ -73,6 +78,7 @@ i[id^='icon_settings_tracker_'] {
   text-align: center;
 }
 
+.ol-control.ol-layerswitcher,
 .ol-control.ol-layerswitcher-popup {
   top: 0.5em;
 }
