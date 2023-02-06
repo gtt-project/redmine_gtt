@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'deface'
 gem 'immutable-struct'
-gem "rgeo"
+gem "rgeo", "~> 2.4.0"
 gem "rgeo-geojson"
 gem "pg", (ENV['GEM_PG_VERSION'] ? "~> #{ENV['GEM_PG_VERSION']}" : "~> 1.2.2") # make sure we use a version compatible with AR
 gem "rgeo-activerecord", (ENV['GEM_RGEO_ACTIVERECORD_VERSION'] ? "~> #{ENV['GEM_RGEO_ACTIVERECORD_VERSION']}" : "~> 7.0.1") # same as above
