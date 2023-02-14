@@ -13,9 +13,9 @@
       <br /><em><%= t :gtt_tile_sources_info %></em>
     </p>
     <p>
-      <%= content_tag(:label, "Map rotation") %>
+      <%= content_tag(:label, l(:gtt_map_rotate_label)) %>
       <%= number_field_tag('settings[project_map_rotation]', 0, min: 1, max: 360, size: 10, readonly: true ) %>
-      <br /><em><%= t :gtt_map_rotate_info %></em>
+      <br /><em><%= t :gtt_map_rotate_info_html  %></em>
     </p>
   </div>
 
