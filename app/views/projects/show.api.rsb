@@ -9,9 +9,9 @@ api.project do
   api.is_public   @project.is_public?
 
   if @project.geom
-    api.geojson @project.geojson
+    api.geojson (params[:format] == "json") ? @project.geojson : @project.geojson.to_json
   else
-    api.geojson ""
+    api.geojson nil
   end
 
   render_api_custom_values @project.visible_custom_field_values, api

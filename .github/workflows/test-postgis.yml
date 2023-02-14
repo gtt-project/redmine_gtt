@@ -25,7 +25,7 @@ jobs:
       fail-fast: false
       matrix:
         redmine_version: [4.2-stable, 5.0-stable, master]
-        ruby_version: [2.7, 3.0, 3.1]
+        ruby_version: ['2.7', '3.0', '3.1']
         db_version: [11-2.5, 14-3.2]
         exclude:
           - redmine_version: 4.2-stable
@@ -45,14 +45,14 @@ jobs:
 
     steps:
       - name: Checkout Redmine
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: redmine/redmine
           ref: ${{ matrix.redmine_version }}
           path: redmine
 
       - name: Checkout Plugin
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: redmine/plugins/${{ env.PLUGIN_NAME }}
 

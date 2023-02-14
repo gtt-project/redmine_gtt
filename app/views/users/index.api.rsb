@@ -10,9 +10,9 @@ api.array :users, api_meta(:total_count => @user_count, :offset => @offset, :lim
       api.last_login_on user.last_login_on
 
       if user.geom
-        api.geojson user.geojson
+        api.geojson (params[:format] == "json") ? user.geojson : user.geojson.to_json
       else
-        api.geojson ""
+        api.geojson nil
       end
 
       render_api_custom_values user.visible_custom_field_values, api

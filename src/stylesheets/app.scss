@@ -1,6 +1,26 @@
 /**
  * Application Styles
  */
+:root,
+:host {
+  --ol-background-color: white;
+  --ol-accent-background-color: #F5F5F5;
+  --ol-subtle-background-color: rgba(128, 128, 128, 0.25);
+  --ol-partial-background-color: rgba(255, 255, 255, 0.75);
+  --ol-foreground-color: #F5F5F5;
+  --ol-subtle-foreground-color: #FFFFFF;
+  --ol-brand-color: #34495e;
+}
+
+.ol-control button:hover {
+  background-color: #3f5872;
+}
+
+.ol-control.ol-bar .ol-toggle.ol-active button:hover, .ol-control.ol-bar .ol-toggle.ol-active>button {
+  background-color: #f1515c;
+  color: #fff;
+}
+
 .ol-map {
   width: 100%;
   height: 400px;
@@ -37,19 +57,16 @@ $breakpoint-tablet: 899px;
 }
 
 div.ol-full-screen {
-  right: 3.0em;
+  right: 2.55rem;
 }
 
 div.ol-rotate {
-  right: 5.5em;
-}
-
-div.ol-full-screen {
-  right: 3.0em;
+  right: 4.7rem;
 }
 
 .ol-control.ol-bar.ol-top.ol-left, .ol-control.ol-bar.ol-top.ol-right {
-  top: 5.2em;
+  top: 5.0rem;
+
 }
 
 .tabular .ol-layerswitcher label {
@@ -59,6 +76,10 @@ div.ol-full-screen {
   margin-left: initial;
   width: initial;
   line-height: initial;
+}
+
+.tabular .ol-layerswitcher>button {
+  font-size: 1.5rem;
 }
 
 #admin-menu a.gtt {
@@ -77,6 +98,7 @@ i[id^='icon_settings_tracker_'] {
   text-align: center;
 }
 
+.ol-control.ol-layerswitcher,
 .ol-control.ol-layerswitcher-popup {
   top: 0.5em;
 }

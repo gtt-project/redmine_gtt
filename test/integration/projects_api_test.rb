@@ -56,7 +56,7 @@ class ProjectsApiTest < Redmine::IntegrationTest
 
   end
 
-  test 'should include geojson on demand' do
+  test 'should include geojson (on demand)' do
     geo = {
       'type' => 'Feature',
       'geometry' => {
@@ -69,21 +69,64 @@ class ProjectsApiTest < Redmine::IntegrationTest
     geojson = geo.to_json
 
     @project.update_attribute :geojson, geojson
-    @subproject1.update_attribute :geojson, geojson
+    # xml format - index api
     get '/projects.xml?include=geometry'
     assert_response :success
     xml = xml_data
-    assert projects = xml.xpath('/projects/project')
-    assert json = projects.xpath('geojson').first.text
+    assert json = xml.xpath('/projects/project[id=1]/geojson').text
+    assert json.present?
+    assert_match(/123\.269691/, json)
+    assert_equal geo['geometry'], JSON.parse(json)['geometry'], json
+    # xml format - show api
+    get '/projects/1.xml'
+    assert_response :success
+    xml = xml_data
+    assert json = xml.xpath('/project/geojson').text
     assert json.present?
     assert_match(/123\.269691/, json)
     assert_equal geo['geometry'], JSON.parse(json)['geometry'], json
 
+    # json format - index api
     get '/projects.json?include=geometry'
     assert_response :success
     assert json = JSON.parse(@response.body)
-    hsh = JSON.parse json['projects'].detect{|p|p['id'] == @project.id}['geojson']
+    hsh = json['projects'].detect{|p|p['id'] == @project.id}['geojson']
     assert_equal geo['geometry'], hsh['geometry']
+    # json format - show api
+    get '/projects/1.json'
+    assert_response :success
+    assert json = JSON.parse(@response.body)
+    hsh = json['project']['geojson']
+    assert_equal geo['geometry'], hsh['geometry']
+  end
+
+  test 'should include empty geojson (on demand)' do
+    @project.update_attribute :geojson, nil
+    # xml format - index api
+    get '/projects.xml?include=geometry'
+    assert_response :success
+    xml = xml_data
+    assert json = xml.xpath('/projects/project[id=1]/geojson').text
+    assert_equal "", json
+    # xml format - show api
+    get '/projects/1.xml'
+    assert_response :success
+    xml = xml_data
+    assert json = xml.xpath('/project/geojson').text
+    assert_equal "", json
+
+    # json format - index api
+    get '/projects.json?include=geometry'
+    assert_response :success
+    assert json = JSON.parse(@response.body)
+    hsh = json['projects'].detect{|p|p['id'] == @project.id}['geojson']
+    assert_nil hsh
+    # json format - show api
+    get '/projects/1.json'
+    assert_response :success
+    assert json = JSON.parse(@response.body)
+    hsh = json['project']['geojson']
+    assert_nil hsh
   end
 
   test 'should filter projects by query and geometry' do
@@ -167,11 +210,13 @@ class ProjectsApiTest < Redmine::IntegrationTest
   test 'GET /projects.xml with include=layers should return layers' do
     ts = RedmineGtt::Actions::CreateTileSource.(type: 'ol.source.OSM', name: 'default', default: true).tile_source
     @project.gtt_tile_sources = [ts]
+    @subproject1.gtt_tile_sources = [ts]
     get '/projects.xml?include=layers'
     assert_response :success
     xml = xml_data
     assert projects = xml.xpath('/projects/project')
     assert layer = projects.xpath('layers/layer').first
+    assert layer.present?
     assert_equal 'ol.source.OSM', layer['type']
   end
 
@@ -183,6 +228,65 @@ class ProjectsApiTest < Redmine::IntegrationTest
     xml = xml_data
     assert project = xml.xpath('/project')
     assert layer = project.xpath('layers/layer').first
+    assert layer.present?
+    assert_equal 'ol.source.OSM', layer['type']
+  end
+
+  test 'GET /projects.xml with include=geometry,layers should return both geojson and layers' do
+    ts = RedmineGtt::Actions::CreateTileSource.(type: 'ol.source.OSM', name: 'default', default: true).tile_source
+    @project.gtt_tile_sources = [ts]
+    @subproject1.gtt_tile_sources = [ts]
+    geo = {
+      'type' => 'Feature',
+      'geometry' => {
+        'type' => 'Polygon',
+        'coordinates' => [
+          [[123.269691,9.305099], [123.279691,9.305099],[123.279691,9.405099],[123.269691,9.405099], [123.269691,9.305099]]
+        ]
+      }
+    }
+    geojson = geo.to_json
+
+    @project.update_attribute :geojson, geojson
+    @subproject1.update_attribute :geojson, geojson
+
+    get '/projects.xml?include=geometry,layers'
+    assert_response :success
+    xml = xml_data
+    assert projects = xml.xpath('/projects/project')
+    assert json = projects.xpath('geojson').first.text
+    assert json.present?
+    assert_equal geo['geometry'], JSON.parse(json)['geometry'], json
+    assert layer = projects.xpath('layers/layer').first
+    assert layer.present?
+    assert_equal 'ol.source.OSM', layer['type']
+  end
+
+  test 'GET /projects/1.xml with include=geometry,layers should return both geojson and layers' do
+    ts = RedmineGtt::Actions::CreateTileSource.(type: 'ol.source.OSM', name: 'default', default: true).tile_source
+    @project.gtt_tile_sources = [ts]
+    geo = {
+      'type' => 'Feature',
+      'geometry' => {
+        'type' => 'Polygon',
+        'coordinates' => [
+          [[123.269691,9.305099], [123.279691,9.305099],[123.279691,9.405099],[123.269691,9.405099], [123.269691,9.305099]]
+        ]
+      }
+    }
+    geojson = geo.to_json
+
+    @project.update_attribute :geojson, geojson
+
+    get '/projects/1.xml?include=geometry,layers'
+    assert_response :success
+    xml = xml_data
+    assert project = xml.xpath('/project')
+    assert json = project.xpath('geojson').first.text
+    assert json.present?
+    assert_equal geo['geometry'], JSON.parse(json)['geometry'], json
+    assert layer = project.xpath('layers/layer').first
+    assert layer.present?
     assert_equal 'ol.source.OSM', layer['type']
   end
 
@@ -190,5 +294,3 @@ class ProjectsApiTest < Redmine::IntegrationTest
     Nokogiri::XML(@response.body)
   end
 end
-
-
