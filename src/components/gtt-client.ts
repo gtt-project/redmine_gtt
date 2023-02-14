@@ -335,13 +335,22 @@ export class GttClient {
     this.toolbar.addControl(maximizeCtrl)
 
     // Map rotation
+    function radiansToDegrees(radians:number) {
+      let degrees = radians * (180 / Math.PI)
+      degrees = (degrees % 360 + 360) % 360
+      return degrees
+    }
+
+    function degreesToRadians(degrees:number) {
+      return degrees * (Math.PI / 180)
+    }
+
     const rotation_field = document.querySelector('#settings_project_map_rotation')
     if (rotation_field !== null) {
       this.map.getView().on('change:rotation', (evt) => {
-        const degrees = evt.target.getRotation() * 180 / Math.PI
         rotation_field.setAttribute(
           'value',
-          String(Math.round(degrees % 360))
+          String(Math.round(radiansToDegrees(evt.target.getRotation())))
         )
       })
     }
