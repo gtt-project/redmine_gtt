@@ -33,16 +33,16 @@ export const gtt_setting = ():void => {
     }
   });
 
-  const glyph = FontSymbol.prototype.defs.glyphs
+  const glyph = FontSymbol.defs.glyphs
   document.querySelectorAll("[id^='settings_tracker_']").forEach((element: HTMLSelectElement) => {
     const selectedValue = element.value
     if (element.length === 1 && selectedValue !== "") {
       element.remove(0)
       // element.append(new Option("", "", false, false))
     }
-    for (let font in FontSymbol.prototype.defs.fonts) {
+    for (let font in FontSymbol.defs.fonts) {
       const optgroup = document.createElement('optgroup')
-      optgroup.label = FontSymbol.prototype.defs.fonts[font].name
+      optgroup.label = FontSymbol.defs.fonts[font].name
       for (let i in glyph) {
         if (glyph[i].font == font) {
           const selected = selectedValue === i

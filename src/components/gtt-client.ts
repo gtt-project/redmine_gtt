@@ -1281,7 +1281,7 @@ export class GttClient {
   reloadFontSymbol() {
     if ('fonts' in document) {
       const symbolFonts: Array<String> = []
-      for (const font in FontSymbol.prototype.defs.fonts) {
+      for (const font in FontSymbol.defs.fonts) {
         symbolFonts.push(font)
       }
       if (symbolFonts.length > 0) {
