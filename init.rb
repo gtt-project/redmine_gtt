@@ -10,7 +10,7 @@ Redmine::Plugin.register :redmine_gtt do
   description 'Adds location-based task management and maps'
   version '4.2.0'
 
-  requires_redmine :version_or_higher => '4.2.0'
+  requires_redmine :version_or_higher => '4.3.0'
 
   project_module :gtt do
     permission :manage_gtt_settings, {
