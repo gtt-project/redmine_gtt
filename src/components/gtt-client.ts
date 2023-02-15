@@ -345,7 +345,7 @@ export class GttClient {
       return degrees * (Math.PI / 180)
     }
 
-    const rotation_field = document.querySelector('#settings_project_map_rotation')
+    const rotation_field = document.querySelector('#gtt_configuration_map_rotation')
     if (rotation_field !== null) {
       this.map.getView().on('change:rotation', (evt) => {
         rotation_field.setAttribute(
