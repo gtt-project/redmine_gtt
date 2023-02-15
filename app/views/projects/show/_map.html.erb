@@ -1,5 +1,5 @@
 <% if @project.nil? or @project.module_enabled?(:gtt) %>
-<div class="usermap box">
+<div class="projectmap box">
   <h3 class="icon icon-gtt-map"><%= l(:label_project_map) %></h3>
 
   <%= map_tag map: @project.map %>
