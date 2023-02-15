@@ -335,19 +335,20 @@ export class GttClient {
     this.toolbar.addControl(maximizeCtrl)
 
     // Map rotation
-    const rotation_field = document.querySelector('#gtt_configuration_map_rotation') as HTMLElement
+    const rotation_field = document.querySelector('#gtt_configuration_map_rotation') as HTMLInputElement
     if (rotation_field !== null) {
       this.map.getView().on('change:rotation', (evt) => {
-        rotation_field.setAttribute(
-          'value',
-          String(Math.round(radiansToDegrees(evt.target.getRotation())))
-        )
+        rotation_field.value = String(Math.round(radiansToDegrees(evt.target.getRotation())))
       })
 
-      // TODO: remove readonly flag from field and update map on input
-      // rotation_field.addEventListener("oninput", (evt) => {
-      //   console.log(evt)
-      // })
+      rotation_field.addEventListener("input", (evt) => {
+        const { target } = evt;
+        if (!(target instanceof HTMLInputElement)) {
+          return;
+        }
+        const value = target.value;
+        this.map.getView().setRotation(degreesToRadians(parseInt(value)))
+      })
     }
 
     if (this.contents.edit) {
