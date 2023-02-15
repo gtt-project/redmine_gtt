@@ -2,6 +2,6 @@
 <div class="projectmap box">
   <h3 class="icon icon-gtt-map"><%= l(:label_project_map) %></h3>
 
-  <%= map_tag map: @project.map %>
+  <%= map_tag map: @project.map, rotation: @project.map_rotation %>
 </div>
 <% end %>

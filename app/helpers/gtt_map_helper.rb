@@ -2,20 +2,21 @@
 
 module GttMapHelper
 
-  def map_form_field(form, map, field: :geojson, bounds: nil, edit_mode: nil, upload: true)
+  def map_form_field(form, map, field: :geojson, bounds: nil, edit_mode: nil, upload: true, rotation: 0)
     safe_join [
       form.hidden_field(field, id: 'geom'),
-      map_tag(map: map, bounds: bounds, edit: edit_mode, upload: upload)
+      map_tag(map: map, bounds: bounds, edit: edit_mode, upload: upload, rotation: rotation)
     ]
   end
 
   def map_tag(map: nil, layers: map&.layers,
               geom: map.json, bounds: map.bounds,
               edit: nil, popup: nil, upload: true,
-              collapsed: false)
+              collapsed: false, rotation: map&.rotation)
 
     data = {
-      geom: geom.is_a?(String) ? geom : geom.to_json
+      geom: geom.is_a?(String) ? geom : geom.to_json,
+      rotation: rotation
     }
 
     if layers

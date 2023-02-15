@@ -20,7 +20,7 @@
   </div>
 
   <div class="box">
-    <%= map_form_field f, @form.map, bounds: nil, edit_mode: 'Polygon' %>
+    <%= map_form_field f, @form.map, bounds: nil, edit_mode: 'Polygon', rotation: @project.map_rotation %>
   </div>
 
   <%= submit_tag l(:button_save) %>
