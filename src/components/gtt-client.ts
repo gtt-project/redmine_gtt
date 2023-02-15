@@ -335,17 +335,7 @@ export class GttClient {
     this.toolbar.addControl(maximizeCtrl)
 
     // Map rotation
-    function radiansToDegrees(radians:number) {
-      let degrees = radians * (180 / Math.PI)
-      degrees = (degrees % 360 + 360) % 360
-      return degrees
-    }
-
-    function degreesToRadians(degrees:number) {
-      return degrees * (Math.PI / 180)
-    }
-
-    const rotation_field = document.querySelector('#gtt_configuration_map_rotation')
+    const rotation_field = document.querySelector('#gtt_configuration_map_rotation') as HTMLElement
     if (rotation_field !== null) {
       this.map.getView().on('change:rotation', (evt) => {
         rotation_field.setAttribute(
@@ -353,6 +343,11 @@ export class GttClient {
           String(Math.round(radiansToDegrees(evt.target.getRotation())))
         )
       })
+
+      // TODO: remove readonly flag from field and update map on input
+      // rotation_field.addEventListener("oninput", (evt) => {
+      //   console.log(evt)
+      // })
     }
 
     if (this.contents.edit) {
@@ -849,7 +844,8 @@ export class GttClient {
       // Avoid flicker (map move)
       center: center,
       zoom: parseInt(this.defaults.zoom),
-      maxZoom: parseInt(this.defaults.maxzoom) // applies for Mierune Tiles
+      maxZoom: parseInt(this.defaults.maxzoom), // applies for Mierune Tiles
+      rotation: degreesToRadians(parseInt(this.map.getTargetElement().getAttribute("data-rotation")))
     })
     this.map.setView(view)
   }
@@ -1380,6 +1376,16 @@ const getCookie = (cname:string):string => {
     }
   }
   return ''
+}
+
+const radiansToDegrees = (radians: number) => {
+  let degrees = radians * (180 / Math.PI)
+  degrees = (degrees % 360 + 360) % 360
+  return degrees
+}
+
+const degreesToRadians = (degrees: number) => {
+  return degrees * (Math.PI / 180)
 }
 
 const getMapSize = (map: Map) => {

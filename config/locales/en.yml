@@ -53,7 +53,7 @@ en:
   gtt_tile_sources_load_example: "Load example configuration."
 
   gtt_map_rotate_label: "Map rotation"
-  gtt_map_rotate_info_html: "Hold down <code>Shift+Alt</code> and drag to rotate."
+  gtt_map_rotate_info_html: "Hold down <code>Shift+Alt</code> and drag the map to rotate."
 
   gtt_settings_general_center_lon: "Default map center longitude"
   gtt_settings_general_center_lat: "Default map center latitude"
