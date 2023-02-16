@@ -53,7 +53,7 @@ $breakpoint-tablet: 899px;
 .ol-full-screen button.ol-full-screen-false,
 .ol-rotate button.ol-rotate-reset,
 .ol-bar .ol-button button {
-  font-size: 1.6em;
+  font-size: 1.5rem;
 }
 
 div.ol-full-screen {
@@ -66,7 +66,10 @@ div.ol-rotate {
 
 .ol-control.ol-bar.ol-top.ol-left, .ol-control.ol-bar.ol-top.ol-right {
   top: 5.0rem;
+}
 
+.ol-touch .ol-layerswitcher>button {
+  font-size: 1.5rem;
 }
 
 .tabular .ol-layerswitcher label {
