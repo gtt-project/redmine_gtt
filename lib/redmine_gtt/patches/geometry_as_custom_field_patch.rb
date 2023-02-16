@@ -22,6 +22,9 @@ module RedmineGtt
         def full_width_layout?
           true
         end
+        def full_text_formatting?
+          false
+        end
       end
 
       class GeomtryCustomFieldValue < ::CustomFieldValue
