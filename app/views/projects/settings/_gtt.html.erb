@@ -12,12 +12,16 @@
         {}, { multiple: true, size: 5 } %>
       <br /><em><%= t :gtt_tile_sources_info %></em>
     </p>
+    <p>
+      <%= content_tag(:label, l(:gtt_map_rotate_label)) %>
+      <%= number_field_tag('gtt_configuration[map_rotation]', @project.map_rotation, min: 0, max: 359, size: 10 ) %>
+      <br /><em><%= t :gtt_map_rotate_info_html  %></em>
+    </p>
   </div>
 
   <div class="box">
-    <%= map_form_field f, @form.map, bounds: nil, edit_mode: 'Polygon' %>
+    <%= map_form_field f, @form.map, bounds: nil, edit_mode: 'Polygon', rotation: @project.map_rotation %>
   </div>
-
 
   <%= submit_tag l(:button_save) %>
 
