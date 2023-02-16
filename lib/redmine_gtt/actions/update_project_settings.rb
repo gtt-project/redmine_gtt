@@ -29,6 +29,7 @@ module RedmineGtt
 
         begin
           @project.geojson = @form.geojson
+          @project.map_rotation = @form.map_rotation
         rescue RGeo::Error::InvalidGeometry => e
           @project.errors.add(:geom, :invalid)
           return false

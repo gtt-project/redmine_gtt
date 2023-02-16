@@ -4,7 +4,7 @@
     <legend class="<%= "icon " + (collapsed ? "icon-collapsed" : "icon-expended") %>"><%= l(:field_location) %></legend>
 
     <%= map_tag map: @project.map, geom: (Issue.array_to_geojson(@issues, include_properties: { only: %i(id subject tracker_id status_id) }) if @issues),
-      popup: { href: '/issues/[id]' }, collapsed: collapsed %>
+      popup: { href: '/issues/[id]' }, collapsed: collapsed, rotation: @project.map_rotation %>
   </fieldset>
 
 <% end %>
