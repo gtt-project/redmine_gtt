@@ -1,12 +1,12 @@
 import 'ol/ol.css'
 import 'ol-ext/dist/ol-ext.min.css'
-import { Map, Feature, View, Geolocation, Collection } from 'ol'
+import { Map, Feature, View, Geolocation } from 'ol'
 import 'ol-ext/filter/Base'
-import { Geometry, GeometryCollection, Point } from 'ol/geom'
-import { GeoJSON, WKT } from 'ol/format'
-import { Layer, Tile, Image } from 'ol/layer'
+import { Geometry, Point } from 'ol/geom'
+import { GeoJSON, WKT, MVT } from 'ol/format'
+import { Layer, Tile, Image, VectorTile as VTLayer } from 'ol/layer'
 import VectorLayer from 'ol/layer/Vector'
-import { OSM, XYZ, TileWMS, ImageWMS } from 'ol/source'
+import { OSM, XYZ, TileWMS, ImageWMS, VectorTile as VTSource } from 'ol/source'
 import { Style, Fill, Stroke, Circle } from 'ol/style'
 import { OrderFunction } from 'ol/render'
 import {
@@ -41,9 +41,8 @@ import { FeatureLike } from 'ol/Feature'
 import TileSource from 'ol/source/Tile'
 import ImageSource from 'ol/source/Image'
 import { Options as ImageWMSOptions } from 'ol/source/ImageWMS'
-import JSONFeature from 'ol/format/JSONFeature'
-import BaseEvent from 'ol/events/Event'
-import { CollectionEvent } from 'ol/Collection'
+import { Options as VectorTileOptions } from 'ol/source/VectorTile'
+import { applyStyle } from 'ol-mapbox-style';
 
 interface GttClientOption {
   target: HTMLDivElement | null
@@ -65,11 +64,19 @@ interface FilterOption {
 interface TileLayerSource {
   layer: typeof Tile
   source: typeof OSM | typeof XYZ | typeof TileWMS
+  type: string
 }
 
 interface ImageLayerSource {
   layer: typeof Image
   source: typeof ImageWMS
+  type: string
+}
+
+interface VTLayerSource {
+  layer: typeof VTLayer
+  source: typeof VTSource
+  type: string
 }
 
 export class GttClient {
@@ -162,7 +169,7 @@ export class GttClient {
     this.reloadFontSymbol()
 
     // TODO: this is only necessary because setting the initial form value
-    //  through the template causes encoding problems
+    // through the template causes encoding problems
     this.updateForm(features)
     this.layerArray = []
 
@@ -171,11 +178,11 @@ export class GttClient {
       layers.forEach((layer) => {
         const s = layer.type.split('.')
         const layerSource = getLayerSource(s[1], s[2])
-        const tileLayerSource = layerSource as TileLayerSource
-        if (tileLayerSource) {
-          const l = new (tileLayerSource.layer)({
+        if ( layerSource.type === "TileLayerSource") {
+          const config = layerSource as TileLayerSource
+          const l = new (config.layer)({
             visible: false,
-            source: new (tileLayerSource.source)(layer.options as any)
+            source: new (config.source)(layer.options as any)
           })
 
           l.set('lid', layer.id)
@@ -191,11 +198,11 @@ export class GttClient {
             })
           }
           this.layerArray.push(l)
-        } else if (layerSource as ImageLayerSource) {
-          const imageLayerSource = layerSource as ImageLayerSource
-          const l = new (imageLayerSource.layer)({
+        } else if (layerSource.type === "ImageLayerSource") {
+          const config = layerSource as ImageLayerSource
+          const l = new (config.layer)({
             visible: false,
-            source: new (imageLayerSource.source)(layer.options as ImageWMSOptions)
+            source: new (config.source)(layer.options as ImageWMSOptions)
           })
 
           l.set('lid', layer.id)
@@ -204,6 +211,34 @@ export class GttClient {
           if( layer.baselayer ) {
             l.on('change:visible', e => {
               const target = e.target as Image<ImageSource>
+              if (target.getVisible()) {
+                const lid = target.get('lid')
+                document.cookie = `_redmine_gtt_basemap=${lid};path=/`
+              }
+            })
+          }
+          this.layerArray.push(l)
+        } else if (layerSource.type === "VTLayerSource") {
+          const config = layerSource as VTLayerSource
+          const options = layer.options as VectorTileOptions
+          options.format = new MVT()
+          const l = new (config.layer)({
+            visible: false,
+            source: new (config.source)(options),
+            declutter: true
+          }) as VTLayer
+
+          // Apply style URL if provided
+          if ("styleUrl" in options) {
+            applyStyle(l,options.styleUrl)
+          }
+
+          l.set('lid', layer.id)
+          l.set('title', layer.name)
+          l.set('baseLayer', layer.baselayer)
+          if( layer.baselayer ) {
+            l.on('change:visible', (e: { target: any }) => {
+              const target = e.target as any
               if (target.getVisible()) {
                 const lid = target.get('lid')
                 document.cookie = `_redmine_gtt_basemap=${lid};path=/`
@@ -1349,16 +1384,18 @@ export class GttClient {
   }
 }
 
-const getLayerSource = (source: string, class_name: string): TileLayerSource | ImageLayerSource | undefined => {
+const getLayerSource = (source: string, class_name: string): TileLayerSource | ImageLayerSource | VTLayerSource | undefined => {
   if (source === 'source') {
     if (class_name === 'OSM') {
-      return { layer: Tile, source: OSM }
+      return { layer: Tile, source: OSM, type: "TileLayerSource" }
     } else if (class_name === 'XYZ') {
-      return { layer: Tile, source: XYZ }
+      return { layer: Tile, source: XYZ, type: "TileLayerSource" }
     } else if (class_name === 'TileWMS') {
-      return { layer: Tile, source: TileWMS }
+      return { layer: Tile, source: TileWMS, type: "TileLayerSource" }
     } else if (class_name === 'ImageWMS') {
-      return { layer: Image, source: ImageWMS }
+      return { layer: Image, source: ImageWMS, type: "ImageLayerSource" }
+    } else if (class_name === 'VectorTile') {
+      return { layer: VTLayer, source: VTSource, type: "VTLayerSource" }
     }
   }
   return undefined

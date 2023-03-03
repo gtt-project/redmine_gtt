@@ -63,6 +63,7 @@ de:
   label_baselayer: Basislayer
   gtt_tile_sources_select_imagewms: Image WMS
   gtt_tile_sources_select_xyz: XYZ Tiles
+  gtt_tile_sources_select_vectortile: "Vector Tiles (MVT)"
   title_geojson_upload: GeoJSON importieren
   placeholder_geojson_upload: Bitte fügen Sie hier eine GeoJSON-Geometrie ein, oder
     importieren Sie die GeoJSON-Daten aus einer Datei.

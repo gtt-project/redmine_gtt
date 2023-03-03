@@ -8,7 +8,8 @@
         [l(:gtt_tile_sources_select_imagewms), 'ol.source.ImageWMS'],
         [l(:gtt_tile_sources_select_osm), 'ol.source.OSM'],
         [l(:gtt_tile_sources_select_tilewms), 'ol.source.TileWMS'],
-        [l(:gtt_tile_sources_select_xyz), 'ol.source.XYZ']
+        [l(:gtt_tile_sources_select_xyz), 'ol.source.XYZ'],
+        [l(:gtt_tile_sources_select_vectortile), 'ol.source.VectorTile']
       ], selected: f.object.type ),
       { include_blank: l(:gtt_tile_sources_select), required: true }
     %>
@@ -36,7 +37,7 @@
       "url": "https://tile.openstreetmap.jp/{z}/{x}/{y}.png",
       "custom": "19/34.74701/135.35740",
       "crossOrigin": null,
-      "attributions": "<a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>"
+      "attributions": "<a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap contributors</a>"
     },
     'ol.source.TileWMS': {
       "url": "https://www.example.com/geoserver/wms",
@@ -50,6 +51,10 @@
       "url": "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
       "projection": "EPSG:3857",
       "attributions": "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+    },
+    'ol.source.VectorTile': {
+      "attributions": "<a href='https://www.openmaptiles.org/' target='_blank'>OpenMapTiles</a> <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap contributors</a>",
+      "styleUrl": "https://tile.openstreetmap.jp/styles/osm-bright-ja/style.json"
     }
   };
 
