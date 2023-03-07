@@ -7,8 +7,10 @@ import './stylesheets/custom-icons.css'
 import './stylesheets/CustomIconsDef.js'
 
 // Material Design Icons
-// https://github.com/marella/material-design-icons/tree/main/font#readme
-import '@material-design-icons/font/filled.css'
+// https://pictogrammers.com/docs/library/mdi/getting-started/webfont/
+//import '@mdi/font/css/materialdesignicons.min.css'
+//import './stylesheets/material-design.css'
+import '@mdi/font/scss/materialdesignicons.scss'
 import './stylesheets/MaterialDesignDef.js'
 
 import { GttClient } from './components/gtt-client'

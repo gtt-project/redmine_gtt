@@ -326,7 +326,7 @@ export class GttClient {
 
     // Control button
     const maximizeCtrl = new Button({
-      html: '<i class="material-icons" >zoom_out_map</i>',
+      html: '<i class="mdi mdi-scan-helper" ></i>',
       title: this.i18n.control.maximize,
       handleClick: () => {
         this.zoomToExtent(true);
@@ -493,20 +493,20 @@ export class GttClient {
       })
 
       // Material design icon
-      let mdi = 'place'
+      let mdi = 'mdi-map-marker-outline'
 
       switch (type.toLowerCase()) {
          case 'linestring':
-          mdi = 'polyline'
+          mdi = 'mdi-vector-polyline'
           break;
 
         case 'polygon':
-          mdi = 'format_shapes'
+          mdi = 'mdi-vector-polygon'
           break;
         }
 
       const control = new Toggle({
-        html: `<i class="material-icons" >${mdi}</i>`,
+        html: `<i class="mdi ${mdi}" ></i>`,
         title: this.i18n.control[type.toLowerCase()],
         interaction: draw,
         active: (idx === 0)
@@ -565,7 +565,7 @@ export class GttClient {
       });
 
       editbar.addControl(new Button({
-        html: '<i class="material-icons">file_upload</i>',
+        html: '<i class="mdi mdi-file-upload"></i>',
         title: this.i18n.control.upload,
         handleClick: () => {
           dialog.dialog('open')
@@ -808,6 +808,7 @@ export class GttClient {
           form: 'blazon',
           gradient: false,
           glyph: self.getSymbol(feature),
+          font: '"Material Design Icons" custme-icons',
           fontSize: 0.7,
           radius: 18,
           offsetY: -18,
@@ -832,6 +833,7 @@ export class GttClient {
         })
       })
     )
+
 
     return styles
   }
@@ -1045,7 +1047,7 @@ export class GttClient {
 
     // Control button
     const geolocationCtrl = new Toggle({
-      html: '<i class="material-icons">my_location</i>',
+      html: '<i class="mdi mdi-crosshairs-gps"></i>',
       title: this.i18n.control.geolocation,
       active: false,
       onToggle: (active: boolean) => {
@@ -1234,7 +1236,7 @@ export class GttClient {
 
     // Control button
     const geocodingCtrl = new Toggle({
-      html: '<i class="material-icons">manage_search</i>',
+      html: '<i class="mdi mdi-map-search-outline">manage_search</i>',
       title: this.i18n.control.geocoding,
       className: "ctl-geocoding",
       onToggle: (active: boolean) => {
@@ -1303,6 +1305,7 @@ export class GttClient {
       for (const font in FontSymbol.defs.fonts) {
         symbolFonts.push(font)
       }
+      symbolFonts.push('"Material Design Icons"')
       if (symbolFonts.length > 0) {
         (document as any).fonts.addEventListener('loadingdone', (e: any) => {
           const fontIndex = e.fontfaces.findIndex((font: any) => {
@@ -1329,6 +1332,9 @@ export class GttClient {
           }
         })
       }
+      (async () => {
+        await document.fonts.load("16px Material Design Icons");
+      })();
     }
   }
 

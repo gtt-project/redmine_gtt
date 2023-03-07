@@ -88,10 +88,10 @@
   resolved "https://registry.yarnpkg.com/@mapbox/unitbezier/-/unitbezier-0.0.0.tgz#15651bd553a67b8581fb398810c98ad86a34524e"
   integrity sha512-HPnRdYO0WjFjRTSwO3frz1wKaU649OBFPX3Zo/2WZvuRi6zMiRGui8SnPQiQABgqCf8YikDe5t3HViTVw1WUzA==
 
-"@material-design-icons/font@^0.14.2":
-  version "0.14.2"
-  resolved "https://registry.yarnpkg.com/@material-design-icons/font/-/font-0.14.2.tgz#5b02c3bda37022645cc2df0200be02b6bc91ab4a"
-  integrity sha512-svLx/Q6WidjiSE1rT9joMy241x+gLb0SfNrVR0Kd3GyPyU5HXRmXvjWDj2h2RHzAsgxFqPGez4hL+EmbjZiYSg==
+"@mdi/font@^7.1.96":
+  version "7.1.96"
+  resolved "https://registry.yarnpkg.com/@mdi/font/-/font-7.1.96.tgz#211ca4acfa31964278e5085de595e8c73967d400"
+  integrity sha512-Imag6npmfkBDi2Ze2jiZVAPTDIKLxhz2Sx82xJ2zctyAU5LYJejLI5ChnDwiD9bMkQfVuzEsI98Q8toHyC+HCg==
 
 "@petamoriken/float16@^3.4.7":
   version "3.7.1"
