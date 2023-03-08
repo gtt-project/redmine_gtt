@@ -16,6 +16,7 @@ api.project do
   else
     api.geojson nil
   end
+  api.rotation    @project.map_rotation
 
   render_api_custom_values @project.visible_custom_field_values, api
   render_api_includes(@project, api)
