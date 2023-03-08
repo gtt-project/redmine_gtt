@@ -13,7 +13,7 @@ export const gtt_setting = ():void => {
       })
       const style = item.optgroup.toLowerCase().split(' ').join('-')
       switch (style) {
-        case 'material-design-icons':
+        case '"material-design-icons"':
           $('<i>', {
             class: 'ui-icons mdi mdi-' + item.value,
             title: item.label,
@@ -58,7 +58,7 @@ export const gtt_setting = ():void => {
                 element.nextElementSibling.className = 'mdi mdi-' + i
                 element.nextElementSibling.textContent = ''
                 break;
-              case 'material-design-icons':
+              case '"material-design-icons"':
                 element.nextElementSibling.className = 'mdi mdi-' + i
                 element.nextElementSibling.textContent = ''
                 break;
@@ -83,7 +83,7 @@ export const gtt_setting = ():void => {
               document.querySelector(`#icon_${element.id}`).className = style
               document.querySelector(`#icon_${element.id}`).textContent = data.item.value
               break;
-            case 'material-design-icons':
+            case '"material-design-icons"':
               document.querySelector(`#icon_${element.id}`).className = "mdi mdi-" +  data.item.value
               document.querySelector(`#icon_${element.id}`).textContent = ''
               break;

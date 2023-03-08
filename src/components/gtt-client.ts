@@ -1332,7 +1332,7 @@ export class GttClient {
         })
       }
       (async () => {
-        await document.fonts.load('16px "Material Design Icons"');
+        await document.fonts.load('19.04px "Material Design Icons"');
       })();
     }
   }
