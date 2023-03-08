@@ -326,7 +326,7 @@ export class GttClient {
 
     // Control button
     const maximizeCtrl = new Button({
-      html: '<i class="mdi mdi-scan-helper" ></i>',
+      html: '<i class="mdi mdi-arrow-expand-all" ></i>',
       title: this.i18n.control.maximize,
       handleClick: () => {
         this.zoomToExtent(true);
@@ -808,7 +808,6 @@ export class GttClient {
           form: 'blazon',
           gradient: false,
           glyph: self.getSymbol(feature),
-          font: '"Material Design Icons" custme-icons',
           fontSize: 0.7,
           radius: 18,
           offsetY: -18,
@@ -1333,7 +1332,7 @@ export class GttClient {
         })
       }
       (async () => {
-        await document.fonts.load("16px Material Design Icons");
+        await document.fonts.load('16px "Material Design Icons"');
       })();
     }
   }
