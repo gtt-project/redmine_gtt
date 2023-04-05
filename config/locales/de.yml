@@ -83,3 +83,5 @@ de:
     modal:
       load: Laden
       cancel: Abbrechen
+  gtt_map_rotate_label: Kartenrotation
+  gtt_map_rotate_info_html: Hold down <code>Shift+Alt</code> and drag the map to rotate.
