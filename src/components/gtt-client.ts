@@ -957,31 +957,40 @@ export class GttClient {
    * Parse page for WKT strings in history
    */
   parseHistory() {
-    document.querySelectorAll('div#history ul.details i').forEach((item: Element) => {
-      const regex = new RegExp(/\b(?:POINT|LINESTRING|POLYGON)\b\s?(\({1,}[-]?\d+([,. ]\s?[-]?\d+)*\){1,})/gi)
-      const match = item.innerHTML.match(regex)
-      if (match !== null) {
-        const feature = new WKT().readFeature(
-          match.join(''), {
-            dataProjection: 'EPSG:4326',
-            featureProjection: 'EPSG:3857'
-          }
-        )
-        let wkt = new WKT().writeFeature(
-          feature, {
-            dataProjection: 'EPSG:4326',
-            featureProjection: 'EPSG:3857',
-            decimals: 5
-          }
-        )
-        // Shorten long WKT's
-        if (wkt.length > 30) {
-          const parts = wkt.split(' ')
-          wkt = parts[0] + '...' + parts[parts.length - 1]
-        }
-        item.innerHTML = `<a href="#" onclick="event.preventDefault();" class="wkt" data-feature="${match.join('')}">${wkt}</a>`
+    const historyItems = document.querySelectorAll('div#history ul.details i');
+
+    const regex = /\b(?:POINT|LINESTRING|POLYGON)\b\s?\({1,}[-]?\d+([,. ]\s?[-]?\d+)*\){1,}/gi;
+    const dataProjection = 'EPSG:4326';
+    const featureProjection = 'EPSG:3857';
+
+    const parseAndFormatWKT = (wkt: string) => {
+      const feature = new WKT().readFeature(wkt, { dataProjection, featureProjection });
+      let formattedWKT = new WKT().writeFeature(feature, { dataProjection, featureProjection, decimals: 5 });
+
+      if (formattedWKT.length > 30) {
+        const parts = formattedWKT.split(' ');
+        formattedWKT = `${parts[0]}...${parts[parts.length - 1]}`;
       }
-    })
+
+      return formattedWKT;
+    };
+
+    historyItems.forEach((item: Element) => {
+      const match = item.innerHTML.match(regex);
+
+      if (match !== null) {
+        const wkt = parseAndFormatWKT(match.join(''));
+
+        const link = document.createElement('a');
+        link.href = '#';
+        link.classList.add('wkt');
+        link.dataset.feature = match.join('');
+        link.textContent = wkt;
+
+        // Replace current node with new link.
+        item.replaceWith(link);
+      }
+    });
   }
 
   /**
