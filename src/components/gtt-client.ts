@@ -1,83 +1,65 @@
-import 'ol/ol.css'
-import 'ol-ext/dist/ol-ext.min.css'
-import { Map, Feature, View, Geolocation } from 'ol'
-import 'ol-ext/filter/Base'
-import { Geometry, Point } from 'ol/geom'
-import { GeoJSON, WKT, MVT } from 'ol/format'
-import { Layer, Tile, Image, VectorTile as VTLayer } from 'ol/layer'
-import VectorLayer from 'ol/layer/Vector'
-import { OSM, XYZ, TileWMS, ImageWMS, VectorTile as VTSource } from 'ol/source'
-import { Style, Fill, Stroke, Circle } from 'ol/style'
-import { OrderFunction } from 'ol/render'
+// OpenLayers core imports
+import 'ol/ol.css';
+import { Map, Feature, View, Geolocation } from 'ol';
+import { Geometry, Point } from 'ol/geom';
+import { GeoJSON, WKT, MVT } from 'ol/format';
+import { Layer, Tile, Image, VectorTile as VTLayer } from 'ol/layer';
+import VectorLayer from 'ol/layer/Vector';
+import { OSM, XYZ, TileWMS, ImageWMS, VectorTile as VTSource } from 'ol/source';
+import { Style, Fill, Stroke, Circle } from 'ol/style';
+import { OrderFunction } from 'ol/render';
 import {
   defaults as interactions_defaults,
   MouseWheelZoom,
   Modify,
   Draw,
   Select,
-} from 'ol/interaction'
-import { focus as events_condifition_focus } from 'ol/events/condition'
-import { defaults as control_defaults, FullScreen, Rotate } from 'ol/control'
-import { transform, fromLonLat, transformExtent } from 'ol/proj'
-import { createEmpty, extend, getCenter, containsCoordinate } from 'ol/extent'
-import { FeatureCollection } from 'geojson'
-import { quick_hack } from './quick_hack'
-import Vector from 'ol/source/Vector'
-import Ordering from 'ol-ext/render/Ordering'
-import Shadow from 'ol-ext/style/Shadow'
-import FontSymbol from 'ol-ext/style/FontSymbol'
-import Mask from 'ol-ext/filter/Mask'
-import Bar from 'ol-ext/control/Bar'
-import Toggle from 'ol-ext/control/Toggle'
-import Button from 'ol-ext/control/Button'
-import TextButton from 'ol-ext/control/TextButton'
-import LayerPopup from 'ol-ext/control/LayerPopup'
-import LayerSwitcher from 'ol-ext/control/LayerSwitcher'
-import Popup from 'ol-ext/overlay/Popup'
-import { position } from 'ol-ext/control/control'
-import { ResizeObserver } from '@juggle/resize-observer'
-import VectorSource from 'ol/source/Vector'
-import { FeatureLike } from 'ol/Feature'
-import TileSource from 'ol/source/Tile'
-import ImageSource from 'ol/source/Image'
-import { Options as ImageWMSOptions } from 'ol/source/ImageWMS'
-import { Options as VectorTileOptions } from 'ol/source/VectorTile'
+} from 'ol/interaction';
+import { focus as events_condifition_focus } from 'ol/events/condition';
+import { defaults as control_defaults, FullScreen, Rotate } from 'ol/control';
+import { transform, fromLonLat, transformExtent } from 'ol/proj';
+import { createEmpty, extend, getCenter, containsCoordinate } from 'ol/extent';
+import Vector from 'ol/source/Vector';
+import VectorSource from 'ol/source/Vector';
+import { FeatureLike } from 'ol/Feature';
+import TileSource from 'ol/source/Tile';
+import ImageSource from 'ol/source/Image';
+import { Options as ImageWMSOptions } from 'ol/source/ImageWMS';
+import { Options as VectorTileOptions } from 'ol/source/VectorTile';
 import { applyStyle } from 'ol-mapbox-style';
 
-interface GttClientOption {
-  target: HTMLDivElement | null
-}
+// OpenLayers extension imports
+import 'ol-ext/dist/ol-ext.min.css';
+import 'ol-ext/filter/Base';
+import Ordering from 'ol-ext/render/Ordering';
+import Shadow from 'ol-ext/style/Shadow';
+import FontSymbol from 'ol-ext/style/FontSymbol';
+import Mask from 'ol-ext/filter/Mask';
+import Bar from 'ol-ext/control/Bar';
+import Toggle from 'ol-ext/control/Toggle';
+import Button from 'ol-ext/control/Button';
+import TextButton from 'ol-ext/control/TextButton';
+import LayerPopup from 'ol-ext/control/LayerPopup';
+import LayerSwitcher from 'ol-ext/control/LayerSwitcher';
+import Popup from 'ol-ext/overlay/Popup';
+import { position } from 'ol-ext/control/control';
 
-interface LayerObject {
-  type: string
-  id: number
-  name: string
-  baselayer: boolean
-  options: object
-}
+// Other imports
+import { FeatureCollection } from 'geojson';
+import { ResizeObserver } from '@juggle/resize-observer';
 
-interface FilterOption {
-  location: boolean
-  distance: boolean
-}
+// Import types
+import {
+  GttClientOption,
+  LayerObject,
+  FilterOption,
+  TileLayerSource,
+  ImageLayerSource,
+  VTLayerSource,
+} from '../@types/types';
 
-interface TileLayerSource {
-  layer: typeof Tile
-  source: typeof OSM | typeof XYZ | typeof TileWMS
-  type: string
-}
-
-interface ImageLayerSource {
-  layer: typeof Image
-  source: typeof ImageWMS
-  type: string
-}
-
-interface VTLayerSource {
-  layer: typeof VTLayer
-  source: typeof VTSource
-  type: string
-}
+// Import constants
+import { quick_hack } from '../@types/constants';
 
 export class GttClient {
   readonly map: Map
@@ -96,73 +78,58 @@ export class GttClient {
     this.filters = {
       location: false,
       distance: false
-    }
-    this.maps = []
-    this.geolocations = []
+    };
+    this.maps = [];
+    this.geolocations = [];
 
     // needs target
     if (!options.target) {
-      return
+      return;
     }
 
-    const gtt_defaults = document.querySelector('#gtt-defaults') as HTMLDivElement
+    const gtt_defaults = document.querySelector('#gtt-defaults') as HTMLDivElement;
     if (!gtt_defaults) {
-      return
+      return;
     }
 
-    this.defaults = gtt_defaults.dataset
+    this.defaults = gtt_defaults.dataset;
 
-    if (this.defaults.lon === null || this.defaults.lon === undefined) {
-      this.defaults.lon = quick_hack.lon.toString()
-    }
-    if (this.defaults.lat === null || this.defaults.lat === undefined) {
-      this.defaults.lat = quick_hack.lat.toString()
-    }
-    if (this.defaults.zoom === null || this.defaults.zoom === undefined) {
-      this.defaults.zoom = quick_hack.zoom.toString()
-    }
-    if (this.defaults.maxzoom === null || this.defaults.maxzoom === undefined) {
-      this.defaults.maxzoom = quick_hack.maxzoom.toString()
-    }
-    if (this.defaults.fitMaxzoom === null || this.defaults.fitMaxzoom === undefined) {
-      this.defaults.fitMaxzoom = quick_hack.fitMaxzoom.toString()
-    }
-    if (this.defaults.geocoder === null || this.defaults.geocoder === undefined) {
-      this.defaults.geocoder = JSON.stringify(quick_hack.geocoder)
+    const keysToCheck = ['lon', 'lat', 'zoom', 'maxzoom', 'fitMaxzoom', 'geocoder'];
+
+    for (const key of keysToCheck) {
+      if (this.defaults[key] == null) {
+        this.defaults[key] = quick_hack[key as keyof typeof quick_hack]?.toString() ?? '';
+      }
     }
 
-    this.contents = options.target.dataset
-    this.i18n = JSON.parse(this.defaults.i18n)
+    this.contents = options.target.dataset;
+    this.i18n = JSON.parse(this.defaults.i18n);
 
     // create map at first
+    const { zoomInTipLabel, zoomOutTipLabel } = this.i18n.control;
     this.map = new Map({
       target: options.target,
-      //layers: this.layerArray,
       interactions: interactions_defaults({mouseWheelZoom: false}).extend([
         new MouseWheelZoom({
-          constrainResolution: true, // force zooming to a integer zoom
-          condition: events_condifition_focus // only wheel/trackpad zoom when the map has the focus
+          constrainResolution: true,
+          condition: events_condifition_focus
         })
       ]),
       controls: control_defaults({
         rotateOptions: {},
-        attributionOptions: {
-          collapsible: false
-        },
-        zoomOptions: {
-          zoomInTipLabel: this.i18n.control.zoom_in,
-          zoomOutTipLabel: this.i18n.control.zoom_out
-        }
+        attributionOptions: { collapsible: false },
+        zoomOptions: { zoomInTipLabel, zoomOutTipLabel }
       })
-    })
+    });
 
-    let features: Feature<Geometry>[] | null = null
-    if (this.contents.geom && this.contents.geom !== null && this.contents.geom !== 'null') {
-      features = new GeoJSON().readFeatures(
-        JSON.parse(this.contents.geom), {
-          featureProjection: 'EPSG:3857'
-        }
-      )
+    // Use optional chaining to simplify null checks
+    // Use optional chaining to simplify null checks
+    const geom = this.contents?.geom;
+    let features: Feature<Geometry>[] = []; // Set a default value for features array
+    if (geom) {
+      // Destructure object and rename variable for better readability
+      const { featureProjection: proj } = { featureProjection: 'EPSG:3857' };
+      features = new GeoJSON().readFeatures(JSON.parse(geom), { featureProjection: proj });
     }
 
     // Fix FireFox unloaded font issue
@@ -1401,42 +1368,39 @@ const getLayerSource = (source: string, class_name: string): TileLayerSource | I
   return undefined
 }
 
-const getCookie = (cname:string):string => {
-  var name = cname + '='
-  var ca = document.cookie.split(';')
-  for(var i = 0; i < ca.length; i++) {
-    var c = ca[i]
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1)
+const getCookie = (cname: string): string => {
+  const name = cname + '=';
+  const decodedCookie = decodeURIComponent(document.cookie);
+  const ca = decodedCookie.split(';');
+
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === ' ') {
+      c = c.substring(1);
     }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length)
+    if (c.indexOf(name) === 0) {
+      return c.substring(name.length, c.length);
     }
   }
-  return ''
+  return '';
 }
 
-const radiansToDegrees = (radians: number) => {
-  let degrees = radians * (180 / Math.PI)
-  degrees = (degrees % 360 + 360) % 360
-  return degrees
+const radiansToDegrees = (radians: number): number => {
+  const degrees = radians * (180 / Math.PI);
+  return (degrees + 360) % 360;
 }
 
-const degreesToRadians = (degrees: number) => {
-  return degrees * (Math.PI / 180)
-}
+const degreesToRadians = (degrees: number): number => degrees * (Math.PI / 180);
 
-const getMapSize = (map: Map) => {
-  let size = map.getSize()
-  if (size.length === 2 && size[0] <= 0 && size[1] <= 0) {
-    const target = map.getTarget() as HTMLElement
-    const target_obj = document.querySelector(`div#${target.id}`)
-    size = [
-      target_obj.clientWidth,
-      target_obj.clientHeight
-    ]
+const getMapSize = (map: Map): number[] => {
+  const [width, height] = map.getSize();
+
+  if (width <= 0 || height <= 0) {
+    const target = map.getTarget() as HTMLElement;
+    return [target.clientWidth, target.clientHeight];
   }
-  return size
+
+  return [width, height];
 }
 
 const evaluateComparison = (left: any, operator: any, right: any): any => {
@@ -1448,32 +1412,9 @@ const evaluateComparison = (left: any, operator: any, right: any): any => {
   }
 }
 
-const getObjectPathValue = (obj: any, path: any, def: any = null) => {
-  const stringToPath = function (path: any) {
-    if (typeof path !== 'string') {
-      return path
-    }
-    var output: Array<string> = []
-    path.split('.').forEach(item => {
-      item.split(/\[([^}]+)\]/g).forEach(key => {
-        if (key.length > 0) {
-          output.push(key)
-        }
-      })
-    })
-    return output
-  }
-
-  path = stringToPath(path)
-  let current = obj
-  for (var i = 0; i < path.length; i++) {
-    if (!current[path[i]]) {
-      return def
-    }
-    current = current[path[i]]
-  }
-
-  return current
+const getObjectPathValue = (obj: any, path: string | Array<string>, def: any = null) => {
+  const pathArr = Array.isArray(path) ? path : path.split(".").flatMap((key) => key.split(/\[([^}]+)\]/g).filter(Boolean));
+  return pathArr.reduce((acc, key) => acc?.[key], obj) ?? def;
 }
 
 /**
