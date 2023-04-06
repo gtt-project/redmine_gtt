@@ -18,9 +18,9 @@ Redmine GTT plugins **require PostgreSQL/PostGIS** and will not work with SQLite
 or MariaDB/MySQL!!!
 
 - Redmine >= 4.2.0
-- PostgreSQL >= 10
+- PostgreSQL >= 12
 - PostGIS >= 2.5
-- NodeJS v14
+- NodeJS v18
 - yarn
 
 ## Installation
