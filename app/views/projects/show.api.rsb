@@ -7,13 +7,16 @@ api.project do
   api.parent(:id => @project.parent.id, :name => @project.parent.name) if @project.parent && @project.parent.visible?
   api.status      @project.status
   api.is_public   @project.is_public?
-  api.rotation    @project.map_rotation
+  api.inherit_members @project.inherit_members?
+  api.default_version(:id => @project.default_version.id, :name => @project.default_version.name) if @project.default_version
+  api.default_assignee(:id => @project.project.default_assigned_to.id, :name => @project.project.default_assigned_to.name) if @project.default_assigned_to
 
   if @project.geom
     api.geojson (params[:format] == "json") ? @project.geojson : @project.geojson.to_json
   else
     api.geojson nil
   end
+  api.rotation    @project.map_rotation
 
   render_api_custom_values @project.visible_custom_field_values, api
   render_api_includes(@project, api)
