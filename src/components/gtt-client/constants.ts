@@ -1,5 +1,5 @@
 // constants.ts
-export const quick_hack = {
+export const constants = {
   lon: 139.691706,
   lat: 35.689524,
   zoom: 13,

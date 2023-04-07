@@ -43,6 +43,7 @@ module.exports = {
     ],
   },
   devtool: false, // Disable source maps
+  // devtool: 'source-map', // Generate source maps for easier debugging
   resolve: {
     extensions: ['.ts', '.js'], // Specify file extensions to resolve
   },
