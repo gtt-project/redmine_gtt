@@ -37,12 +37,12 @@ import { ResizeObserver } from '@juggle/resize-observer';
 
 // Import types
 import {
-  GttClientOption,
-  LayerObject,
-  FilterOption,
-  TileLayerSource,
-  ImageLayerSource,
-  VTLayerSource,
+  IGttClientOption,
+  ILayerObject,
+  IFilterOption,
+  ITileLayerSource,
+  IImageLayerSource,
+  IVTLayerSource,
 } from './interfaces';
 
 import { constants as quick_hack } from './constants';
@@ -58,12 +58,12 @@ export default class GttClient {
   contents: DOMStringMap
   i18n: any
   toolbar: Bar
-  filters: FilterOption
+  filters: IFilterOption
   vector: VectorLayer<VectorSource<Geometry>>
   bounds: VectorLayer<VectorSource<Geometry>>
   geolocations: Array<Geolocation>
 
-  constructor(options: GttClientOption) {
+  constructor(options: IGttClientOption) {
     this.filters = {
       location: false,
       distance: false
@@ -145,12 +145,12 @@ export default class GttClient {
     this.layerArray = []
 
     if (this.contents.layers) {
-      const layers = JSON.parse(this.contents.layers) as [LayerObject]
+      const layers = JSON.parse(this.contents.layers) as [ILayerObject]
       layers.forEach((layer) => {
         const s = layer.type.split('.')
         const layerSource = getLayerSource(s[1], s[2])
         if ( layerSource.type === "TileLayerSource") {
-          const config = layerSource as TileLayerSource
+          const config = layerSource as ITileLayerSource
           const l = new (config.layer)({
             visible: false,
             source: new (config.source)(layer.options as any)
@@ -170,7 +170,7 @@ export default class GttClient {
           }
           this.layerArray.push(l)
         } else if (layerSource.type === "ImageLayerSource") {
-          const config = layerSource as ImageLayerSource
+          const config = layerSource as IImageLayerSource
           const l = new (config.layer)({
             visible: false,
             source: new (config.source)(layer.options as ImageWMSOptions)
@@ -190,7 +190,7 @@ export default class GttClient {
           }
           this.layerArray.push(l)
         } else if (layerSource.type === "VTLayerSource") {
-          const config = layerSource as VTLayerSource
+          const config = layerSource as IVTLayerSource
           const options = layer.options as VectorTileOptions
           options.format = new MVT()
           const l = new (config.layer)({

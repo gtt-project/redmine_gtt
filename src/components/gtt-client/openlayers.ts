@@ -18,7 +18,7 @@ import Popup from 'ol-ext/overlay/Popup';
 import { position } from 'ol-ext/control/control';
 import { GeoJSON } from 'ol/format';
 
-import { TileLayerSource, ImageLayerSource, VTLayerSource } from './interfaces';
+import { ITileLayerSource, IImageLayerSource, IVTLayerSource } from './interfaces';
 import { getCookie, getMapSize, degreesToRadians, updateForm } from "./helpers";
 
 /**
@@ -194,7 +194,7 @@ export function setPopover() {
 export const getLayerSource = (
   source: string,
   class_name: string,
-): TileLayerSource | ImageLayerSource | VTLayerSource | undefined => {
+): ITileLayerSource | IImageLayerSource | IVTLayerSource | undefined => {
   if (source === 'source') {
     if (class_name === 'OSM') {
       return { layer: TileLayer, source: OSM, type: 'TileLayerSource' };
