@@ -19,121 +19,129 @@ import { getLayerSource, setBasemap, getStyle } from "../openlayers";
 export function initLayers(this: any): Layer[] {
   this.layerArray = [];
 
-  let features: Feature<Geometry>[] | null = null
+  const features = readGeoJSONFeatures.call(this);
+  reloadFontSymbol.call(this);
+  updateForm(this, features);
+
+  if (this.contents.layers) {
+    createLayers.call(this);
+    addLayersToMap.call(this);
+  }
+
+  setBasemap.call(this);
+  addBoundsLayer.call(this);
+  addVectorLayer.call(this, features);
+  renderProjectBoundary.call(this);
+
+  return this.layerArray;
+}
+
+function readGeoJSONFeatures(this: any): Feature<Geometry>[] | null {
   if (this.contents.geom && this.contents.geom !== null && this.contents.geom !== 'null') {
-    features = new GeoJSON().readFeatures(
+    return new GeoJSON().readFeatures(
       JSON.parse(this.contents.geom), {
         featureProjection: 'EPSG:3857'
       }
-    )
+    );
+  }
+  return null;
+}
+
+function createLayers(this: any): void {
+  const layers = JSON.parse(this.contents.layers) as [ILayerObject];
+  layers.forEach((layer) => {
+    const s = layer.type.split('.');
+    const layerSource = getLayerSource(s[1], s[2]);
+    const l = createLayer(layer, layerSource);
+
+    if (l) {
+      setLayerProperties(l, layer);
+      handleLayerVisibilityChange(l, layer);
+      this.layerArray.push(l);
+    }
+  }, this);
+}
+
+function createLayer(layer: ILayerObject, layerSource: ITileLayerSource | IImageLayerSource | IVTLayerSource): Layer | null {
+  switch (layerSource.type) {
+    case "TileLayerSource":
+      return createTileLayer(layer, layerSource as ITileLayerSource);
+    case "ImageLayerSource":
+      return createImageLayer(layer, layerSource as IImageLayerSource);
+    case "VTLayerSource":
+      return createVTLayer(layer, layerSource as IVTLayerSource);
+    default:
+      return null;
+  }
+}
+
+function createTileLayer(layer: ILayerObject, config: ITileLayerSource): Tile<TileSource> {
+  return new (config.layer)({
+    visible: false,
+    source: new (config.source)(layer.options as any)
+  });
+}
+
+function createImageLayer(layer: ILayerObject, config: IImageLayerSource): Image<ImageSource> {
+  return new (config.layer)({
+    visible: false,
+    source: new (config.source)(layer.options as ImageWMSOptions)
+  });
+}
+
+function createVTLayer(layer: ILayerObject, config: IVTLayerSource): VTLayer {
+  const options = layer.options as VectorTileOptions;
+  options.format = new MVT();
+  const l = new (config.layer)({
+    visible: false,
+    source: new (config.source)(options),
+    declutter: true
+  }) as VTLayer;
+
+  // Apply style URL if provided
+  if ("styleUrl" in options) {
+    applyStyle(l, options.styleUrl);
   }
 
-  // Fix FireFox unloaded font issue
-  reloadFontSymbol.call(this)
+  return l;
+}
 
-  // TODO: this is only necessary because setting the initial form value
-  //  through the template causes encoding problems
-  updateForm(this, features)
+function setLayerProperties(layer: Layer, layerObject: ILayerObject): void {
+  layer.set('lid', layerObject.id);
+  layer.set('title', layerObject.name);
+  layer.set('baseLayer', layerObject.baselayer);
+}
 
-  if (this.contents.layers) {
-    const layers = JSON.parse(this.contents.layers) as [ILayerObject]
-    layers.forEach((layer) => {
-      const s = layer.type.split('.')
-      const layerSource = getLayerSource(s[1], s[2])
-      if ( layerSource.type === "TileLayerSource") {
-        const config = layerSource as ITileLayerSource
-        const l = new (config.layer)({
-          visible: false,
-          source: new (config.source)(layer.options as any)
-        })
-
-        l.set('lid', layer.id)
-        l.set('title', layer.name)
-        l.set('baseLayer', layer.baselayer)
-        if( layer.baselayer ) {
-          l.on('change:visible', e => {
-            const target = e.target as Tile<TileSource>
-            if (target.getVisible()) {
-              const lid = target.get('lid')
-              document.cookie = `_redmine_gtt_basemap=${lid};path=/`
-            }
-          })
-        }
-        this.layerArray.push(l)
-      } else if (layerSource.type === "ImageLayerSource") {
-        const config = layerSource as IImageLayerSource
-        const l = new (config.layer)({
-          visible: false,
-          source: new (config.source)(layer.options as ImageWMSOptions)
-        })
-
-        l.set('lid', layer.id)
-        l.set('title', layer.name)
-        l.set('baseLayer', layer.baselayer)
-        if( layer.baselayer ) {
-          l.on('change:visible', e => {
-            const target = e.target as Image<ImageSource>
-            if (target.getVisible()) {
-              const lid = target.get('lid')
-              document.cookie = `_redmine_gtt_basemap=${lid};path=/`
-            }
-          })
-        }
-        this.layerArray.push(l)
-      } else if (layerSource.type === "VTLayerSource") {
-        const config = layerSource as IVTLayerSource
-        const options = layer.options as VectorTileOptions
-        options.format = new MVT()
-        const l = new (config.layer)({
-          visible: false,
-          source: new (config.source)(options),
-          declutter: true
-        }) as VTLayer
-
-        // Apply style URL if provided
-        if ("styleUrl" in options) {
-          applyStyle(l,options.styleUrl)
-        }
-
-        l.set('lid', layer.id)
-        l.set('title', layer.name)
-        l.set('baseLayer', layer.baselayer)
-        if( layer.baselayer ) {
-          l.on('change:visible', (e: { target: any }) => {
-            const target = e.target as any
-            if (target.getVisible()) {
-              const lid = target.get('lid')
-              document.cookie = `_redmine_gtt_basemap=${lid};path=/`
-            }
-          })
-        }
-        this.layerArray.push(l)
+function handleLayerVisibilityChange(layer: Layer, layerObject: ILayerObject): void {
+  if (layerObject.baselayer) {
+    layer.on('change:visible', e => {
+      const target = e.target as Layer;
+      if (target.getVisible()) {
+        const lid = target.get('lid');
+        document.cookie = `_redmine_gtt_basemap=${lid};path=/`;
       }
-    }, this)
-
-    /**
-     * Ordering the Layers for the LayerSwitcher Control.
-     * BaseLayers are added first.
-     */
-    this.layerArray.forEach( (l:Layer) => {
-      if( l.get("baseLayer") ) {
-        this.map.addLayer(l)
-      }
-    })
-
-    this.containsOverlay = false;
-
-    this.layerArray.forEach( (l:Layer) => {
-      if( !l.get("baseLayer") ) {
-        this.map.addLayer(l)
-        this.containsOverlay = true
-      }
-    })
+    });
   }
+}
 
-  setBasemap.call(this)
+function addLayersToMap(this: any): void {
+  this.layerArray.forEach((l: Layer) => {
+    if (l.get("baseLayer")) {
+      this.map.addLayer(l);
+    }
+  });
 
-  // Layer for project boundary
+  this.containsOverlay = false;
+
+  this.layerArray.forEach((l: Layer) => {
+    if (!l.get("baseLayer")) {
+      this.map.addLayer(l);
+      this.containsOverlay = true;
+    }
+  });
+}
+
+function addBoundsLayer(this: any): void {
   this.bounds = new VectorLayer({
     source: new VectorSource(),
     style: new Style({
@@ -142,18 +150,18 @@ export function initLayers(this: any): Layer[] {
       }),
       stroke: new Stroke({
         color: 'rgba(220,26,26,0.7)',
-        // lineDash: [12,1,12],
         width: 1
       })
     })
-  })
-  this.bounds.set('title', 'Boundaries')
-  this.bounds.set('displayInLayerSwitcher', false)
-  this.layerArray.push(this.bounds)
-  this.map.addLayer(this.bounds)
+  });
+  this.bounds.set('title', 'Boundaries');
+  this.bounds.set('displayInLayerSwitcher', false);
+  this.layerArray.push(this.bounds);
+  this.map.addLayer(this.bounds);
+}
 
-  const yOrdering: unknown = Ordering.yOrdering()
-
+function addVectorLayer(this: any, features: Feature<Geometry>[] | null): void {
+  const yOrdering: unknown = Ordering.yOrdering();
   this.vector = new VectorLayer<VectorSource<Geometry>>({
     source: new VectorSource({
       'features': features,
@@ -161,35 +169,34 @@ export function initLayers(this: any): Layer[] {
     }),
     renderOrder: yOrdering as OrderFunction,
     style: getStyle.bind(this)
-  })
-  this.vector.set('title', 'Features')
-  this.vector.set('displayInLayerSwitcher', false)
-  this.layerArray.push(this.vector)
-  this.map.addLayer(this.vector)
+  });
+  this.vector.set('title', 'Features');
+  this.vector.set('displayInLayerSwitcher', false);
+  this.layerArray.push(this.vector);
+  this.map.addLayer(this.vector);
+}
 
-  // Render project boundary if bounds are available
+function renderProjectBoundary(this: any): void {
   if (this.contents.bounds && this.contents.bounds !== null) {
     const boundary = new GeoJSON().readFeature(
       this.contents.bounds, {
         featureProjection: 'EPSG:3857'
       }
-    )
-    this.bounds.getSource().addFeature(boundary)
+    );
+    this.bounds.getSource().addFeature(boundary);
     if (this.contents.bounds === this.contents.geom) {
-      this.vector.setVisible(false)
+      this.vector.setVisible(false);
     }
-    this.layerArray.forEach((layer:Layer) => {
+    this.layerArray.forEach((layer: Layer) => {
       if (layer.get('baseLayer')) {
         layer.addFilter(new Mask({
           feature: boundary,
           inner: false,
           fill: new Fill({
-            color: [220,26,26,.1]
+            color: [220, 26, 26, 0.1]
           })
-        }))
+        }));
       }
-    })
+    });
   }
-
-  return this.layerArray;
 }
