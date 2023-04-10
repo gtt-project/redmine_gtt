@@ -1,10 +1,12 @@
-// This line exports all the members from the redmine module file.
+// Export all members from the 'redmine' module file.
 export * from './redmine';
 
-// import 'ol/ol.css';
-// import 'ol-ext/dist/ol-ext.min.css';
-// import 'ol-ext/filter/Base';
+// Import OpenLayers and OpenLayers-Extensions styles
+import 'ol/ol.css';
+import 'ol-ext/dist/ol-ext.min.css';
 
-// This line imports the GttClient class from the gtt-client-class module file and then re-exports it as the default export of this module file.
+// Import the GttClient class from the 'GttClient' module file and re-export
+// it as the default export of this module file. This allows other modules
+// to import the GttClient class directly from this file.
 import GttClient from './GttClient';
 export { GttClient };
