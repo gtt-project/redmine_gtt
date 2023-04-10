@@ -1,4 +1,4 @@
-import GttClient from './gtt-client-class';
+import GttClient from '../GttClient';
 
 /**
  * Extend core Redmine's buildFilterRow method

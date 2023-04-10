@@ -18,8 +18,8 @@ import Popup from 'ol-ext/overlay/Popup';
 import { position } from 'ol-ext/control/control';
 import { GeoJSON } from 'ol/format';
 
-import { ITileLayerSource, IImageLayerSource, IVTLayerSource } from './interfaces';
-import { getCookie, getMapSize, degreesToRadians, updateForm } from "./helpers";
+import { ITileLayerSource, IImageLayerSource, IVTLayerSource } from '../interfaces';
+import { getCookie, getMapSize, degreesToRadians, updateForm } from "../helpers";
 
 /**
  *  Add editing tools

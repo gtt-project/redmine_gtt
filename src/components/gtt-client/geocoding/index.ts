@@ -6,7 +6,7 @@ import Bar from 'ol-ext/control/Bar';
 import Toggle from 'ol-ext/control/Toggle';
 import TextButton from 'ol-ext/control/TextButton';
 
-import { evaluateComparison, getObjectPathValue } from "./helpers";
+import { evaluateComparison, getObjectPathValue } from '../helpers';
 
 /**
  * Add Geocoding functionality
