@@ -16,6 +16,10 @@ import { ILayerObject, ITileLayerSource, IImageLayerSource, IVTLayerSource } fro
 import { updateForm, reloadFontSymbol } from "../helpers";
 import { getLayerSource, setBasemap, getStyle } from "../openlayers";
 
+/**
+ * Initializes layers for the OpenLayers map and adds them to the layerArray.
+ * @returns {Layer[]} Array of layers added to the map.
+ */
 export function initLayers(this: any): Layer[] {
   this.layerArray = [];
 
@@ -36,6 +40,10 @@ export function initLayers(this: any): Layer[] {
   return this.layerArray;
 }
 
+/**
+ * Reads GeoJSON features from the provided input.
+ * @returns {Feature<Geometry>[] | null} Array of GeoJSON features or null if no features found.
+ */
 function readGeoJSONFeatures(this: any): Feature<Geometry>[] | null {
   if (this.contents.geom && this.contents.geom !== null && this.contents.geom !== 'null') {
     return new GeoJSON().readFeatures(
@@ -47,6 +55,9 @@ function readGeoJSONFeatures(this: any): Feature<Geometry>[] | null {
   return null;
 }
 
+/**
+ * Creates layers based on the input data and adds them to the layerArray.
+ */
 function createLayers(this: any): void {
   const layers = JSON.parse(this.contents.layers) as [ILayerObject];
   layers.forEach((layer) => {
@@ -62,6 +73,12 @@ function createLayers(this: any): void {
   }, this);
 }
 
+/**
+ * Creates a Layer object based on the input data and layer source.
+ * @param {ILayerObject} layer - Layer object data.
+ * @param {ITileLayerSource | IImageLayerSource | IVTLayerSource} layerSource - Layer source object.
+ * @returns {Layer | null} Created layer or null if the layer source type is not supported.
+ */
 function createLayer(layer: ILayerObject, layerSource: ITileLayerSource | IImageLayerSource | IVTLayerSource): Layer | null {
   switch (layerSource.type) {
     case "TileLayerSource":
@@ -75,6 +92,12 @@ function createLayer(layer: ILayerObject, layerSource: ITileLayerSource | IImage
   }
 }
 
+/**
+ * Creates a Tile layer based on the input data and tile layer source configuration.
+ * @param {ILayerObject} layer - Layer object data.
+ * @param {ITileLayerSource} config - Tile layer source configuration.
+ * @returns {Tile<TileSource>} Created Tile layer.
+ */
 function createTileLayer(layer: ILayerObject, config: ITileLayerSource): Tile<TileSource> {
   return new (config.layer)({
     visible: false,
@@ -82,6 +105,12 @@ function createTileLayer(layer: ILayerObject, config: ITileLayerSource): Tile<Ti
   });
 }
 
+/**
+ * Creates an Image layer based on the input data and image layer source configuration.
+ * @param {ILayerObject} layer - Layer object data.
+ * @param {IImageLayerSource} config - Image layer source configuration.
+ * @returns {Image<ImageSource>} Created Image layer.
+ */
 function createImageLayer(layer: ILayerObject, config: IImageLayerSource): Image<ImageSource> {
   return new (config.layer)({
     visible: false,
@@ -89,6 +118,12 @@ function createImageLayer(layer: ILayerObject, config: IImageLayerSource): Image
   });
 }
 
+/**
+ * Creates a VectorTile layer based on the input data and vector tile layer source configuration.
+ * @param {ILayerObject} layer - Layer object data.
+ * @param {IVTLayerSource} config - Vector tile layer source configuration.
+ * @returns {VTLayer} Created VectorTile layer.
+ */
 function createVTLayer(layer: ILayerObject, config: IVTLayerSource): VTLayer {
   const options = layer.options as VectorTileOptions;
   options.format = new MVT();
@@ -106,12 +141,22 @@ function createVTLayer(layer: ILayerObject, config: IVTLayerSource): VTLayer {
   return l;
 }
 
+/**
+ * Sets properties for a layer based on the input layer object.
+ * @param {Layer} layer - Layer object.
+ * @param {ILayerObject} layerObject - Input layer object data.
+ */
 function setLayerProperties(layer: Layer, layerObject: ILayerObject): void {
   layer.set('lid', layerObject.id);
   layer.set('title', layerObject.name);
   layer.set('baseLayer', layerObject.baselayer);
 }
 
+/**
+ * Handles visibility change for a layer and updates the cookie accordingly.
+ * @param {Layer} layer - Layer object.
+ * @param {ILayerObject} layerObject - Input layer object data.
+ */
 function handleLayerVisibilityChange(layer: Layer, layerObject: ILayerObject): void {
   if (layerObject.baselayer) {
     layer.on('change:visible', e => {
@@ -124,6 +169,9 @@ function handleLayerVisibilityChange(layer: Layer, layerObject: ILayerObject): v
   }
 }
 
+/**
+ * Adds layers to the map based on their properties.
+ */
 function addLayersToMap(this: any): void {
   this.layerArray.forEach((l: Layer) => {
     if (l.get("baseLayer")) {
@@ -141,6 +189,9 @@ function addLayersToMap(this: any): void {
   });
 }
 
+/**
+ * Adds a bounds layer to the map for rendering boundaries.
+ */
 function addBoundsLayer(this: any): void {
   this.bounds = new VectorLayer({
     source: new VectorSource(),
@@ -160,6 +211,10 @@ function addBoundsLayer(this: any): void {
   this.map.addLayer(this.bounds);
 }
 
+/**
+ * Adds a vector layer to the map for rendering GeoJSON features.
+ * @param {Feature<Geometry>[] | null} features - Array of GeoJSON features or null if no features found.
+ */
 function addVectorLayer(this: any, features: Feature<Geometry>[] | null): void {
   const yOrdering: unknown = Ordering.yOrdering();
   this.vector = new VectorLayer<VectorSource<Geometry>>({
@@ -176,6 +231,9 @@ function addVectorLayer(this: any, features: Feature<Geometry>[] | null): void {
   this.map.addLayer(this.vector);
 }
 
+/**
+ * Renders the project boundary on the map by adding a boundary feature and applying a mask to the base layers.
+ */
 function renderProjectBoundary(this: any): void {
   if (this.contents.bounds && this.contents.bounds !== null) {
     const boundary = new GeoJSON().readFeature(

@@ -16,14 +16,18 @@ export function initEventListeners(this: any): void {
   handleFilters.call(this);
 }
 
-// Handle postrender event to fix empty map issue
+/**
+ * Handles 'postrender' event to fix empty map issue by zooming to extent.
+ */
 function handlePostRender(this: any): void {
   this.map.once('postrender', (evt: any) => {
     zoomToExtent.call(this, true);
   });
 }
 
-// Observe map element to zoom to extent when map collapsed => expended
+/**
+ * Observes map element to zoom to extent when map is expanded from a collapsed state.
+ */
 function handleCollapsed(this: any): void {
   if (this.contents.collapsed) {
     const collapsedObserver = new MutationObserver((mutations) => {
@@ -42,7 +46,9 @@ function handleCollapsed(this: any): void {
   }
 }
 
-// Handle map resizing for multiple maps
+/**
+ * Handles map resizing for multiple maps by observing the map target element.
+ */
 function handleResize(this: any): void {
   const resizeObserver = new ResizeObserver((entries, observer) => {
     this.maps.forEach((m: any) => {
@@ -52,7 +58,9 @@ function handleResize(this: any): void {
   resizeObserver.observe(this.map.getTargetElement());
 }
 
-// Handle issue selection to zoom to selected map features
+/**
+ * Handles issue selection to zoom to selected map features when a table row is clicked.
+ */
 function handleIssueSelection(this: any): void {
   document.querySelectorAll('table.issues tbody tr').forEach((element: HTMLTableRowElement) => {
     element.addEventListener('click', (evt) => {
@@ -66,7 +74,9 @@ function handleIssueSelection(this: any): void {
   });
 }
 
-// Handle edit icon click to update map size when the editable form is made visible
+/**
+ * Handles the click event on the edit icon to update the map size when the editable form is made visible.
+ */
 function handleEditIcon(this: any): void {
   document.querySelectorAll('div.contextual a.icon-edit').forEach((element: HTMLAnchorElement) => {
     element.addEventListener('click', () => {
@@ -80,7 +90,9 @@ function handleEditIcon(this: any): void {
   });
 }
 
-// Handle GTT tab activation to redraw the map
+/**
+ * Handles GTT tab activation to redraw the map when the tab is clicked.
+ */
 function handleGttTabActivation(this: any): void {
   document.querySelectorAll('#tab-gtt').forEach((element) => {
     element.addEventListener('click', () => {
@@ -92,7 +104,9 @@ function handleGttTabActivation(this: any): void {
   });
 }
 
-// Handle map filters and load event listeners
+/**
+ * Handles map filters and load event listeners for updating the map view.
+ */
 function handleFilters(this: any): void {
   window.addEventListener('load', () => {
     // Check if location filter is available

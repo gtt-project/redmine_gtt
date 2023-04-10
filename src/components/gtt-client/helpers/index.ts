@@ -7,6 +7,12 @@ import { FeatureLike } from 'ol/Feature';
 import FontSymbol from 'ol-ext/style/FontSymbol';
 import { transform, transformExtent } from 'ol/proj';
 
+/**
+ * Get the value of a cookie by its name.
+ *
+ * @param cname - The name of the cookie.
+ * @returns The value of the cookie or an empty string if not found.
+ */
 export const getCookie = (cname: string): string => {
   const name = cname + '=';
   const decodedCookie = decodeURIComponent(document.cookie);
@@ -24,13 +30,31 @@ export const getCookie = (cname: string): string => {
   return '';
 };
 
+/**
+ * Convert radians to degrees.
+ *
+ * @param radians - The value in radians to convert.
+ * @returns The value in degrees.
+ */
 export const radiansToDegrees = (radians: number): number => {
   const degrees = radians * (180 / Math.PI);
   return (degrees + 360) % 360;
 };
 
+/**
+ * Convert degrees to radians.
+ *
+ * @param degrees - The value in degrees to convert.
+ * @returns The value in radians.
+ */
 export const degreesToRadians = (degrees: number): number => degrees * (Math.PI / 180);
 
+/**
+ * Get the map size, taking into account the possibility of width or height being 0.
+ *
+ * @param map - The OpenLayers Map object.
+ * @returns An array containing the width and height of the map.
+ */
 export const getMapSize = (map: Map): number[] => {
   const [width, height] = map.getSize();
 
@@ -42,6 +66,14 @@ export const getMapSize = (map: Map): number[] => {
   return [width, height];
 };
 
+/**
+ * Evaluate a comparison between two values with a specified operator.
+ *
+ * @param left - The left-hand side value of the comparison.
+ * @param operator - The operator to use in the comparison.
+ * @param right - The right-hand side value of the comparison.
+ * @returns The result of the comparison.
+ */
 export const evaluateComparison = (left: any, operator: any, right: any): any => {
   if (typeof left == 'object') {
     left = JSON.stringify(left);
@@ -51,6 +83,14 @@ export const evaluateComparison = (left: any, operator: any, right: any): any =>
   }
 };
 
+/**
+ * Get the value of a nested property in an object using a path.
+ *
+ * @param obj - The object to get the value from.
+ * @param path - The path to the property in the object, either as a string or an array of strings.
+ * @param def - An optional default value to return if the property is not found.
+ * @returns The value of the property or the default value if not found.
+ */
 export const getObjectPathValue = (obj: any, path: string | Array<string>, def: any = null) => {
   const pathArr = Array.isArray(path)
     ? path
@@ -58,6 +98,9 @@ export const getObjectPathValue = (obj: any, path: string | Array<string>, def: 
   return pathArr.reduce((acc, key) => acc?.[key], obj) ?? def;
 };
 
+/**
+ * Reload FontSymbol styles on the map.
+ */
 export function reloadFontSymbol() {
   if ('fonts' in document) {
     const symbolFonts: Array<String> = []
@@ -93,6 +136,13 @@ export function reloadFontSymbol() {
   }
 }
 
+/**
+ * Update the form with the provided feature data.
+ *
+ * @param mapObj - The map object containing settings.
+ * @param features - The features to update the form with.
+ * @param updateAddressFlag - A flag to update the address field with reverse geocoding, default is false.
+ */
 export function updateForm(mapObj: any, features: FeatureLike[] | null, updateAddressFlag: boolean = false):void {
   if (features == null) {
     return
@@ -173,7 +223,7 @@ export function updateForm(mapObj: any, features: FeatureLike[] | null, updateAd
 }
 
 /**
- *  Updates map settings for Redmine filter
+ * Update the map settings for the Redmine filter.
  */
 export function updateFilter() {
   let center = this.map.getView().getCenter()
@@ -221,7 +271,7 @@ export function updateFilter() {
 }
 
 /**
- * Parse page for WKT strings in history
+ * Parse the history of the page for WKT strings and replace them with formatted links.
  */
 export function parseHistory() {
   const historyItems = document.querySelectorAll('div#history ul.details i');
