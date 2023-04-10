@@ -85,3 +85,6 @@ de:
       cancel: Abbrechen
   gtt_map_rotate_label: Kartenrotation
   gtt_map_rotate_info_html: Hold down <code>Shift+Alt</code> and drag the map to rotate.
+  gtt_settings_label_general: "General"
+  gtt_settings_label_styling: "Styling"
+  gtt_settings_label_geocoder: "Geocoder"

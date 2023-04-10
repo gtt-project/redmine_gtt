@@ -62,6 +62,10 @@ en:
   gtt_settings_general_maxzoom_level: "Default map maximum zoom level"
   gtt_settings_general_fit_maxzoom_level: "Default map fit maximum zoom level"
 
+  gtt_settings_label_general: "General"
+  gtt_settings_label_styling: "Styling"
+  gtt_settings_label_geocoder: "Geocoder"
+
   # gtt_settings_map_url: "API Service URL"
   # gtt_settings_map_apikey: "API Key"
   # gtt_settings_map_maxzoom_level: "Maximum map zoom level"

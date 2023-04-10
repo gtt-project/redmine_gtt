@@ -57,6 +57,10 @@ ja:
   gtt_settings_general_maxzoom_level: "既定の最大地図ズームレベル"
   gtt_settings_general_fit_maxzoom_level: "フィット時最大地図ズームレベル"
 
+  gtt_settings_label_general: "General"
+  gtt_settings_label_styling: "Styling"
+  gtt_settings_label_geocoder: "Geocoder"
+
   # gtt_settings_map_url: "地図APIサービスのURL"
   # gtt_settings_map_apikey: "地図APIキー"
   # gtt_settings_map_maxzoom_level: "最大地図ズームレベル"
