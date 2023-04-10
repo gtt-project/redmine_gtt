@@ -9,64 +9,103 @@ import { setGeocoding } from "../geocoding";
 import { radiansToDegrees, degreesToRadians, parseHistory } from "../helpers";
 import { zoomToExtent, setGeolocation, setView, setControls, setPopover } from "../openlayers";
 
-export function initControls(this: any): void {
+/**
+ * Adds the toolbar and basic controls to the map instance.
+ * @param {any} instance - The GttClient instance.
+ */
+function addToolbarAndControls(instance: any): void {
+  instance.toolbar = new Bar();
+  instance.toolbar.setPosition('bottom-left' as position);
+  instance.map.addControl(instance.toolbar);
 
-  // Add Toolbar
-  this.toolbar = new Bar()
-  this.toolbar.setPosition('bottom-left' as position)
-  this.map.addControl(this.toolbar)
-  setView.call(this)
-  setGeocoding.call(this, this.map)
-  setGeolocation.call(this, this.map)
-  parseHistory.call(this)
+  setView.call(instance);
+  setGeocoding.call(instance, instance.map);
+  setGeolocation.call(instance, instance.map);
+  parseHistory.call(instance);
+}
 
-  this.map.addControl (new FullScreen({
-    tipLabel: this.i18n.control.fullscreen
-  }))
-  this.map.addControl (new Rotate({
-    tipLabel: this.i18n.control.rotate
-  }))
+/**
+ * Adds the FullScreen and Rotate controls to the map instance.
+ * @param {any} instance - The GttClient instance.
+ */
+function addFullScreenAndRotateControls(instance: any): void {
+  instance.map.addControl(new FullScreen({
+    tipLabel: instance.i18n.control.fullscreen
+  }));
 
-  // Control button
+  instance.map.addControl(new Rotate({
+    tipLabel: instance.i18n.control.rotate
+  }));
+}
+
+/**
+ * Adds the maximize control button to the toolbar.
+ * @param {any} instance - The GttClient instance.
+ */
+function addMaximizeControl(instance: any): void {
   const maximizeCtrl = new Button({
-    html: '<i class="material-icons" >zoom_out_map</i>',
-    title: this.i18n.control.maximize,
+    html: '<i class="material-icons">zoom_out_map</i>',
+    title: instance.i18n.control.maximize,
     handleClick: () => {
-      zoomToExtent.call(this, true);
+      zoomToExtent.call(instance, true);
     }
-  })
-  this.toolbar.addControl(maximizeCtrl)
+  });
 
-  // Map rotation
-  const rotation_field = document.querySelector('#gtt_configuration_map_rotation') as HTMLInputElement
-  if (rotation_field !== null) {
-    this.map.getView().on('change:rotation', (evt: any) => {
-      rotation_field.value = String(Math.round(radiansToDegrees(evt.target.getRotation())))
-    })
+  instance.toolbar.addControl(maximizeCtrl);
+}
 
-    rotation_field.addEventListener("input", (evt: any) => {
+/**
+ * Handles the map rotation functionality.
+ * @param {any} instance - The GttClient instance.
+ */
+function handleMapRotation(instance: any): void {
+  const rotationField = document.querySelector('#gtt_configuration_map_rotation') as HTMLInputElement;
+
+  if (rotationField !== null) {
+    instance.map.getView().on('change:rotation', (evt: any) => {
+      rotationField.value = String(Math.round(radiansToDegrees(evt.target.getRotation())));
+    });
+
+    rotationField.addEventListener("input", (evt: any) => {
       const { target } = evt;
       if (!(target instanceof HTMLInputElement)) {
         return;
       }
       const value = target.value;
-      this.map.getView().setRotation(degreesToRadians(parseInt(value)))
-    })
+      instance.map.getView().setRotation(degreesToRadians(parseInt(value)));
+    });
   }
+}
+
+/**
+ * Adds either a LayerSwitcher or LayerPopup control to the map instance.
+ * @param {any} instance - The GttClient instance.
+ */
+function addLayerSwitcherOrPopup(instance: any): void {
+  if (instance.containsOverlay) {
+    instance.map.addControl(new LayerSwitcher({
+      reordering: false
+    }));
+  } else {
+    instance.map.addControl(new LayerPopup());
+  }
+}
+
+/**
+ * Initializes the controls for the GttClient instance.
+ * @this {any} - The GttClient instance.
+ */
+export function initControls(this: any): void {
+  addToolbarAndControls(this);
+  addFullScreenAndRotateControls(this);
+  addMaximizeControl(this);
+  handleMapRotation(this);
 
   if (this.contents.edit) {
-    setControls.call(this, this.contents.edit.split(' '))
+    setControls.call(this, this.contents.edit.split(' '));
   } else if (this.contents.popup) {
-    setPopover.call(this)
+    setPopover.call(this);
   }
 
-  // Add LayerSwitcher Image Toolbar
-  if( this.containsOverlay) {
-    this.map.addControl(new LayerSwitcher({
-      reordering: false
-    }))
-  }
-  else {
-    this.map.addControl(new LayerPopup())
-  }
+  addLayerSwitcherOrPopup(this);
 }
