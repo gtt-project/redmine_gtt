@@ -33,7 +33,7 @@
     "@types/jqueryui": "^1.12.16",
     "@types/ol-ext": "npm:@siedlerchr/types-ol-ext",
     "css-loader": "^6.7.3",
-    "sass": "^1.61.0",
+    "sass": "^1.62.0",
     "sass-loader": "^13.2.0",
     "style-loader": "^3.3.1",
     "ts-loader": "^9.4.2",
