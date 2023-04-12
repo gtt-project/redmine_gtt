@@ -9,27 +9,27 @@ module RedmineGtt
           Project.prepend self
           Project.class_eval do
             safe_attributes :geojson, :map_rotation
-            has_and_belongs_to_many :gtt_tile_sources
-            after_create :set_default_tile_sources
+            has_and_belongs_to_many :gtt_map_layers
+            after_create :set_default_map_layers
           end
         end
       end
 
       def map
-        GttMap.new json: as_geojson, layers: gtt_tile_sources.sorted
+        GttMap.new json: as_geojson, layers: gtt_map_layers.sorted
       end
 
       def enabled_module_names=(*_)
         super
-        set_default_tile_sources
+        set_default_map_layers
       end
 
-      def set_default_tile_sources
-        if gtt_tile_sources.none? and module_enabled?(:gtt)
-          self.gtt_tile_sources = GttTileSource.default.sorted.to_a
+      def set_default_map_layers
+        if gtt_map_layers.none? and module_enabled?(:gtt)
+          self.gtt_map_layers = GttMapLayer.default.sorted.to_a
         end
       end
-      private :set_default_tile_sources
+      private :set_default_map_layers
 
     end
 

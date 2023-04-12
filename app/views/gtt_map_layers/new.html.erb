@@ -1,0 +1,10 @@
+<%= title [t('map_layer.plural'), gtt_map_layers_path], t('map_layer.new') %>
+
+<%= labelled_form_for :map_layer, @map_layer, url: gtt_map_layers_path do |f| %>
+  <%= render partial: 'form', locals: { f: f } %>
+  <p>
+    <%= submit_tag t(:button_create) %>
+    <%= submit_tag t(:button_create_and_continue), name: 'continue' %>
+  </p>
+<% end %>
+

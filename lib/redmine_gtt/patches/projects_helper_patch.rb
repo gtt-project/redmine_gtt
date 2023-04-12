@@ -17,8 +17,8 @@ module RedmineGtt
       def render_api_includes(project, api)
         super
         api.array :layers do
-          project.gtt_tile_sources.each do |gtt_tile_source|
-            api.layer(gtt_tile_source.attributes)
+          project.gtt_map_layers.each do |gtt_map_layer|
+            api.layer(gtt_map_layer.attributes)
           end
         end if include_in_api_response?('layers')
       end

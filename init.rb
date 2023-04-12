@@ -38,9 +38,9 @@ Redmine::Plugin.register :redmine_gtt do
   )
 
   menu :admin_menu,
-    :gtt_tile_sources,
-    { controller: 'gtt_tile_sources', action: 'index' },
-    caption: :label_gtt_tile_source_plural, :html => {:class => 'icon icon-gtt-map'}
+    :gtt_map_layers,
+    { controller: 'gtt_map_layers', action: 'index' },
+    caption: :'map_layer.plural', html: { class: 'icon icon-gtt-map' }
 end
 
 # Register MIME Types

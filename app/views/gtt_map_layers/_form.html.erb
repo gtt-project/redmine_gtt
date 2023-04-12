@@ -1,0 +1,225 @@
+<%= error_messages_for 'map_layer' %>
+
+<div class="box tabular">
+  <p><%= f.text_field :name, required: true, size: 25  %></p>
+  <p><%= f.check_box :baselayer %></p>
+  <p><%= f.check_box :global %></p>
+  <p><%= f.check_box :default %></p>
+  <p>
+    <%= f.select :layer,
+      options_for_select([
+        [t('map_layer.layer_options.select_image'), 'ol.layer.Image'],
+        [t('map_layer.layer_options.select_tile'), 'ol.layer.Tile'],
+        [t('map_layer.layer_options.select_mapboxvector'), 'ol.layer.MapboxVector'],
+        [t('map_layer.layer_options.select_vector'), 'ol.layer.Vector'],
+        [t('map_layer.layer_options.select_vectortile'), 'ol.layer.VectorTile'],
+      ], selected: f.object.layer ),
+      { include_blank: t('map_layer.layer_options.select'), required: true }
+    %>
+    <em class="info"><a href="#" onclick="loadExampleConfiguration(this);return false;"><%= t('map_layer.load_example') %></a></em>
+  </p>
+  <p>
+    <%= f.text_area :layer_options, rows: 4, cols: 80 %>
+  </p>
+  <p>
+    <%= f.select :source,
+      options_for_select([
+        [t('map_layer.source_options.select_bingmaps'), 'ol.source.BingMaps'],
+        [t('map_layer.source_options.select_cartodb'), 'ol.source.CartoDB'],
+        [t('map_layer.source_options.select_imagestatic'), 'ol.source.ImageStatic'],
+        [t('map_layer.source_options.select_imagewms'), 'ol.source.ImageWMS'],
+        [t('map_layer.source_options.select_osm'), 'ol.source.OSM'],
+        [t('map_layer.source_options.select_raster'), 'ol.source.Raster'],
+        [t('map_layer.source_options.select_stamen'), 'ol.source.Stamen'],
+        [t('map_layer.source_options.select_tilejson'), 'ol.source.TileJSON'],
+        [t('map_layer.source_options.select_tilewms'), 'ol.source.TileWMS'],
+        [t('map_layer.source_options.select_utfgrid'), 'ol.source.UTFGrid'],
+        [t('map_layer.source_options.select_vector'), 'ol.source.Vector'],
+        [t('map_layer.source_options.select_vectortile'), 'ol.source.VectorTile'],
+        [t('map_layer.source_options.select_wmts'), 'ol.source.WMTS'],
+        [t('map_layer.source_options.select_xyz'), 'ol.source.XYZ'],
+      ], selected: f.object.source ),
+      { include_blank: t('map_layer.source_options.select') }
+    %>
+  </p>
+  <p>
+    <%= f.text_area :source_options, rows: 6, cols: 80 %>
+  </p>
+  <p>
+    <%= f.select :format,
+      options_for_select([
+        [t('map_layer.format_options.select_geojson'), 'ol.format.GeoJSON'],
+        [t('map_layer.format_options.select_gpx'), 'ol.format.GPX'],
+        [t('map_layer.format_options.select_kml'), 'ol.format.KML'],
+        [t('map_layer.format_options.select_mvt'), 'ol.format.MVT'],
+        [t('map_layer.format_options.select_topojson'), 'ol.format.TopoJSON'],
+        [t('map_layer.format_options.select_wfs'), 'ol.format.WFS'],
+        [t('map_layer.format_options.select_wkb'), 'ol.format.WKB'],
+        [t('map_layer.format_options.select_wkt'), 'ol.format.WKT'],
+      ], selected: f.object.format ),
+      { include_blank: t('map_layer.format_options.select') }
+    %>
+  </p>
+  <p>
+    <%= f.text_area :format_options, rows: 4, cols: 80 %>
+  </p>
+  <p>
+    <%= f.text_area :styles, rows: 4, cols: 80 %>
+  </p>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const map_layer_config = {
+      'ol.layer.Image': ['ol.source.ImageStatic', 'ol.source.ImageWMS', 'ol.source.Raster'],
+      'ol.layer.Tile': ['ol.source.BingMaps', 'ol.source.CartoDB', 'ol.source.OSM', 'ol.source.Stamen', 'ol.source.TileJSON', 'ol.source.TileWMS', 'ol.source.UTFGrid', 'ol.source.WMTS', 'ol.source.XYZ'],
+      'ol.layer.MapboxVector': [],
+      'ol.layer.Vector': ['ol.source.Vector'],
+      'ol.layer.VectorTile': ['ol.source.VectorTile'],
+    };
+
+    const map_format_config = {
+      'ol.source.Vector': ['ol.format.GeoJSON', 'ol.format.GPX', 'ol.format.KML', 'ol.format.WFS', 'ol.format.WKB', 'ol.format.WKT'],
+      'ol.source.VectorTile': ['ol.format.MVT', 'ol.format.TopoJSON'],
+    };
+
+    const map_style_config = ['ol.layer.Vector','ol.layer.VectorTile'];
+
+    const layerTypeSelect = document.getElementById('map_layer_layer');
+    const sourceTypeSelect = document.getElementById('map_layer_source');
+    const formatTypeSelect = document.getElementById('map_layer_format');
+
+    function updateSourceTypeOptions() {
+      const selectedLayer = layerTypeSelect.value;
+      const availableSourceTypes = map_layer_config[selectedLayer] || [];
+      let autoSelectOption = null;
+
+      for (const option of sourceTypeSelect.options) {
+        if (availableSourceTypes.includes(option.value)) {
+          option.style.display = 'block';
+          if (!autoSelectOption) {
+            autoSelectOption = option;
+          }
+        } else {
+          option.style.display = 'none';
+        }
+      }
+
+      if (autoSelectOption && (sourceTypeSelect.value === '' || !availableSourceTypes.includes(sourceTypeSelect.value))) {
+        sourceTypeSelect.value = autoSelectOption.value;
+      } else if (!autoSelectOption) {
+        sourceTypeSelect.value = ''; // Reset the value when no options are available
+        document.getElementById("map_layer_source_options").innerHTML = "";
+      }
+
+      sourceTypeSelect.disabled = availableSourceTypes.length === 0;
+      document.getElementById('map_layer_source_options').disabled = sourceTypeSelect.disabled;
+
+      updateFormatTypeOptions(); // Trigger format options update
+    }
+
+    function updateFormatTypeOptions() {
+      const selectedSource = sourceTypeSelect.value;
+      const availableFormatTypes = map_format_config[selectedSource] || [];
+      let autoSelectOption = null;
+
+      for (const option of formatTypeSelect.options) {
+        if (availableFormatTypes.includes(option.value)) {
+          option.style.display = 'block';
+          if (!autoSelectOption) {
+            autoSelectOption = option;
+          }
+        } else {
+          option.style.display = 'none';
+        }
+      }
+
+      if (autoSelectOption && (formatTypeSelect.value === '' || !availableFormatTypes.includes(formatTypeSelect.value))) {
+        formatTypeSelect.value = autoSelectOption.value;
+      } else if (!autoSelectOption) {
+        formatTypeSelect.value = ''; // Reset the value when no options are available
+        document.getElementById("map_layer_format_options").innerHTML = "";
+      }
+
+      formatTypeSelect.disabled = availableFormatTypes.length === 0;
+      document.getElementById('map_layer_format_options').disabled = formatTypeSelect.disabled;
+
+      updateStyleSettings(); // Trigger style settings update
+    }
+
+    function updateStyleSettings() {
+      const selectedLayer = layerTypeSelect.value;
+      const styleSettingsTextarea = document.getElementById('map_layer_styles');
+
+      if (map_style_config.includes(selectedLayer)) {
+        styleSettingsTextarea.disabled = false;
+      } else {
+        styleSettingsTextarea.disabled = true;
+      }
+    }
+
+    layerTypeSelect.addEventListener('change', updateSourceTypeOptions);
+    sourceTypeSelect.addEventListener('change', updateFormatTypeOptions);
+
+    updateSourceTypeOptions();
+    updateFormatTypeOptions();
+    updateStyleSettings();
+  });
+
+  const map_layer_examples = {
+    'ol.layer.Image': {
+      'layer_options': {
+        'opacity': 0.7,
+        'visible': true
+      },
+      'source_type': 'ol.source.ImageWMS',
+      'source_options': {
+        "url": "https://www.example.com/geoserver/wms",
+        "params": {
+          "LAYERS": "schema:mydata"
+        },
+        "ratio": 1,
+        "serverType": "geoserver"
+      }
+    },
+    'ol.layer.Tile': {
+      'layer_options': {},
+      'source_type': 'ol.source.OSM',
+      'source_options': {
+        "url": "https://tile.openstreetmap.jp/{z}/{x}/{y}.png",
+        "custom": "19/34.74701/135.35740",
+        "crossOrigin": null,
+        "attributions": "<a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap contributors</a>"
+      }
+    },
+    'ol.layer.VectorTile': {
+      'layer_options': {},
+      'source_type': 'ol.source.VectorTile',
+      'source_options': {
+        "attributions": "<a href='https://www.openmaptiles.org/' target='_blank'>OpenMapTiles</a> <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap contributors</a>",
+        "styleUrl": "https://tile.openstreetmap.jp/styles/osm-bright-ja/style.json"
+      }
+    },
+  };
+
+  function loadExampleConfiguration(obj) {
+    var config = map_layer_examples[document.getElementById("map_layer_layer").value];
+    if (config) {
+      // Fill the layer options
+      document.getElementById("map_layer_layer_options").innerHTML = config.layer_options ? JSON.stringify(config.layer_options, undefined, 2) : "";
+
+      // Fill the source options
+      document.getElementById("map_layer_source_options").innerHTML = config.source_options ? JSON.stringify(config.source_options, undefined, 2) : "";
+
+      // Fill the format options
+      document.getElementById("map_layer_format_options").innerHTML = config.format_options ? JSON.stringify(config.format_options, undefined, 2) : "";
+
+      // Select the correct source type
+      document.getElementById("map_layer_source").value = config.source_type ? config.source_type : "";
+
+      // Select the correct format type
+      document.getElementById("map_layer_format").value = config.format_type ? config.format_type : "";
+    }
+  }
+
+</script>
