@@ -192,10 +192,28 @@ export function setPopover() {
 * Decide which baselayer to show
 */
 export function setBasemap(): void {
- if (this.layerArray.length == 0) {
-   console.error("There is no baselayer available!")
-   return
- }
+  if (this.layerArray.length == 0) {
+    const warn_text = 'There is no baselayer available!';
+    console.warn(warn_text);
+
+    const notification = document.createElement('div');
+    notification.innerText = warn_text;
+
+    const mapContainer = this.map.getTargetElement();
+    Object.assign(mapContainer.style, {
+      position: 'relative',
+    });
+
+    Object.assign(notification.style, {
+      position: 'absolute',
+      top: '55%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+    });
+
+    mapContainer.appendChild(notification);
+    return
+  }
 
  let index = 0
  const cookie = parseInt(getCookie('_redmine_gtt_basemap'))
