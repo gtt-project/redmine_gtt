@@ -1,6 +1,7 @@
 <tr class="<%= cycle("odd", "even") %>">
   <td><%= link_to map_layer.name, edit_gtt_map_layer_path(map_layer) %></td>
   <td><%= map_layer.layer %></td>
+  <td><%= map_layer.source %></td>
   <td><%= checked_image map_layer.baselayer? %></td>
   <td><%= checked_image map_layer.global? %></td>
   <td><%= checked_image map_layer.default? %></td>

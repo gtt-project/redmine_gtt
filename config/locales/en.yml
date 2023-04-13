@@ -15,6 +15,7 @@ en:
   label_baselayer: BaseLayer
   label_nearby: "nearby(lat,lng)"
   label_layer: "Layer Type"
+  label_source: "Source Type"
   label_config: Configuration
   label_gtt_settings: GTT
   label_gtt_settings_headline: GTT Settings
@@ -102,7 +103,7 @@ en:
       select_wfs: "WFS"
       select_wkb: "WKB"
       select_wkt: "WKT"
-    load_example: "Load example configuration."
+    load_example: "Examples: "
 
   # Workaround to easily customize field labels
   field_name: "Name"

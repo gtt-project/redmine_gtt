@@ -63,8 +63,10 @@ class GttMapLayersController < ApplicationController
 
     params[:map_layer].permit(
       :name, :default, :global, :baselayer, :position,
-      :layer, :layer_options, :source, :source_options,
-      :format, :format_options, :styles
+      :layer, :layer_options_string,
+      :source, :source_options_string,
+      :format, :format_options_string,
+      :styles
     )
     end
   end

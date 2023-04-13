@@ -1,7 +1,10 @@
 <%= error_messages_for 'map_layer' %>
 
 <div class="box tabular">
-  <p><%= f.text_field :name, required: true, size: 25  %></p>
+  <p>
+    <%= f.text_field :name, required: true, size: 25 %>
+    <em id="map_layer_load_example" class="info"><b><%= t('map_layer.load_example') %></b></em>
+  </p>
   <p><%= f.check_box :baselayer %></p>
   <p><%= f.check_box :global %></p>
   <p><%= f.check_box :default %></p>
@@ -16,10 +19,9 @@
       ], selected: f.object.layer ),
       { include_blank: t('map_layer.layer_options.select'), required: true }
     %>
-    <em class="info"><a href="#" onclick="loadExampleConfiguration(this);return false;"><%= t('map_layer.load_example') %></a></em>
   </p>
   <p>
-    <%= f.text_area :layer_options, rows: 4, cols: 80 %>
+    <%= f.text_area :layer_options_string, rows: 4, cols: 80 %>
   </p>
   <p>
     <%= f.select :source,
@@ -43,7 +45,7 @@
     %>
   </p>
   <p>
-    <%= f.text_area :source_options, rows: 6, cols: 80 %>
+    <%= f.text_area :source_options_string, rows: 8, cols: 80 %>
   </p>
   <p>
     <%= f.select :format,
@@ -61,11 +63,11 @@
     %>
   </p>
   <p>
-    <%= f.text_area :format_options, rows: 4, cols: 80 %>
+    <%= f.text_area :format_options_string, rows: 4, cols: 80 %>
   </p>
-  <p>
+  <!--p>
     <%= f.text_area :styles, rows: 4, cols: 80 %>
-  </p>
+  </p-->
 </div>
 
 <script>
@@ -109,11 +111,11 @@
         sourceTypeSelect.value = autoSelectOption.value;
       } else if (!autoSelectOption) {
         sourceTypeSelect.value = ''; // Reset the value when no options are available
-        document.getElementById("map_layer_source_options").innerHTML = "";
+        document.getElementById("map_layer_source_options_string").innerHTML = "";
       }
 
       sourceTypeSelect.disabled = availableSourceTypes.length === 0;
-      document.getElementById('map_layer_source_options').disabled = sourceTypeSelect.disabled;
+      document.getElementById('map_layer_source_options_string').disabled = sourceTypeSelect.disabled;
 
       updateFormatTypeOptions(); // Trigger format options update
     }
@@ -138,13 +140,13 @@
         formatTypeSelect.value = autoSelectOption.value;
       } else if (!autoSelectOption) {
         formatTypeSelect.value = ''; // Reset the value when no options are available
-        document.getElementById("map_layer_format_options").innerHTML = "";
+        document.getElementById("map_layer_format_options_string").innerHTML = "";
       }
 
       formatTypeSelect.disabled = availableFormatTypes.length === 0;
-      document.getElementById('map_layer_format_options').disabled = formatTypeSelect.disabled;
+      document.getElementById('map_layer_format_options_string').disabled = formatTypeSelect.disabled;
 
-      updateStyleSettings(); // Trigger style settings update
+      // updateStyleSettings(); // Trigger style settings update
     }
 
     function updateStyleSettings() {
@@ -163,63 +165,75 @@
 
     updateSourceTypeOptions();
     updateFormatTypeOptions();
-    updateStyleSettings();
+    // updateStyleSettings();
+
+    function appendLinksToLoadExamples() {
+      const linksContainer = document.getElementById("map_layer_load_example");
+
+      map_layer_examples.forEach(item => {
+        const link = document.createElement("a");
+        link.href = "#";
+        link.textContent = item.name;
+        link.addEventListener("click", () => {
+          // Fill the layer options
+          document.getElementById("map_layer_layer_options_string").innerHTML = item.layer_options ? JSON.stringify(item.layer_options, undefined, 2) : "";
+
+          // Fill the source options
+          document.getElementById("map_layer_source_options_string").innerHTML = item.source_options ? JSON.stringify(item.source_options, undefined, 2) : "";
+
+          // Fill the format options
+          document.getElementById("map_layer_format_options_string").innerHTML = item.format_options ? JSON.stringify(item.format_options, undefined, 2) : "";
+
+          // Select the correct layer type
+          document.getElementById("map_layer_layer").value = item.layer ? item.layer : "";
+
+          // Select the correct source type
+          document.getElementById("map_layer_source").value = item.source ? item.source : "";
+
+          // Select the correct format type
+          document.getElementById("map_layer_format").value = item.format ? item.format : "";
+
+          // Select the name
+          document.getElementById("map_layer_name").value = item.name ? item.name : "";
+
+          updateSourceTypeOptions();
+          updateFormatTypeOptions();
+          // updateStyleSettings();
+        });
+        linksContainer.appendChild(link);
+        linksContainer.appendChild(document.createTextNode(", "));
+      });
+
+      nameInput.parentNode.insertBefore(linksContainer, nameInput.nextSibling);
+    }
+
+    appendLinksToLoadExamples();
   });
 
-  const map_layer_examples = {
-    'ol.layer.Image': {
-      'layer_options': {
-        'opacity': 0.7,
-        'visible': true
-      },
-      'source_type': 'ol.source.ImageWMS',
-      'source_options': {
-        "url": "https://www.example.com/geoserver/wms",
-        "params": {
-          "LAYERS": "schema:mydata"
-        },
-        "ratio": 1,
-        "serverType": "geoserver"
-      }
+  const map_layer_examples = [{
+    'name': 'OSM Tiles',
+    'layer': 'ol.layer.Tile',
+    'layer_options': {},
+    'source': 'ol.source.OSM',
+    'source_options': {
+      'url': 'https://tile.openstreetmap.jp/{z}/{x}/{y}.png',
+      'custom': '19/34.74701/135.35740',
+      'crossOrigin': null,
+      'attributions': '<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap contributors</a>'
     },
-    'ol.layer.Tile': {
-      'layer_options': {},
-      'source_type': 'ol.source.OSM',
-      'source_options': {
-        "url": "https://tile.openstreetmap.jp/{z}/{x}/{y}.png",
-        "custom": "19/34.74701/135.35740",
-        "crossOrigin": null,
-        "attributions": "<a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap contributors</a>"
-      }
+    'format': '',
+    'format_options': {}
+  },{
+    'name': 'OSM Vector Tiles',
+    'layer': 'ol.layer.VectorTile',
+    'layer_options': {
+      'styleUrl': 'https://tile.openstreetmap.jp/styles/osm-bright-ja/style.json'
     },
-    'ol.layer.VectorTile': {
-      'layer_options': {},
-      'source_type': 'ol.source.VectorTile',
-      'source_options': {
-        "attributions": "<a href='https://www.openmaptiles.org/' target='_blank'>OpenMapTiles</a> <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap contributors</a>",
-        "styleUrl": "https://tile.openstreetmap.jp/styles/osm-bright-ja/style.json"
-      }
+    'source': 'ol.source.VectorTile',
+    'source_options': {
+      'attributions': '<a href="https://www.openmaptiles.org/" target="_blank">OpenMapTiles</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap contributors</a>'
     },
-  };
-
-  function loadExampleConfiguration(obj) {
-    var config = map_layer_examples[document.getElementById("map_layer_layer").value];
-    if (config) {
-      // Fill the layer options
-      document.getElementById("map_layer_layer_options").innerHTML = config.layer_options ? JSON.stringify(config.layer_options, undefined, 2) : "";
-
-      // Fill the source options
-      document.getElementById("map_layer_source_options").innerHTML = config.source_options ? JSON.stringify(config.source_options, undefined, 2) : "";
-
-      // Fill the format options
-      document.getElementById("map_layer_format_options").innerHTML = config.format_options ? JSON.stringify(config.format_options, undefined, 2) : "";
-
-      // Select the correct source type
-      document.getElementById("map_layer_source").value = config.source_type ? config.source_type : "";
-
-      // Select the correct format type
-      document.getElementById("map_layer_format").value = config.format_type ? config.format_type : "";
-    }
-  }
-
+    'format': 'ol.format.MVT',
+    'format_options': {}
+  }];
 </script>
