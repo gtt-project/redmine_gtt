@@ -1,7 +1,5 @@
 import { Map, Feature, View, Geolocation } from 'ol';
 import { Geometry, Point } from 'ol/geom';
-import { Image as ImageLayer, Tile as TileLayer, VectorTile as VTLayer } from 'ol/layer';
-import { OSM, XYZ, TileWMS, ImageWMS, VectorTile as VTSource } from 'ol/source';
 import Vector from 'ol/source/Vector'
 import VectorLayer from 'ol/layer/Vector';
 import { Style, Fill, Stroke, Circle } from 'ol/style';
@@ -18,7 +16,6 @@ import Popup from 'ol-ext/overlay/Popup';
 import { position } from 'ol-ext/control/control';
 import { GeoJSON } from 'ol/format';
 
-import { ITileLayerSource, IImageLayerSource, IVTLayerSource } from '../interfaces';
 import { getCookie, getMapSize, degreesToRadians, updateForm } from "../helpers";
 
 /**
@@ -190,26 +187,6 @@ export function setPopover() {
     this.map.getTargetElement().style.cursor = hit ? 'pointer' : ''
   })
 }
-
-export const getLayerSource = (
-  source: string,
-  class_name: string,
-): ITileLayerSource | IImageLayerSource | IVTLayerSource | undefined => {
-  if (source === 'source') {
-    if (class_name === 'OSM') {
-      return { layer: TileLayer, source: OSM, type: 'TileLayerSource' };
-    } else if (class_name === 'XYZ') {
-      return { layer: TileLayer, source: XYZ, type: 'TileLayerSource' };
-    } else if (class_name === 'TileWMS') {
-      return { layer: TileLayer, source: TileWMS, type: 'TileLayerSource' };
-    } else if (class_name === 'ImageWMS') {
-      return { layer: ImageLayer, source: ImageWMS, type: 'ImageLayerSource' };
-    } else if (class_name === 'VectorTile') {
-      return { layer: VTLayer, source: VTSource, type: 'VTLayerSource' };
-    }
-  }
-  return undefined;
-};
 
 /**
 * Decide which baselayer to show

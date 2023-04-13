@@ -10,11 +10,15 @@ export interface IGttClientOption {
 // Interface describing a layer object used in GttClient.
 // Contains information about the layer type, id, name, whether it's a base layer, and additional options.
 export interface ILayerObject {
-  type: string;
   id: number;
   name: string;
+  layer: string;
+  layer_options: object;
+  source: string;
+  source_options: object;
+  format: string;
+  format_options: object;
   baselayer: boolean;
-  options: object;
 }
 
 // Interface for filtering options used in GttClient.
@@ -22,28 +26,4 @@ export interface ILayerObject {
 export interface IFilterOption {
   location: boolean;
   distance: boolean;
-}
-
-// Interface for describing a tile layer source used in GttClient.
-// Defines the layer and source types for tile-based layers (e.g., OSM, XYZ, WMS).
-export interface ITileLayerSource {
-  layer: typeof Tile;
-  source: typeof OSM | typeof XYZ | typeof TileWMS;
-  type: string;
-}
-
-// Interface for describing an image layer source used in GttClient.
-// Defines the layer and source types for image-based layers (e.g., ImageWMS).
-export interface IImageLayerSource {
-  layer: typeof Image;
-  source: typeof ImageWMS;
-  type: string;
-}
-
-// Interface for describing a vector tile layer source used in GttClient.
-// Defines the layer and source types for vector tile layers (e.g., VectorTile).
-export interface IVTLayerSource {
-  layer: typeof VTLayer;
-  source: typeof VTSource;
-  type: string;
 }
