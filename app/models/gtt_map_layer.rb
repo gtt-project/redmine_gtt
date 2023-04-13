@@ -20,39 +20,39 @@ class GttMapLayer < ActiveRecord::Base
   # default map layers for new projects
   scope :default, ->{ where default: true }
 
-  attr_writer :layer_options_jsonb
-  def layer_options_jsonb
-    @layer_options ||= JSON.pretty_generate(layer_options || {})
+  attr_writer :layer_options_string
+  def layer_options_string
+    @layer_options_string ||= JSON.pretty_generate(layer_options || {})
   end
 
-  attr_writer :source_options_jsonb
-  def source_options_jsonb
-    @source_options ||= JSON.pretty_generate(source_options || {})
+  attr_writer :source_options_string
+  def source_options_string
+    @source_options_string ||= JSON.pretty_generate(source_options || {})
   end
 
-  attr_writer :format_options_jsonb
-  def format_options_jsonb
-    @format_options ||= JSON.pretty_generate(format_options || {})
+  attr_writer :format_options_string
+  def format_options_string
+    @format_options_string ||= JSON.pretty_generate(format_options || {})
   end
 
   private
 
   def take_json_layer_options
-    self.layer_options = JSON.parse(layer_options_jsonb)
+    self.layer_options = JSON.parse(layer_options_string)
   rescue JSON::ParserError
-    errors.add :layer_options, I18n.t(:error_invalid_json)
+    errors.add :layer_options_string, I18n.t(:error_invalid_json)
   end
 
   def take_json_source_options
-    self.source_options = JSON.parse(source_options_jsonb)
+    self.source_options = JSON.parse(source_options_string)
   rescue JSON::ParserError
-    errors.add :source_options, I18n.t(:error_invalid_json)
+    errors.add :source_options_string, I18n.t(:error_invalid_json)
   end
 
   def take_json_format_options
-    self.format_options = JSON.parse(format_options_jsonb)
+    self.format_options = JSON.parse(format_options_string)
   rescue JSON::ParserError
-    errors.add :format_options, I18n.t(:error_invalid_json)
+    errors.add :format_options_string, I18n.t(:error_invalid_json)
   end
 
 end
