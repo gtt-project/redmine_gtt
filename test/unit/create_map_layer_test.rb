@@ -14,7 +14,7 @@ class CreateMapLayerTest < ActiveSupport::TestCase
 
     refute r.map_layer_created?
     assert ts = r.map_layer
-    assert ts.errors[:source_options].present?
+    assert ts.errors[:sourcesource_options_string_options].present?
     assert_equal 'lolo{ "url": "https://example.com" }', ts.source_options
   end
 end
