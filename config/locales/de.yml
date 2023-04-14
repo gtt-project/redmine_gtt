@@ -83,6 +83,8 @@ de:
     modal:
       load: Laden
       cancel: Abbrechen
+    messages:
+      baselayer_missing: "There is no baselayer available!"
   gtt_map_rotate_label: Kartenrotation
   gtt_map_rotate_info_html: Hold down <code>Shift+Alt</code> and drag the map to rotate.
   gtt_settings_label_general: "General"

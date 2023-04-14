@@ -106,4 +106,6 @@ ja:
     modal:
       load: 読み込み
       cancel: キャンセル
+    messages:
+      baselayer_missing: "There is no baselayer available!"
   title_geojson_upload: GeoJSONのインポート

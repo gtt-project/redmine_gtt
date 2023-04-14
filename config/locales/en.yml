@@ -107,3 +107,5 @@ en:
     modal:
       load: "Load"
       cancel: "Cancel"
+    messages:
+      baselayer_missing: "There is no baselayer available!"

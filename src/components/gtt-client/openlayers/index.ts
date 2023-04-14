@@ -193,11 +193,10 @@ export function setPopover() {
 */
 export function setBasemap(): void {
   if (this.layerArray.length == 0) {
-    const warn_text = 'There is no baselayer available!';
-    console.warn(warn_text);
+    console.warn(this.i18n.messages.baselayer_missing);
 
     const notification = document.createElement('div');
-    notification.innerText = warn_text;
+    notification.innerText = this.i18n.messages.baselayer_missing;
 
     const mapContainer = this.map.getTargetElement();
     Object.assign(mapContainer.style, {
