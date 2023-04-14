@@ -1,4 +1,4 @@
-class UpdateGeomDimensions < ActiveRecord::Migration[6.1]
+class UpdateGeomDimensions < ActiveRecord::Migration[5.2]
   def up
     # Modify the geom column to include the Z dimension
     execute <<-SQL
