@@ -34,9 +34,7 @@ class GttMapLayersControllerTest < ActionController::TestCase
         map_layer: {
           name: 'test',
           layer: 'Tile',
-          layer_options: {},
-          source: 'OSM',
-          source_options: {
+          source_options_string: {
             attributions: 'test',
             url: 'https://tile.openstreetmap.jp/{z}/{x}/{y}.png'
           }.to_json
@@ -57,9 +55,7 @@ class GttMapLayersControllerTest < ActionController::TestCase
         map_layer: {
           name: 'test',
           layer: 'Tile',
-          layer_options: {},
-          source: 'OSM',
-          source_options: {
+          source_options_string: {
             attributions: 'test',
             url: 'https://tile.openstreetmap.jp/{z}/{x}/{y}.png'
           }.to_json
@@ -83,7 +79,7 @@ class GttMapLayersControllerTest < ActionController::TestCase
 
   test 'should update' do
     ts = create_map_layer
-    patch :update, params: {id: ts.to_param, map_layer: { name: 'new name', source_options: {url: 'https://example.com'}.to_json }}
+    patch :update, params: {id: ts.to_param, map_layer: { name: 'new name', source_options_string: {url: 'https://example.com'}.to_json }}
     assert_redirected_to gtt_map_layers_path
     ts.reload
     assert_equal 'new name', ts.name
