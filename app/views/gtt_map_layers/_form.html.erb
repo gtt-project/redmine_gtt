@@ -10,14 +10,10 @@
   <p><%= f.check_box :default %></p>
   <p>
     <%= f.select :layer,
-      options_for_select([
-        [t('map_layer.layer_options.select_image'), 'Image'],
-        [t('map_layer.layer_options.select_tile'), 'Tile'],
-        [t('map_layer.layer_options.select_mapboxvector'), 'MapboxVector'],
-        [t('map_layer.layer_options.select_vector'), 'Vector'],
-        [t('map_layer.layer_options.select_vectortile'), 'VectorTile'],
-      ], selected: f.object.layer ),
-      { include_blank: t('map_layer.layer_options.select'), required: true }
+      options_for_select(
+        ['Image','Tile','MapboxVector','Vector','VectorTile'],
+        selected: f.object.layer ),
+      { include_blank: t('map_layer.layer_options_select'), required: true }
     %>
   </p>
   <p>
@@ -25,23 +21,11 @@
   </p>
   <p>
     <%= f.select :source,
-      options_for_select([
-        [t('map_layer.source_options.select_bingmaps'), 'BingMaps'],
-        [t('map_layer.source_options.select_cartodb'), 'CartoDB'],
-        [t('map_layer.source_options.select_imagestatic'), 'ImageStatic'],
-        [t('map_layer.source_options.select_imagewms'), 'ImageWMS'],
-        [t('map_layer.source_options.select_osm'), 'OSM'],
-        [t('map_layer.source_options.select_raster'), 'Raster'],
-        [t('map_layer.source_options.select_stamen'), 'Stamen'],
-        [t('map_layer.source_options.select_tilejson'), 'TileJSON'],
-        [t('map_layer.source_options.select_tilewms'), 'TileWMS'],
-        [t('map_layer.source_options.select_utfgrid'), 'UTFGrid'],
-        [t('map_layer.source_options.select_vector'), 'Vector'],
-        [t('map_layer.source_options.select_vectortile'), 'VectorTile'],
-        [t('map_layer.source_options.select_wmts'), 'WMTS'],
-        [t('map_layer.source_options.select_xyz'), 'XYZ'],
-      ], selected: f.object.source ),
-      { include_blank: t('map_layer.source_options.select') }
+      options_for_select(
+        ['BingMaps','CartoDB','ImageStatic','ImageWMS','OSM','Raster','Stamen',
+         'TileJSON','TileWMS','UTFGrid','Vector','VectorTile','WMTS','XYZ'],
+        selected: f.object.source ),
+      { include_blank: t('map_layer.source_options_select') }
     %>
   </p>
   <p>
@@ -49,17 +33,10 @@
   </p>
   <p>
     <%= f.select :format,
-      options_for_select([
-        [t('map_layer.format_options.select_geojson'), 'GeoJSON'],
-        [t('map_layer.format_options.select_gpx'), 'GPX'],
-        [t('map_layer.format_options.select_kml'), 'KML'],
-        [t('map_layer.format_options.select_mvt'), 'MVT'],
-        [t('map_layer.format_options.select_topojson'), 'TopoJSON'],
-        [t('map_layer.format_options.select_wfs'), 'WFS'],
-        [t('map_layer.format_options.select_wkb'), 'WKB'],
-        [t('map_layer.format_options.select_wkt'), 'WKT'],
-      ], selected: f.object.format ),
-      { include_blank: t('map_layer.format_options.select') }
+      options_for_select(
+        ['GeoJSON','GPX','KML','MVT','TopoJSON','WFS','WKB','WKT'],
+        selected: f.object.format ),
+      { include_blank: t('map_layer.format_options_select') }
     %>
   </p>
   <p>
@@ -73,16 +50,16 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const map_layer_config = {
-      'Image': ['ImageStatic', 'ImageWMS', 'Raster'],
-      'Tile': ['BingMaps', 'CartoDB', 'OSM', 'Stamen', 'TileJSON', 'TileWMS', 'UTFGrid', 'WMTS', 'XYZ'],
+      'Image': ['ImageStatic','ImageWMS','Raster'],
+      'Tile': ['BingMaps','CartoDB','OSM','Stamen','TileJSON','TileWMS','UTFGrid','WMTS','XYZ'],
       'MapboxVector': [],
       'Vector': ['Vector'],
       'VectorTile': ['VectorTile'],
     };
 
     const map_format_config = {
-      'Vector': ['GeoJSON', 'GPX', 'KML', 'WFS', 'WKB', 'WKT'],
-      'VectorTile': ['MVT', 'TopoJSON'],
+      'Vector': ['GeoJSON','GPX','KML','WFS','WKB','WKT'],
+      'VectorTile': ['MVT','TopoJSON'],
     };
 
     const map_style_config = ['Vector','VectorTile'];
@@ -203,8 +180,6 @@
         linksContainer.appendChild(link);
         linksContainer.appendChild(document.createTextNode(", "));
       });
-
-      nameInput.parentNode.insertBefore(linksContainer, nameInput.nextSibling);
     }
 
     appendLinksToLoadExamples();

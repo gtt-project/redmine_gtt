@@ -59,6 +59,7 @@ en:
 
   project_module_gtt: "GTT"
   permission_manage_gtt_settings: "Manage GTT settings"
+  permission_view_gtt_settings: "View GTT settings"
 
   title_geojson_upload: "Import GeoJSON"
   placeholder_geojson_upload: "Please paste a GeoJSON geometry here, or import the GeoJSON data from a file."
@@ -70,39 +71,9 @@ en:
     ids: "Map Layers"
     project:
       info: "Select the map layers that should be available in this project."
-    layer_options:
-      select: "-- Select layer type --"
-      select_image: "Image"
-      select_tile: "Tile"
-      select_mapboxvector: "Mapbox Vector"
-      select_vector: "Vector"
-      select_vectortile: "Vector Tile"
-    source_options:
-      select: "-- Select source type --"
-      select_bingmaps: "Bing Maps"
-      select_cartodb: "CartoDB"
-      select_imagestatic: "Static Image"
-      select_imagewms: "Image WMS"
-      select_osm: "OpenStreetMap"
-      select_raster: "Raster"
-      select_stamen: "Stamen"
-      select_tilejson: "Tiled JSON"
-      select_tilewms: "Tiled WMS"
-      select_utfgrid: "UTF Grid"
-      select_vector: "Vector"
-      select_vectortile: "Vector Tiles"
-      select_wmts: "WMTS Tiles"
-      select_xyz: "XYZ Tiles"
-    format_options:
-      select: "-- Select format type --"
-      select_geojson: "GeoJSON"
-      select_gpx: "GPX"
-      select_kml: "KML"
-      select_mvt: "MVT"
-      select_topojson: "TopoJSON"
-      select_wfs: "WFS"
-      select_wkb: "WKB"
-      select_wkt: "WKT"
+    layer_options_select: "-- Select layer type --"
+    source_options_select: "-- Select source type --"
+    format_options_select: "-- Select format type --"
     load_example: "Examples: "
 
   # Workaround to easily customize field labels
