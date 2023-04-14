@@ -14,7 +14,7 @@ class GttConfigurationController < ApplicationController
   def build_default_setting_config
     default_tracker_icon = []
     default_status_color = []
-    gtt_tile_source = []
+    gtt_map_layer = []
 
     Tracker.all.sort.each {|tracker|
       default_tracker_icon.append({
@@ -33,12 +33,9 @@ class GttConfigurationController < ApplicationController
     }
 
     GttMapLayer.where(global: true).sort.each {|mapLayer|
-      gtt_map_layer.append({
-        id: mapLayer.id,
-        name: mapLayer.name,
-        type: mapLayer.type,
-        options: mapLayer.options
-      })
+      gtt_map_layer.append(
+        mapLayer.as_json.except("created_at", "updated_at","position","global")
+      )
     }
 
     mapConfig = {
