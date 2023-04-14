@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class GttTileSourceTest < ActiveSupport::TestCase
+class GttMapLayerTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

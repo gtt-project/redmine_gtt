@@ -208,34 +208,34 @@ class ProjectsApiTest < Redmine::IntegrationTest
   end
 
   test 'GET /projects.xml with include=layers should return layers' do
-    ts = RedmineGtt::Actions::CreateTileSource.(type: 'ol.source.OSM', name: 'default', default: true).tile_source
-    @project.gtt_tile_sources = [ts]
-    @subproject1.gtt_tile_sources = [ts]
+    ts = RedmineGtt::Actions::CreateMapLayer.(layer: 'Tile', name: 'default', default: true).map_layer
+    @project.gtt_map_layers = [ts]
+    @subproject1.gtt_map_layers = [ts]
     get '/projects.xml?include=layers'
     assert_response :success
     xml = xml_data
     assert projects = xml.xpath('/projects/project')
     assert layer = projects.xpath('layers/layer').first
     assert layer.present?
-    assert_equal 'ol.source.OSM', layer['type']
+    assert_equal 'Tile', layer['layer']
   end
 
   test 'GET /projects/1.xml with include=layers should return layers' do
-    ts = RedmineGtt::Actions::CreateTileSource.(type: 'ol.source.OSM', name: 'default', default: true).tile_source
-    @project.gtt_tile_sources = [ts]
+    ts = RedmineGtt::Actions::CreateMapLayer.(layer: 'Tile', name: 'default', default: true).map_layer
+    @project.gtt_map_layers = [ts]
     get '/projects/1.xml?include=layers'
     assert_response :success
     xml = xml_data
     assert project = xml.xpath('/project')
     assert layer = project.xpath('layers/layer').first
     assert layer.present?
-    assert_equal 'ol.source.OSM', layer['type']
+    assert_equal 'Tile', layer['layer']
   end
 
   test 'GET /projects.xml with include=geometry,layers should return both geojson and layers' do
-    ts = RedmineGtt::Actions::CreateTileSource.(type: 'ol.source.OSM', name: 'default', default: true).tile_source
-    @project.gtt_tile_sources = [ts]
-    @subproject1.gtt_tile_sources = [ts]
+    ts = RedmineGtt::Actions::CreateMapLayer.(layer: 'Tile', name: 'default', default: true).map_layer
+    @project.gtt_map_layers = [ts]
+    @subproject1.gtt_map_layers = [ts]
     geo = {
       'type' => 'Feature',
       'geometry' => {
@@ -259,12 +259,12 @@ class ProjectsApiTest < Redmine::IntegrationTest
     assert_equal geo['geometry'], JSON.parse(json)['geometry'], json
     assert layer = projects.xpath('layers/layer').first
     assert layer.present?
-    assert_equal 'ol.source.OSM', layer['type']
+    assert_equal 'Tile', layer['layer']
   end
 
   test 'GET /projects/1.xml with include=geometry,layers should return both geojson and layers' do
-    ts = RedmineGtt::Actions::CreateTileSource.(type: 'ol.source.OSM', name: 'default', default: true).tile_source
-    @project.gtt_tile_sources = [ts]
+    ts = RedmineGtt::Actions::CreateMapLayer.(layer: 'Tile', name: 'default', default: true).map_layer
+    @project.gtt_map_layers = [ts]
     geo = {
       'type' => 'Feature',
       'geometry' => {
@@ -287,7 +287,7 @@ class ProjectsApiTest < Redmine::IntegrationTest
     assert_equal geo['geometry'], JSON.parse(json)['geometry'], json
     assert layer = project.xpath('layers/layer').first
     assert layer.present?
-    assert_equal 'ol.source.OSM', layer['type']
+    assert_equal 'Tile', layer['layer']
   end
 
   def xml_data

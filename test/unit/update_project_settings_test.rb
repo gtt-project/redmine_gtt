@@ -3,17 +3,17 @@ require_relative '../test_helper'
 class UpdateProjectSettingsTest < GttTest
   fixtures :projects
 
-  test 'should save tile sources' do
+  test 'should save map layer' do
     p = Project.find 'ecookbook'
-    ts = GttTileSource.create! name: 'test', type: 'ol.source.OSM'
-    form = GttConfiguration.from_params gtt_tile_source_ids: [ ts.id ]
+    ts = GttMapLayer.create! name: 'test', layer: 'Tile'
+    form = GttConfiguration.from_params gtt_map_layer_ids: [ ts.id ]
     form.project = p
     r = RedmineGtt::Actions::UpdateProjectSettings.( form )
 
     assert r.settings_saved?
 
     p.reload
-    assert_equal [ts], p.gtt_tile_sources.to_a
+    assert_equal [ts], p.gtt_map_layers.to_a
   end
 
   test 'should validate invalid multipolygon geometry' do
