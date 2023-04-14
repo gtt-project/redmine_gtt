@@ -20,10 +20,10 @@ class UpdateProjectSettingsTest < GttTest
     p = Project.find 'ecookbook'
     coordinates = [
       [
-        [[135.0, 35.0], [136.0, 36.0], [135.0, 36.0], [135.0, 35.0]]
+        [[135.0, 35.0], [136.0, 35.0], [136.0, 36.0], [135.0, 36.0], [135.0, 35.0]]
       ],
       [
-        [[136.0, 35.0], [137.0, 35.0], [137.0, 36.0], [136.0, 36.0], [136.0, 35.0]]
+        [[137.0, 36.0], [136.0, 36.0], [136.0, 35.0], [137.0, 35.0], [136.0, 35.0]]
       ]
     ]
 
@@ -31,7 +31,6 @@ class UpdateProjectSettingsTest < GttTest
     form.project = p
     r = RedmineGtt::Actions::UpdateProjectSettings.( form )
 
-    puts r.settings_saved?
     assert_not r.settings_saved?
 
     p.reload
