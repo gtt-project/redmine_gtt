@@ -1,4 +1,4 @@
-class CreateGttMapLayers < ActiveRecord::Migration[6.1]
+class CreateGttMapLayers < ActiveRecord::Migration[5.2]
   def change
     create_table :gtt_map_layers do |t|
       t.string :name, null: false
