@@ -129,21 +129,20 @@ function handleLayerVisibilityChange(layer: Layer, layerObject: ILayerObject): v
  * Adds layers to the map based on their properties.
  */
 function addLayersToMap(this: any): void {
+  let hasOverlay = false;
+
   this.layerArray.forEach((l: Layer) => {
     if (l.get("baseLayer")) {
       this.map.addLayer(l);
-    }
-  });
-
-  this.containsOverlay = false;
-
-  this.layerArray.forEach((l: Layer) => {
-    if (!l.get("baseLayer")) {
+    } else {
       this.map.addLayer(l);
-      this.containsOverlay = true;
+      hasOverlay = true;
     }
   });
+
+  this.containsOverlay = hasOverlay;
 }
+
 
 /**
  * Adds a bounds layer to the map for rendering boundaries.
@@ -163,7 +162,6 @@ function addBoundsLayer(this: any): void {
   });
   this.bounds.set('title', 'Boundaries');
   this.bounds.set('displayInLayerSwitcher', false);
-  this.layerArray.push(this.bounds);
   this.map.addLayer(this.bounds);
 }
 
@@ -183,7 +181,6 @@ function addVectorLayer(this: any, features: Feature<Geometry>[] | null): void {
   });
   this.vector.set('title', 'Features');
   this.vector.set('displayInLayerSwitcher', false);
-  this.layerArray.push(this.vector);
   this.map.addLayer(this.vector);
 }
 
