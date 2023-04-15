@@ -65,7 +65,7 @@ class IssueTest < GttTest
   end
 
   test 'should ignore small point geom changes' do
-    coordinates = [135.220734222412, 34.7056906000311]
+    coordinates = [135.220734222412, 34.7056906000311, 0.0]
 
     @issue.update_attribute :geojson, point_geojson(coordinates)
     @issue.instance_variable_set "@geojson", nil
@@ -76,7 +76,7 @@ class IssueTest < GttTest
     @issue.instance_variable_set "@geojson", nil
     assert_equal old_coordinates, @issue.geojson["geometry"]["coordinates"]
 
-    new_coordinates = [old_coordinates[0] + 0.2, old_coordinates[1]]
+    new_coordinates = [old_coordinates[0] + 0.2, old_coordinates[1], c[2]]]
     @issue.update_attribute :geojson, point_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
     assert_equal new_coordinates, @issue.geojson["geometry"]["coordinates"]
