@@ -89,17 +89,17 @@ class IssueTest < GttTest
     @issue.instance_variable_set "@geojson", nil
     old_coordinates = @issue.geojson["geometry"]["coordinates"]
 
-    new_coordinates = old_coordinates.map{|c| [c[0] + 0.000000001, c[1] + 0.000000001]}
+    new_coordinates = old_coordinates.map{|c| [c[0] + 0.000000001, c[1] + 0.000000001, c[2]]}
     @issue.update_attribute :geojson, linestring_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
     assert_equal old_coordinates, @issue.geojson["geometry"]["coordinates"]
 
-    new_coordinates = old_coordinates.map{|c| [c[0] + 0.2, c[1]]}
+    new_coordinates = old_coordinates.map{|c| [c[0] + 0.2, c[1], c[2]]}
     @issue.update_attribute :geojson, linestring_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
     assert_equal new_coordinates, @issue.geojson["geometry"]["coordinates"]
 
-    new_coordinates = old_coordinates.map{|c| [c[0], c[1]]}
+    new_coordinates = old_coordinates.map{|c| [c[0], c[1], c[2]]}
     new_coordinates.delete_at(1)
     @issue.update_attribute :geojson, linestring_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
@@ -113,17 +113,17 @@ class IssueTest < GttTest
     @issue.instance_variable_set "@geojson", nil
     old_coordinates = @issue.geojson["geometry"]["coordinates"]
 
-    new_coordinates = [old_coordinates[0].map{|c| [c[0] + 0.000000001, c[1] + 0.000000001]}]
+    new_coordinates = [old_coordinates[0].map{|c| [c[0] + 0.000000001, c[1] + 0.000000001], c[2]}]
     @issue.update_attribute :geojson, polygon_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
     assert_equal old_coordinates, @issue.geojson["geometry"]["coordinates"]
 
-    new_coordinates = [old_coordinates[0].map{|c| [c[0] + 0.2, c[1]]}]
+    new_coordinates = [old_coordinates[0].map{|c| [c[0] + 0.2, c[1], c[2]]}]
     @issue.update_attribute :geojson, polygon_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
     assert_equal new_coordinates, @issue.geojson["geometry"]["coordinates"]
 
-    new_coordinates = [old_coordinates[0].map{|c| [c[0], c[1]]}]
+    new_coordinates = [old_coordinates[0].map{|c| [c[0], c[1], c[2]]}]
     new_coordinates[0].insert(2, [135.301041779,34.680969984,0.0])
     @issue.update_attribute :geojson, polygon_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
