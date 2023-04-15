@@ -55,7 +55,6 @@ class GttMapLayersController < ApplicationController
     redirect_to gtt_map_layers_path
   end
 
-
   private
 
   def map_layer_params

@@ -46,7 +46,8 @@ export function setControls(types: Array<string>) {
   types.forEach((type: any, idx) => {
     const draw = new Draw({
       type: type,
-      source: this.vector.getSource()
+      source: this.vector.getSource(),
+      geometryLayout: 'XYZ'
     })
 
     draw.on('drawend', evt => {
