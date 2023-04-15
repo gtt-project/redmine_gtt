@@ -113,7 +113,7 @@ class IssueTest < GttTest
     @issue.instance_variable_set "@geojson", nil
     old_coordinates = @issue.geojson["geometry"]["coordinates"]
 
-    new_coordinates = [old_coordinates[0].map{|c| [c[0] + 0.000000001, c[1] + 0.000000001], c[2]}]
+    new_coordinates = [old_coordinates[0].map{|c| [c[0] + 0.000000001, c[1] + 0.000000001, c[2]]}]
     @issue.update_attribute :geojson, polygon_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
     assert_equal old_coordinates, @issue.geojson["geometry"]["coordinates"]
