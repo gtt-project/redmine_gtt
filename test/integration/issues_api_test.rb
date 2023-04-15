@@ -23,6 +23,13 @@ class IssuesApiTest < Redmine::ApiTest::Base
         'coordinates' => [123.269691,9.305099]
       }
     }
+    geo3D = {
+      'type' => 'Feature',
+      'geometry' => {
+        'type' => 'Point',
+        'coordinates' => [123.269691,9.305099,0]
+      }
+    }
     geojson = geo.to_json
 
     issue = @project.issues.find 1
@@ -35,7 +42,7 @@ class IssuesApiTest < Redmine::ApiTest::Base
     assert json = xml.xpath('/issues/issue[id=1]/geojson').text
     assert json.present?
     assert_match(/123\.269691/, json)
-    assert_equal geo['geometry'], JSON.parse(json)['geometry'], json
+    assert_equal geo3D['geometry'], JSON.parse(json)['geometry'], json
     # xml format - show api
     get '/issues/1.xml'
     assert_response :success
@@ -43,20 +50,20 @@ class IssuesApiTest < Redmine::ApiTest::Base
     assert json = xml.xpath('/issue/geojson').text
     assert json.present?
     assert_match(/123\.269691/, json)
-    assert_equal geo['geometry'], JSON.parse(json)['geometry'], json
+    assert_equal geo3D['geometry'], JSON.parse(json)['geometry'], json
 
     # json format - index api
     get '/issues.json'
     assert_response :success
     assert json = JSON.parse(@response.body)
     hsh = json['issues'].detect{|i|i['id'] == issue.id}['geojson']
-    assert_equal geo['geometry'], hsh['geometry']
+    assert_equal geo3D['geometry'], hsh['geometry']
     # json format - show api
     get '/issues/1.json'
     assert_response :success
     assert json = JSON.parse(@response.body)
     hsh = json['issue']['geojson']
-    assert_equal geo['geometry'], hsh['geometry']
+    assert_equal geo3D['geometry'], hsh['geometry']
   end
 
   test 'should include empty geojson' do
