@@ -161,7 +161,9 @@ export function setControls(types: Array<string>) {
   mainbar.addControl(editbar)
 
   let zValue = 0;
+  let geometryType = 'Point';
   this.vector.getSource().forEachFeature((ftr: any) => {
+    geometryType = ftr.getGeometry().getType();
     zValue = getZValueForGeometry(ftr.getGeometry());
   });
 
@@ -196,7 +198,7 @@ export function setControls(types: Array<string>) {
       html: `<i class="material-icons" >${mdi}</i>`,
       title: this.i18n.control[type.toLowerCase()],
       interaction: draw,
-      active: (idx === 0)
+      active: (type === geometryType)
     })
     editbar.addControl(control)
   })
