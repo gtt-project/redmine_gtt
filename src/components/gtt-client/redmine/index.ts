@@ -21,7 +21,7 @@ export const buildDistanceFilterRow = (operator: any, values: any): void => {
     return
   }
   const operators = window.operatorByType[filterOptions['type']]
-  const filterValues = filterOptions['values']
+  // const filterValues = filterOptions['values']
 
   const tr = document.createElement('tr') as HTMLTableRowElement
   tr.className = 'filter'
