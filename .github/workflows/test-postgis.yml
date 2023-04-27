@@ -101,6 +101,9 @@ jobs:
               echo "GEM_RGEO_ACTIVERECORD_VERSION=6.2.2" >> ${GITHUB_ENV}
               echo "GEM_ACTIVERECORD_POSTGIS_ADAPTER_VERSION=5.2.3" >> ${GITHUB_ENV}
               ;;
+            master)
+              echo "GEM_PG_VERSION=1.4.5" >> ${GITHUB_ENV}
+              ;;
           esac
 
       - name: Install Ruby dependencies
