@@ -24,7 +24,7 @@
     "@material-design-icons/font": "^0.14.7",
     "geojson": "^0.5.0",
     "ol": "^7.2.2",
-    "ol-ext": "^4.0.7",
+    "ol-ext": "^4.0.8",
     "ol-mapbox-style": "^10.5.0"
   },
   "devDependencies": {
@@ -38,7 +38,7 @@
     "style-loader": "^3.3.1",
     "ts-loader": "^9.4.2",
     "typescript": "^5.0.4",
-    "webpack": "^5.81.0",
-    "webpack-cli": "^5.0.2"
+    "webpack": "^5.82.0",
+    "webpack-cli": "^5.1.0"
   }
 }
