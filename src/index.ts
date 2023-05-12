@@ -15,7 +15,7 @@ import './styles';
 
 // Import GttClient and gtt_setting components from corresponding modules
 import { GttClient } from './components/gtt-client';
-import { gtt_setting } from './components/gtt-setting';
+import { gtt_setting } from './components/gtt-settings';
 
 // Define functions that will be attached to the global window object
 
