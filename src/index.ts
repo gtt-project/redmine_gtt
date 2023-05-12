@@ -1,26 +1,23 @@
-// Import stylesheets
-// OpenLayers core stylesheet
-import 'ol/ol.css';
+/**
+ * ===========================================
+ * GTT Application Main Module
+ * ===========================================
+ *
+ * This module is responsible for managing
+ * the GTT application. Its main tasks include:
+ *   - Importing required stylesheets
+ *   - Importing components (GttClient and gtt_setting)
+ *   - Attaching essential functions to the global window object
+ */
 
-// OpenLayers extensions stylesheet
-import 'ol-ext/dist/ol-ext.min.css';
+// Import application styles from the 'styles' module
+import './styles';
 
-// Custom app styles
-import './stylesheets/app.scss';
-
-// Custom icons
-import './stylesheets/custom-icons.css';
-import './stylesheets/custom-icons-def.js';
-
-// Material Design icons
-import '@material-design-icons/font/filled.css';
-import './stylesheets/material-design-def.js';
-
-// Import components
+// Import GttClient and gtt_setting components from corresponding modules
 import { GttClient } from './components/gtt-client';
 import { gtt_setting } from './components/gtt-setting';
 
-// Define functions to attach to the global window object
+// Define functions that will be attached to the global window object
 
 /**
  * Creates a GttClient instance for the given target.
@@ -37,6 +34,7 @@ function attachGttSetting() {
   gtt_setting();
 }
 
-// Attach functions to global window object
-window.createGttClient = createGttClient;
-window.gtt_setting = attachGttSetting;
+// Attach the 'createGttClient' and 'attachGttSetting' functions to the global window object
+// This enables them to be called from other parts of the application or directly from the browser console
+(window as any).createGttClient = createGttClient;
+(window as any).gtt_setting = attachGttSetting;

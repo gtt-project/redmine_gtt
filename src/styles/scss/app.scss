@@ -16,7 +16,8 @@
   background-color: #3f5872;
 }
 
-.ol-control.ol-bar .ol-toggle.ol-active button:hover, .ol-control.ol-bar .ol-toggle.ol-active>button {
+.ol-control.ol-bar .ol-toggle.ol-active button:hover,
+.ol-control.ol-bar .ol-toggle.ol-active > button {
   background-color: #f1515c;
   color: #fff;
 }
@@ -26,12 +27,14 @@
   height: 400px;
   border: 1px solid #E4E4E4;
 }
+
 #issue-form .ol-map {
   width: 100%;
   margin-bottom: 1em;
 }
 
 $breakpoint-tablet: 899px;
+
 @media (max-width: $breakpoint-tablet) {
   .ol-map {
     height: 340px;
@@ -43,6 +46,7 @@ $breakpoint-tablet: 899px;
   height: 32px;
   width: 32px;
 }
+
 .ol-control button:hover {
   background-color: rgba(52, 73, 94, 1);
 }
@@ -64,11 +68,12 @@ div.ol-rotate {
   right: 4.7rem;
 }
 
-.ol-control.ol-bar.ol-top.ol-left, .ol-control.ol-bar.ol-top.ol-right {
+.ol-control.ol-bar.ol-top.ol-left,
+.ol-control.ol-bar.ol-top.ol-right {
   top: 5.0rem;
 }
 
-.ol-touch .ol-layerswitcher>button {
+.ol-touch .ol-layerswitcher > button {
   font-size: 1.5rem;
 }
 
@@ -81,11 +86,15 @@ div.ol-rotate {
   line-height: initial;
 }
 
-.tabular .ol-layerswitcher>button {
+.tabular .ol-layerswitcher > button {
   font-size: 1.5rem;
 }
 
 #admin-menu a.gtt {
+  background-image: url(../images/map.png);
+}
+
+.icon-gtt-map {
   background-image: url(../images/map.png);
 }
 
