@@ -15,12 +15,18 @@ const cssLoaders = ['style-loader', 'css-loader'];
 const imageLoaders = {
   test: /\.(png|svg|jpg|jpeg|gif)$/i,
   type: 'asset/resource',
+  generator: {
+    filename: 'images/[name][ext]', // Keep the original file name and extension
+  },
 };
 
 // Loaders for processing font files
 const fontLoaders = {
   test: /\.(woff|woff2|eot|ttf|otf)$/i,
   type: 'asset/resource',
+  generator: {
+    filename: 'fonts/[name][ext]', // Keep the original file name and extension
+  },
 };
 
 // Loaders for processing TypeScript files
@@ -48,7 +54,8 @@ module.exports = {
     extensions: ['.ts', '.js'], // Specify file extensions to resolve
   },
   output: {
-    filename: 'main.js', // Set output filename
-    path: path.join(__dirname, 'assets', 'javascripts'), // Set output directory
+    filename: 'javascripts/main.js', // Output JavaScript file to the javascripts directory
+    path: path.resolve(__dirname, 'assets'), // Set output directory to the assets directory
+    assetModuleFilename: 'images/[name].[ext]', // Output image files to the images directory
   },
 };

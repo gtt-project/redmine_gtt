@@ -3,11 +3,5 @@
 node_modules/
 
 # Ignore webpack generated files
-assets/javascripts/main.js*
-assets/javascripts/*.main.js*
-assets/javascripts/*.png
-assets/javascripts/*.svg
-assets/javascripts/*.ttf
-assets/javascripts/*.eot
-assets/javascripts/*.woff2
-assets/javascripts/*.woff
+assets/*
+!assets/.keep
