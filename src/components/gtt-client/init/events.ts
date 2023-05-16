@@ -67,12 +67,19 @@ function handleIssueSelection(this: any): void {
       const currentTarget = evt.currentTarget as HTMLTableRowElement;
       const id = currentTarget.id.split('-')[1];
       const feature = this.vector.getSource().getFeatureById(id);
+
+      // Skip the click handler when there is no vector feature
+      if (!feature) {
+        return;
+      }
+
       this.map.getView().fit(feature.getGeometry().getExtent(), {
         size: this.map.getSize(),
       });
     });
   });
 }
+
 
 /**
  * Handles the click event on the edit icon to update the map size when the editable form is made visible.
