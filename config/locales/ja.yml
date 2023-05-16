@@ -109,4 +109,5 @@ ja:
       cancel: キャンセル
     messages:
       baselayer_missing: "There is no baselayer available!"
+      zoom_in_more: "Zoom in to view objects."
   title_geojson_upload: GeoJSONのインポート

@@ -318,21 +318,13 @@ export function setPopover() {
 */
 export function setBasemap(): void {
   if (this.layerArray.length == 0) {
-    console.warn(this.i18n.messages.baselayer_missing);
-
     const notification = document.createElement('div');
+    notification.className = 'gtt-map-notification';
     notification.innerText = this.i18n.messages.baselayer_missing;
 
     const mapContainer = this.map.getTargetElement();
     Object.assign(mapContainer.style, {
       position: 'relative',
-    });
-
-    Object.assign(notification.style, {
-      position: 'absolute',
-      top: '55%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
     });
 
     mapContainer.appendChild(notification);

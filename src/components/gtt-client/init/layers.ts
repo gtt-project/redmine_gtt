@@ -181,6 +181,34 @@ function addVectorLayer(this: any, features: Feature<Geometry>[] | null): void {
   });
   this.vector.set('title', 'Features');
   this.vector.set('displayInLayerSwitcher', false);
+
+  // Listen to the moveend event and show message when zoom level is too low
+  let previousZoom = this.map.getView().getZoom();
+
+  const notification = document.createElement('div');
+  notification.className = 'gtt-map-notification';
+  notification.innerText = this.i18n.messages.zoom_in_more;
+
+  const mapContainer = this.map.getTargetElement();
+  Object.assign(mapContainer.style, {
+    position: 'relative',
+  });
+
+  this.map.on('moveend', () => {
+    const currentZoom = this.map.getView().getZoom();
+    if (previousZoom !== currentZoom) {
+      if (currentZoom <= Number(this.defaults.vectorMinzoom || 0)) {
+        mapContainer.appendChild(notification);
+      }
+      else {
+        try {
+          mapContainer.removeChild(notification);
+        } catch (error) {}
+      }
+      previousZoom = currentZoom;
+    }
+  });
+
   this.map.addLayer(this.vector);
 }
 
