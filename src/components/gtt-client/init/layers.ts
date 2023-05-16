@@ -176,7 +176,8 @@ function addVectorLayer(this: any, features: Feature<Geometry>[] | null): void {
       'useSpatialIndex': false
     }),
     renderOrder: yOrdering as OrderFunction,
-    style: getStyle.bind(this)
+    style: getStyle.bind(this),
+    minZoom: this.defaults.vectorMinzoom || 0
   });
   this.vector.set('title', 'Features');
   this.vector.set('displayInLayerSwitcher', false);

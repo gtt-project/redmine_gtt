@@ -20,3 +20,12 @@
   </p>
 <% end %>
 </div>
+
+<div class="box tabular settings">
+<p>
+  <%= content_tag(:label, l(:gtt_settings_vector_minzoom_level)) %>
+  <%= text_field_tag('settings[vector_minzoom_level]',
+      @settings['vector_minzoom_level'],
+      :size => 10 ) %>
+</p>
+</div>

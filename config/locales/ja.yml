@@ -56,6 +56,7 @@ ja:
   gtt_settings_general_zoom_level: "既定の地図ズームレベル"
   gtt_settings_general_maxzoom_level: "既定の最大地図ズームレベル"
   gtt_settings_general_fit_maxzoom_level: "フィット時最大地図ズームレベル"
+  gtt_settings_vector_minzoom_level: "Minimum zoom level"
 
   gtt_settings_label_general: "General"
   gtt_settings_label_styling: "Styling"

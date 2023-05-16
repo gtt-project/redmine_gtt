@@ -38,6 +38,7 @@ en:
   gtt_settings_general_zoom_level: "Default map zoom level"
   gtt_settings_general_maxzoom_level: "Default map maximum zoom level"
   gtt_settings_general_fit_maxzoom_level: "Default map fit maximum zoom level"
+  gtt_settings_vector_minzoom_level: "Minimum zoom level"
 
   gtt_settings_label_general: "General"
   gtt_settings_label_styling: "Styling"

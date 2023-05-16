@@ -40,6 +40,7 @@ de:
   gtt_settings_general_center_lat: Standard-Breitengrad des Kartenmittelpunkts
   gtt_settings_general_zoom_level: Standard-Zoomstufe der Karte
   gtt_settings_general_fit_maxzoom_level: Standardmäßig maximale Zoomstufe des Kartenausschnitts
+  gtt_settings_vector_minzoom_level: "Kleinste Zoomstufe"
   label_gtt_point: Punkt
   label_gtt_linestring: Linie
   label_gtt_polygon: Polygon
