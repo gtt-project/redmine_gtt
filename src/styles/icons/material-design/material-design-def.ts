@@ -1,12 +1,7 @@
-import ol_style_FontSymbol from 'ol-ext/style/FontSymbol';
+import * as FontFaceObserver from 'fontfaceobserver';
+import FontSymbol from 'ol-ext/style/FontSymbol';
 
-ol_style_FontSymbol.addDefs(
-{
-  font: 'Material Icons',
-	name: 'Material Icons',
-	copyright: 'Apache-2.0',
-	prefix:  'mdi'
-}, {
+const iconMappings: { [key: string]: any } = {
   '10k': '\ue951',
   '10mp': '\ue952',
   '11mp': '\ue953',
@@ -824,8 +819,6 @@ ol_style_FontSymbol.addDefs(
   'flip_to_front': '\ue883',
   'flood': '\uebe6',
   'flourescent': '\uec31',
-  'flourescent': '\uf00d',
-  'fluorescent': '\uec31',
   'flutter_dash': '\ue00b',
   'fmd_bad': '\uf00e',
   'fmd_good': '\uf00f',
@@ -2239,6 +2232,35 @@ ol_style_FontSymbol.addDefs(
   'zoom_in_map': '\ueb2d',
   'zoom_out': '\ue900',
   'zoom_out_map': '\ue56b'
+};
+
+// Define the font face
+let customFont = new FontFace('material-icons', 'url(/plugin_assets/redmine_gtt/material-icons.woff2)');
+
+// Load the font
+const fontPromise = customFont.load().then((font) => {
+  // Add the loaded font to the document
+  document.fonts.add(font);
+
+  // Add the definitions
+  FontSymbol.addDefs(
+    {
+      font: 'Material Icons',
+      name: 'Material Icons',
+      copyright: 'Apache-2.0',
+      prefix:  'mdi'
+    },
+    iconMappings
+  );
+
+  // Create a FontFaceObserver instance
+  const observer = new FontFaceObserver('custom-icons');
+
+  // Use the observer to wait for the font to be loaded
+  return observer.load();
+}).catch((error) => {
+  console.error('Error loading font:', error);
 });
 
-export default ol_style_FontSymbol;
+export { fontPromise };
+export default FontSymbol;

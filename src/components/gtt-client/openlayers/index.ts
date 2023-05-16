@@ -1,12 +1,10 @@
 import { Map, Feature, View, Geolocation } from 'ol';
-import { Geometry, Point } from 'ol/geom';
+import { Point } from 'ol/geom';
 import Vector from 'ol/source/Vector'
 import VectorLayer from 'ol/layer/Vector';
 import { Style, Fill, Stroke, Circle } from 'ol/style';
 import { createEmpty, extend, containsCoordinate } from 'ol/extent';
 import { transform, fromLonLat } from 'ol/proj';
-import Shadow from 'ol-ext/style/Shadow';
-import FontSymbol from 'ol-ext/style/FontSymbol';
 
 import { Modify, Draw, Select } from 'ol/interaction'
 import Bar from 'ol-ext/control/Bar';
@@ -512,115 +510,4 @@ export function setView() {
     rotation: degreesToRadians(parseInt(this.map.getTargetElement().getAttribute("data-rotation")))
   })
   this.map.setView(view)
-}
-
-export function getStyle(feature: Feature<Geometry>, _: unknown):Style[] {
-  const styles: Style[] = []
-
-  // Apply Shadow
-  styles.push(
-    new Style({
-      image: new Shadow({
-        radius: 15,
-        blur: 5,
-        offsetX: 0,
-        offsetY: 0,
-        fill: new Fill({
-          color: 'rgba(0,0,0,0.5)'
-        })
-      })
-    })
-  )
-
-  const self = this
-
-  // Apply Font Style
-  styles.push(
-    new Style({
-      image: new FontSymbol({
-        form: 'blazon',
-        gradient: false,
-        glyph: getSymbol(self, feature),
-        fontSize: 0.7,
-        radius: 18,
-        offsetY: -18,
-        rotation: 0,
-        rotateWithView: false,
-        color: getFontColor(feature),
-        fill: new Fill({
-          color: getColor(self, feature)
-        }),
-        stroke: new Stroke({
-          color: '#333333',
-          width: 1
-        }),
-        opacity: 1,
-      }),
-      stroke: new Stroke({
-        width: 4,
-        color: getColor(self, feature)
-      }),
-      fill: new Fill({
-        color: getColor(self, feature, true),
-      })
-    })
-  )
-
-  return styles
-}
-
-/**
- * TODO: check if this is acually used
- */
-export function getColor(mapObj: any, feature: Feature<Geometry>, isFill: boolean = false): string {
-  let color = '#000000'
-  if (feature.getGeometry().getType() !== 'Point') {
-    color = '#FFD700'
-  }
-  const plugin_settings = JSON.parse(mapObj.defaults.pluginSettings)
-  const status = document.querySelector('#issue_status_id') as HTMLInputElement
-
-  let status_id = feature.get('status_id')
-  if (!status_id && status) {
-    status_id = status.value
-  }
-  if (status_id) {
-    const key = `status_${status_id}`
-    if (key in plugin_settings) {
-      color = plugin_settings[key]
-    }
-  }
-  if (isFill && color !== null && color.length === 7) {
-    color = color + '33' // Add alpha: 0.2
-  }
-  return color
-}
-
-/**
- * TODO: check if this is acually used
- */
-export function getFontColor(_: unknown): string {
-  const color = "#FFFFFF"
-  return color
-}
-
-/**
- * TODO: check if this is acually used
- */
-export function getSymbol(mapObj: any, feature: Feature<Geometry>) {
-  let symbol = 'home'
-
-  const plugin_settings = JSON.parse(mapObj.defaults.pluginSettings)
-  const issue_tracker = document.querySelector('#issue_tracker_id') as HTMLInputElement
-  let tracker_id = feature.get('tracker_id')
-  if (!tracker_id && issue_tracker) {
-    tracker_id = issue_tracker.value
-  }
-  if (tracker_id) {
-    const key = `tracker_${tracker_id}`
-    if (key in plugin_settings) {
-      symbol = plugin_settings[key]
-    }
-  }
-  return symbol
 }

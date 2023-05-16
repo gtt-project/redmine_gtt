@@ -13,24 +13,28 @@
 // Import application styles from the 'styles' module
 import './styles';
 
+// Import necessary iconfonts
+import { fontPromise as customIcons } from './styles/icons/custom/custom-icons-def';
+import { fontPromise as materialIcons } from './styles/icons/material-design/material-design-def';
+
 // Import GttClient and gtt_setting components from corresponding modules
 import { GttClient } from './components/gtt-client';
 import { gtt_setting } from './components/gtt-settings';
-
-// Define functions that will be attached to the global window object
 
 /**
  * Creates a GttClient instance for the given target.
  * @param target - The HTMLDivElement for which the GttClient will be created.
  */
-function createGttClient(target: HTMLDivElement) {
+async function createGttClient(target: HTMLDivElement) {
+  await Promise.all([customIcons, materialIcons]);
   new GttClient({ target });
 }
 
 /**
  * Attaches GTT settings.
  */
-function attachGttSetting() {
+async function attachGttSetting() {
+  await Promise.all([customIcons, materialIcons]);
   gtt_setting();
 }
 

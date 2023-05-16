@@ -2,9 +2,7 @@ import { Map, Feature } from 'ol';
 import { Geometry, Point } from 'ol/geom';
 import { GeoJSON, WKT } from 'ol/format';
 import { FeatureCollection } from 'geojson';
-import VectorLayer from 'ol/layer/Vector';
 import { FeatureLike } from 'ol/Feature';
-import FontSymbol from 'ol-ext/style/FontSymbol';
 import { transform, transformExtent } from 'ol/proj';
 
 /**
@@ -97,44 +95,6 @@ export const getObjectPathValue = (obj: any, path: string | Array<string>, def: 
     : path.split('.').flatMap((key) => key.split(/\[([^}]+)\]/g).filter(Boolean));
   return pathArr.reduce((acc, key) => acc?.[key], obj) ?? def;
 };
-
-/**
- * Reload FontSymbol styles on the map.
- */
-export function reloadFontSymbol() {
-  if ('fonts' in document) {
-    const symbolFonts: Array<String> = []
-    for (const font in FontSymbol.defs.fonts) {
-      symbolFonts.push(font)
-    }
-    if (symbolFonts.length > 0) {
-      (document as any).fonts.addEventListener('loadingdone', (e: any) => {
-        const fontIndex = e.fontfaces.findIndex((font: any) => {
-          return symbolFonts.indexOf(font.family) >= 0
-        })
-        if (fontIndex >= 0) {
-          this.maps.forEach((m: any) => {
-            const layers = m.getLayers()
-            layers.forEach((layer: any) => {
-              if (layer instanceof VectorLayer &&
-                  layer.getKeys().indexOf("title") >= 0 &&
-                  layer.get("title") === "Features") {
-                const features = layer.getSource().getFeatures()
-                const pointIndex = features.findIndex((feature: Feature) => {
-                  return feature.getGeometry().getType() === "Point"
-                })
-                if (pointIndex >= 0) {
-                  // console.log("Reloading Features layer")
-                  layer.changed()
-                }
-              }
-            })
-          })
-        }
-      })
-    }
-  }
-}
 
 /**
  * Update the form with the provided feature data.

@@ -14,8 +14,9 @@ import Mask from 'ol-ext/filter/Mask';
 import { applyStyle } from 'ol-mapbox-style';
 
 import { ILayerObject } from '../interfaces';
-import { updateForm, reloadFontSymbol } from "../helpers";
-import { setBasemap, getStyle } from "../openlayers";
+import { updateForm } from "../helpers";
+import { setBasemap } from "../openlayers";
+import { getStyle } from "../openlayers/styles";
 
 /**
  * Initializes layers for the OpenLayers map and adds them to the layerArray.
@@ -25,7 +26,6 @@ export function initLayers(this: any): Layer[] {
   this.layerArray = [];
 
   const features = readGeoJSONFeatures.call(this);
-  reloadFontSymbol.call(this);
   updateForm(this, features);
 
   if (this.contents.layers) {
@@ -142,7 +142,6 @@ function addLayersToMap(this: any): void {
 
   this.containsOverlay = hasOverlay;
 }
-
 
 /**
  * Adds a bounds layer to the map for rendering boundaries.

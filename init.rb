@@ -86,10 +86,3 @@ else
     RedmineGtt.setup_controller_patches
   end
 end
-
-#class GttListener < Redmine::Hook::ViewListener
-Class.new(Redmine::Hook::ViewListener) do |c|
-  render_on :view_layouts_base_html_head, inline: <<-END
-      <%= stylesheet_link_tag 'gtt', :plugin => 'redmine_gtt' %>
-    END
-end

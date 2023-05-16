@@ -15,23 +15,23 @@ export const processElement = (element: HTMLSelectElement): void => {
     element.remove(0);
   }
 
-  for (const font in fonts) {
+  for (const fontKey in fonts) {
     const optgroup = document.createElement('optgroup');
-    optgroup.label = fonts[font].name;
+    optgroup.label = fonts[fontKey].name;
 
-    for (const i in glyphs) {
-      if (glyphs[i].font === font) {
-        const selected = selectedValue === i;
-        const words = i.split('_');
+    for (const glyphKey in glyphs) {
+      if (glyphs[glyphKey].font === fonts[fontKey].font) {
+        const selected = selectedValue === glyphKey;
+        const words = glyphKey.split('_');
         const text = words.map((word) => word[0].toUpperCase() + word.substring(1)).join(' ');
 
-        optgroup.appendChild(new Option(text, i, selected, selected));
+        optgroup.appendChild(new Option(text, glyphKey, selected, selected));
 
         if (selected) {
-          const style = font.toLowerCase().replace(/\s+/g, '-');
+          const style = fonts[fontKey].font.toLowerCase().replace(/\s+/g, '-');
           const icon = element.nextElementSibling;
-          icon.className = `${style}${style === 'material-icons' ? '' : ' icon-' + i}`;
-          icon.textContent = style === 'material-icons' ? i : '';
+          icon.className = `${style}${style === 'material-icons' ? '' : ' icon-' + glyphKey}`;
+          icon.textContent = style === 'material-icons' ? glyphKey : '';
         }
       }
     }

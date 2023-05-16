@@ -7,7 +7,7 @@ module RedmineGtt
       def view_layouts_base_html_head(context={})
         tags = [];
 
-        tags << javascript_include_tag('main.js', :plugin => 'redmine_gtt')
+        tags << javascript_include_tag('../main.js', :plugin => 'redmine_gtt')
         return tags.join("\n")
       end
 

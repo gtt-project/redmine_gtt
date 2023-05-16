@@ -91,7 +91,7 @@ Help us to translate GTT Project using [OSGeo Weblate](https://weblate.osgeo.org
 You can debug frontend by running the following command on another console:
 
 ```sh
-npx webpack --watch --mode=development
+npx webpack --watch --mode=development --devtool=source-map
 ```
 
 ### How to run test
