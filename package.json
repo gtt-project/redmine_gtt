@@ -32,15 +32,15 @@
     "@types/fontfaceobserver": "^2.1.0",
     "@types/geojson": "^7946.0.10",
     "@types/jquery": "^3.5.16",
-    "@types/jqueryui": "^1.12.16",
+    "@types/jqueryui": "^1.12.17",
     "@types/ol-ext": "npm:@siedlerchr/types-ol-ext",
-    "css-loader": "^6.7.3",
+    "css-loader": "^6.7.4",
     "sass": "^1.62.1",
-    "sass-loader": "^13.2.0",
-    "style-loader": "^3.3.1",
+    "sass-loader": "^13.3.0",
+    "style-loader": "^3.3.3",
     "ts-loader": "^9.4.2",
     "typescript": "^5.0.4",
-    "webpack": "^5.82.1",
+    "webpack": "^5.83.1",
     "webpack-cli": "^5.1.1"
   }
 }
