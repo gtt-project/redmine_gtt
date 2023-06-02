@@ -921,30 +921,23 @@ ol-ext@^4.0.8:
   resolved "https://registry.npmjs.org/ol-ext/-/ol-ext-4.0.8.tgz"
   integrity sha512-O0q4HmvrB+r0VOC3SAp9jEYSFN6Z3j1kSxRZxPK3VadArWjF27PXF+TGHj7HidzBy84jEre5/vDSv8oJbECbyA==
 
-ol-mapbox-style@^10.5.0:
-  version "10.5.0"
-  resolved "https://registry.npmjs.org/ol-mapbox-style/-/ol-mapbox-style-10.5.0.tgz"
-  integrity sha512-qwuLoJ9XG/tq1BScNNf/ijI1vFA75CZ/KpjecE9QCu/XSmIFDuL2L/GUZtRdXgNjjwCx2LLjOOYKQ1LqfcSmJg==
+ol-mapbox-style@^10.1.0, ol-mapbox-style@^10.6.0:
+  version "10.6.0"
+  resolved "https://registry.yarnpkg.com/ol-mapbox-style/-/ol-mapbox-style-10.6.0.tgz#89ac864160a374d936a59f7d1c969d4dc1d0a46b"
+  integrity sha512-s86QhCoyyKVRsYkvPzzdWd///bhYh3onWrBq4lNXnCd9G/hS6AoK023kn4zlDESVlTBDTWLz8vhOistp0M3TXA==
   dependencies:
     "@mapbox/mapbox-gl-style-spec" "^13.23.1"
     mapbox-to-css-font "^2.4.1"
+    ol "^7.3.0"
 
-ol-mapbox-style@^9.2.0:
-  version "9.7.0"
-  resolved "https://registry.npmjs.org/ol-mapbox-style/-/ol-mapbox-style-9.7.0.tgz"
-  integrity sha512-YX3u8FBJHsRHaoGxmd724Mp5WPTuV7wLQW6zZhcihMuInsSdCX1EiZfU+8IAL7jG0pbgl5YgC0aWE/MXJcUXxg==
-  dependencies:
-    "@mapbox/mapbox-gl-style-spec" "^13.23.1"
-    mapbox-to-css-font "^2.4.1"
-
-ol@^7.2.2:
-  version "7.3.0"
-  resolved "https://registry.npmjs.org/ol/-/ol-7.3.0.tgz"
-  integrity sha512-08vJE4xITKPazQ9qJjeqYjRngnM9s+1eSv219Pdlrjj3LpLqjEH386ncq+76Dw1oGPGR8eLVEePk7FEd9XqqMw==
+ol@^7.3.0, ol@^7.4.0:
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/ol/-/ol-7.4.0.tgz#935436c0843d1f939972e076d4fcb130530ce9d7"
+  integrity sha512-bgBbiah694HhC0jt8ptEFNRXwgO8d6xWH3G97PCg4bmn9Li5nLLbi59oSrvqUI6VPVwonPQF1YcqJymxxyMC6A==
   dependencies:
     earcut "^2.2.3"
     geotiff "^2.0.7"
-    ol-mapbox-style "^9.2.0"
+    ol-mapbox-style "^10.1.0"
     pbf "3.2.1"
     rbush "^3.0.1"
 
@@ -1354,10 +1347,10 @@ ts-loader@^9.4.3:
     micromatch "^4.0.0"
     semver "^7.3.4"
 
-typescript@^5.0.4:
-  version "5.0.4"
-  resolved "https://registry.npmjs.org/typescript/-/typescript-5.0.4.tgz"
-  integrity sha512-cW9T5W9xY37cc+jfEnaUvX91foxtHkza3Nw3wkoF4sSlKn0MONdkdEndig/qPBWXNkmplh3NzayQzCiHM4/hqw==
+typescript@^5.1.3:
+  version "5.1.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.1.3.tgz#8d84219244a6b40b6fb2b33cc1c062f715b9e826"
+  integrity sha512-XH627E9vkeqhlZFQuL+UsyAXEnibT0kWR2FWONlr4sTjvxyJYnyefgrkyECLzM5NenmKzRAy2rR/OlYLA1HkZw==
 
 update-browserslist-db@^1.0.10:
   version "1.0.11"
@@ -1431,10 +1424,10 @@ webpack-sources@^3.2.3:
   resolved "https://registry.npmjs.org/webpack-sources/-/webpack-sources-3.2.3.tgz"
   integrity sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==
 
-webpack@^5.84.1:
-  version "5.84.1"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.84.1.tgz#d4493acdeca46b26ffc99d86d784cabfeb925a15"
-  integrity sha512-ZP4qaZ7vVn/K8WN/p990SGATmrL1qg4heP/MrVneczYtpDGJWlrgZv55vxaV2ul885Kz+25MP2kSXkPe3LZfmg==
+webpack@^5.85.0:
+  version "5.85.0"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.85.0.tgz#c14a6a3a91f84d67c450225661fda8da36bc7f49"
+  integrity sha512-7gazTiYqwo5OSqwH1tigLDL2r3qDeP2dOKYgd+LlXpsUMqDTklg6tOghexqky0/+6QY38kb/R/uRPUleuL43zg==
   dependencies:
     "@types/eslint-scope" "^3.7.3"
     "@types/estree" "^1.0.0"
