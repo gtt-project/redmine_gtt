@@ -1,7 +1,7 @@
 import { ResizeObserver } from '@juggle/resize-observer';
 
 import { updateFilter } from "../helpers";
-import { zoomToExtent, toggleAndLoadMap } from "../openlayers";
+import { zoomToExtent } from "../openlayers";
 
 /**
  * Initialize event listeners for the GttClient instance.
@@ -36,7 +36,7 @@ function handleCollapsed(this: any): void {
           return;
         }
         const mapDiv = mutation.target as HTMLDivElement;
-        if (mapDiv && mapDiv.style.display === 'block') {
+        if (mapDiv && (mapDiv.style.display === 'block' || mapDiv.style.display === '')) {
           zoomToExtent.call(this, true);
           collapsedObserver.disconnect();
         }
@@ -123,14 +123,6 @@ function handleFilters(this: any): void {
     // Check if distance filter is available
     if (document.querySelectorAll('tr#tr_distance').length > 0) {
       this.filters.distance = true;
-    }
-    // Set up click event listener for location filter legend
-    const legend = document.querySelector('fieldset#location legend') as HTMLLegendElement;
-    if (legend) {
-      legend.addEventListener('click', (evt) => {
-        const element = evt.currentTarget as HTMLLegendElement;
-        toggleAndLoadMap(element);
-      });
     }
     // Call zoomToExtent and updateFilter functions
     zoomToExtent.call(this);
