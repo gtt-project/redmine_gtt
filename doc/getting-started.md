@@ -10,23 +10,25 @@ Global settings can be specified in the plugin configuration `/settings/plugin/r
 
 **Note:** Geocoder options missing. TBD.
 
-## Tile Source
+## Map Layers
 
-At least one tile source needs to be configured to be used as a base map. The GTT plugin uses [OpenLayers](https://openlayers.org/) and accepts common OpenLayers layer types and layer options.
+At least one map layer needs to be configured to be used as a base map. The GTT plugin uses [OpenLayers](https://openlayers.org/) and accepts common OpenLayers layer types and layer options.
 
-![Tile Source](New%20Tile%20Source%20-%20Tile%20Sources%20-%20Redmine.png)
+![Map Layer](New%20Map%20Layer%20-%20Map%20Layers%20-%20Redmine.png)
 
 ### Example OSM base map
 
-* **Type**: `ol.source.OSM`
-* **Options**:
+* **Layer type**: `Tile`
+* **Layer options string**: `{}`
+* **Source type**: `OSM`
+* **Source options string**:
 
 ```
 {
   "url": "https://tile.openstreetmap.jp/{z}/{x}/{y}.png",
   "custom": "19/34.74701/135.35740",
   "crossOrigin": null,
-  "attributions": "<a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>"
+  "attributions": "<a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\">OpenStreetMap contributors</a>"
 }
 ```
 
