@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 # Define gem versions with environment variables or default versions
 gem_versions = {
-  pg: ENV['GEM_PG_VERSION'] || '1.4.6',
+  pg: ENV['GEM_PG_VERSION'] || '1.5.3',
   rgeo: ENV['GEM_RGEO_VERSION'] || '3.0.0',
   rgeo_activerecord: ENV['GEM_RGEO_ACTIVERECORD_VERSION'] || '7.0.1',
   activerecord_postgis_adapter: ENV['GEM_ACTIVERECORD_POSTGIS_ADAPTER_VERSION'] || '7.1.1'
