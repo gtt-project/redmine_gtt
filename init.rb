@@ -29,6 +29,7 @@ Redmine::Plugin.register :redmine_gtt do
       'default_map_zoom_level' => 13,
       'default_map_maxzoom_level' => 19,
       'default_map_fit_maxzoom_level' => 17,
+      'vector_minzoom_level' => 0,
       'default_geocoder_options' => '{}',
       'editable_geometry_types_on_issue_map' => ["Point"],
       'enable_geojson_upload_on_issue_map' => false,
@@ -38,9 +39,9 @@ Redmine::Plugin.register :redmine_gtt do
   )
 
   menu :admin_menu,
-    :gtt_tile_sources,
-    { controller: 'gtt_tile_sources', action: 'index' },
-    caption: :label_gtt_tile_source_plural, :html => {:class => 'icon icon-gtt-map'}
+    :gtt_map_layers,
+    { controller: 'gtt_map_layers', action: 'index' },
+    caption: :'map_layer.plural', html: { class: 'icon icon-gtt-map' }
 end
 
 # Register MIME Types
@@ -50,13 +51,7 @@ Mime::Type.register_alias "application/json", :geojson
 RGeo::ActiveRecord::GeometryMixin.set_json_generator(:geojson)
 
 RGeo::ActiveRecord::SpatialFactoryStore.instance.tap do |config|
-  # By default, use the GEOS implementation for spatial columns.
-  # config.default = RGeo::Geos.factory_generator
-
-  config.register RGeo::Cartesian.preferred_factory(srid: 4326), geo_type: 'geometry', sql_type: "geometry", srid: 4326
-
-  # But use a geographic implementation for point columns.
-  # config.register(RGeo::Geographic.spherical_factory(srid: 4326), geo_type: "point")
+  config.register RGeo::Cartesian.preferred_factory(has_z_coordinate: true, srid: 4326), geo_type: 'geometry', sql_type: "geometry", srid: 4326
 end
 
 if Rails.version > '6.0' && Rails.autoloaders.zeitwerk_enabled?
@@ -91,11 +86,4 @@ else
   Rails.configuration.to_prepare do
     RedmineGtt.setup_controller_patches
   end
-end
-
-#class GttListener < Redmine::Hook::ViewListener
-Class.new(Redmine::Hook::ViewListener) do |c|
-  render_on :view_layouts_base_html_head, inline: <<-END
-      <%= stylesheet_link_tag 'gtt', :plugin => 'redmine_gtt' %>
-    END
 end

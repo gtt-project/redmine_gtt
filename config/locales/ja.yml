@@ -48,6 +48,7 @@ ja:
   gtt_tile_sources_select_osm: "OpenStreetMap"
   gtt_tile_sources_select_tilewms: "Tiled WMS"
   gtt_tile_sources_select_xyz: "XYZ Tiles"
+  gtt_tile_sources_select_vectortile: "Vector Tiles (MVT)"
   gtt_tile_sources_load_example: "サンプル設定をロード。"
 
   gtt_settings_general_center_lon: "既定の地図中心経度"
@@ -55,6 +56,11 @@ ja:
   gtt_settings_general_zoom_level: "既定の地図ズームレベル"
   gtt_settings_general_maxzoom_level: "既定の最大地図ズームレベル"
   gtt_settings_general_fit_maxzoom_level: "フィット時最大地図ズームレベル"
+  gtt_settings_vector_minzoom_level: "Minimum zoom level"
+
+  gtt_settings_label_general: "General"
+  gtt_settings_label_styling: "Styling"
+  gtt_settings_label_geocoder: "Geocoder"
 
   # gtt_settings_map_url: "地図APIサービスのURL"
   # gtt_settings_map_apikey: "地図APIキー"
@@ -101,4 +107,7 @@ ja:
     modal:
       load: 読み込み
       cancel: キャンセル
+    messages:
+      baselayer_missing: "There is no baselayer available!"
+      zoom_in_more: "Zoom in to view objects."
   title_geojson_upload: GeoJSONのインポート

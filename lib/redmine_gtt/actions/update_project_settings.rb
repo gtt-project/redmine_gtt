@@ -23,8 +23,8 @@ module RedmineGtt
       private
 
       def update_project
-        if tile_source_ids = @form.gtt_tile_source_ids
-          @project.gtt_tile_source_ids = tile_source_ids
+        if map_layer_ids = @form.gtt_map_layer_ids
+          @project.gtt_map_layer_ids = map_layer_ids
         end
 
         begin

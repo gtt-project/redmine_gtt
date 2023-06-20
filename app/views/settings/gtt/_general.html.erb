@@ -1,17 +1,15 @@
-<!--
+<div class="box tabular settings">
+<h3><%= l(:select_default_map_settings) %></h3>
+
 <p>
-  <%= content_tag(:div, "", :data => {
-        #:geom => "TODO: Configure map defaults with map",
-        :edit => 'Point'
-      }, :id => 'olmap', :class => 'ol-map') %>
+  <%= content_tag(:label, l(:label_default_collapsed_issues_page_map)) %>
+  <%= check_box_tag 'settings[default_collapsed_issues_page_map]', true, @settings[:default_collapsed_issues_page_map] %>
 </p>
--->
 
 <p>
   <%= content_tag(:label, l(:gtt_settings_general_center_lon)) %>
   <%= text_field_tag('settings[default_map_center_longitude]',
       @settings['default_map_center_longitude'],
-      #:readonly => true,
       :size => 10) %>
 </p>
 
@@ -19,7 +17,6 @@
   <%= content_tag(:label, l(:gtt_settings_general_center_lat)) %>
   <%= text_field_tag('settings[default_map_center_latitude]',
       @settings['default_map_center_latitude'],
-      #:readonly => true,
       :size => 10) %>
 </p>
 
@@ -27,6 +24,41 @@
   <%= content_tag(:label, l(:gtt_settings_general_zoom_level)) %>
   <%= text_field_tag('settings[default_map_zoom_level]',
       @settings['default_map_zoom_level'],
-      #:readonly => true,
       :size => 10) %>
 </p>
+
+<p>
+  <%= content_tag(:label, l(:gtt_settings_general_maxzoom_level)) %>
+  <%= text_field_tag('settings[default_map_maxzoom_level]',
+      @settings['default_map_maxzoom_level'],
+      :size => 10) %>
+</p>
+
+<p>
+  <%= content_tag(:label, l(:gtt_settings_general_fit_maxzoom_level)) %>
+  <%= text_field_tag('settings[default_map_fit_maxzoom_level]',
+      @settings['default_map_fit_maxzoom_level'],
+      :size => 10) %>
+</p>
+</div>
+
+<div class="box tabular settings">
+<h3><%= l(:select_edit_geometry_settings) %></h3>
+
+<p>
+  <%= content_tag(:label, l(:label_editable_geometry_types_on_issue_map)) %>
+  <!-- <%= hidden_field_tag('settings[editable_geometry_types_on_issue_map][]', '') %> -->
+  <% ["Point", "LineString", "Polygon"].each do |g| %>
+    <label class="block">
+      <% value = @settings['editable_geometry_types_on_issue_map'].present? ? @settings['editable_geometry_types_on_issue_map'].include?(g) : false %>
+      <%= check_box_tag('settings[editable_geometry_types_on_issue_map][]', g, value, id: nil) %>
+      <%= l_or_humanize(g.downcase, prefix: 'label_gtt_')%>
+    </label>
+  <% end %>
+</p>
+
+<p>
+  <%= content_tag(:label, l(:label_enable_geojson_upload_on_issue_map)) %>
+  <%= check_box_tag 'settings[enable_geojson_upload_on_issue_map]', true, @settings[:enable_geojson_upload_on_issue_map] %>
+</p>
+</div>

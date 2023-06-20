@@ -20,7 +20,7 @@ class IssuesApiTest < Redmine::ApiTest::Base
       'type' => 'Feature',
       'geometry' => {
         'type' => 'Point',
-        'coordinates' => [123.269691,9.305099]
+        'coordinates' => [123.269691,9.305099,0.0]
       }
     }
     geojson = geo.to_json

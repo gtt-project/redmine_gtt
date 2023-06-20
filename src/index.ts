@@ -1,27 +1,44 @@
-import 'ol/ol.css'
-import 'ol-ext/dist/ol-ext.min.css'
-import './stylesheets/app.scss'
+/**
+ * ===========================================
+ * GTT Application Main Module
+ * ===========================================
+ *
+ * This module is responsible for managing
+ * the GTT application. Its main tasks include:
+ *   - Importing required stylesheets
+ *   - Importing components (GttClient and gtt_setting)
+ *   - Attaching essential functions to the global window object
+ */
 
-// Custom Icons
-import './stylesheets/custom-icons.css'
-import './stylesheets/CustomIconsDef.js'
+// Import application styles from the 'styles' module
+import './styles';
 
-// Material Design Icons
-// https://github.com/marella/material-design-icons/tree/main/font#readme
-import '@material-design-icons/font/filled.css'
-import './stylesheets/MaterialDesignDef.js'
+// Import necessary iconfonts
+import { fontPromise as customIcons } from './styles/icons/custom/custom-icons-def';
+import { fontPromise as materialIcons } from './styles/icons/material-design/material-design-def';
 
-import { GttClient } from './components/gtt-client'
-import { gtt_setting } from './components/gtt-setting'
+// Import GttClient and gtt_setting components from corresponding modules
+import { GttClient } from './components/gtt-client';
+import { gtt_setting } from './components/gtt-settings';
 
-interface Window {
-  createGttClient(target: HTMLDivElement): void
-  gtt_setting(): void
+/**
+ * Creates a GttClient instance for the given target.
+ * @param target - The HTMLDivElement for which the GttClient will be created.
+ */
+async function createGttClient(target: HTMLDivElement) {
+  await Promise.all([customIcons, materialIcons]);
+  new GttClient({ target });
 }
-declare var window: Window
-window.createGttClient = (target: HTMLDivElement):void => {
-  new GttClient({target: target})
+
+/**
+ * Attaches GTT settings.
+ */
+async function attachGttSetting() {
+  await Promise.all([customIcons, materialIcons]);
+  gtt_setting();
 }
-window.gtt_setting = (): void => {
-  gtt_setting()
-}
+
+// Attach the 'createGttClient' and 'attachGttSetting' functions to the global window object
+// This enables them to be called from other parts of the application or directly from the browser console
+(window as any).createGttClient = createGttClient;
+(window as any).gtt_setting = attachGttSetting;

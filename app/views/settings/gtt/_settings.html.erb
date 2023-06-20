@@ -1,106 +1,11 @@
-<h3><%= l(:select_default_tracker_icon) %></h3>
+<% plugin_tabs = [
+  { :name => :general,  :partial => 'settings/gtt/general',  :label => :gtt_settings_label_general },
+  { :name => :styling,  :partial => 'settings/gtt/styling',  :label => :gtt_settings_label_styling },
+  { :name => :geocoder, :partial => 'settings/gtt/geocoder', :label => :gtt_settings_label_geocoder }
+] %>
 
-<% Tracker.sorted.each do |t| %>
-  <p>
-    <%= content_tag :label, t.name %>
-    <%= select_tag "settings[tracker_#{t.id}]", "<option>#{@settings["tracker_#{t.id}"]}</option>".html_safe %>
-    <i id="icon_settings_tracker_<%= t.id %>"></i>
-  </p>
-<% end %>
-</div>
-<div class="box tabular settings">
-<h3><%= l(:select_default_status_color) %></h3>
 
-<% IssueStatus.sorted.each do |t| %>
-  <p>
-    <%= content_tag :label, t.name %>
-    <%= color_field_tag "settings[status_#{t.id}]", @settings["status_#{t.id}"] %>
-  </p>
-<% end %>
-</div>
-
-<div class="box tabular settings">
-<h3><%= l(:select_default_map_settings) %></h3>
-
-<p>
-  <%= content_tag(:label, l(:label_default_collapsed_issues_page_map)) %>
-  <%= check_box_tag 'settings[default_collapsed_issues_page_map]', true, @settings[:default_collapsed_issues_page_map] %>
-</p>
-
-<p>
-  <%= content_tag(:label, l(:gtt_settings_general_center_lon)) %>
-  <%= text_field_tag('settings[default_map_center_longitude]',
-      @settings['default_map_center_longitude'],
-      :size => 10) %>
-</p>
-
-<p>
-  <%= content_tag(:label, l(:gtt_settings_general_center_lat)) %>
-  <%= text_field_tag('settings[default_map_center_latitude]',
-      @settings['default_map_center_latitude'],
-      :size => 10) %>
-</p>
-
-<p>
-  <%= content_tag(:label, l(:gtt_settings_general_zoom_level)) %>
-  <%= text_field_tag('settings[default_map_zoom_level]',
-      @settings['default_map_zoom_level'],
-      :size => 10) %>
-</p>
-
-<p>
-  <%= content_tag(:label, l(:gtt_settings_general_maxzoom_level)) %>
-  <%= text_field_tag('settings[default_map_maxzoom_level]',
-      @settings['default_map_maxzoom_level'],
-      :size => 10) %>
-</p>
-
-<p>
-  <%= content_tag(:label, l(:gtt_settings_general_fit_maxzoom_level)) %>
-  <%= text_field_tag('settings[default_map_fit_maxzoom_level]',
-      @settings['default_map_fit_maxzoom_level'],
-      :size => 10) %>
-</p>
-</div>
-
-<div class="box tabular settings">
-<h3><%= l(:select_edit_geometry_settings) %></h3>
-
-<p>
-  <%= content_tag(:label, l(:label_editable_geometry_types_on_issue_map)) %>
-  <!-- <%= hidden_field_tag('settings[editable_geometry_types_on_issue_map][]', '') %> -->
-  <% ["Point", "LineString", "Polygon"].each do |g| %>
-    <label class="block">
-      <% value = @settings['editable_geometry_types_on_issue_map'].present? ? @settings['editable_geometry_types_on_issue_map'].include?(g) : false %>
-      <%= check_box_tag('settings[editable_geometry_types_on_issue_map][]', g, value, id: nil) %>
-      <%= l_or_humanize(g.downcase, prefix: 'label_gtt_')%>
-    </label>
-  <% end %>
-</p>
-
-<p>
-  <%= content_tag(:label, l(:label_enable_geojson_upload_on_issue_map)) %>
-  <%= check_box_tag 'settings[enable_geojson_upload_on_issue_map]', true, @settings[:enable_geojson_upload_on_issue_map] %>
-</p>
-</div>
-
-<div class="box tabular settings">
-<h3><%= l(:select_default_geocoder_settings) %></h3>
-
-<p>
-  <%= content_tag(:label, l(:label_enable_geocoding_on_map)) %>
-  <%= check_box_tag 'settings[enable_geocoding_on_map]', true, @settings[:enable_geocoding_on_map] %>
-</p>
-
-<p>
-  <%= content_tag(:label, l(:geocoder_options)) %>
-  <%= text_area_tag('settings[default_geocoder_options]',
-      @settings['default_geocoder_options'],
-      :escape => false,
-      :rows => 10,
-      :cols => 100) %>
-</p>
-</div>
+<%= render_tabs plugin_tabs %>
 
 <%= javascript_tag do %>
   window.gtt_setting()

@@ -1,17 +1,11 @@
 # English strings go here for Rails i18n
 en:
   error_invalid_json: Must be valid JSON
-  error_unable_to_update_project_gtt_settings: "Unable to update project GTT settings\
-    \ (%{value})"
+  error_unable_to_update_project_gtt_settings: "Unable to update project GTT settings (%{value})"
 
-  field_default: Default for new projects
   field_geometry: "Geometry"
   field_location: "Location"
   field_geom: "Geometry"
-  field_global: Globally available
-  field_baselayer: BaseLayer
-  field_options_string: Options
-  field_gtt_tile_source_ids: Tile Sources
 
   label_geotask_map: "Geotask Map"
   label_global: Global
@@ -20,37 +14,21 @@ en:
   label_name: Name
   label_baselayer: BaseLayer
   label_nearby: "nearby(lat,lng)"
-  label_type: Type
+  label_layer: "Layer Type"
+  label_source: "Source Type"
   label_config: Configuration
   label_gtt_settings: GTT
   label_gtt_settings_headline: GTT Settings
-
-  # gtt_label_geometry: "API Key"
-  # gtt_text_settings_help: "Enter the API key. Leave empty if no key is required."
-  # gtt_text_settings_geometry_example: "2747491302261fbc47967ba62621af22"
 
   label_gtt: "GTT"
   label_gtt_bbox_filter: Location
   label_gtt_distance: Distance
   label_gtt_select_icon: Select icon
-  label_gtt_tile_source: Tile Source
-  label_gtt_tile_source_new: New Tile Source
-  label_gtt_tile_source_plural: Tile Sources
   label_parameters: Parameters
   label_tab_general: "General"
   label_tab_geocoder: "Geocoder"
-  label_tab_map: "Tile Sources"
 
   geocoder_options: "Geocoder Options"
-
-  gtt_tile_sources_info: "Select the tile sources that should be available in this\
-    \ project."
-  gtt_tile_sources_select: "-- Select type --"
-  gtt_tile_sources_select_imagewms: "Image WMS"
-  gtt_tile_sources_select_osm: "OpenStreetMap"
-  gtt_tile_sources_select_tilewms: "Tiled WMS"
-  gtt_tile_sources_select_xyz: "XYZ Tiles"
-  gtt_tile_sources_load_example: "Load example configuration."
 
   gtt_map_rotate_label: "Map rotation"
   gtt_map_rotate_info_html: "Hold down <code>Shift+Alt</code> and drag the map to rotate."
@@ -60,16 +38,11 @@ en:
   gtt_settings_general_zoom_level: "Default map zoom level"
   gtt_settings_general_maxzoom_level: "Default map maximum zoom level"
   gtt_settings_general_fit_maxzoom_level: "Default map fit maximum zoom level"
+  gtt_settings_vector_minzoom_level: "Minimum zoom level"
 
-  # gtt_settings_map_url: "API Service URL"
-  # gtt_settings_map_apikey: "API Key"
-  # gtt_settings_map_maxzoom_level: "Maximum map zoom level"
-
-  # gtt_settings_geocoder_url: "API Service URL"
-  # gtt_settings_geocoder_apikey: "API Key"
-  # gtt_settings_geocoder_address_field_name: "Address field name"
-  # gtt_settings_geocoder_district_field_name: "District field name"
-  # gtt_park_search_field_name: "Park search field name"
+  gtt_settings_label_general: "General"
+  gtt_settings_label_styling: "Styling"
+  gtt_settings_label_geocoder: "Geocoder"
 
   label_default_collapsed_issues_page_map: "Default collapsed issues page map"
   label_gtt_point: "Point"
@@ -85,15 +58,40 @@ en:
   select_edit_geometry_settings: "Set edit geometry settings:"
   select_default_geocoder_settings: "Set Geocoder settings:"
 
-  # text_osm_url_sample: For example https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png
-
   project_module_gtt: "GTT"
   permission_manage_gtt_settings: "Manage GTT settings"
+  permission_view_gtt_settings: "View GTT settings"
 
   title_geojson_upload: "Import GeoJSON"
   placeholder_geojson_upload: "Please paste a GeoJSON geometry here, or import the GeoJSON data from a file."
 
-  # Localize for use in Javascript
+  map_layer:
+    title: "Map Layers"
+    plural: "Map Layers"
+    new: "New Map Layer"
+    ids: "Map Layers"
+    project:
+      info: "Select the map layers that should be available in this project."
+    layer_options_select: "-- Select layer type --"
+    source_options_select: "-- Select source type --"
+    format_options_select: "-- Select format type --"
+    load_example: "Examples: "
+
+  # Workaround to easily customize field labels
+  field_name: "Name"
+  field_layer: "Layer type"
+  field_layer_options: "Layer options"
+  field_baselayer: "BaseLayer"
+  field_global: "Globally available"
+  field_default: "Default for new projects"
+  field_source: "Source type"
+  field_source_options: "Source options"
+  field_format: "Format type"
+  field_format_options: "Format options"
+  field_styles: "Style settings"
+
+  # Localize for use in Javascriptccccccevihnjbenrlkjhjegkudjdckklnbkvgfkcnrkh
+
   gtt_js:
     control:
       geocoding: "Location search"
@@ -110,3 +108,6 @@ en:
     modal:
       load: "Load"
       cancel: "Cancel"
+    messages:
+      baselayer_missing: "There is no baselayer available!"
+      zoom_in_more: "Zoom in to view objects."

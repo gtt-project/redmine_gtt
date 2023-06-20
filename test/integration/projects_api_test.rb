@@ -19,7 +19,7 @@ class ProjectsApiTest < Redmine::IntegrationTest
     assert projects.any?
     assert_equal Project.visible.count, projects.size
 
-    get '/projects.xml', params: {contains: 'POINT(123.271 9.35)'}
+    get '/projects.xml', params: {contains: 'POINT(123.271 9.35 0.0)'}
     assert_response :success
     xml = xml_data
     assert projects = xml.xpath('/projects/project')
@@ -30,7 +30,7 @@ class ProjectsApiTest < Redmine::IntegrationTest
       'geometry' => {
         'type' => 'Polygon',
         'coordinates' => [
-          [[123.269691,9.305099], [123.279691,9.305099],[123.279691,9.405099],[123.269691,9.405099]]
+          [[123.269691,9.305099,0.0], [123.279691,9.305099,0.0],[123.279691,9.405099,0.0],[123.269691,9.405099,0.0]]
         ]
       }
     }
@@ -40,13 +40,13 @@ class ProjectsApiTest < Redmine::IntegrationTest
     @subproject1.update_attribute :geojson, geojson
     assert @project.visible? && @subproject1.visible?
 
-    get '/projects.xml', params: {contains: 'POINT(123.271 9.55)'}
+    get '/projects.xml', params: {contains: 'POINT(123.271 9.55 0.0)'}
     assert_response :success
     xml = xml_data
     assert projects = xml.xpath('/projects/project')
     assert_equal 0, projects.size
 
-    get '/projects.xml', params: {contains: 'POINT(123.271 9.35)'}
+    get '/projects.xml', params: {contains: 'POINT(123.271 9.35 0.0)'}
     assert_response :success
     xml = xml_data
     assert projects = xml.xpath('/projects/project')
@@ -62,7 +62,7 @@ class ProjectsApiTest < Redmine::IntegrationTest
       'geometry' => {
         'type' => 'Polygon',
         'coordinates' => [
-          [[123.269691,9.305099], [123.279691,9.305099],[123.279691,9.405099],[123.269691,9.405099], [123.269691,9.305099]]
+          [[123.269691,9.305099,0.0], [123.279691,9.305099,0.0],[123.279691,9.405099,0.0],[123.269691,9.405099,0.0], [123.269691,9.305099,0.0]]
         ]
       }
     }
@@ -156,7 +156,7 @@ class ProjectsApiTest < Redmine::IntegrationTest
       'geometry' => {
         'type' => 'Polygon',
         'coordinates' => [
-          [[123.269691,9.305099], [123.279691,9.305099],[123.279691,9.405099],[123.269691,9.405099]]
+          [[123.269691,9.305099,0.0], [123.279691,9.305099,0.0],[123.279691,9.405099,0.0],[123.269691,9.405099,0.0]]
         ]
       }
     }
@@ -183,7 +183,7 @@ class ProjectsApiTest < Redmine::IntegrationTest
     get '/projects.xml', params: {
       'f[]': 'parent_id',
       'op[parent_id]': '!*',
-      contains: 'POINT(123.271 9.35)'
+      contains: 'POINT(123.271 9.35 0.0)'
     }
     assert_response :success
     xml = xml_data
@@ -197,7 +197,7 @@ class ProjectsApiTest < Redmine::IntegrationTest
       'f[]': 'parent_id',
       'op[parent_id]': '!*',
       include: 'geometry',
-      contains: 'POINT(123.271 9.35)'
+      contains: 'POINT(123.271 9.35 0.0)'
     }
     assert_response :success
     xml = xml_data
@@ -208,40 +208,40 @@ class ProjectsApiTest < Redmine::IntegrationTest
   end
 
   test 'GET /projects.xml with include=layers should return layers' do
-    ts = RedmineGtt::Actions::CreateTileSource.(type: 'ol.source.OSM', name: 'default', default: true).tile_source
-    @project.gtt_tile_sources = [ts]
-    @subproject1.gtt_tile_sources = [ts]
+    ts = RedmineGtt::Actions::CreateMapLayer.(layer: 'Tile', name: 'default', default: true).map_layer
+    @project.gtt_map_layers = [ts]
+    @subproject1.gtt_map_layers = [ts]
     get '/projects.xml?include=layers'
     assert_response :success
     xml = xml_data
     assert projects = xml.xpath('/projects/project')
     assert layer = projects.xpath('layers/layer').first
     assert layer.present?
-    assert_equal 'ol.source.OSM', layer['type']
+    assert_equal 'Tile', layer['layer']
   end
 
   test 'GET /projects/1.xml with include=layers should return layers' do
-    ts = RedmineGtt::Actions::CreateTileSource.(type: 'ol.source.OSM', name: 'default', default: true).tile_source
-    @project.gtt_tile_sources = [ts]
+    ts = RedmineGtt::Actions::CreateMapLayer.(layer: 'Tile', name: 'default', default: true).map_layer
+    @project.gtt_map_layers = [ts]
     get '/projects/1.xml?include=layers'
     assert_response :success
     xml = xml_data
     assert project = xml.xpath('/project')
     assert layer = project.xpath('layers/layer').first
     assert layer.present?
-    assert_equal 'ol.source.OSM', layer['type']
+    assert_equal 'Tile', layer['layer']
   end
 
   test 'GET /projects.xml with include=geometry,layers should return both geojson and layers' do
-    ts = RedmineGtt::Actions::CreateTileSource.(type: 'ol.source.OSM', name: 'default', default: true).tile_source
-    @project.gtt_tile_sources = [ts]
-    @subproject1.gtt_tile_sources = [ts]
+    ts = RedmineGtt::Actions::CreateMapLayer.(layer: 'Tile', name: 'default', default: true).map_layer
+    @project.gtt_map_layers = [ts]
+    @subproject1.gtt_map_layers = [ts]
     geo = {
       'type' => 'Feature',
       'geometry' => {
         'type' => 'Polygon',
         'coordinates' => [
-          [[123.269691,9.305099], [123.279691,9.305099],[123.279691,9.405099],[123.269691,9.405099], [123.269691,9.305099]]
+          [[123.269691,9.305099,0.0], [123.279691,9.305099,0.0],[123.279691,9.405099,0.0],[123.269691,9.405099,0.0], [123.269691,9.305099,0.0]]
         ]
       }
     }
@@ -259,18 +259,18 @@ class ProjectsApiTest < Redmine::IntegrationTest
     assert_equal geo['geometry'], JSON.parse(json)['geometry'], json
     assert layer = projects.xpath('layers/layer').first
     assert layer.present?
-    assert_equal 'ol.source.OSM', layer['type']
+    assert_equal 'Tile', layer['layer']
   end
 
   test 'GET /projects/1.xml with include=geometry,layers should return both geojson and layers' do
-    ts = RedmineGtt::Actions::CreateTileSource.(type: 'ol.source.OSM', name: 'default', default: true).tile_source
-    @project.gtt_tile_sources = [ts]
+    ts = RedmineGtt::Actions::CreateMapLayer.(layer: 'Tile', name: 'default', default: true).map_layer
+    @project.gtt_map_layers = [ts]
     geo = {
       'type' => 'Feature',
       'geometry' => {
         'type' => 'Polygon',
         'coordinates' => [
-          [[123.269691,9.305099], [123.279691,9.305099],[123.279691,9.405099],[123.269691,9.405099], [123.269691,9.305099]]
+          [[123.269691,9.305099,0.0], [123.279691,9.305099,0.0],[123.279691,9.405099,0.0],[123.269691,9.405099,0.0], [123.269691,9.305099,0.0]]
         ]
       }
     }
@@ -287,7 +287,7 @@ class ProjectsApiTest < Redmine::IntegrationTest
     assert_equal geo['geometry'], JSON.parse(json)['geometry'], json
     assert layer = project.xpath('layers/layer').first
     assert layer.present?
-    assert_equal 'ol.source.OSM', layer['type']
+    assert_equal 'Tile', layer['layer']
   end
 
   def xml_data
