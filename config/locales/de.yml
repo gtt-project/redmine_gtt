@@ -48,7 +48,6 @@ de:
   project_module_gtt: GTT
   permission_manage_gtt_settings: Konfiguration der GTT-Einstellungen
   field_baselayer: Basislayer
-  gtt_tile_sources_load_example: Beispielkonfiguration laden.
   label_baselayer: Basislayer
   title_geojson_upload: GeoJSON importieren
   placeholder_geojson_upload: Bitte fügen Sie hier eine GeoJSON-Geometrie ein, oder

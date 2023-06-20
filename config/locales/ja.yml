@@ -9,8 +9,6 @@ ja:
   field_geom: "所在地"
   field_global: 世界的に利用可能
   field_baselayer: 背景レイヤー
-  field_gtt_tile_source_ids: タイルソース
-
   label_geotask_map: "ジオタスク 地図"
   label_global: グローバル
   label_project_map: "プロジェクト 地図"
@@ -30,15 +28,12 @@ ja:
   label_gtt_bbox_filter: 場所
   label_gtt_distance: 距離
   label_gtt_select_icon: アイコン選択
-  label_gtt_tile_source_new: 新しいタイルソース
   label_parameters: パラメータ
   label_tab_general: "一般"
   label_tab_geocoder: "ジオコーダ"
   geocoder_options: "ジオコーダのオプション"
 
-  gtt_tile_sources_select: "-- タイプを選択 --"
   gtt_tile_sources_select_osm: "OpenStreetMap"
-  gtt_tile_sources_select_xyz: "XYZ Tiles"
   gtt_tile_sources_load_example: "サンプル設定をロード。"
 
   gtt_settings_general_center_lon: "既定の地図中心経度"
