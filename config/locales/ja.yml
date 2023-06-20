@@ -33,7 +33,6 @@ ja:
   label_tab_geocoder: "ジオコーダ"
   geocoder_options: "ジオコーダのオプション"
 
-  gtt_tile_sources_select_osm: "OpenStreetMap"
   gtt_tile_sources_load_example: "サンプル設定をロード。"
 
   gtt_settings_general_center_lon: "既定の地図中心経度"
