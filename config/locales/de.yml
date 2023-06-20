@@ -2,23 +2,17 @@
 de:
   error_unable_to_update_project_gtt_settings: Die GTT-Einstellungen des Projekts
     können nicht aktualisiert werden (%{value})
-  field_gtt_tile_source_ids: Tile-Resourcen
   label_nearby: in der Nähe (lat,lng)
-  label_type: Typ
   label_config: Konfiguration
   label_gtt_settings_headline: GTT-Einstellungen
   label_gtt: GTT
   label_gtt_bbox_filter: Standort
   label_gtt_distance: Distanz
   label_gtt_select_icon: Icon auswählen
-  label_gtt_tile_source: Tile-Resource
   label_gtt_tile_source_new: Neue Tile-Resource
-  label_gtt_tile_source_plural: Tile-Resourcen
   label_parameters: Parameter
   label_tab_geocoder: Geocoder
   geocoder_options: Geocoder Optionen
-  gtt_tile_sources_info: Wählen Sie die Tile Resourcen aus, die in diesem Projekt
-    verfügbar sein sollen.
   gtt_settings_general_maxzoom_level: Standardwert für die maximale Zoomstufe der
     Karte
   label_default_collapsed_issues_page_map: Standardmäßig ausgeblendete Karte für Tickets
@@ -27,7 +21,6 @@ de:
   field_location: Standort
   field_geom: Geomtrie
   field_global: Allgemein verfügbar
-  field_options_string: Optionen
   label_geotask_map: GTT Karte
   label_global: Allgemein
   label_project_map: Projektkarte
@@ -35,7 +28,6 @@ de:
   label_name: Name
   label_gtt_settings: GTT
   label_tab_general: Allgemein
-  label_tab_map: Tile Resources
   gtt_settings_general_center_lon: Standard-Längengrad des Kartenmittelpunkts
   gtt_settings_general_center_lat: Standard-Breitengrad des Kartenmittelpunkts
   gtt_settings_general_zoom_level: Standard-Zoomstufe der Karte
@@ -57,14 +49,10 @@ de:
   project_module_gtt: GTT
   permission_manage_gtt_settings: Konfiguration der GTT-Einstellungen
   field_baselayer: Basislayer
-  gtt_tile_sources_select: -- Typ auswählen --
   gtt_tile_sources_select_osm: OpenStreetMap
-  gtt_tile_sources_select_tilewms: Tiled WMS
   gtt_tile_sources_load_example: Beispielkonfiguration laden.
   label_baselayer: Basislayer
-  gtt_tile_sources_select_imagewms: Image WMS
   gtt_tile_sources_select_xyz: XYZ Tiles
-  gtt_tile_sources_select_vectortile: "Vector Tiles (MVT)"
   title_geojson_upload: GeoJSON importieren
   placeholder_geojson_upload: Bitte fügen Sie hier eine GeoJSON-Geometrie ein, oder
     importieren Sie die GeoJSON-Daten aus einer Datei.
