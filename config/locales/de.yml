@@ -9,7 +9,6 @@ de:
   label_gtt_bbox_filter: Standort
   label_gtt_distance: Distanz
   label_gtt_select_icon: Icon auswählen
-  label_gtt_tile_source_new: Neue Tile-Resource
   label_parameters: Parameter
   label_tab_geocoder: Geocoder
   geocoder_options: Geocoder Optionen
@@ -49,10 +48,8 @@ de:
   project_module_gtt: GTT
   permission_manage_gtt_settings: Konfiguration der GTT-Einstellungen
   field_baselayer: Basislayer
-  gtt_tile_sources_select_osm: OpenStreetMap
   gtt_tile_sources_load_example: Beispielkonfiguration laden.
   label_baselayer: Basislayer
-  gtt_tile_sources_select_xyz: XYZ Tiles
   title_geojson_upload: GeoJSON importieren
   placeholder_geojson_upload: Bitte fügen Sie hier eine GeoJSON-Geometrie ein, oder
     importieren Sie die GeoJSON-Daten aus einer Datei.
@@ -80,3 +77,26 @@ de:
   gtt_settings_label_general: "General"
   gtt_settings_label_styling: "Styling"
   gtt_settings_label_geocoder: "Geocoder"
+  label_layer: Layer-Typ
+  map_layer:
+    plural: Karten-Layer
+    project:
+      info: Wählen Sie die Karten-Layer aus, die in diesem Projekt verfügbar sein
+        sollen.
+    layer_options_select: -- Layer-Typ auswählen --
+    source_options_select: -- Source-Typ auswählen --
+    title: Karten-Layer
+    new: Neues Karten-Layer
+    ids: Karten-Layer
+    format_options_select: -- Format-Typ auswählen --
+    load_example: 'Beispiele: '
+  field_format_options: Formatoptionen
+  field_styles: Style-Einstellungen
+  label_source: Source-Typ
+  permission_view_gtt_settings: GTT-Einstellungen anzeigen
+  field_name: Name
+  field_layer: Layer-Typ
+  field_layer_options: Layer-Optionen
+  field_source: Source-Typ
+  field_source_options: Source-Optionen
+  field_format: Format-Typ
