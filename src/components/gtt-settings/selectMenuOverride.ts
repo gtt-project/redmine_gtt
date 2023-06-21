@@ -15,13 +15,12 @@ export const overrideSelectMenu = (): void => {
       const wrapper = $('<div>', { text: '' });
       const style = item.optgroup.toLowerCase().replace(/\s+/g, '-');
 
-      const isMaterialIconsStyle = style === 'material-icons';
-      const iconClass = `ui-icons ${style}${isMaterialIconsStyle ? '' : ' icon-' + item.value}`;
+      const isMaterialIconsStyle = style === 'material-design-icons';
+      const iconClass = `ui-icons ${style}${isMaterialIconsStyle ? ' mdi mdi-' + item.value : ' icon-' + item.value}`;
 
       const iconConfig = {
         class: iconClass,
         title: item.label,
-        text: isMaterialIconsStyle ? item.value : '',
       };
 
       $('<i>', iconConfig).prependTo(wrapper);

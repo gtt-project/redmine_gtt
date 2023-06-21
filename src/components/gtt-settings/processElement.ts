@@ -30,8 +30,7 @@ export const processElement = (element: HTMLSelectElement): void => {
         if (selected) {
           const style = fonts[fontKey].font.toLowerCase().replace(/\s+/g, '-');
           const icon = element.nextElementSibling;
-          icon.className = `${style}${style === 'material-icons' ? '' : ' icon-' + glyphKey}`;
-          icon.textContent = style === 'material-icons' ? glyphKey : '';
+          icon.className = `${style}${style === 'material-design-icons' ? ' mdi mdi-' + glyphKey : ' icon-' + glyphKey}`;
         }
       }
     }
@@ -45,8 +44,7 @@ export const processElement = (element: HTMLSelectElement): void => {
       change: function (event: any, data: any) {
         const style = data.item.optgroup.toLowerCase().replace(/\s+/g, '-');
         const icon = document.querySelector(`#icon_${element.id}`);
-        icon.className = `${style}${style === 'material-icons' ? '' : ' icon-' + data.item.value}`;
-        icon.textContent = style === 'material-icons' ? data.item.value : '';
+        icon.className = `${style}${style === 'material-design-icons' ? ' mdi mdi-' + data.item.value : ' icon-' + data.item.value}`;
       },
     })
     .selectmenu('menuWidget')

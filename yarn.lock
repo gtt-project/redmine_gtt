@@ -93,10 +93,10 @@
   resolved "https://registry.npmjs.org/@mapbox/unitbezier/-/unitbezier-0.0.0.tgz"
   integrity sha512-HPnRdYO0WjFjRTSwO3frz1wKaU649OBFPX3Zo/2WZvuRi6zMiRGui8SnPQiQABgqCf8YikDe5t3HViTVw1WUzA==
 
-"@material-design-icons/font@^0.14.9":
-  version "0.14.9"
-  resolved "https://registry.yarnpkg.com/@material-design-icons/font/-/font-0.14.9.tgz#fdba27afa8aa3544d665dedf90c138f1d9356d74"
-  integrity sha512-+Y4UrAoNIRY7ZXcJCzes2DRUvOdCjP2L7WyLjHJLL4qOd0toZVTyLC6MWF7BjucIp7R23GDe90BSaPQVU7BYXw==
+"@mdi/font@^7.2.96":
+  version "7.2.96"
+  resolved "https://registry.yarnpkg.com/@mdi/font/-/font-7.2.96.tgz#af800d9fe3b424f85ad45e9baa755bd003ab4986"
+  integrity sha512-e//lmkmpFUMZKhmCY9zdjRe4zNXfbOIJnn6xveHbaV2kSw5aJ5dLXUxcRt1Gxfi7ZYpFLUWlkG2MGSFAiqAu7w==
 
 "@petamoriken/float16@^3.4.7":
   version "3.8.0"

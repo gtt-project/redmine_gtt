@@ -180,20 +180,20 @@ export function setControls(types: Array<string>) {
     })
 
     // Material design icon
-    let mdi = 'place'
+    let mdi = 'mdi-map-marker-outline'
 
     switch (type.toLowerCase()) {
         case 'linestring':
-        mdi = 'polyline'
+        mdi = 'mdi-vector-polyline'
         break;
 
       case 'polygon':
-        mdi = 'format_shapes'
+        mdi = 'mdi-vector-polygon'
         break;
       }
 
     const control = new Toggle({
-      html: `<i class="material-icons" >${mdi}</i>`,
+      html: `<i class="mdi ${mdi}" ></i>`,
       title: this.i18n.control[type.toLowerCase()],
       interaction: draw,
       active: (type === geometryType)
@@ -252,7 +252,7 @@ export function setControls(types: Array<string>) {
     });
 
     editbar.addControl(new Button({
-      html: '<i class="material-icons">file_upload</i>',
+      html: '<i class="mdi mdi-file-upload"></i>',
       title: this.i18n.control.upload,
       handleClick: () => {
         dialog.dialog('open')
@@ -465,7 +465,7 @@ export function setGeolocation(currentMap: Map) {
 
   // Control button
   const geolocationCtrl = new Toggle({
-    html: '<i class="material-icons">my_location</i>',
+    html: '<i class="mdi mdi-crosshairs-gps"></i>',
     title: this.i18n.control.geolocation,
     active: false,
     onToggle: (active: boolean) => {

@@ -186,7 +186,7 @@ export function setGeocoding(currentMap: Map):void {
 
   // Control button
   const geocodingCtrl = new Toggle({
-    html: '<i class="material-icons">manage_search</i>',
+    html: '<i class="mdi mdi-map-search-outline"></i>',
     title: this.i18n.control.geocoding,
     className: "ctl-geocoding",
     onToggle: (active: boolean) => {
