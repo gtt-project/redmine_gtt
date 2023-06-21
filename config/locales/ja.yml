@@ -20,10 +20,6 @@ ja:
   label_gtt_settings: GTT
   label_gtt_settings_headline: GTTの設定
 
-  # gtt_label_geometry: "APIキー"
-  # gtt_text_settings_help: "APIキーを入力してください。キーが不要の場合は空白にしてください。"
-  # gtt_text_settings_geometry_example: "2747491302261fbc47967ba62621af22"
-
   label_gtt: "GTT"
   label_gtt_bbox_filter: 場所
   label_gtt_distance: 距離
@@ -44,16 +40,6 @@ ja:
   gtt_settings_label_styling: "Styling"
   gtt_settings_label_geocoder: "Geocoder"
 
-  # gtt_settings_map_url: "地図APIサービスのURL"
-  # gtt_settings_map_apikey: "地図APIキー"
-  # gtt_settings_map_maxzoom_level: "最大地図ズームレベル"
-
-  # gtt_settings_geocoder_url: "ジオコーダAPIサービスのURL"
-  # gtt_settings_geocoder_apikey: "ジオコーダAPIキー"
-  # gtt_settings_geocoder_address_field_name: "住所フィールド名"
-  # gtt_settings_geocoder_district_field_name: "区フィールド名"
-  # gtt_park_search_field_name: "公園検索フィールド名"
-
   label_default_collapsed_issues_page_map: "チケット一覧の地図を既定で非表示"
   label_gtt_point: "ポイント"
   label_gtt_linestring: "ライン"
@@ -67,8 +53,6 @@ ja:
   select_default_map_settings: "地図の初期値を設定:"
   select_edit_geometry_settings: "ジオメトリ編集時の設定:"
   select_default_geocoder_settings: "ジオコーダの設定:"
-
-  # text_osm_url_sample: "例： https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png"
 
   project_module_gtt: "GTT"
   permission_manage_gtt_settings: "GTT設定の管理"
