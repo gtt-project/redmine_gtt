@@ -3,12 +3,10 @@ ja:
   error_invalid_json: "正しいJSONにしてください"
   error_unable_to_update_project_gtt_settings: "プロジェクトのGTTの設定を更新できません (%{value})"
 
-  field_default: "新規プロジェクトのデフォルト"
   field_geometry: "所在地"
   field_location: "場所"
   field_geom: "所在地"
-  field_global: 世界的に利用可能
-  field_baselayer: 背景レイヤー
+
   label_geotask_map: "ジオタスク 地図"
   label_global: グローバル
   label_project_map: "プロジェクト 地図"
@@ -16,6 +14,8 @@ ja:
   label_name: タイトル
   label_baselayer: 背景レイヤー
   label_nearby: "近く(緯度,経度)"
+  label_layer: "Layer Type"
+  label_source: "Source Type"
   label_config: 構成
   label_gtt_settings: GTT
   label_gtt_settings_headline: GTTの設定
@@ -27,7 +27,11 @@ ja:
   label_parameters: パラメータ
   label_tab_general: "一般"
   label_tab_geocoder: "ジオコーダ"
+
   geocoder_options: "ジオコーダのオプション"
+
+  gtt_map_rotate_label: "Map rotation"
+  gtt_map_rotate_info_html: "Hold down <code>Shift+Alt</code> and drag the map to rotate."
 
   gtt_settings_general_center_lon: "既定の地図中心経度"
   gtt_settings_general_center_lat: "既定の地図中心緯度"
@@ -56,7 +60,38 @@ ja:
 
   project_module_gtt: "GTT"
   permission_manage_gtt_settings: "GTT設定の管理"
+  permission_view_gtt_settings: "View GTT settings"
+
+  title_geojson_upload: GeoJSONのインポート
   placeholder_geojson_upload: GeoJSONのジオメトリをここにペーストするか、ファイルからGeoJSONデータをインポートしてください。
+
+  map_layer:
+    title: "Map Layers"
+    plural: "Map Layers"
+    new: "New Map Layer"
+    ids: "Map Layers"
+    project:
+      info: "Select the map layers that should be available in this project."
+    layer_options_select: "-- Select layer type --"
+    source_options_select: "-- Select source type --"
+    format_options_select: "-- Select format type --"
+    load_example: "Examples: "
+
+  # Workaround to easily customize field labels
+  field_name: "Name"
+  field_layer: "Layer type"
+  field_layer_options: "Layer options"
+  field_baselayer: 背景レイヤー
+  field_global: 世界的に利用可能
+  field_default: "新規プロジェクトのデフォルト"
+  field_source: "Source type"
+  field_source_options: "Source options"
+  field_format: "Format type"
+  field_format_options: "Format options"
+  field_styles: "Style settings"
+
+  # Localize for use in Javascript
+
   gtt_js:
     control:
       geocoding: 住所検索
@@ -76,4 +111,3 @@ ja:
     messages:
       baselayer_missing: "There is no baselayer available!"
       zoom_in_more: "Zoom in to view objects."
-  title_geojson_upload: GeoJSONのインポート
