@@ -80,14 +80,14 @@ ja:
   # Workaround to easily customize field labels
   field_name: "名称"
   field_layer: "レイヤー種別"
-  field_layer_options: "レイヤーオプション"
+  field_layer_options_string: "レイヤーオプション"
   field_baselayer: 背景レイヤー
   field_global: 世界的に利用可能
   field_default: "新規プロジェクトのデフォルト"
   field_source: "ソース種別"
-  field_source_options: "ソースオプション"
+  field_source_options_string: "ソースオプション"
   field_format: "フォーマット種別"
-  field_format_options: "フォーマットオプション"
+  field_format_options_string: "フォーマットオプション"
   field_styles: "スタイル設定"
 
   # Localize for use in Javascript
