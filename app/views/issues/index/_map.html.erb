@@ -1,7 +1,7 @@
 <% if @project and @project.module_enabled?(:gtt) %>
   <% collapsed = Setting.plugin_redmine_gtt['default_collapsed_issues_page_map'] == 'true' %>
   <fieldset id="location" class="<%= "collapsible" + (collapsed ? " collapsed" : "") %>">
-    <legend class="<%= "icon " + (collapsed ? "icon-collapsed" : "icon-expended") %>"><%= l(:field_location) %></legend>
+    <legend onclick="toggleFieldset(this);" class="<%= "icon " + (collapsed ? "icon-collapsed" : "icon-expended") %>"><%= l(:field_location) %></legend>
 
     <%= map_tag map: @project.map, geom: (Issue.array_to_geojson(@issues, include_properties: { only: %i(id subject tracker_id status_id) }) if @issues),
       popup: { href: '/issues/[id]' }, collapsed: collapsed %>

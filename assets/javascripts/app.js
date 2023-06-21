@@ -232,7 +232,7 @@ var App = (function ($, publ) {
             return;
           }
           var mapDiv = mutation.target;
-          if (mapDiv && mapDiv.style.display === 'block') {
+          if (mapDiv && (mapDiv.style.display === 'block' || mapDiv.style.display === '')) {
             self.zoomToExtent(true);
             collapsedObserver.disconnect();
           }
@@ -288,9 +288,6 @@ var App = (function ($, publ) {
       if ($("tr#tr_distance").length > 0) {
         filters.distance = true;
       }
-      $("fieldset#location legend").click(function(){
-        toggleAndLoadMap(this)
-      })
       publ.zoomToExtent();
       map.on('moveend', publ.updateFilter);
     });
@@ -1114,16 +1111,6 @@ var App = (function ($, publ) {
         }
     }
     return "";
-  }
-
-  function toggleAndLoadMap(el) {
-    var fieldset = $(el).parents('fieldset').first();
-    fieldset.toggleClass('collapsed');
-    fieldset.children('legend').toggleClass('icon-expended icon-collapsed');
-    fieldset.children('div').toggle();
-    maps.forEach(function (m) {
-      m.updateSize();
-    });
   }
 
   function getMapSize(map) {
