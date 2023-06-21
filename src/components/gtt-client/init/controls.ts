@@ -44,7 +44,7 @@ function addFullScreenAndRotateControls(instance: any): void {
  */
 function addMaximizeControl(instance: any): void {
   const maximizeCtrl = new Button({
-    html: '<i class="material-icons">zoom_out_map</i>',
+    html: '<i class="mdi mdi-arrow-expand-all"></i>',
     title: instance.i18n.control.maximize,
     handleClick: () => {
       zoomToExtent.call(instance, true);

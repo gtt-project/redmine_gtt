@@ -4,7 +4,7 @@ import FontSymbol from 'ol-ext/style/FontSymbol';
 const iconMappings: { [key: string]: any } = {
   'lobsta': '\uf101',
   'park_bench': '\uf102',
-  'road': '\uf103',
+  'lobsta_road': '\uf103',
   'waste': '\uf104'
 };
 
