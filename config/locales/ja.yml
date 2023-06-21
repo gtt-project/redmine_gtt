@@ -14,8 +14,8 @@ ja:
   label_name: タイトル
   label_baselayer: 背景レイヤー
   label_nearby: "近く(緯度,経度)"
-  label_layer: "Layer Type"
-  label_source: "Source Type"
+  label_layer: "レイヤー種別"
+  label_source: "ソース種別"
   label_config: 構成
   label_gtt_settings: GTT
   label_gtt_settings_headline: GTTの設定
@@ -30,19 +30,19 @@ ja:
 
   geocoder_options: "ジオコーダのオプション"
 
-  gtt_map_rotate_label: "Map rotation"
-  gtt_map_rotate_info_html: "Hold down <code>Shift+Alt</code> and drag the map to rotate."
+  gtt_map_rotate_label: "地図の回転"
+  gtt_map_rotate_info_html: "<code>Shift+Alt</code> を押しながらドラッグして地図を回転します。"
 
   gtt_settings_general_center_lon: "既定の地図中心経度"
   gtt_settings_general_center_lat: "既定の地図中心緯度"
   gtt_settings_general_zoom_level: "既定の地図ズームレベル"
   gtt_settings_general_maxzoom_level: "既定の最大地図ズームレベル"
   gtt_settings_general_fit_maxzoom_level: "フィット時最大地図ズームレベル"
-  gtt_settings_vector_minzoom_level: "Minimum zoom level"
+  gtt_settings_vector_minzoom_level: "最小ズームレベル"
 
-  gtt_settings_label_general: "General"
-  gtt_settings_label_styling: "Styling"
-  gtt_settings_label_geocoder: "Geocoder"
+  gtt_settings_label_general: "一般"
+  gtt_settings_label_styling: "スタイル"
+  gtt_settings_label_geocoder: "ジオコーダ"
 
   label_default_collapsed_issues_page_map: "チケット一覧の地図を既定で非表示"
   label_gtt_point: "ポイント"
@@ -60,35 +60,35 @@ ja:
 
   project_module_gtt: "GTT"
   permission_manage_gtt_settings: "GTT設定の管理"
-  permission_view_gtt_settings: "View GTT settings"
+  permission_view_gtt_settings: "GTT設定の閲覧"
 
   title_geojson_upload: GeoJSONのインポート
   placeholder_geojson_upload: GeoJSONのジオメトリをここにペーストするか、ファイルからGeoJSONデータをインポートしてください。
 
   map_layer:
-    title: "Map Layers"
-    plural: "Map Layers"
-    new: "New Map Layer"
-    ids: "Map Layers"
+    title: "地図レイヤー"
+    plural: "地図レイヤー"
+    new: "新しい地図レイヤー"
+    ids: "地図レイヤー"
     project:
-      info: "Select the map layers that should be available in this project."
-    layer_options_select: "-- Select layer type --"
-    source_options_select: "-- Select source type --"
-    format_options_select: "-- Select format type --"
-    load_example: "Examples: "
+      info: "このプロジェクトで利用可能な地図レイヤーを選択してください。"
+    layer_options_select: "-- レイヤー種別を選択 --"
+    source_options_select: "-- ソース種別を選択 --"
+    format_options_select: "-- フォーマット種別を選択 --"
+    load_example: "例: "
 
   # Workaround to easily customize field labels
-  field_name: "Name"
-  field_layer: "Layer type"
-  field_layer_options: "Layer options"
+  field_name: "名称"
+  field_layer: "レイヤー種別"
+  field_layer_options: "レイヤーオプション"
   field_baselayer: 背景レイヤー
   field_global: 世界的に利用可能
   field_default: "新規プロジェクトのデフォルト"
-  field_source: "Source type"
-  field_source_options: "Source options"
-  field_format: "Format type"
-  field_format_options: "Format options"
-  field_styles: "Style settings"
+  field_source: "ソース種別"
+  field_source_options: "ソースオプション"
+  field_format: "フォーマット種別"
+  field_format_options: "フォーマットオプション"
+  field_styles: "スタイル設定"
 
   # Localize for use in Javascript
 
@@ -109,5 +109,5 @@ ja:
       load: 読み込み
       cancel: キャンセル
     messages:
-      baselayer_missing: "There is no baselayer available!"
-      zoom_in_more: "Zoom in to view objects."
+      baselayer_missing: "背景レイヤーが存在しません!"
+      zoom_in_more: "地物表示のためズームします。"
