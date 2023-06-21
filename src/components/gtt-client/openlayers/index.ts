@@ -476,22 +476,6 @@ export function setGeolocation(currentMap: Map) {
   this.toolbar.addControl(geolocationCtrl)
 }
 
-export function toggleAndLoadMap(el: HTMLLegendElement) {
-  const fieldset = el.parentElement
-  fieldset.classList.toggle('collapsed')
-  el.classList.toggle('icon-expended')
-  el.classList.toggle('icon-collapsed')
-  const div = fieldset.querySelector('div')
-  if (div.style.display === 'none') {
-    div.style.display = 'block'
-  } else {
-    div.style.display = 'none'
-  }
-  this.maps.forEach(function (m: any) {
-    m.updateSize()
-  })
-}
-
 export function setView() {
   const center = fromLonLat([parseFloat(this.defaults.lon), parseFloat(this.defaults.lat)])
   const view = new View({
