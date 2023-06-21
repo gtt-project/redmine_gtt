@@ -1,0 +1,31 @@
+<div class="contextual">
+<%= link_to t('map_layer.new'), new_gtt_map_layer_path, :class => 'icon icon-add' %>
+</div>
+
+<%= title t('map_layer.plural') %>
+
+<% if @map_layers.any? %>
+<table class="list map_layers">
+  <thead>
+    <tr>
+      <th><%= l :label_name %></th>
+      <th><%= l :label_layer %></th>
+      <th><%= l :label_source %></th>
+      <th><%= l :label_baselayer %></th>
+      <th><%= l :label_global %></th>
+      <th><%= l :label_default %></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= render collection: @map_layers, partial: 'map_layer' %>
+  </tbody>
+</table>
+
+<% else %>
+<p class="nodata"><%= l :label_no_data %></p>
+<% end %>
+
+<%= javascript_tag do %>
+  $(function() { $("table.map_layers tbody").positionedItems(); });
+<% end %>

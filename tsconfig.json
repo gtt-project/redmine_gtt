@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
-    "noImplicitAny": true,
-    "module": "es6",
     "target": "es5",
-    "jsx": "react",
-    "allowJs": true,
+    "module": "es6",
     "moduleResolution": "node",
+    "jsx": "react",
+    "baseUrl": "./src/",
+    "outDir": "./dist",
+    "allowJs": true,
+    "noImplicitAny": true,
     "paths": {
-      "*": ["./src/@types/*"]
+      "*": ["@types/*"]
     }
   }
 }

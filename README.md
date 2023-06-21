@@ -17,10 +17,10 @@ The Geo-Task-Tracker (GTT) plugin adds spatial capabilities to Redmine:
 Redmine GTT plugins **require PostgreSQL/PostGIS** and will not work with SQLite
 or MariaDB/MySQL!!!
 
-- Redmine >= 4.2.0
-- PostgreSQL >= 10
-- PostGIS >= 2.5
-- NodeJS v14
+- Redmine >= 5.0.0
+- PostgreSQL >= 12
+- PostGIS >= 3.0
+- NodeJS v18
 - yarn
 
 ## Installation
@@ -43,12 +43,17 @@ yarn
 npx webpack
 ```
 
+Optionally export to override the [default GEM version](./Gemfile)
+
+```sh
+export GEM_PG_VERSION=your-pg-version
+export GEM_RGEO_ACTIVERECORD_VERSION=your-rgeo-activerecord-version
+export GEM_ACTIVERECORD_POSTGIS_ADAPTER_VERSION=your-activerecord-postgis-adapter-version
+```
+
 Then run
 
 ```sh
-export GEM_PG_VERSION=your-pg-version # skip this line if redmine use pg 1.2.2.
-export GEM_RGEO_ACTIVERECORD_VERSION=your-rgeo-activerecord-version # skip this line if using rgeo-activerecord 6.2.2.
-export GEM_ACTIVERECORD_POSTGIS_ADAPTER_VERSION=your-activerecord-postgis-adapter-version # skip this line if using activerecord-postgis-adapter 5.2.3.
 bundle install
 bundle exec rake redmine:plugins:migrate
 ```
@@ -91,7 +96,7 @@ Help us to translate GTT Project using [OSGeo Weblate](https://weblate.osgeo.org
 You can debug frontend by running the following command on another console:
 
 ```sh
-npx webpack --watch --mode=development
+npx webpack --watch --mode=development --devtool=source-map
 ```
 
 ### How to run test

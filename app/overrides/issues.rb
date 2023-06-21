@@ -19,7 +19,7 @@ module Issues
     :virtual_path => "issues/show",
     :name => "deface_view_issues_show_map",
     :insert_before => "div.attributes",
-    :original => '2042e7171bb2eaa98259e9ccbff8209910565e7a',
+    :original => 'c56981aa84b0fee66ff43ea773cf1444193a2862',
     :partial => "issues/show/map"
   )
 

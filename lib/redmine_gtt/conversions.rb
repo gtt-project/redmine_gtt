@@ -20,7 +20,7 @@ module RedmineGtt
 
       def collection_to_json(data)
         RGeo::GeoJSON.encode @factory.feature_collection(
-          data.map{|object, id, props| feature object, id, props}
+          data.map{|object, id, properties| feature(object, id, properties)}
         )
       end
 
@@ -74,9 +74,9 @@ module RedmineGtt
       RGeo::GeoJSON.decode(
         geojson,
         json_parser: :json,
-        geo_factory: RGeo::Cartesian.preferred_factory(srid: 4326)
+        geo_factory: RGeo::Cartesian.preferred_factory(has_z_coordinate: true, srid: 4326)
       ).geometry
-  end
+    end
 
     # Turn geometry attribute string into WKB for database use
     def self.to_wkb(geometry)

@@ -7,10 +7,10 @@
 
   <div class="box tabular">
     <p>
-      <%= f.select :gtt_tile_source_ids,
-        options_from_collection_for_select(GttTileSource.sorted, :id, :name, selected: @form.gtt_tile_source_ids),
-        {}, { multiple: true, size: 5 } %>
-      <br /><em><%= t :gtt_tile_sources_info %></em>
+      <%= f.select :gtt_map_layer_ids,
+        options_from_collection_for_select(GttMapLayer.sorted, :id, :name, selected: @form.gtt_map_layer_ids),
+        { :label => t('map_layer.ids') }, { multiple: true, size: 5 } %>
+      <br /><em><%= t('map_layer.project.info') %></em>
     </p>
     <p>
       <%= content_tag(:label, l(:gtt_map_rotate_label)) %>

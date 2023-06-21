@@ -36,7 +36,7 @@ class IssueFilterApiTest < Redmine::ApiTest::Base
     'type' => 'Feature',
     'geometry' => {
       'type' => 'Point',
-      'coordinates' => [123.324966,9.425016]
+      'coordinates' => [123.324966,9.425016,0.0]
     }
   }
 
@@ -44,7 +44,7 @@ class IssueFilterApiTest < Redmine::ApiTest::Base
     'type' => 'Feature',
     'geometry' => {
       'type' => 'Point',
-      'coordinates' => [123.269691,9.305099]
+      'coordinates' => [123.269691,9.305099,0.0]
     }
   }
 
@@ -53,7 +53,7 @@ class IssueFilterApiTest < Redmine::ApiTest::Base
     'geometry' => {
       'type' => 'Polygon',
       'coordinates' => [
-        [[123.269691,9.305099], [123.279691,9.305099],[123.279691,9.405099],[123.269691,9.405099]]
+        [[123.269691,9.305099,0.0], [123.279691,9.305099,0.0],[123.279691,9.405099,0.0],[123.269691,9.405099,0.0]]
       ]
     }
   }

@@ -7,7 +7,7 @@ module RedmineGtt
       def view_layouts_base_html_head(context={})
         tags = [];
 
-        tags << javascript_include_tag('main.js', :plugin => 'redmine_gtt')
+        tags << javascript_include_tag('../main.js', :plugin => 'redmine_gtt')
         return tags.join("\n")
       end
 
@@ -27,6 +27,7 @@ module RedmineGtt
           :lat => Setting.plugin_redmine_gtt['default_map_center_latitude'],
           :zoom => Setting.plugin_redmine_gtt['default_map_zoom_level'],
           :maxzoom => Setting.plugin_redmine_gtt['default_map_maxzoom_level'],
+          :vector_minzoom => Setting.plugin_redmine_gtt['vector_minzoom_level'],
           :fit_maxzoom => Setting.plugin_redmine_gtt['default_map_fit_maxzoom_level'],
           :geocoder => geocoder,
           :plugin_settings => Setting.plugin_redmine_gtt.select{ |key, value| key.to_s.match(/^(?!default).+/) },
