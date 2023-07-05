@@ -80,17 +80,17 @@ en:
   # Workaround to easily customize field labels
   field_name: "Name"
   field_layer: "Layer type"
-  field_layer_options: "Layer options"
+  field_layer_options_string: "Layer options"
   field_baselayer: "BaseLayer"
   field_global: "Globally available"
   field_default: "Default for new projects"
   field_source: "Source type"
-  field_source_options: "Source options"
+  field_source_options_string: "Source options"
   field_format: "Format type"
-  field_format_options: "Format options"
+  field_format_options_string: "Format options"
   field_styles: "Style settings"
 
-  # Localize for use in Javascriptccccccevihnjbenrlkjhjegkudjdckklnbkvgfkcnrkh
+  # Localize for use in Javascript
 
   gtt_js:
     control:

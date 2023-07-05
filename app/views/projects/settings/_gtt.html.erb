@@ -9,7 +9,7 @@
     <p>
       <%= f.select :gtt_map_layer_ids,
         options_from_collection_for_select(GttMapLayer.sorted, :id, :name, selected: @form.gtt_map_layer_ids),
-        {}, { multiple: true, size: 5 } %>
+        { :label => t('map_layer.ids') }, { multiple: true, size: 5 } %>
       <br /><em><%= t('map_layer.project.info') %></em>
     </p>
     <p>
