@@ -21,24 +21,24 @@
   "homepage": "https://github.com/gtt-project/redmine_gtt#readme",
   "dependencies": {
     "@juggle/resize-observer": "^3.4.0",
-    "@mdi/font": "^7.2.96",
+    "@mdi/font": "^7.3.67",
     "fontfaceobserver": "^2.3.0",
     "geojson": "^0.5.0",
     "ol": "^8.1.0",
     "ol-ext": "^4.0.11",
-    "ol-mapbox-style": "^11.0.3"
+    "ol-mapbox-style": "^12.0.0"
   },
   "devDependencies": {
-    "@types/fontfaceobserver": "^2.1.0",
-    "@types/geojson": "^7946.0.10",
-    "@types/jquery": "^3.5.18",
-    "@types/jqueryui": "^1.12.17",
+    "@types/fontfaceobserver": "^2.1.1",
+    "@types/geojson": "^7946.0.11",
+    "@types/jquery": "^3.5.22",
+    "@types/jqueryui": "^1.12.18",
     "@types/ol-ext": "npm:@siedlerchr/types-ol-ext",
     "css-loader": "^6.8.1",
-    "sass": "^1.66.1",
+    "sass": "^1.69.0",
     "sass-loader": "^13.3.2",
     "style-loader": "^3.3.3",
-    "ts-loader": "^9.4.4",
+    "ts-loader": "^9.5.0",
     "typescript": "^5.2.2",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4"
