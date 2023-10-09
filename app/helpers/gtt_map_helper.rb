@@ -39,9 +39,37 @@ module GttMapHelper
       content_tag(:div, "", data: data, id: uid, class: 'ol-map',
         style: (collapsed ? "display: none" : "display: block")),
       javascript_tag("
+        var contentObserver = () => {
+          const target = document.getElementById('#{uid}');
+          const observerCallback = function(mutations) {
+            mutations.forEach(function(mutation) {
+              if (mutation.removedNodes.length) {
+                mutation.removedNodes.forEach(function(node) {
+                  if (node === target) {
+                    observer.disconnect();
+                    let event = new Event('contentUpdated');
+                    document.dispatchEvent(event);
+                  }
+                });
+              }
+            });
+          };
+          const observer = new MutationObserver(observerCallback);
+          const config = {
+            childList: true,
+            subtree: true
+          };
+          observer.observe(document.body, config);
+        }
+        document.addEventListener('contentUpdated', function(){
+          var target = document.getElementById('#{uid}');
+          window.createGttClient(target);
+          contentObserver();
+        }, { once: true });
         document.addEventListener('DOMContentLoaded', function(){
           var target = document.getElementById('#{uid}');
           window.createGttClient(target);
+          contentObserver();
         });
       ")
     ]
