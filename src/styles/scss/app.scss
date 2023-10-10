@@ -12,6 +12,16 @@
   --ol-brand-color: #34495e;
 }
 
+// attribution styles
+.ol-attribution:not(.ol-collapsed) {
+  background-color: rgba(255, 255, 255, 0.75);
+}
+
+.ol-attribution a {
+  color: #666666;
+  text-decoration: none;
+}
+
 .ol-control button:hover {
   background-color: #3f5872;
 }
