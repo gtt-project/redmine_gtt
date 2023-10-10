@@ -11,7 +11,7 @@ import { OrderFunction } from 'ol/render';
 
 import Ordering from 'ol-ext/render/Ordering';
 import Mask from 'ol-ext/filter/Mask';
-import { applyStyle } from 'ol-mapbox-style';
+import { applyStyle, applyBackground } from 'ol-mapbox-style';
 
 import { ILayerObject } from '../interfaces';
 import { updateForm } from "../helpers";
@@ -88,6 +88,7 @@ function createLayers(this: any): void {
       // Apply style URL if provided
       if ("styleUrl" in layerOptions) {
         applyStyle(layer as any, layerOptions.styleUrl);
+        applyBackground(layer as any, layerOptions.styleUrl);
       }
 
       setLayerProperties(layer, config);
