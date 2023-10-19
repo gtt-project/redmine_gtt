@@ -5,14 +5,15 @@ module GttMapHelper
   def map_form_field(form, map, field: :geojson, bounds: nil, edit_mode: nil, upload: true, rotation: 0)
     safe_join [
       form.hidden_field(field, id: 'geom'),
-      map_tag(map: map, bounds: bounds, edit: edit_mode, upload: upload, rotation: rotation)
+      map_tag(map: map, bounds: bounds, edit: edit_mode, upload: upload, rotation: rotation, show: false)
     ]
   end
 
   def map_tag(map: nil, layers: map&.layers,
               geom: map.json, bounds: map.bounds,
               edit: nil, popup: nil, upload: true,
-              collapsed: false, rotation: map&.rotation)
+              collapsed: false, rotation: map&.rotation,
+              show: true)
 
     data = {
       geom: geom.is_a?(String) ? geom : geom.to_json,
@@ -39,9 +40,39 @@ module GttMapHelper
       content_tag(:div, "", data: data, id: uid, class: 'ol-map',
         style: (collapsed ? "display: none" : "display: block")),
       javascript_tag("
+        var contentObserver = () => {
+          const target = document.getElementById('#{uid}');
+          const observerCallback = function(mutations) {
+            mutations.forEach(function(mutation) {
+              if (mutation.removedNodes.length) {
+                mutation.removedNodes.forEach(function(node) {
+                  if (node === target) {
+                    observer.disconnect();
+                    let event = new Event('contentUpdated');
+                    document.dispatchEvent(event);
+                  }
+                });
+              }
+            });
+          };
+          const observer = new MutationObserver(observerCallback);
+          const config = {
+            childList: true,
+            subtree: true
+          };
+          observer.observe(document.body, config);
+        }
+        if (!#{show}) {
+          document.addEventListener('contentUpdated', function(){
+            var target = document.getElementById('#{uid}');
+            window.createGttClient(target);
+            contentObserver();
+          }, { once: true });
+        }
         document.addEventListener('DOMContentLoaded', function(){
           var target = document.getElementById('#{uid}');
           window.createGttClient(target);
+          contentObserver();
         });
       ")
     ]

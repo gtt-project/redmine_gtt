@@ -11,7 +11,7 @@ import { OrderFunction } from 'ol/render';
 
 import Ordering from 'ol-ext/render/Ordering';
 import Mask from 'ol-ext/filter/Mask';
-import { applyStyle } from 'ol-mapbox-style';
+import { applyStyle, applyBackground } from 'ol-mapbox-style';
 
 import { ILayerObject } from '../interfaces';
 import { updateForm } from "../helpers";
@@ -88,6 +88,7 @@ function createLayers(this: any): void {
       // Apply style URL if provided
       if ("styleUrl" in layerOptions) {
         applyStyle(layer as any, layerOptions.styleUrl);
+        applyBackground(layer as any, layerOptions.styleUrl);
       }
 
       setLayerProperties(layer, config);
@@ -181,6 +182,7 @@ function addVectorLayer(this: any, features: Feature<Geometry>[] | null): void {
   });
   this.vector.set('title', 'Features');
   this.vector.set('displayInLayerSwitcher', false);
+  this.vector.on('prerender', () => this.map.flushDeclutterItems());
 
   // Listen to the moveend event and show message when zoom level is too low
   let previousZoom = this.map.getView().getZoom();
