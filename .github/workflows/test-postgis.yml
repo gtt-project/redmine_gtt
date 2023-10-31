@@ -2,8 +2,6 @@ name: Test with PostGIS
 
 env:
   PLUGIN_NAME: ${{ github.event.repository.name }}
-  REDMINE_VERSIONS: ${{ fromJson(vars.PLUGIN_TEST_MATRIX_REDMINE_VERSION) }}
-  RUBY_VERSIONS: ${{ fromJson(vars.PLUGIN_TEST_MATRIX_RUBY_VERSION) }}
 
 on:
   push:
@@ -26,8 +24,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        redmine_version: ${{ env.REDMINE_VERSIONS }}
-        ruby_version: ${{ env.RUBY_VERSIONS }}
+        redmine_version: ${{ vars.PLUGIN_TEST_MATRIX_REDMINE_VERSION }}
+        ruby_version: ${{ vars.PLUGIN_TEST_MATRIX_RUBY_VERSION }}
         db_version: [12-3.0, 15-3.3]
 
     services:
