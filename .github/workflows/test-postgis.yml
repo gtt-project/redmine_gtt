@@ -24,8 +24,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        redmine_version: [5.0-stable, master]
-        ruby_version: ['3.0', '3.1']
+        redmine_version: ${{ fromJSON(vars.PLUGIN_TEST_MATRIX_REDMINE_VERSION) }}
+        ruby_version: ${{ fromJSON(vars.PLUGIN_TEST_MATRIX_RUBY_VERSION) }}
         db_version: [12-3.0, 15-3.3]
 
     services:
