@@ -166,9 +166,9 @@
   integrity sha512-At4pvmIOki8yuwLtd7BNHl3CiWNbtclUbNtScGx4OHfBd4/oWoJC8KRCIxXwkdndzhxOsPXihrsOoydxBjlE9Q==
 
 "@types/ol-ext@npm:@siedlerchr/types-ol-ext":
-  version "3.2.0"
-  resolved "https://registry.npmjs.org/@siedlerchr/types-ol-ext/-/types-ol-ext-3.2.0.tgz"
-  integrity sha512-G6+IkijEDBfseBLtOxUsc+CnmyKrHQfTpmbjSVTea1enUIifpWkTkxAIQ1dtaOGCZiSjclRpmz9e3MioEzvBkA==
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/@siedlerchr/types-ol-ext/-/types-ol-ext-3.2.4.tgz#5411370c5cc62db6f5fddbe6c5dba203c19aeba3"
+  integrity sha512-d6auH1slNSyR6v2gP0J2fFPdgvRetAcThASZrcA65lciZmewRgDJaryaCj6/hjvEopokaE4KaMc1OkO8LdRNOw==
   dependencies:
     jspdf "^2.5.1"
 
