@@ -50,11 +50,14 @@ export function initLayers(this: any): Layer[] {
  */
 function readGeoJSONFeatures(this: any): Feature<Geometry>[] | null {
   if (this.contents.geom && this.contents.geom !== null && this.contents.geom !== 'null') {
-    return new GeoJSON().readFeatures(
+    const features = new GeoJSON().readFeatures(
       JSON.parse(this.contents.geom), {
         featureProjection: 'EPSG:3857'
       }
     );
+
+    // Filter out any non-Feature<Geometry> objects
+    return features.filter((feature): feature is Feature<Geometry> => feature instanceof Feature) as Feature<Geometry>[];
   }
   return null;
 }
@@ -171,7 +174,7 @@ function addBoundsLayer(this: any): void {
  */
 function addVectorLayer(this: any, features: Feature<Geometry>[] | null): void {
   const yOrdering: unknown = Ordering.yOrdering();
-  this.vector = new VectorLayer<VectorSource<Geometry>>({
+  this.vector = new VectorLayer<VectorSource<Feature<Geometry>>>({
     source: new VectorSource({
       'features': features,
       'useSpatialIndex': false
@@ -219,15 +222,25 @@ function addVectorLayer(this: any, features: Feature<Geometry>[] | null): void {
  */
 function renderProjectBoundary(this: any): void {
   if (this.contents.bounds && this.contents.bounds !== null) {
-    const boundary = new GeoJSON().readFeature(
+    const boundaryFeatureLike = new GeoJSON().readFeature(
       this.contents.bounds, {
         featureProjection: 'EPSG:3857'
       }
     );
+
+    // Check if the read feature is an instance of Feature<Geometry>
+    if (!(boundaryFeatureLike instanceof Feature)) {
+      console.error('The boundary is not a valid Feature<Geometry>');
+      return;
+    }
+
+    const boundary = boundaryFeatureLike as Feature<Geometry>;
     this.bounds.getSource().addFeature(boundary);
+
     if (this.contents.bounds === this.contents.geom) {
       this.vector.setVisible(false);
     }
+
     this.layerArray.forEach((layer: Layer) => {
       if (layer.get('baseLayer')) {
         layer.addFilter(new Mask({

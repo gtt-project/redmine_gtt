@@ -1,4 +1,4 @@
-import { Map, Geolocation } from 'ol';
+import { Map, Geolocation, Feature  } from 'ol';
 import { Geometry } from 'ol/geom';
 import { Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource } from 'ol/source';
@@ -24,8 +24,8 @@ export default class GttClient {
   contents: DOMStringMap;
   i18n: any;
   filters: IFilterOption;
-  vector: VectorLayer<VectorSource<Geometry>>;
-  bounds: VectorLayer<VectorSource<Geometry>>;
+  vector: VectorLayer<VectorSource<Feature<Geometry>>>;
+  bounds: VectorLayer<VectorSource<Feature<Geometry>>>;
   geolocations: Array<Geolocation>;
 
   /**
