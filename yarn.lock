@@ -141,17 +141,17 @@
   dependencies:
     "@types/sizzle" "*"
 
-"@types/jquery@^3.5.27":
-  version "3.5.27"
-  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.5.27.tgz#d9d67a003d0292a36fe35868a618c82f8fd12b19"
-  integrity sha512-TR28Y8ezIGgfyA02UOh9x+Fy16/1qWYAnvtRd2gTBJuccX/vmddyti0MezLkTv7f+OLofVc2T961VPyKv1tXJQ==
+"@types/jquery@^3.5.29":
+  version "3.5.29"
+  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.5.29.tgz#3c06a1f519cd5fc3a7a108971436c00685b5dcea"
+  integrity sha512-oXQQC9X9MOPRrMhPHHOsXqeQDnWeCDT3PelUIg/Oy8FAbzSZtFHRjc7IpbfFVmpLtJ+UOoywpRsuO5Jxjybyeg==
   dependencies:
     "@types/sizzle" "*"
 
-"@types/jqueryui@^1.12.20":
-  version "1.12.20"
-  resolved "https://registry.yarnpkg.com/@types/jqueryui/-/jqueryui-1.12.20.tgz#c726cba62b3f32134275e85f79aeff4ffff16c90"
-  integrity sha512-kHjvlPOHy+8+3SBYFA4g+n144SBZ/RFEq6oYr5w1I7PfrrGJ3RXNc13UlGA2ohkx2EjGD93QB97or63IJWB+Lw==
+"@types/jqueryui@^1.12.21":
+  version "1.12.21"
+  resolved "https://registry.yarnpkg.com/@types/jqueryui/-/jqueryui-1.12.21.tgz#e8c3a2955a5236da452b3dacd4d87c8d64cb5326"
+  integrity sha512-hsTOaWPg963smNdoHbEN2anu4vVWj9k2xuaZMIajWERPikaBRG49RmaDA/tb2HldX9/a0qHvQYKipXHSLhM3qA==
   dependencies:
     "@types/jquery" "*"
 
@@ -473,10 +473,30 @@ color-convert@^2.0.1:
   dependencies:
     color-name "~1.1.4"
 
-color-name@~1.1.4:
+color-name@^1.0.0, color-name@~1.1.4:
   version "1.1.4"
-  resolved "https://registry.npmjs.org/color-name/-/color-name-1.1.4.tgz"
+  resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
+
+color-parse@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/color-parse/-/color-parse-2.0.0.tgz#6bcf1f0f1fafffe68cacc2dde7a19b3a8c3d7bcd"
+  integrity sha512-g2Z+QnWsdHLppAbrpcFWo629kLOnOPtpxYV69GCqm92gqSgyXbzlfyN3MXs0412fPBkFmiuS+rXposgBgBa6Kg==
+  dependencies:
+    color-name "^1.0.0"
+
+color-rgba@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/color-rgba/-/color-rgba-3.0.0.tgz#77090bdcdb2951c1735e20099ddd50401675375b"
+  integrity sha512-PPwZYkEY3M2THEHHV6Y95sGUie77S7X8v+h1r6LSAPF3/LL2xJ8duUXSrkic31Nzc4odPwHgUbiX/XuTYzQHQg==
+  dependencies:
+    color-parse "^2.0.0"
+    color-space "^2.0.0"
+
+color-space@^2.0.0, color-space@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/color-space/-/color-space-2.0.1.tgz#da39871175baf4a5785ba519397df04b8d67e0fa"
+  integrity sha512-nKqUYlo0vZATVOFHY810BSYjmCARrG7e5R3UE3CQlyjJTvv5kSSmPG1kzm/oDyyqjehM+lW1RnEt9It9GNa5JA==
 
 colorette@^2.0.14:
   version "2.0.20"
@@ -918,24 +938,26 @@ normalize-path@^3.0.0, normalize-path@~3.0.0:
   resolved "https://registry.npmjs.org/normalize-path/-/normalize-path-3.0.0.tgz"
   integrity sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==
 
-ol-ext@^4.0.11:
-  version "4.0.11"
-  resolved "https://registry.yarnpkg.com/ol-ext/-/ol-ext-4.0.11.tgz#402334d79bfc0a4705dea4805d080e7bdf79936f"
-  integrity sha512-zorUn71RsahiA/kbf+tRDbv19wqdLCclxd3gkjsFMnqCbdgl+P59CSJCqMO4O7b2bvaHrw5FEmep7FNFnGGQXg==
+ol-ext@^4.0.13:
+  version "4.0.13"
+  resolved "https://registry.yarnpkg.com/ol-ext/-/ol-ext-4.0.13.tgz#977d20a3d5f40f39ca10b34ca2c8411ef9032c31"
+  integrity sha512-eNUKmPXBp7pOI8lE/qhv+oIbCwFyrqW4gGcILxTlvjhICKyaNkcmXGm3lOvHd2PnsKBtbjwg2knHiJKpEQNDtg==
 
-ol-mapbox-style@^12.1.0:
-  version "12.1.0"
-  resolved "https://registry.yarnpkg.com/ol-mapbox-style/-/ol-mapbox-style-12.1.0.tgz#03483e4bfdbe75681aa85191de689c8c1d620c7c"
-  integrity sha512-rizjny/ECsHW13P+WEoHoXpQcvf230d0iM3kNU2eej3Uc1iQJtn1YR1YDLUFnLafvIDFVEQaytD8tTSIjdiR8w==
+ol-mapbox-style@^12.1.1:
+  version "12.1.1"
+  resolved "https://registry.yarnpkg.com/ol-mapbox-style/-/ol-mapbox-style-12.1.1.tgz#2ceb2120fac9a6be25c8b0e4e12b256ba6746c2a"
+  integrity sha512-jjIQO2BiO/GTjJO/2Idw0WQQAGorPXewZ5wEuusXM8BRXZHIa3mmDZDWoBWtb0H4VHB9RpLsTbRMj5Dquo9Etg==
   dependencies:
     "@mapbox/mapbox-gl-style-spec" "^13.23.1"
     mapbox-to-css-font "^2.4.1"
 
-ol@^8.1.0:
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/ol/-/ol-8.1.0.tgz#6f3259855cb331a6fa9cbf363aa69d37bba7306a"
-  integrity sha512-cx3SH2plpFS9fM8pp1nCypgQXGJD7Mcb1E3mEySmy5XEw1DUEo+kkNzgtAZz5qupekqi7aU9iBJEjCoMfqvO2Q==
+ol@^8.2.0:
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/ol/-/ol-8.2.0.tgz#145153eab0ea3b5d04f51f46d6c69c224cccd5c3"
+  integrity sha512-/m1ddd7Jsp4Kbg+l7+ozR5aKHAZNQOBAoNZ5pM9Jvh4Etkf0WGkXr9qXd7PnhmwiC1Hnc2Toz9XjCzBBvexfXw==
   dependencies:
+    color-rgba "^3.0.0"
+    color-space "^2.0.1"
     earcut "^2.2.3"
     geotiff "^2.0.7"
     pbf "3.2.1"
@@ -1350,10 +1372,10 @@ to-regex-range@^5.0.1:
   dependencies:
     is-number "^7.0.0"
 
-ts-loader@^9.5.0:
-  version "9.5.0"
-  resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-9.5.0.tgz#f0a51dda37cc4d8e43e6cb14edebbc599b0c3aa2"
-  integrity sha512-LLlB/pkB4q9mW2yLdFMnK3dEHbrBjeZTYguaaIfusyojBgAGf5kF+O6KcWqiGzWqHk0LBsoolrp4VftEURhybg==
+ts-loader@^9.5.1:
+  version "9.5.1"
+  resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-9.5.1.tgz#63d5912a86312f1fbe32cef0859fb8b2193d9b89"
+  integrity sha512-rNH3sK9kGZcH9dYzC7CewQm4NtxJTjSEVRJ2DyBZR7f8/wcta+iV44UPCXc5+nzDzivKtlzV6c9P4e+oFhDLYg==
   dependencies:
     chalk "^4.1.0"
     enhanced-resolve "^5.0.0"
@@ -1361,10 +1383,10 @@ ts-loader@^9.5.0:
     semver "^7.3.4"
     source-map "^0.7.4"
 
-typescript@^5.2.2:
-  version "5.2.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.2.2.tgz#5ebb5e5a5b75f085f22bc3f8460fba308310fa78"
-  integrity sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==
+typescript@^5.2.3:
+  version "5.3.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.3.3.tgz#b3ce6ba258e72e6305ba66f5c9b452aaee3ffe37"
+  integrity sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==
 
 update-browserslist-db@^1.0.10:
   version "1.0.11"
