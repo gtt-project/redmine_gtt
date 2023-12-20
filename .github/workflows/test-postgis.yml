@@ -87,14 +87,13 @@ jobs:
               encoding: utf8
           EOF
 
-      # - name: Adjust Gem environment
-      #  run: |
-      #    case "${{ matrix.redmine_version }}" in
-      #      4.2-stable)
-      #        echo "GEM_RGEO_ACTIVERECORD_VERSION=6.2.2" >> ${GITHUB_ENV}
-      #        echo "GEM_ACTIVERECORD_POSTGIS_ADAPTER_VERSION=5.2.3" >> ${GITHUB_ENV}
-      #        ;;
-      #    esac
+      - name: Adjust Gem environment
+        run: |
+          case "${{ matrix.redmine_version }}" in
+            master)
+              echo "GEM_ACTIVERECORD_POSTGIS_ADAPTER_VERSION=9.0.1" >> ${GITHUB_ENV}
+              ;;
+          esac
 
       - name: Install Ruby dependencies
         working-directory: redmine
