@@ -28,9 +28,9 @@ jobs:
         ruby_version: ${{ fromJSON(vars.PLUGIN_TEST_MATRIX_RUBY_VERSION) }}
         db_version: [12-3.0, 15-3.3]
         exclude:
-          - redmine: 5.1-stable
+          - redmine_version: 5.1-stable
             ruby_version: '3.0'
-          - redmine: master
+          - redmine_version: master
             ruby_version: '3.0'
 
     services:
