@@ -27,6 +27,10 @@ jobs:
         redmine_version: ${{ fromJSON(vars.PLUGIN_TEST_MATRIX_REDMINE_VERSION) }}
         ruby_version: ${{ fromJSON(vars.PLUGIN_TEST_MATRIX_RUBY_VERSION) }}
         db_version: [12-3.0, 15-3.3]
+        exclude:
+          - redmine_version: 5.0-stable
+            ruby_version: '3.2'
+          - redmine_version: master
 
     services:
       postgres:
@@ -62,7 +66,7 @@ jobs:
 
       - name: Install Node/Yarn packages
         run: |
-          curl -sL https://deb.nodesource.com/setup_16.x | bash -
+          curl -sL https://deb.nodesource.com/setup_20.x | bash -
           curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
           echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
           apt-get update --yes --quiet
