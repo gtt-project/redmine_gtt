@@ -243,7 +243,6 @@ function renderProjectBoundary(this: any): void {
     }
     this.layerArray.forEach((layer: Layer) => {
       if (layer.get('baseLayer')) {
-        console.log(layer.getRenderSource())
         if (layer.getRenderSource() instanceof olSource.Google) {
           // currently Google source does not seem to support filters
         }
