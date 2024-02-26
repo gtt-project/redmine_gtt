@@ -243,13 +243,19 @@ function renderProjectBoundary(this: any): void {
     }
     this.layerArray.forEach((layer: Layer) => {
       if (layer.get('baseLayer')) {
-        layer.addFilter(new Mask({
-          feature: boundary,
-          inner: false,
-          fill: new Fill({
-            color: [220, 26, 26, 0.1]
-          })
-        }));
+        console.log(layer.getRenderSource())
+        if (layer.getRenderSource() instanceof olSource.Google) {
+          // currently Google source does not seem to support filters
+        }
+        else {
+          layer.addFilter(new Mask({
+            feature: boundary,
+            inner: false,
+            fill: new Fill({
+              color: [220, 26, 26, 0.1]
+            })
+          }));
+        }
       }
     });
   }
