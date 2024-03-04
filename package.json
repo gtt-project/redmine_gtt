@@ -25,7 +25,7 @@
     "fontfaceobserver": "^2.3.0",
     "geojson": "^0.5.0",
     "ol": "^9.0.0",
-    "ol-ext": "^4.0.14",
+    "ol-ext": "^4.0.15",
     "ol-mapbox-style": "^12.2.1"
   },
   "devDependencies": {
