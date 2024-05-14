@@ -31,7 +31,7 @@ class IssuesTest < Redmine::IntegrationTest
     @project.gtt_map_layers << @maplayer
   end
 
-  test 'create an issue from global scope' do
+  test 'should create issue from global scope' do
     log_user('jsmith', 'jsmith')
 
     get '/issues/new'
@@ -74,7 +74,7 @@ class IssuesTest < Redmine::IntegrationTest
     assert_equal geo['geometry'].to_json, issue.geom.to_json
   end
 
-  test 'create an issue from project scope' do
+  test 'should create issue from project scope' do
     log_user('jsmith', 'jsmith')
 
     get '/projects/ecookbook/issues/new'
