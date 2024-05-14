@@ -57,10 +57,8 @@ class IssuesMapTest < ApplicationSystemTestCase
 
     # Select gtt enabled project again
     page.find('#issue_project_id').select('eCookbook')
-    ## FIXME: Should replace to commented out assertions below
-    assert_selector('div.ol-map')
-    # assert_selector('div.ol-map') do
-    #   assert_selector('canvas')
-    # end
+    assert_selector('div.ol-map') do
+      assert_selector('canvas')
+    end
   end
 end
