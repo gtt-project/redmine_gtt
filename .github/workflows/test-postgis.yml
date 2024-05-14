@@ -48,14 +48,14 @@ jobs:
 
     steps:
       - name: Checkout Redmine
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: redmine/redmine
           ref: ${{ matrix.redmine_version }}
           path: redmine
 
       - name: Checkout Plugin
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: redmine/plugins/${{ env.PLUGIN_NAME }}
 
