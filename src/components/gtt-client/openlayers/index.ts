@@ -201,6 +201,17 @@ export function setControls(types: Array<string>) {
     editbar.addControl(control)
   })
 
+  // Add the clear map control
+  const clearMapCtrl = new Button({
+    html: '<i class="mdi mdi-delete"></i>',
+    title: this.i18n.control.clear_map,
+    handleClick: () => {
+      this.vector.getSource().clear();
+      updateForm(this, null);
+    }
+  });
+  editbar.addControl(clearMapCtrl);
+
   // Uses jQuery UI for GeoJSON Upload modal window
   const mapObj = this
   const dialog = $("#dialog-geojson-upload").dialog({

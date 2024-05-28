@@ -65,6 +65,7 @@ de:
       point: Punkteditor
       linestring: Linieneditor
       polygon: Flächeneditor
+      clear_map: "Clear map"
     modal:
       load: Laden
       cancel: Abbrechen

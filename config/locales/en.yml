@@ -105,6 +105,7 @@ en:
       point: "Point editor"
       linestring: "Line editor"
       polygon: "Area editor"
+      clear_map: "Clear map"
     modal:
       load: "Load"
       cancel: "Cancel"
