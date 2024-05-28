@@ -159,10 +159,10 @@
   dependencies:
     "@types/sizzle" "*"
 
-"@types/jquery@^3.5.29":
-  version "3.5.29"
-  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.5.29.tgz#3c06a1f519cd5fc3a7a108971436c00685b5dcea"
-  integrity sha512-oXQQC9X9MOPRrMhPHHOsXqeQDnWeCDT3PelUIg/Oy8FAbzSZtFHRjc7IpbfFVmpLtJ+UOoywpRsuO5Jxjybyeg==
+"@types/jquery@^3.5.30":
+  version "3.5.30"
+  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.5.30.tgz#888d584cbf844d3df56834b69925085038fd80f7"
+  integrity sha512-nbWKkkyb919DOUxjmRVk8vwtDb0/k8FKncmUKFi+NY+QXqWltooxTrswvz4LspQwxvLdvzBN1TImr6cw3aQx2A==
   dependencies:
     "@types/sizzle" "*"
 
@@ -557,10 +557,10 @@ css-line-break@^2.1.0:
   dependencies:
     utrie "^1.0.2"
 
-css-loader@^7.1.1:
-  version "7.1.1"
-  resolved "https://registry.yarnpkg.com/css-loader/-/css-loader-7.1.1.tgz#de4163c0cb765c03d7957eb9e0a49c7f354948c7"
-  integrity sha512-OxIR5P2mjO1PSXk44bWuQ8XtMK4dpEqpIyERCx3ewOo3I8EmbcxMPUc5ScLtQfgXtOojoMv57So4V/C02HQLsw==
+css-loader@^7.1.2:
+  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/css-loader/-/css-loader-7.1.2.tgz#64671541c6efe06b0e22e750503106bdd86880f8"
+  integrity sha512-6WvYYn7l/XEGN8Xu2vWFt9nVzrCn39vKyTEFf/ExEyoksJjjSZV/0/35XPlMbpnr6VGhZIUg5yJrL8tGfes/FA==
   dependencies:
     icss-utils "^5.1.0"
     postcss "^8.4.33"
@@ -966,10 +966,10 @@ ol-ext@^4.0.15:
   resolved "https://registry.yarnpkg.com/ol-ext/-/ol-ext-4.0.18.tgz#87e68566bae1a7821e3a1af8b7019409ce922324"
   integrity sha512-zzeTAoCg9IocaM7LlXiLNnVCgVmfxxLzlDTWvYn3Y2gFxtICHSfRrIQl/8vumgBjftBksVl1Fds8P5uFReTmew==
 
-ol-mapbox-style@^12.3.1:
-  version "12.3.1"
-  resolved "https://registry.yarnpkg.com/ol-mapbox-style/-/ol-mapbox-style-12.3.1.tgz#155e93fc148e2a6bee80de5c2e26ba51069dcb34"
-  integrity sha512-pKBpKBns4YUgeFCp+aeuJtM+D2BKLc1HJmk5tFL0Nv7u7nelZnInUs/+XnSlHOa1hPBSrOyL+7CvKtegEyuYlg==
+ol-mapbox-style@^12.3.2:
+  version "12.3.2"
+  resolved "https://registry.yarnpkg.com/ol-mapbox-style/-/ol-mapbox-style-12.3.2.tgz#1cad02b1fca019fce4a2e8814049b5706588c1fb"
+  integrity sha512-Qw9I6+WHz9zBsLNm8zWWb707Y/hXrQP1fcwK86pxcX/FklwyDxAhfJAdTkINHncZ331CBEWcqvi2tzoN23dgwg==
   dependencies:
     "@mapbox/mapbox-gl-style-spec" "^13.23.1"
     mapbox-to-css-font "^2.4.1"
@@ -1220,10 +1220,10 @@ sass-loader@^14.2.1:
   dependencies:
     neo-async "^2.6.2"
 
-sass@^1.75.0:
-  version "1.75.0"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.75.0.tgz#91bbe87fb02dfcc34e052ddd6ab80f60d392be6c"
-  integrity sha512-ShMYi3WkrDWxExyxSZPst4/okE9ts46xZmJDSawJQrnte7M1V9fScVB+uNXOVKRBt0PggHOwoZcn8mYX4trnBw==
+sass@^1.77.2:
+  version "1.77.2"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.77.2.tgz#18d4ed2eefc260cdc8099c5439ec1303fd5863aa"
+  integrity sha512-eb4GZt1C3avsX3heBNlrc7I09nyT00IUuo4eFhAbeXWU2fvA7oXI53SxODVAA+zgZCk9aunAZgO+losjR3fAwA==
   dependencies:
     chokidar ">=3.0.0 <4.0.0"
     immutable "^4.0.0"
