@@ -5,9 +5,9 @@ import LayerPopup from 'ol-ext/control/LayerPopup';
 import LayerSwitcher from 'ol-ext/control/LayerSwitcher';
 import { position } from 'ol-ext/control/control';
 
-import SearchGTT from '../geocoding/SearchGTT';
 import { radiansToDegrees, degreesToRadians, parseHistory } from "../helpers";
 import { zoomToExtent, setGeolocation, setView, setControls, setPopover } from "../openlayers";
+import { createSearchControl } from '../geocoding/SearchFactory';
 
 /**
  * Adds the toolbar and basic controls to the map instance.
@@ -32,15 +32,16 @@ function setSearchControl(instance: any): void {
   const geocoder = JSON.parse(instance.defaults.geocoder);
 
   if (JSON.parse(geocoder.enabled)) {
-    const searchControl = new SearchGTT({
+    const options = {
       title: instance.i18n.control.search_location,
       reverseTitle: instance.i18n.control.reverse_location,
       placeholder: instance.i18n.control.search_placeholder,
       provider: geocoder.provider,
       providerOptions: geocoder.options,
       html: '<i class="mdi mdi-map-search-outline"></i>',
-    });
+     };
 
+    const searchControl = createSearchControl(options);
     instance.map.addControl(searchControl);
   }
 }
