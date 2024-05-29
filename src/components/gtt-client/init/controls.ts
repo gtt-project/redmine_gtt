@@ -32,16 +32,16 @@ function setSearchControl(instance: any): void {
   const geocoder = JSON.parse(instance.defaults.geocoder);
 
   if (JSON.parse(geocoder.enabled)) {
-    const options = {
-      title: instance.i18n.control.search_location,
-      reverseTitle: instance.i18n.control.reverse_location,
-      placeholder: instance.i18n.control.search_placeholder,
-      provider: geocoder.provider,
-      providerOptions: geocoder.options,
+    const searchControl = createSearchControl({
       html: '<i class="mdi mdi-map-search-outline"></i>',
-     };
-
-    const searchControl = createSearchControl(options);
+      title: instance.i18n.control.search_location,
+      provider: geocoder.provider,
+      providerOptions: {
+        reverseTitle: instance.i18n.control.reverse_location,
+        placeholder: instance.i18n.control.search_placeholder,
+        ...geocoder.options
+      },
+    });
     instance.map.addControl(searchControl);
   }
 }

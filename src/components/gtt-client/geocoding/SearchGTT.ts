@@ -2,9 +2,7 @@
 import Search, { Options as SearchOptions } from 'ol-ext/control/Search';
 
 interface SearchGTTOptions extends SearchOptions {
-  html?: string;
-  provider?: string;
-  providerOptions?: object;
+  // Add custom options here
 }
 
 class SearchGTT extends Search {
@@ -13,10 +11,6 @@ class SearchGTT extends Search {
   constructor(options: SearchGTTOptions = {}) {
     options = options || {};
     options.className = options.className || 'ol-search-gtt';
-    options.html = options.html || '?';
-
-    options.provider = options.provider || '';
-    options.providerOptions = options.providerOptions || {};
 
     super(options);
   }

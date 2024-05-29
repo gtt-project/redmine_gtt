@@ -7,31 +7,32 @@ import SearchPhoton from 'ol-ext/control/SearchPhoton';
 export function createSearchControl(options: any): any {
   let searchControl: any;
 
-  console.log(options);
-
+  // Create search control instance based on the provider
   switch (options.provider) {
     case 'nominatim':
-      console.log('Creating Nominatim search control');
-      searchControl = new SearchNominatim(options);
+      searchControl = new SearchNominatim({
+        ...options.providerOptions,
+      });
       break;
     case 'photon':
-      console.log('Creating Photon search control');
-      searchControl = new SearchPhoton(options);
+      searchControl = new SearchPhoton({
+        ...options.providerOptions,
+      });
       break;
     case 'custom':
-      console.log('Creating custom search control');
-      searchControl = new SearchGTT(options);
+      searchControl = new SearchGTT({
+        ...options.providerOptions,
+      });
       break;
     // Add cases for other providers as needed
     default:
-      console.log('Creating default search control');
-      // Todo: Decide default search control
-      searchControl = new SearchPhoton(options);
+      searchControl = new SearchPhoton({
+        ...options.providerOptions,
+      });
       break;
   }
 
   // Apply custom button implementation
-  console.log('Creating custom button');
   applyCustomButton(searchControl, options);
 
   return searchControl;

@@ -12,7 +12,7 @@ export function applyCustomButton(searchControl: any, options: any) {
   searchControl.button = ol_ext_element.create('BUTTON', {
     className: 'ol-search-gtt',
     title: options.title || 'Search',
-    html: options.html || '<i class="mdi mdi-map-search-outline"></i>',
+    html: options.html || '?',
     parent: searchControl.element,
     click: function () {
       searchControl.element.classList.toggle('ol-collapsed');
