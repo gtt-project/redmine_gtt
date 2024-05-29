@@ -28,7 +28,9 @@ ja:
   label_tab_general: "一般"
   label_tab_geocoder: "ジオコーダ"
 
-  geocoder_options: "ジオコーダのオプション"
+  geocoder_provider: "Provider"
+  geocoder_options: "オプション"
+  geocoder_load_example: "Load example options"
 
   gtt_map_rotate_label: "地図の回転"
   gtt_map_rotate_info_html: "<code>Shift+Alt</code> を押しながらドラッグして地図を回転します。"

@@ -11,7 +11,9 @@ de:
   label_gtt_select_icon: Icon auswählen
   label_parameters: Parameter
   label_tab_geocoder: Geocoder
-  geocoder_options: Geocoder Optionen
+  geocoder_provider: "Anbieter"
+  geocoder_options: Optionen
+  geocoder_load_example: "Load example options"
   gtt_settings_general_maxzoom_level: Standardwert für die maximale Zoomstufe der
     Karte
   label_default_collapsed_issues_page_map: Standardmäßig ausgeblendete Karte für Tickets

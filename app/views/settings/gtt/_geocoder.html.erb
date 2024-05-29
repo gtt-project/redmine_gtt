@@ -7,6 +7,21 @@
 </p>
 
 <p>
+  <%= content_tag(:label, l(:geocoder_provider)) %>
+  <%= select_tag 'settings[default_geocoder_provider]',
+      options_for_select([
+        ['Bing', 'bing', {disabled: true}],
+        ['Google', 'google', {disabled: true}],
+        ['Nominatim (OSM)', 'nominatim'],
+        ['pgGeocoder', 'pggeocoder', {disabled: true}],
+        ['Photon', 'photon'],
+        ['Custom', 'custom']
+      ], @settings['default_geocoder_provider']),
+      include_blank: true %>
+  <%= link_to t('geocoder_load_example'), '#', id: 'geocoder_load_example', class: 'info' %>
+</p>
+
+<p>
   <%= content_tag(:label, l(:geocoder_options)) %>
   <%= text_area_tag('settings[default_geocoder_options]',
       @settings['default_geocoder_options'],
@@ -15,3 +30,29 @@
       :cols => 100) %>
 </p>
 </div>
+
+<script>
+  document.getElementById('geocoder_load_example').addEventListener('click', (event) => {
+    event.preventDefault();
+    const provider = document.getElementById('settings_geocoder_provider').value;
+    const example = geocoder_examples.find((example) => example.name === provider);
+    document.getElementById('settings_default_geocoder_options').value = example?.options ? JSON.stringify(example.options, undefined, 2) : "{}";
+  });
+
+  const geocoder_examples = [{
+    'name': 'nominatim',
+    'options': {
+      'url': 'https://nominatim.openstreetmap.org/search'
+    }
+  }, {
+    'name': 'photon',
+    'options': {
+      'url': 'https://photon.komoot.io/api'
+    }
+  }, {
+    'name': 'custom',
+    'options': {
+      'url': 'https://example.com/geocoder'
+    }
+  }];
+</script>

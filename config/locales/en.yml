@@ -28,7 +28,9 @@ en:
   label_tab_general: "General"
   label_tab_geocoder: "Geocoder"
 
-  geocoder_options: "Geocoder Options"
+  geocoder_provider: "Provider"
+  geocoder_options: "Options"
+  geocoder_load_example: "Load example options"
 
   gtt_map_rotate_label: "Map rotation"
   gtt_map_rotate_info_html: "Hold down <code>Shift+Alt</code> and drag the map to rotate."
