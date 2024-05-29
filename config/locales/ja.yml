@@ -96,6 +96,9 @@ ja:
     control:
       geocoding: 住所検索
       geolocation: 現在地へ移動
+      search_location: "Search location"
+      reverse_location: "Click on the map..."
+      search_placeholder: "Type a location..."
       maximize: 地物にズーム
       upload: GeoJSONのアップロード
       fullscreen: フルスクリーン切り替え

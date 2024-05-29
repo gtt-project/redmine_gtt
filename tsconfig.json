@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "module": "es6",
     "moduleResolution": "node",
     "jsx": "react",
@@ -8,6 +8,10 @@
     "outDir": "./dist",
     "allowJs": true,
     "noImplicitAny": true,
+    // "strict": true,
+    // "esModuleInterop": true,
+    // "skipLibCheck": true,
+    // "sourceMap": true,
     "paths": {
       "*": ["@types/*"]
     }

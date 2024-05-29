@@ -96,6 +96,9 @@ en:
     control:
       geocoding: "Location search"
       geolocation: "My location"
+      search_location: "Search location"
+      reverse_location: "Click on the map..."
+      search_placeholder: "Type a location..."
       maximize: "Zoom to all features"
       upload: "Upload GeoJSON"
       fullscreen: "Toggle full-screen"
