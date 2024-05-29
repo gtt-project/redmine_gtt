@@ -33,27 +33,12 @@ module GttMapHelper
     data[:upload] = upload
     data[:collapsed] = collapsed if collapsed
 
-    if Setting.plugin_redmine_gtt['enable_geocoding_on_map'] == 'true'
-      data[:geocoding] = {
-        enabled: true,
-        provider: Setting.plugin_redmine_gtt['default_geocoder_provider'],
-        options: (JSON.parse(Setting.plugin_redmine_gtt['default_geocoder_options']) rescue {})
-      }
-    else
-      data[:geocoding] = {
-        enabled: false
-      }
-    end
-
     uid = "ol-" + rand(36**8).to_s(36)
 
     safe_join [
       content_tag(:div, "", data: data, id: uid, class: 'ol-map',
         style: (collapsed ? "display: none" : "display: block")),
       javascript_tag("
-        var data = document.getElementById('#{uid}').dataset;
-        var geocoding = data.geocoding;
-        console.log('geocoding', JSON.parse(geocoding));
         var contentObserver = () => {
           const target = document.getElementById('#{uid}');
           const observerCallback = function(mutations) {

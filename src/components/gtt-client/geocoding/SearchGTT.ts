@@ -5,6 +5,8 @@ import ol_ext_element from 'ol-ext/util/element';
 interface SearchGTTOptions extends SearchOptions {
   // Additional options
   html?: string;
+  provider?: string;
+  providerOptions?: object;
 }
 
 class SearchGTT extends Search {
@@ -14,6 +16,9 @@ class SearchGTT extends Search {
     options = options || {};
     options.className = options.className || 'ol-search-gtt';
     options.html = options.html || '?';
+
+    options.provider = options.provider || '';
+    options.providerOptions = options.providerOptions || {};
 
     super(options);
 

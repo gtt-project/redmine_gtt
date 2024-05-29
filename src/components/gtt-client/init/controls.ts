@@ -29,14 +29,20 @@ function addToolbarAndControls(instance: any): void {
  * @param {any} map - The OpenLayers map instance.
  */
 function setSearchControl(instance: any): void {
-  const searchControl = new SearchGTT({
-    title: instance.i18n.control.search_location,
-    reverseTitle: instance.i18n.control.reverse_search,
-    placeholder: instance.i18n.control.search_placeholder,
-    html: '<i class="mdi mdi-map-search-outline"></i>'
-  });
+  const geocoder = JSON.parse(instance.defaults.geocoder);
 
-  instance.map.addControl(searchControl);
+  if (JSON.parse(geocoder.enabled)) {
+    const searchControl = new SearchGTT({
+      title: instance.i18n.control.search_location,
+      reverseTitle: instance.i18n.control.reverse_location,
+      placeholder: instance.i18n.control.search_placeholder,
+      provider: geocoder.provider,
+      providerOptions: geocoder.options,
+      html: '<i class="mdi mdi-map-search-outline"></i>',
+    });
+
+    instance.map.addControl(searchControl);
+  }
 }
 
 /**
