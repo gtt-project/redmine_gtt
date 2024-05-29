@@ -5,7 +5,6 @@ import LayerPopup from 'ol-ext/control/LayerPopup';
 import LayerSwitcher from 'ol-ext/control/LayerSwitcher';
 import { position } from 'ol-ext/control/control';
 
-import { setGeocoding } from "../geocoding";
 import SearchGTT from '../geocoding/SearchGTT';
 import { radiansToDegrees, degreesToRadians, parseHistory } from "../helpers";
 import { zoomToExtent, setGeolocation, setView, setControls, setPopover } from "../openlayers";
@@ -21,7 +20,6 @@ function addToolbarAndControls(instance: any): void {
 
   setView.call(instance);
   setSearchControl(instance);
-  setGeocoding.call(instance, instance.map);
   setGeolocation.call(instance, instance.map);
   parseHistory.call(instance);
 }
@@ -35,8 +33,7 @@ function setSearchControl(instance: any): void {
     title: instance.i18n.control.search_location,
     reverseTitle: instance.i18n.control.reverse_search,
     placeholder: instance.i18n.control.search_placeholder,
-    html: '<i class="mdi mdi-map-search-outline"></i>',
-    // Add other options as needed
+    html: '<i class="mdi mdi-map-search-outline"></i>'
   });
 
   instance.map.addControl(searchControl);
