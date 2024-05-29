@@ -31,6 +31,7 @@ function addToolbarAndControls(instance: any): void {
 function setSearchControl(instance: any): void {
   const geocoder = JSON.parse(instance.defaults.geocoder);
 
+  // Add the search control if enabled in plugin settings
   if (JSON.parse(geocoder.enabled)) {
     const searchControl = createSearchControl({
       html: '<i class="mdi mdi-map-search-outline"></i>',
@@ -43,6 +44,14 @@ function setSearchControl(instance: any): void {
       },
     });
     instance.map.addControl(searchControl);
+
+    // Add a listener for the select event
+    searchControl.on('select', function(evt: any) {
+      instance.map.getView().animate({
+        center: evt.coordinate,
+        zoom: Math.max(instance.map.getView().getZoom(), 18)
+      });
+    });
   }
 }
 
