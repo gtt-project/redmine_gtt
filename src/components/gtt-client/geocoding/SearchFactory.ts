@@ -1,6 +1,7 @@
 // src/components/gtt-client/geocoding/SearchFactory.ts
 import { applyCustomButton } from './CustomButtonMixin';
 import SearchGTT from './SearchGTT';
+import SearchGoogle from './SearchGoogle';
 import SearchNominatim from 'ol-ext/control/SearchNominatim';
 import SearchPhoton from 'ol-ext/control/SearchPhoton';
 
@@ -16,6 +17,11 @@ export function createSearchControl(options: any): any {
       break;
     case 'photon':
       searchControl = new SearchPhoton({
+        ...options.providerOptions,
+      });
+      break;
+    case 'google':
+      searchControl = new SearchGoogle({
         ...options.providerOptions,
       });
       break;

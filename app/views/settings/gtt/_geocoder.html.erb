@@ -11,7 +11,7 @@
   <%= select_tag 'settings[default_geocoder_provider]',
       options_for_select([
         ['Bing', 'bing', {disabled: true}],
-        ['Google', 'google', {disabled: true}],
+        ['Google', 'google'],
         ['Nominatim (OSM)', 'nominatim'],
         ['pgGeocoder', 'pggeocoder', {disabled: true}],
         ['Photon', 'photon'],
@@ -42,6 +42,11 @@
   const geocoder_examples = [{
     'name': 'nominatim',
     'options': {}
+  }, {
+    'name': 'google',
+    'options': {
+      'apiKey': 'YOUR_API_KEY'
+    }
   }, {
     'name': 'photon',
     'options': {}
