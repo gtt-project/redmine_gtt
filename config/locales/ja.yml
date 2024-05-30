@@ -52,9 +52,9 @@ ja:
   label_enable_geojson_upload_on_issue_map: "チケット地図上でGeoJSONアップロードを有効化"
   label_enable_geocoding_on_map: "地図上でジオコーディングを有効化"
 
-  select_other_gtt_settings: "Other GTT settings"
-  label_hide_map_for_invalid_geom: "Hide issue map for invalid geometry"
-  gtt_hide_map_for_invalid_geom_info: "Please edit the issue and set the geometry to see the map."
+  select_other_gtt_settings: "GTTのその他の設定"
+  label_hide_map_for_invalid_geom: "位置情報が登録されていない時に地図を隠す"
+  gtt_hide_map_for_invalid_geom_info: "地図を見るにはチケットを編集して位置情報を登録してください"
 
   select_default_tracker_icon: "トラッカーアイコンを選択:"
   select_default_status_color: "ステータス色を選択:"
