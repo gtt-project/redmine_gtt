@@ -23,7 +23,7 @@ api.issue do
     api.total_spent_hours(@issue.total_spent_hours)
   end
 
-  if @issue.geom
+  if @issue.geom.present?
     api.geojson (params[:format] == "json") ? @issue.geojson : @issue.geojson.to_json
   else
     api.geojson nil
