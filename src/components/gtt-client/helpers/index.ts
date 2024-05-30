@@ -104,12 +104,16 @@ export const getObjectPathValue = (obj: any, path: string | Array<string>, def: 
  * @param updateAddressFlag - A flag to update the address field with reverse geocoding, default is false.
  */
 export function updateForm(mapObj: any, features: FeatureLike[] | null, updateAddressFlag: boolean = false):void {
-  if (features == null) {
-    return
-  }
-  const geom = document.querySelector('#geom') as HTMLInputElement
+
+  const geom = document.querySelector('#geom') as HTMLInputElement;
   if (!geom) {
-    return
+    return;
+  }
+
+  if (features == null) {
+    // Clear the geom input field
+    geom.value = '';
+    return;
   }
 
   const writer = new GeoJSON()
