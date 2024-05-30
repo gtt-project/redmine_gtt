@@ -105,7 +105,7 @@ ja:
       point: ポイント編集
       linestring: ライン編集
       polygon: エリア編集
-      clear_map: "Clear map"
+      clear_map: "地図をクリア"
     modal:
       load: 読み込み
       cancel: キャンセル
