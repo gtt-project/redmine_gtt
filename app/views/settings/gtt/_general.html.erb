@@ -62,3 +62,12 @@
   <%= check_box_tag 'settings[enable_geojson_upload_on_issue_map]', true, @settings[:enable_geojson_upload_on_issue_map] %>
 </p>
 </div>
+
+<div class="box tabular settings">
+<h3><%= l(:select_default_gtt_other_settings) %></h3>
+
+<p>
+  <%= content_tag(:label, l(:label_default_permalink_enabled)) %>
+  <%= check_box_tag 'settings[default_permalink_enabled]', true, @settings[:default_permalink_enabled] %>
+</p>
+</div>

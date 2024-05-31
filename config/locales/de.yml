@@ -41,10 +41,12 @@ de:
   label_enable_geojson_upload_on_issue_map: Aktivieren von GeoJSON-Upload auf der
     Themenkarte
   label_enable_geocoding_on_map: Geokodierung auf der Karte aktivieren
+  label_default_permalink_enabled: "Permalink enabled"
   select_default_status_color: 'Auswahl der Standard-Statusfarbe:'
   select_default_map_settings: 'Standardmäßige Kartenvoreinstellungen festlegen:'
   select_edit_geometry_settings: 'Einstellungen für die Geometriebearbeitung:'
   select_default_geocoder_settings: 'Geocoder-Einstellungen:'
+  select_default_gtt_other_settings: "Other GTT settings"
   project_module_gtt: GTT
   permission_manage_gtt_settings: Konfiguration der GTT-Einstellungen
   field_baselayer: Basislayer

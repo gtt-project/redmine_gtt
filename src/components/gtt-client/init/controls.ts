@@ -3,6 +3,7 @@ import Bar from 'ol-ext/control/Bar';
 import Button from 'ol-ext/control/Button';
 import LayerPopup from 'ol-ext/control/LayerPopup';
 import LayerSwitcher from 'ol-ext/control/LayerSwitcher';
+import Permalink from 'ol-ext/control/Permalink';
 import { position } from 'ol-ext/control/control';
 
 import { setGeocoding } from "../geocoding";
@@ -91,6 +92,17 @@ function addLayerSwitcherOrPopup(instance: any): void {
   }
 }
 
+function addPermalinkControl(instance: any): void {
+  if (instance.contents.permalink) {
+    instance.map.addControl(new Permalink({
+      urlReplace: true,
+      geohash: true,
+      visible: false,
+    }));
+    console.log('Permalink control added');
+  }
+}
+
 /**
  * Initializes the controls for the GttClient instance.
  * @this {any} - The GttClient instance.
@@ -100,6 +112,7 @@ export function initControls(this: any): void {
   addFullScreenAndRotateControls(this);
   addMaximizeControl(this);
   handleMapRotation(this);
+  addPermalinkControl(this);
 
   if (this.contents.edit) {
     setControls.call(this, this.contents.edit.split(' '));

@@ -51,12 +51,14 @@ en:
   label_editable_geometry_types_on_issue_map: "Editable geometry types on issue map"
   label_enable_geojson_upload_on_issue_map: "Enable GeoJSON upload on issue map"
   label_enable_geocoding_on_map: "Enable geocoding on map"
+  label_default_permalink_enabled: "Permalink enabled"
 
   select_default_tracker_icon: "Select default tracker icon:"
   select_default_status_color: "Select default status color:"
   select_default_map_settings: "Set default map settings:"
   select_edit_geometry_settings: "Set edit geometry settings:"
   select_default_geocoder_settings: "Set Geocoder settings:"
+  select_default_gtt_other_settings: "Other GTT settings"
 
   project_module_gtt: "GTT"
   permission_manage_gtt_settings: "Manage GTT settings"
