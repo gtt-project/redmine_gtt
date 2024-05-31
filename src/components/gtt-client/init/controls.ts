@@ -105,7 +105,6 @@ function addTargetControl(instance: any): void {
         image: new RegularShape ({
           points: 4,
           radius: 11,
-          radius1: 0,
           radius2: 0,
           stroke: new Stroke ({
             color: 'rgba(220,26,26,0.7)',
