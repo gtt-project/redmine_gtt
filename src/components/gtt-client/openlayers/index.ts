@@ -471,6 +471,7 @@ export function setGeolocation(currentMap: Map) {
     onToggle: (active: boolean) => {
       geolocation.setTracking(active)
       geolocationLayer.setVisible(active)
+      this.map.notification.show((active ? this.i18n.control.geolocation_activated : this.i18n.control.geolocation_deactivated), 2000)
     }
   })
   this.toolbar.addControl(geolocationCtrl)

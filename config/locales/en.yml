@@ -96,6 +96,8 @@ en:
     control:
       geocoding: "Location search"
       geolocation: "My location"
+      geolocation_activated: "Geolocation activated"
+      geolocation_deactivated: "Geolocation deactivated"
       maximize: "Zoom to all features"
       upload: "Upload GeoJSON"
       fullscreen: "Toggle full-screen"
