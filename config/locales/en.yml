@@ -99,7 +99,7 @@ en:
       geocoding: "Location search"
       geolocation: "My location"
       search_location: "Search location"
-      reverse_location: "Click on the map..."
+      reverse_location: "Click on the map to get location..."
       search_placeholder: "Type a location..."
       maximize: "Zoom to all features"
       upload: "Upload GeoJSON"

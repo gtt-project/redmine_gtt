@@ -10,31 +10,40 @@ export function createSearchControl(options: any): any {
 
   // Create search control instance based on the provider
   switch (options.provider) {
+    // Apply settings for Nomatim provider
     case 'nominatim':
       searchControl = new SearchNominatim({
+        // polygon: true,
+        reverse: true, // Enable reverse geocoding
+        position: true, // Priority to position
         ...options.providerOptions,
       });
       break;
+    // Apply settings for Photon provider
     case 'photon':
       searchControl = new SearchPhoton({
+        // lang: 'en', // Force preferred language
+        reverse: true, // Enable reverse geocoding
+        position: true, // Priority to position
         ...options.providerOptions,
       });
       break;
+    // Apply settings for Google provider
     case 'google':
       searchControl = new SearchGoogle({
         ...options.providerOptions,
       });
       break;
+
     case 'custom':
       searchControl = new SearchGTT({
         ...options.providerOptions,
       });
       break;
-    // Add cases for other providers as needed
+    // Add cases for new providers here
     default:
-      searchControl = new SearchPhoton({
-        ...options.providerOptions,
-      });
+      // Throw an error if the provider is not supported
+      throw new Error(`Unsupported provider: ${options.provider}`);
       break;
   }
 

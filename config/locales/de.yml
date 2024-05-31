@@ -59,7 +59,7 @@ de:
       geocoding: Standort-Suche
       geolocation: Mein Standort
       search_location: "Search location"
-      reverse_location: "Click on the map..."
+      reverse_location: "Click on the map to get location..."
       search_placeholder: "Type a location..."
       maximize: Zoom auf alle Objekte
       upload: GeoJSON hochladen

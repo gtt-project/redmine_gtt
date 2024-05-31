@@ -78,9 +78,16 @@ $breakpoint-tablet: 899px;
   font-size: 1.5rem;
 }
 
-.ol-search-gtt input.search {
+.ol-search input.search {
   padding: 1.0em;
   font-size: 1.0rem;
+}
+
+// Adjust search indicator animation
+.ol-search.searching:before {
+  height: 3px;
+  top: 2.0em;
+  background: red;
 }
 
 div.ol-full-screen {

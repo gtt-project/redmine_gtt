@@ -99,7 +99,7 @@ ja:
       geocoding: 住所検索
       geolocation: 現在地へ移動
       search_location: "Search location"
-      reverse_location: "Click on the map..."
+      reverse_location: "Click on the map to get location..."
       search_placeholder: "Type a location..."
       maximize: 地物にズーム
       upload: GeoJSONのアップロード

@@ -5,6 +5,9 @@ interface SearchGTTOptions extends SearchOptions {
   // Add custom options here
 }
 
+/**
+ * Use this as a starting point for supporting a new geocoding service.
+ */
 class SearchGTT extends Search {
   public button: HTMLButtonElement;
 
