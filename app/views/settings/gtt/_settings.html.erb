@@ -7,11 +7,13 @@
 <%= render_tabs plugin_tabs %>
 
 <%= javascript_tag do %>
+  // Read query parameter
   function getQueryParam(param) {
     var urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
   }
 
+  // Activate tab by name
   function activateTab(tabName) {
     var tabLinks = document.querySelectorAll('.tabs a');
     tabLinks.forEach(function(link) {
@@ -21,6 +23,7 @@
     });
   }
 
+  // Activate tab if it is specified in the URL
   document.addEventListener('DOMContentLoaded', function() {
     var tab = getQueryParam('tab');
     if (tab) {
@@ -28,5 +31,6 @@
     }
   });
 
+  // Apply settings
   window.gtt_setting()
 <% end %>
