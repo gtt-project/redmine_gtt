@@ -5,10 +5,19 @@ import BaseEvent from 'ol/events/Event';
 /**
  * @typedef {Object} SearchGoogleOptions
  * @property {string} apiKey Google API key
+ * @property {string} [language] language code
+ * @property {string} [region] region code, specified as a ccTLD
+ * @property {string} [components] specifies the component restrictions (only Geocoding)
+ * @property {string} [result_type] filter the results to match a specific type (only Reverse Geocoding)
+ * @property {string} [location_type] filter the results to match a specific location type (only Reverse Geocoding)
  */
 interface SearchGoogleOptions extends SearchOptions {
-  // Add custom options here
   apiKey: string;
+  language?: string;
+  region?: string;
+  components?: string;
+  result_type?: string;
+  location_type?: string;
 }
 
 /**
@@ -54,6 +63,22 @@ class SearchGoogle extends SearchJSON {
     }
 
     this.set('apiKey', options.apiKey);
+
+    if (options.language) {
+      this.set('language', options.language);
+    }
+    if (options.region) {
+      this.set('region', options.region);
+    }
+    if (options.components) {
+      this.set('components', options.components);
+    }
+    if (options.result_type) {
+      this.set('result_type', options.result_type);
+    }
+    if (options.location_type) {
+      this.set('location_type', options.location_type);
+    }
   }
 
   /** Returns the text to be displayed in the menu
@@ -71,35 +96,40 @@ class SearchGoogle extends SearchJSON {
    *  @api
    */
   requestData(s: string) {
-    return {
+    const data: Record<string, string> = {
       address: s,
-      key: this.get('apiKey')
+      key: this.get('apiKey'),
     };
+
+    const language = this.get('language');
+    if (language) {
+      data.language = language;
+    }
+
+    const region = this.get('region');
+    if (region) {
+      data.region = region;
+    }
+
+    const components = this.get('components');
+    if (components) {
+      data.components = components;
+    }
+
+    return data;
   }
 
   /**
    * Handle server response to pass the features array to the list
    * @param {any} response server response
-   * @return {Array<any>} an array of feature
+   * @return {Array<google.maps.GeocoderResult>} an array of feature
    */
-  handleResponse(response: any) {
+  handleResponse(response: any): google.maps.GeocoderResult[] {
     return response.results;
   }
 
-  /** Prevent same feature to be drawn twice: test equality
-   *  @param {any} f1 First feature to compare
-   *  @param {any} f2 Second feature to compare
-   *  @return {boolean}
-   *  @api
-   */
-  equalFeatures(f1: any, f2: any) {
-    return (f1.formatted_address === f2.formatted_address
-      && f1.geometry.location.lat === f2.geometry.location.lat
-      && f1.geometry.location.lng === f2.geometry.location.lng);
-  }
-
   /** A line has been clicked in the menu > dispatch event
-   *  @param {any} f the feature, as passed in the autocomplete
+   *  @param {google.maps.GeocoderResult} f the feature, as passed in the autocomplete
    *  @api
    */
   select(f: any) {
@@ -115,10 +145,35 @@ class SearchGoogle extends SearchJSON {
    *  @param {ol.coordinate} coord
    *  @api
    */
-  reverseGeocode(coord: any, cback: (results: any) => void) {
-    var lonlat = ol_proj_transform(coord, this.getMap().getView().getProjection(), 'EPSG:4326');
+  reverseGeocode(coord: any, cback: (results: google.maps.GeocoderResult[]) => void) {
+    const lonlat = ol_proj_transform(coord, this.getMap().getView().getProjection(), 'EPSG:4326');
+    const baseUrl = this.get('url');
+
+    // Manually construct the query parameters to avoid double encoding the comma
+    let url = `${baseUrl}?latlng=${lonlat[1]},${lonlat[0]}&key=${this.get('apiKey')}`;
+
+    const language = this.get('language');
+    if (language) {
+      url += `&language=${encodeURIComponent(language)}`;
+    }
+
+    const region = this.get('region');
+    if (region) {
+      url += `&region=${encodeURIComponent(region)}`;
+    }
+
+    const result_type = this.get('result_type');
+    if (result_type) {
+      url += `&result_type=${encodeURIComponent(result_type)}`;
+    }
+
+    const location_type = this.get('location_type');
+    if (location_type) {
+      url += `&location_type=${encodeURIComponent(location_type)}`;
+    }
+
     this.ajax(
-      this.get('url') + '?latlng=' + lonlat[1] + ',' + lonlat[0] + '&key=' + this.get('apiKey'),
+      url,
       {},
       function (resp: any) {
         if (cback) {
@@ -132,6 +187,7 @@ class SearchGoogle extends SearchJSON {
       {}
     );
   }
+
 }
 
 export default SearchGoogle;
