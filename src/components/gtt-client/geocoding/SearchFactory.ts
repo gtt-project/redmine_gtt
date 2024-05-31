@@ -13,9 +13,8 @@ export function createSearchControl(options: any): any {
     // Apply settings for Nomatim provider
     case 'nominatim':
       options.providerOptions = {
-        // polygon: true,
         reverse: true, // Enable reverse geocoding
-        position: true, // Priority to position
+        typing: -1, // Disable typing delay (see Nominatim policy!)
         ...options.providerOptions,
       };
       searchControl = new SearchNominatim(options.providerOptions);
@@ -33,6 +32,7 @@ export function createSearchControl(options: any): any {
     // Apply settings for Google provider
     case 'google':
       options.providerOptions = {
+        reverse: true, // Enable reverse geocoding
         ...options.providerOptions,
       };
       searchControl = new SearchGoogle(options.providerOptions);

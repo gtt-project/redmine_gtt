@@ -84,6 +84,11 @@ $breakpoint-tablet: 899px;
   font-size: 1.0rem;
 }
 
+.ol-search ul.autocomplete li.copy {
+  font-size: 0.7rem;
+  background-color: rgba(52, 73, 94, 0.8);
+}
+
 // Adjust search indicator animation
 .ol-search.searching:before {
   height: 3px;
