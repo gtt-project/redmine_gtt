@@ -50,7 +50,12 @@ export class SearchEvent extends BaseEvent {
  *  @param {integer | undefined} options.minLength minimum length to start searching, default 3
  *  @param {integer | undefined} options.maxItems maximum number of items to display in the autocomplete list, default 10
  *  @param {function | undefined} options.handleResponse Handle server response to pass the features array to the list
- *  @param {string|} options.apiKey Google API key (required)
+ *  @param {string | undefined} options.apiKey Google API key (required)
+ *  @param {string | undefined} options.language language code
+ *  @param {string | undefined} options.region region code, specified as a ccTLD
+ *  @param {string | undefined} options.components specifies the component restrictions (only Geocoding)
+ *  @param {string | undefined} options.result_type filter the results to match a specific type (only Reverse Geocoding)
+ *  @param {string | undefined} options.location_type filter the results to match a specific location type (only Reverse Geocoding)
  */
 class SearchGoogle extends SearchJSON {
   constructor(options: SearchGoogleOptions = { apiKey: null }) {
