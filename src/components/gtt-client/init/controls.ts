@@ -35,6 +35,7 @@ function setSearchControl(instance: any): void {
   if (JSON.parse(geocoder.enabled)) {
     const searchControl = createSearchControl({
       html: '<i class="mdi mdi-map-search-outline"></i>',
+      html_reverse: '<i class="mdi mdi-map-marker-question-outline"></i>',
       title: instance.i18n.control.search_location,
       provider: geocoder.provider,
       providerOptions: {
