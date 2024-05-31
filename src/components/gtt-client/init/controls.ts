@@ -1,9 +1,10 @@
 import { FullScreen, Rotate } from 'ol/control';
+import { Style, RegularShape, Stroke } from 'ol/style';
 import Bar from 'ol-ext/control/Bar';
 import Button from 'ol-ext/control/Button';
 import LayerPopup from 'ol-ext/control/LayerPopup';
 import LayerSwitcher from 'ol-ext/control/LayerSwitcher';
-import Permalink from 'ol-ext/control/Permalink';
+import Target from 'ol-ext/control/Target';
 import { position } from 'ol-ext/control/control';
 
 import { setGeocoding } from "../geocoding";
@@ -92,14 +93,27 @@ function addLayerSwitcherOrPopup(instance: any): void {
   }
 }
 
-function addPermalinkControl(instance: any): void {
-  if (instance.contents.permalink) {
-    instance.map.addControl(new Permalink({
-      urlReplace: true,
-      geohash: true,
-      visible: false,
+/**
+ * Adds target control to instance map.
+ * @param instance
+ */
+function addTargetControl(instance: any): void {
+  if (instance.contents.target) {
+    instance.map.addControl(new Target({
+      composite: 'overlay',
+      style: new Style({
+        image: new RegularShape ({
+          points: 4,
+          radius: 11,
+          radius1: 0,
+          radius2: 0,
+          stroke: new Stroke ({
+            color: 'rgba(220,26,26,0.7)',
+            width: 3
+          })
+        })
+      }),
     }));
-    console.log('Permalink control added');
   }
 }
 
@@ -112,7 +126,7 @@ export function initControls(this: any): void {
   addFullScreenAndRotateControls(this);
   addMaximizeControl(this);
   handleMapRotation(this);
-  addPermalinkControl(this);
+  addTargetControl(this);
 
   if (this.contents.edit) {
     setControls.call(this, this.contents.edit.split(' '));

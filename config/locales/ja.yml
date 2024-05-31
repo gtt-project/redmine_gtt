@@ -51,14 +51,13 @@ ja:
   label_editable_geometry_types_on_issue_map: "チケット地図上で編集可能なジオメトリ種別"
   label_enable_geojson_upload_on_issue_map: "チケット地図上でGeoJSONアップロードを有効化"
   label_enable_geocoding_on_map: "地図上でジオコーディングを有効化"
-  label_default_permalink_enabled: "Permalink enabled"
+  label_default_target_enabled: "Show target on map center"
 
   select_default_tracker_icon: "トラッカーアイコンを選択:"
   select_default_status_color: "ステータス色を選択:"
   select_default_map_settings: "地図の初期値を設定:"
   select_edit_geometry_settings: "ジオメトリ編集時の設定:"
   select_default_geocoder_settings: "ジオコーダの設定:"
-  select_default_gtt_other_settings: "Other GTT settings"
 
   project_module_gtt: "GTT"
   permission_manage_gtt_settings: "GTT設定の管理"
