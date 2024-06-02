@@ -132,16 +132,21 @@ function addLayerSwitcherOrPopup(instance: any): void {
  */
 function addTargetControl(instance: any): void {
   if (instance.contents.target) {
+    //  Adjust the radius and stroke width for high DPI devices
+    const pixelRatio = window.devicePixelRatio || 1;
+    const adjustedRadius = 11 / pixelRatio;
+    const adjustedStrokeWidth = 3 / pixelRatio;
+
     instance.map.addControl(new Target({
       composite: 'overlay',
       style: new Style({
-        image: new RegularShape ({
+        image: new RegularShape({
           points: 4,
-          radius: 11,
+          radius: adjustedRadius,
           radius2: 0,
-          stroke: new Stroke ({
+          stroke: new Stroke({
             color: 'rgba(220,26,26,0.7)',
-            width: 3
+            width: adjustedStrokeWidth
           })
         })
       }),
