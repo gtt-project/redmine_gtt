@@ -13,15 +13,19 @@ module RedmineGtt
 
       def view_layouts_base_body_bottom(context={})
         tags = [];
-        geocoder = {}
-        geocoder_options = Setting.plugin_redmine_gtt['default_geocoder_options']
-        if geocoder_options.present?
-          begin
-            geocoder = JSON.parse(geocoder_options)
-          rescue JSON::ParserError => exception
-            Rails.logger.warn "Failed to parse setting's 'geocoder_options' as JSON: #{exception}\nUse default '{}' instead."
-          end
+
+        geocoder = {
+          enabled: false
+        }
+
+        if Setting.plugin_redmine_gtt['enable_geocoding_on_map'] == 'true'
+          geocoder = {
+            enabled: true,
+            provider: Setting.plugin_redmine_gtt['default_geocoder_provider'],
+            options: (JSON.parse(Setting.plugin_redmine_gtt['default_geocoder_options']) rescue {})
+          }
         end
+
         tags.push(tag.div :data => {
           :lon => Setting.plugin_redmine_gtt['default_map_center_longitude'],
           :lat => Setting.plugin_redmine_gtt['default_map_center_latitude'],

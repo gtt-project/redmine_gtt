@@ -6,9 +6,9 @@ import LayerSwitcher from 'ol-ext/control/LayerSwitcher';
 import Notification from 'ol-ext/control/Notification';
 import { position } from 'ol-ext/control/control';
 
-import { setGeocoding } from "../geocoding";
 import { radiansToDegrees, degreesToRadians, parseHistory } from "../helpers";
 import { zoomToExtent, setGeolocation, setView, setControls, setPopover } from "../openlayers";
+import { createSearchControl } from '../geocoding/SearchFactory';
 
 /**
  * Adds the toolbar and basic controls to the map instance.
@@ -20,9 +20,41 @@ function addToolbarAndControls(instance: any): void {
   instance.map.addControl(instance.toolbar);
 
   setView.call(instance);
-  setGeocoding.call(instance, instance.map);
+  setSearchControl(instance);
   setGeolocation.call(instance, instance.map);
   parseHistory.call(instance);
+}
+
+/**
+ * Adds the search control to the map instance.
+ * @param {any} map - The OpenLayers map instance.
+ */
+function setSearchControl(instance: any): void {
+  const geocoder = JSON.parse(instance.defaults.geocoder);
+
+  // Add the search control if enabled in plugin settings
+  if (JSON.parse(geocoder.enabled)) {
+    const searchControl = createSearchControl({
+      html: '<i class="mdi mdi-map-search-outline"></i>',
+      html_reverse: '<i class="mdi mdi-map-marker-question-outline"></i>',
+      title: instance.i18n.control.search_location,
+      provider: geocoder.provider,
+      providerOptions: {
+        reverseTitle: instance.i18n.control.reverse_location,
+        placeholder: instance.i18n.control.search_placeholder,
+        ...geocoder.options
+      },
+    });
+    instance.map.addControl(searchControl);
+
+    // Add a listener for the select event
+    searchControl.on('select', function(evt: any) {
+      instance.map.getView().animate({
+        center: evt.coordinate,
+        zoom: Math.max(instance.map.getView().getZoom(), 18)
+      });
+    });
+  }
 }
 
 /**

@@ -28,7 +28,9 @@ ja:
   label_tab_general: "一般"
   label_tab_geocoder: "ジオコーダ"
 
-  geocoder_options: "ジオコーダのオプション"
+  geocoder_provider: "Provider"
+  geocoder_options: "オプション"
+  geocoder_load_example: "Load example options"
 
   gtt_map_rotate_label: "地図の回転"
   gtt_map_rotate_info_html: "<code>Shift+Alt</code> を押しながらドラッグして地図を回転します。"
@@ -100,6 +102,9 @@ ja:
     control:
       geocoding: 住所検索
       geolocation: 現在地へ移動
+      search_location: "Search location"
+      reverse_location: "Click on the map to get location..."
+      search_placeholder: "Type a location..."
       geolocation_notification_activated: "Geolocation activated"
       geolocation_notification_deactivated: "Geolocation deactivated"
       maximize: 地物にズーム
