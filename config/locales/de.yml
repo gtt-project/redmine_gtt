@@ -61,6 +61,8 @@ de:
       search_location: "Search location"
       reverse_location: "Click on the map to get location..."
       search_placeholder: "Type a location..."
+      geolocation_notification_activated: "Geolocation activated"
+      geolocation_notification_deactivated: "Geolocation deactivated"
       maximize: Zoom auf alle Objekte
       upload: GeoJSON hochladen
       fullscreen: Vollbildmodus umschalten
@@ -70,6 +72,7 @@ de:
       point: Punkteditor
       linestring: Linieneditor
       polygon: Flächeneditor
+      clear_map: "Clear map"
     modal:
       load: Laden
       cancel: Abbrechen

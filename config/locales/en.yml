@@ -54,6 +54,10 @@ en:
   label_enable_geojson_upload_on_issue_map: "Enable GeoJSON upload on issue map"
   label_enable_geocoding_on_map: "Enable geocoding on map"
 
+  select_other_gtt_settings: "Other GTT settings"
+  label_hide_map_for_invalid_geom: "Hide issue map for invalid geometry"
+  gtt_hide_map_for_invalid_geom_info: "Please edit the issue and set the geometry to see the map."
+
   select_default_tracker_icon: "Select default tracker icon:"
   select_default_status_color: "Select default status color:"
   select_default_map_settings: "Set default map settings:"
@@ -101,6 +105,8 @@ en:
       search_location: "Search location"
       reverse_location: "Click on the map to get location..."
       search_placeholder: "Type a location..."
+      geolocation_activated: "Geolocation activated"
+      geolocation_deactivated: "Geolocation deactivated"
       maximize: "Zoom to all features"
       upload: "Upload GeoJSON"
       fullscreen: "Toggle full-screen"
@@ -110,6 +116,7 @@ en:
       point: "Point editor"
       linestring: "Line editor"
       polygon: "Area editor"
+      clear_map: "Clear map"
     modal:
       load: "Load"
       cancel: "Cancel"
