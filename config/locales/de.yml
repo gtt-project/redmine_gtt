@@ -23,7 +23,7 @@ de:
   field_geom: Geomtrie
   field_global: Allgemein verfügbar
   label_geotask_map: GTT Karte
-  label_global: Allgemein
+  label_global: Global
   label_project_map: Projektkarte
   label_user_map: Benutzer-Karte
   label_name: Name
@@ -59,8 +59,8 @@ de:
       geocoding: Standort-Suche
       geolocation: Mein Standort
       search_location: "Search location"
-      reverse_location: "Click on the map to get location..."
-      search_placeholder: "Type a location..."
+      reverse_location: "Click on the map to get location…"
+      search_placeholder: "Type a location…"
       maximize: Zoom auf alle Objekte
       upload: GeoJSON hochladen
       fullscreen: Vollbildmodus umschalten
@@ -85,7 +85,7 @@ de:
   gtt_settings_label_general: "General"
   gtt_settings_label_styling: "Styling"
   gtt_settings_label_geocoder: "Geocoder"
-  label_layer: Layer-Typ
+  label_layer: Layer Typ
   map_layer:
     plural: Karten-Layer
     project:
@@ -100,7 +100,7 @@ de:
     load_example: 'Beispiele: '
   field_format_options_string: Formatoptionen
   field_styles: Style-Einstellungen
-  label_source: Source-Typ
+  label_source: Source Typ
   permission_view_gtt_settings: GTT-Einstellungen anzeigen
   field_name: Name
   field_layer: Layer-Typ
