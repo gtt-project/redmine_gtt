@@ -73,6 +73,7 @@ de:
       clear_map: "Clear map"
       geolocation_activated: Geolokalisierung aktiviert
       geolocation_deactivated: Geolokalisierung deaktiviert
+      copied_location_to_clipboard: Standort in die Zwischenablage kopiert
     modal:
       load: Laden
       cancel: Abbrechen

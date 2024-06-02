@@ -121,6 +121,7 @@ en:
       linestring: "Line editor"
       polygon: "Area editor"
       clear_map: "Clear map"
+      copied_location_to_clipboard: "Copied location to clipboard"
     modal:
       load: "Load"
       cancel: "Cancel"

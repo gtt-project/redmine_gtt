@@ -34,7 +34,25 @@ function setSearchControl(instance: any): void {
 
   // Add the search control if enabled in plugin settings
   if (JSON.parse(geocoder.enabled)) {
-    const searchControl = createSearchControl({
+    // Custom callback function to handle the selected feature
+    const handleSelectCallback = (response: any) => {
+      if (response.reverse) {
+        // Add copy to clipboard functionality, if available
+        if (navigator.clipboard) {
+          // strip htmls from response title
+          const text = response.title.replace(/<[^>]*>?/gm, '');
+          navigator.clipboard.writeText(text);
+          instance.map.notification.show(instance.i18n.control.copied_location_to_clipboard);
+        }
+        else {
+          instance.map.notification.show(response.title, 10000);
+          console.warn('Clipboard API not supported');
+        }
+      }
+    };
+
+    // Options for creating the search control
+    const options = {
       html: '<i class="mdi mdi-map-search-outline"></i>',
       html_reverse: '<i class="mdi mdi-map-marker-question-outline"></i>',
       title: instance.i18n.control.search_location,
@@ -44,7 +62,10 @@ function setSearchControl(instance: any): void {
         placeholder: instance.i18n.control.search_placeholder,
         ...geocoder.options
       },
-    });
+    };
+
+    // Create the search control with the custom callback
+    const searchControl = createSearchControl(options, handleSelectCallback);
     instance.map.addControl(searchControl);
 
     // Add a listener for the select event
