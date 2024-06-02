@@ -56,7 +56,7 @@ ja:
 
   select_other_gtt_settings: "GTTのその他の設定"
   label_hide_map_for_invalid_geom: "位置情報が登録されていない時に地図を隠す"
-  gtt_hide_map_for_invalid_geom_info: "地図を見るにはチケットを編集して位置情報を登録してください"
+  gtt_hide_map_for_invalid_geom_info: "地図を見るにはチケットを編集して位置情報を登録してください。"
 
   select_default_tracker_icon: "トラッカーアイコンを選択:"
   select_default_status_color: "ステータス色を選択:"
@@ -103,8 +103,8 @@ ja:
       geocoding: 住所検索
       geolocation: 現在地へ移動
       search_location: "Search location"
-      reverse_location: "Click on the map to get location..."
-      search_placeholder: "Type a location..."
+      reverse_location: "Click on the map to get location…"
+      search_placeholder: "Type a location…"
       geolocation_activated: "Geolocation activated"
       geolocation_deactivated: "Geolocation deactivated"
       maximize: 地物にズーム
