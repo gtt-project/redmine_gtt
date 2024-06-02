@@ -3,6 +3,7 @@ import Bar from 'ol-ext/control/Bar';
 import Button from 'ol-ext/control/Button';
 import LayerPopup from 'ol-ext/control/LayerPopup';
 import LayerSwitcher from 'ol-ext/control/LayerSwitcher';
+import Notification from 'ol-ext/control/Notification';
 import { position } from 'ol-ext/control/control';
 
 import { setGeocoding } from "../geocoding";
@@ -30,7 +31,7 @@ function addToolbarAndControls(instance: any): void {
  */
 function addFullScreenAndRotateControls(instance: any): void {
   instance.map.addControl(new FullScreen({
-    tipLabel: instance.i18n.control.fullscreen
+    tipLabel: instance.i18n.control.fullscreen,
   }));
 
   instance.map.addControl(new Rotate({
@@ -92,10 +93,23 @@ function addLayerSwitcherOrPopup(instance: any): void {
 }
 
 /**
+ * Adds notification control
+ * @param {any}  instance
+ */
+function addNotificationControl(instance: any): void {
+  instance.map.notification = new Notification({
+    // closeBox: true,
+    // hideOnClick: true,
+  });
+  instance.map.addControl(instance.map.notification);
+}
+
+/**
  * Initializes the controls for the GttClient instance.
  * @this {any} - The GttClient instance.
  */
 export function initControls(this: any): void {
+  addNotificationControl(this);
   addToolbarAndControls(this);
   addFullScreenAndRotateControls(this);
   addMaximizeControl(this);

@@ -100,6 +100,8 @@ ja:
     control:
       geocoding: 住所検索
       geolocation: 現在地へ移動
+      geolocation_notification_activated: "Geolocation activated"
+      geolocation_notification_deactivated: "Geolocation deactivated"
       maximize: 地物にズーム
       upload: GeoJSONのアップロード
       fullscreen: フルスクリーン切り替え
