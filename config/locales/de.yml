@@ -61,8 +61,6 @@ de:
       search_location: "Search location"
       reverse_location: "Click on the map to get location..."
       search_placeholder: "Type a location..."
-      geolocation_notification_activated: "Geolocation activated"
-      geolocation_notification_deactivated: "Geolocation deactivated"
       maximize: Zoom auf alle Objekte
       upload: GeoJSON hochladen
       fullscreen: Vollbildmodus umschalten
@@ -73,14 +71,17 @@ de:
       linestring: Linieneditor
       polygon: Flächeneditor
       clear_map: "Clear map"
+      geolocation_activated: Geolokalisierung aktiviert
+      geolocation_deactivated: Geolokalisierung deaktiviert
     modal:
       load: Laden
       cancel: Abbrechen
     messages:
-      baselayer_missing: "There is no baselayer available!"
-      zoom_in_more: "Zoom in to view objects."
+      baselayer_missing: "Es ist kein Baselayer verfügbar!"
+      zoom_in_more: "Zoomen Sie hinein, um die Objekte zu sehen."
   gtt_map_rotate_label: Kartenrotation
-  gtt_map_rotate_info_html: Hold down <code>Shift+Alt</code> and drag the map to rotate.
+  gtt_map_rotate_info_html: Halten Sie <code>Shift+Alt</code> gedrückt und ziehen
+    Sie die Karte, um sie zu drehen.
   gtt_settings_label_general: "General"
   gtt_settings_label_styling: "Styling"
   gtt_settings_label_geocoder: "Geocoder"
@@ -107,3 +108,7 @@ de:
   field_source: Source-Typ
   field_source_options_string: Source-Optionen
   field_format: Format-Typ
+  select_other_gtt_settings: Andere GTT-Einstellungen
+  label_hide_map_for_invalid_geom: Ausblenden der Ausgabekarte für ungültige Geometrie
+  gtt_hide_map_for_invalid_geom_info: Bitte bearbeiten Sie die Anfrage und stellen
+    Sie die Geometrie ein, um die Karte zu sehen.

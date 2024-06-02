@@ -105,8 +105,8 @@ ja:
       search_location: "Search location"
       reverse_location: "Click on the map to get location..."
       search_placeholder: "Type a location..."
-      geolocation_notification_activated: "Geolocation activated"
-      geolocation_notification_deactivated: "Geolocation deactivated"
+      geolocation_activated: "Geolocation activated"
+      geolocation_deactivated: "Geolocation deactivated"
       maximize: 地物にズーム
       upload: GeoJSONのアップロード
       fullscreen: フルスクリーン切り替え
