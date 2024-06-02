@@ -56,8 +56,6 @@ de:
     control:
       geocoding: Standort-Suche
       geolocation: Mein Standort
-      geolocation_notification_activated: "Geolocation activated"
-      geolocation_notification_deactivated: "Geolocation deactivated"
       maximize: Zoom auf alle Objekte
       upload: GeoJSON hochladen
       fullscreen: Vollbildmodus umschalten
