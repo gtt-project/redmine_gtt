@@ -28,7 +28,9 @@ ja:
   label_tab_general: "一般"
   label_tab_geocoder: "ジオコーダ"
 
-  geocoder_options: "ジオコーダのオプション"
+  geocoder_provider: "Provider"
+  geocoder_options: "オプション"
+  geocoder_load_example: "Load example options"
 
   gtt_map_rotate_label: "地図の回転"
   gtt_map_rotate_info_html: "<code>Shift+Alt</code> を押しながらドラッグして地図を回転します。"
@@ -52,6 +54,10 @@ ja:
   label_enable_geojson_upload_on_issue_map: "チケット地図上でGeoJSONアップロードを有効化"
   label_enable_geocoding_on_map: "地図上でジオコーディングを有効化"
   label_default_target_enabled: "Show target on map center"
+
+  select_other_gtt_settings: "GTTのその他の設定"
+  label_hide_map_for_invalid_geom: "位置情報が登録されていない時に地図を隠す"
+  gtt_hide_map_for_invalid_geom_info: "地図を見るにはチケットを編集して位置情報を登録してください。"
 
   select_default_tracker_icon: "トラッカーアイコンを選択:"
   select_default_status_color: "ステータス色を選択:"
@@ -97,6 +103,11 @@ ja:
     control:
       geocoding: 住所検索
       geolocation: 現在地へ移動
+      search_location: "Search location"
+      reverse_location: "Click on the map to get location…"
+      search_placeholder: "Type a location…"
+      geolocation_activated: "Geolocation activated"
+      geolocation_deactivated: "Geolocation deactivated"
       maximize: 地物にズーム
       upload: GeoJSONのアップロード
       fullscreen: フルスクリーン切り替え
@@ -106,6 +117,7 @@ ja:
       point: ポイント編集
       linestring: ライン編集
       polygon: エリア編集
+      clear_map: "地図をクリア"
     modal:
       load: 読み込み
       cancel: キャンセル

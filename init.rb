@@ -34,7 +34,8 @@ Redmine::Plugin.register :redmine_gtt do
       'default_geocoder_options' => '{}',
       'editable_geometry_types_on_issue_map' => ["Point"],
       'enable_geojson_upload_on_issue_map' => false,
-      'enable_geocoding_on_map' => false
+      'enable_geocoding_on_map' => false,
+      'hide_map_for_invalid_geom' => false
     },
     partial: 'settings/gtt/settings'
   )

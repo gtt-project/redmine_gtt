@@ -11,7 +11,9 @@ de:
   label_gtt_select_icon: Icon auswählen
   label_parameters: Parameter
   label_tab_geocoder: Geocoder
-  geocoder_options: Geocoder Optionen
+  geocoder_provider: "Anbieter"
+  geocoder_options: Optionen
+  geocoder_load_example: "Load example options"
   gtt_settings_general_maxzoom_level: Standardwert für die maximale Zoomstufe der
     Karte
   label_default_collapsed_issues_page_map: Standardmäßig ausgeblendete Karte für Tickets
@@ -21,7 +23,7 @@ de:
   field_geom: Geomtrie
   field_global: Allgemein verfügbar
   label_geotask_map: GTT Karte
-  label_global: Allgemein
+  label_global: Global
   label_project_map: Projektkarte
   label_user_map: Benutzer-Karte
   label_name: Name
@@ -57,6 +59,9 @@ de:
     control:
       geocoding: Standort-Suche
       geolocation: Mein Standort
+      search_location: "Search location"
+      reverse_location: "Click on the map to get location…"
+      search_placeholder: "Type a location…"
       maximize: Zoom auf alle Objekte
       upload: GeoJSON hochladen
       fullscreen: Vollbildmodus umschalten
@@ -66,18 +71,22 @@ de:
       point: Punkteditor
       linestring: Linieneditor
       polygon: Flächeneditor
+      clear_map: "Clear map"
+      geolocation_activated: Geolokalisierung aktiviert
+      geolocation_deactivated: Geolokalisierung deaktiviert
     modal:
       load: Laden
       cancel: Abbrechen
     messages:
-      baselayer_missing: "There is no baselayer available!"
-      zoom_in_more: "Zoom in to view objects."
+      baselayer_missing: "Es ist kein Baselayer verfügbar!"
+      zoom_in_more: "Zoomen Sie hinein, um die Objekte zu sehen."
   gtt_map_rotate_label: Kartenrotation
-  gtt_map_rotate_info_html: Hold down <code>Shift+Alt</code> and drag the map to rotate.
+  gtt_map_rotate_info_html: Halten Sie <code>Shift+Alt</code> gedrückt und ziehen
+    Sie die Karte, um sie zu drehen.
   gtt_settings_label_general: "General"
   gtt_settings_label_styling: "Styling"
   gtt_settings_label_geocoder: "Geocoder"
-  label_layer: Layer-Typ
+  label_layer: Layer Typ
   map_layer:
     plural: Karten-Layer
     project:
@@ -92,7 +101,7 @@ de:
     load_example: 'Beispiele: '
   field_format_options_string: Formatoptionen
   field_styles: Style-Einstellungen
-  label_source: Source-Typ
+  label_source: Source Typ
   permission_view_gtt_settings: GTT-Einstellungen anzeigen
   field_name: Name
   field_layer: Layer-Typ
@@ -100,3 +109,7 @@ de:
   field_source: Source-Typ
   field_source_options_string: Source-Optionen
   field_format: Format-Typ
+  select_other_gtt_settings: Andere GTT-Einstellungen
+  label_hide_map_for_invalid_geom: Ausblenden der Ausgabekarte für ungültige Geometrie
+  gtt_hide_map_for_invalid_geom_info: Bitte bearbeiten Sie die Anfrage und stellen
+    Sie die Geometrie ein, um die Karte zu sehen.

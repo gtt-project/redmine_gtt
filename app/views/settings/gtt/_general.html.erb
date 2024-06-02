@@ -67,3 +67,12 @@
   <%= check_box_tag 'settings[enable_geojson_upload_on_issue_map]', true, @settings[:enable_geojson_upload_on_issue_map] %>
 </p>
 </div>
+
+<div class="box tabular settings">
+<h3><%= l(:select_other_gtt_settings) %></h3>
+
+<p>
+  <%= content_tag(:label, l(:label_hide_map_for_invalid_geom)) %>
+  <%= check_box_tag 'settings[hide_map_for_invalid_geom]', 1, Setting.plugin_redmine_gtt['hide_map_for_invalid_geom'] %>
+</p>
+</div>
