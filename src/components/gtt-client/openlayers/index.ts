@@ -11,10 +11,16 @@ import Bar from 'ol-ext/control/Bar';
 import Button from 'ol-ext/control/Button';
 import Toggle from 'ol-ext/control/Toggle';
 import Popup from 'ol-ext/overlay/Popup';
+import Tooltip from 'ol-ext/overlay/Tooltip'
 import { position } from 'ol-ext/control/control';
 import { GeoJSON } from 'ol/format';
 
 import { getCookie, getMapSize, degreesToRadians, updateForm } from "../helpers";
+
+// Define the types for the Tooltip and the custom methods you added
+interface ExtendedTooltip extends Tooltip {
+  prevHTML?: string;
+}
 
 /**
  * Get the z-value for a given geometry.
@@ -134,6 +140,30 @@ function setZValueForGeometry(feature: any, zValue: number): any {
 }
 
 /**
+ * Create extended tooltip control
+ * @returns
+ */
+function createTooltip(): ExtendedTooltip {
+  return new Tooltip({
+    maximumFractionDigits: 2,
+    formatLength: (length: number) => {
+      if (length < 1000) {
+        return length.toFixed(0) + ' m';
+      } else {
+        return (length / 1000).toFixed(2) + ' km';
+      }
+    },
+    formatArea: (area: number) => {
+      if (area < 100000) {
+        return area.toFixed(1) + ' m²';
+      } else {
+        return (area / 1000000).toFixed(2) + ' km²';
+      }
+    }
+  }) as ExtendedTooltip;
+}
+
+/**
  *  Add editing tools
  */
 export function setControls(types: Array<string>) {
@@ -165,6 +195,11 @@ export function setControls(types: Array<string>) {
     zValue = getZValueForGeometry(ftr.getGeometry());
   });
 
+  // Create tooltip
+  var tooltip = createTooltip();
+  this.map.addOverlay(tooltip);
+
+  // Add the draw controls
   types.forEach((type: any, idx) => {
 
     const draw = new Draw({
@@ -173,7 +208,24 @@ export function setControls(types: Array<string>) {
       geometryLayout: 'XYZ'
     })
 
+    draw.on('drawstart', evt => {
+      if (this.contents.measure) {
+        tooltip.setFeature(evt.feature)
+      }
+    })
+
+    draw.on('change:active', evt => {
+      tooltip.removeFeature()
+    })
+
     draw.on('drawend', evt => {
+      if ((tooltip as any).prevHTML) {
+        const measurement = (tooltip as any).prevHTML;
+        (tooltip as any).prevHTML = null;
+        this.map.notification.show(measurement);
+      }
+      tooltip.removeFeature()
+
       this.vector.getSource().clear()
       const feature = setZValueForGeometry(evt.feature, zValue);
       updateForm(this, [feature], true)
