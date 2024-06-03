@@ -11,10 +11,16 @@ import Bar from 'ol-ext/control/Bar';
 import Button from 'ol-ext/control/Button';
 import Toggle from 'ol-ext/control/Toggle';
 import Popup from 'ol-ext/overlay/Popup';
+import Tooltip from 'ol-ext/overlay/Tooltip'
 import { position } from 'ol-ext/control/control';
 import { GeoJSON } from 'ol/format';
 
-import { getCookie, getMapSize, degreesToRadians, updateForm } from "../helpers";
+import { getCookie, getMapSize, degreesToRadians, updateForm, formatLength, formatArea } from "../helpers";
+
+// Define the types for the Tooltip and the custom methods you added
+interface ExtendedTooltip extends Tooltip {
+  prevHTML?: string;
+}
 
 /**
  * Get the z-value for a given geometry.
@@ -134,6 +140,18 @@ function setZValueForGeometry(feature: any, zValue: number): any {
 }
 
 /**
+ * Create extended tooltip control
+ * @returns
+ */
+function createTooltip(): ExtendedTooltip {
+  return new Tooltip({
+    maximumFractionDigits: 2,
+    formatLength,
+    formatArea
+  }) as ExtendedTooltip;
+}
+
+/**
  *  Add editing tools
  */
 export function setControls(types: Array<string>) {
@@ -165,6 +183,11 @@ export function setControls(types: Array<string>) {
     zValue = getZValueForGeometry(ftr.getGeometry());
   });
 
+  // Create tooltip
+  const tooltip = createTooltip();
+  this.map.addOverlay(tooltip);
+
+  // Add the draw controls
   types.forEach((type: any, idx) => {
 
     const draw = new Draw({
@@ -173,7 +196,18 @@ export function setControls(types: Array<string>) {
       geometryLayout: 'XYZ'
     })
 
+    draw.on('drawstart', evt => {
+      if (this.contents.measure) {
+        tooltip.setFeature(evt.feature)
+      }
+    })
+
+    draw.on('change:active', evt => {
+      tooltip.removeFeature()
+    })
+
     draw.on('drawend', evt => {
+      tooltip.removeFeature()
       this.vector.getSource().clear()
       const feature = setZValueForGeometry(evt.feature, zValue);
       updateForm(this, [feature], true)

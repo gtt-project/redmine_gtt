@@ -56,6 +56,7 @@ en:
   label_enable_geojson_upload_on_issue_map: "Enable GeoJSON upload on issue map"
   label_enable_geocoding_on_map: "Enable geocoding on map"
   label_default_target_enabled: "Show target on map center"
+  label_default_measure_enabled: "Show measure control"
 
   select_other_gtt_settings: "Other GTT settings"
   label_hide_map_for_invalid_geom: "Hide issue map for invalid geometry"
