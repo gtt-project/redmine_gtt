@@ -5,10 +5,11 @@ import Button from 'ol-ext/control/Button';
 import LayerPopup from 'ol-ext/control/LayerPopup';
 import LayerSwitcher from 'ol-ext/control/LayerSwitcher';
 import Target from 'ol-ext/control/Target';
+import Hover from  'ol-ext/interaction/Hover';
 import Notification from 'ol-ext/control/Notification';
 import { position } from 'ol-ext/control/control';
 
-import { radiansToDegrees, degreesToRadians, parseHistory } from "../helpers";
+import { radiansToDegrees, degreesToRadians, parseHistory, formatLength, formatArea } from "../helpers";
 import { zoomToExtent, setGeolocation, setView, setControls, setPopover } from "../openlayers";
 import { createSearchControl } from '../geocoding/SearchFactory';
 
@@ -87,6 +88,35 @@ function addMaximizeControl(instance: any): void {
   });
 
   instance.toolbar.addControl(maximizeCtrl);
+}
+
+/**
+ * Adds hover control to provide additional information
+ * @param instance
+ */
+function addHoverControl(instance: any): void {
+  const hover = new Hover({
+    cursor: 'pointer',
+    handleEvent: (evt: any) => {
+      return true;
+    },
+    layerFilter: (layer: any) => {
+      // Respond only to the specific vector layer
+      return layer === instance.vector;
+    }
+  });
+
+  instance.map.addInteraction(hover);
+
+  // Show the length or area of the feature on hover
+  hover.on('enter', (evt: any) => {
+    const geometry = evt.feature.getGeometry();
+    if (geometry.getType() === 'LineString') {
+      instance.map.notification.show(formatLength(geometry.getLength()));
+    } else if (geometry.getType() === 'Polygon') {
+      instance.map.notification.show(formatArea(geometry.getArea()));
+    }
+  });
 }
 
 /**
@@ -177,6 +207,10 @@ export function initControls(this: any): void {
   addMaximizeControl(this);
   handleMapRotation(this);
   addTargetControl(this);
+
+  if (this.contents.measure) {
+    addHoverControl(this);
+  }
 
   if (this.contents.edit) {
     setControls.call(this, this.contents.edit.split(' '));

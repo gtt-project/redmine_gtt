@@ -15,7 +15,7 @@ import Tooltip from 'ol-ext/overlay/Tooltip'
 import { position } from 'ol-ext/control/control';
 import { GeoJSON } from 'ol/format';
 
-import { getCookie, getMapSize, degreesToRadians, updateForm } from "../helpers";
+import { getCookie, getMapSize, degreesToRadians, updateForm, formatLength, formatArea } from "../helpers";
 
 // Define the types for the Tooltip and the custom methods you added
 interface ExtendedTooltip extends Tooltip {
@@ -146,20 +146,8 @@ function setZValueForGeometry(feature: any, zValue: number): any {
 function createTooltip(): ExtendedTooltip {
   return new Tooltip({
     maximumFractionDigits: 2,
-    formatLength: (length: number) => {
-      if (length < 1000) {
-        return length.toFixed(0) + ' m';
-      } else {
-        return (length / 1000).toFixed(2) + ' km';
-      }
-    },
-    formatArea: (area: number) => {
-      if (area < 100000) {
-        return area.toFixed(1) + ' m²';
-      } else {
-        return (area / 1000000).toFixed(2) + ' km²';
-      }
-    }
+    formatLength,
+    formatArea
   }) as ExtendedTooltip;
 }
 
@@ -196,7 +184,7 @@ export function setControls(types: Array<string>) {
   });
 
   // Create tooltip
-  var tooltip = createTooltip();
+  const tooltip = createTooltip();
   this.map.addOverlay(tooltip);
 
   // Add the draw controls
@@ -219,13 +207,7 @@ export function setControls(types: Array<string>) {
     })
 
     draw.on('drawend', evt => {
-      if ((tooltip as any).prevHTML) {
-        const measurement = (tooltip as any).prevHTML;
-        (tooltip as any).prevHTML = null;
-        this.map.notification.show(measurement);
-      }
       tooltip.removeFeature()
-
       this.vector.getSource().clear()
       const feature = setZValueForGeometry(evt.feature, zValue);
       updateForm(this, [feature], true)
