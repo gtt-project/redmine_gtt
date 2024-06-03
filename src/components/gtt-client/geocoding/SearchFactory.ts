@@ -1,11 +1,49 @@
 // src/components/gtt-client/geocoding/SearchFactory.ts
+import { Feature } from 'ol';
 import { applyCustomButton } from './CustomButtonMixin';
 import SearchGTT from './SearchGTT';
 import SearchGoogle from './SearchGoogle';
 import SearchNominatim from 'ol-ext/control/SearchNominatim';
 import SearchPhoton from 'ol-ext/control/SearchPhoton';
 
-export function createSearchControl(options: any): any {
+/**
+ * Function signature for the handleSelect function.
+ * @param feature - The selected feature.
+ * @param reverse - Whether the feature was selected in reverse mode.
+ * @param options - Additional options.
+ * @returns void
+ */
+type HandleSelectFunction = (
+  feature: Feature,
+  reverse: boolean,
+  options?: any
+) => void;
+
+/**
+ * Custom callback for the handleSelect function.
+ * @param searchControl
+ * @param handleSelectCallback
+ * @returns void
+ */
+function extendHandleSelect(searchControl: any, handleSelectCallback: (response: object) => void): void {
+  const originalHandleSelect: HandleSelectFunction = searchControl._handleSelect.bind(searchControl);
+  searchControl._handleSelect = (feature: Feature, reverse: boolean, options?: any): void => {
+    originalHandleSelect(feature, reverse, options);
+    handleSelectCallback({
+      'title': searchControl.getTitle(feature),
+      'reverse': reverse ? true : false,
+      // Add any other additional keys here
+    });
+  };
+}
+
+/**
+ * Creates a search control instance based on the provider.
+ * @param options
+ * @param handleSelectCallback - Custom callback function to handle the selected feature.
+ * @returns
+ */
+export function createSearchControl(options: any, handleSelectCallback: (feature: Feature) => void): any {
   let searchControl: any;
 
   // Create search control instance based on the provider
@@ -53,6 +91,9 @@ export function createSearchControl(options: any): any {
 
   // Apply custom button implementation
   applyCustomButton(searchControl, options);
+
+  // Extend the handleSelect function with the custom callback
+  extendHandleSelect(searchControl, handleSelectCallback);
 
   return searchControl;
 }
