@@ -43,6 +43,7 @@ de:
   label_enable_geojson_upload_on_issue_map: Aktivieren von GeoJSON-Upload auf der
     Themenkarte
   label_enable_geocoding_on_map: Geokodierung auf der Karte aktivieren
+  label_default_target_enabled: "Show target on map center"
   select_default_status_color: 'Auswahl der Standard-Statusfarbe:'
   select_default_map_settings: 'Standardmäßige Kartenvoreinstellungen festlegen:'
   select_edit_geometry_settings: 'Einstellungen für die Geometriebearbeitung:'

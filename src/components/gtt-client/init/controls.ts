@@ -1,8 +1,10 @@
 import { FullScreen, Rotate } from 'ol/control';
+import { Style, RegularShape, Stroke } from 'ol/style';
 import Bar from 'ol-ext/control/Bar';
 import Button from 'ol-ext/control/Button';
 import LayerPopup from 'ol-ext/control/LayerPopup';
 import LayerSwitcher from 'ol-ext/control/LayerSwitcher';
+import Target from 'ol-ext/control/Target';
 import Notification from 'ol-ext/control/Notification';
 import { position } from 'ol-ext/control/control';
 
@@ -125,6 +127,34 @@ function addLayerSwitcherOrPopup(instance: any): void {
 }
 
 /**
+ * Adds target control to instance map.
+ * @param instance
+ */
+function addTargetControl(instance: any): void {
+  if (instance.contents.target) {
+    //  Adjust the radius and stroke width for high DPI devices
+    const pixelRatio = window.devicePixelRatio || 1;
+    const adjustedRadius = 11 / pixelRatio;
+    const adjustedStrokeWidth = 3 / pixelRatio;
+
+    instance.map.addControl(new Target({
+      composite: 'overlay',
+      style: new Style({
+        image: new RegularShape({
+          points: 4,
+          radius: adjustedRadius,
+          radius2: 0,
+          stroke: new Stroke({
+            color: 'rgba(220,26,26,0.7)',
+            width: adjustedStrokeWidth
+          })
+        })
+      }),
+    }));
+  }
+}
+
+/**
  * Adds notification control
  * @param {any}  instance
  */
@@ -146,6 +176,7 @@ export function initControls(this: any): void {
   addFullScreenAndRotateControls(this);
   addMaximizeControl(this);
   handleMapRotation(this);
+  addTargetControl(this);
 
   if (this.contents.edit) {
     setControls.call(this, this.contents.edit.split(' '));

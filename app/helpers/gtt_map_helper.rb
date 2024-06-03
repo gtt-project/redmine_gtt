@@ -32,6 +32,8 @@ module GttMapHelper
     data[:popup]  = popup  if popup
     data[:upload] = upload
     data[:collapsed] = collapsed if collapsed
+    data[:geocoding] = true if Setting.plugin_redmine_gtt['enable_geocoding_on_map'] == 'true'
+    data[:target] = true if Setting.plugin_redmine_gtt['default_target_enabled'] == 'true'
 
     uid = "ol-" + rand(36**8).to_s(36)
 

@@ -40,6 +40,7 @@
       @settings['default_map_fit_maxzoom_level'],
       :size => 10) %>
 </p>
+
 </div>
 
 <div class="box tabular settings">
@@ -65,6 +66,11 @@
 
 <div class="box tabular settings">
 <h3><%= l(:select_other_gtt_settings) %></h3>
+
+<p>
+  <%= content_tag(:label, l(:label_default_target_enabled)) %>
+  <%= check_box_tag 'settings[default_target_enabled]', true, @settings[:default_target_enabled] %>
+</p>
 
 <p>
   <%= content_tag(:label, l(:label_hide_map_for_invalid_geom)) %>
