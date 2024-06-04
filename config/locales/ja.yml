@@ -118,6 +118,7 @@ ja:
       linestring: ライン編集
       polygon: エリア編集
       clear_map: "地図をクリア"
+      remove_point: "Remove point"
       copied_location_to_clipboard: 位置情報をクリップボードにコピーしました
     modal:
       load: 読み込み

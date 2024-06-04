@@ -72,6 +72,7 @@ de:
       linestring: Linieneditor
       polygon: Flächeneditor
       clear_map: "Clear map"
+      remove_point: "Remove point"
       geolocation_activated: Geolokalisierung aktiviert
       geolocation_deactivated: Geolokalisierung deaktiviert
       copied_location_to_clipboard: Standort in die Zwischenablage kopiert

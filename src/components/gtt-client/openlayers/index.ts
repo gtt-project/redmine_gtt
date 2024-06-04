@@ -6,7 +6,8 @@ import { Style, Fill, Stroke, Circle } from 'ol/style';
 import { createEmpty, extend, containsCoordinate } from 'ol/extent';
 import { transform, fromLonLat } from 'ol/proj';
 
-import { Modify, Draw, Select } from 'ol/interaction'
+import { Draw, Select, Snap } from 'ol/interaction'
+import ModifyTouch from 'ol-ext/interaction/ModifyTouch';
 import Bar from 'ol-ext/control/Bar';
 import Button from 'ol-ext/control/Button';
 import Toggle from 'ol-ext/control/Toggle';
@@ -156,16 +157,23 @@ function createTooltip(): ExtendedTooltip {
  */
 export function setControls(types: Array<string>) {
   // Make vector features editable
-  const modify = new Modify({
+  const modify = new ModifyTouch({
+    title: this.i18n.control.remove_point,
     features: this.vector.getSource().getFeaturesCollection()
-  })
+  } as any)
+
+  modify.on('showpopup', evt => {
+    const geometryType = evt.feature.getGeometry().getType();
+    if (geometryType === 'Point') {
+      modify.removePoint(); // don't show the popup
+    }
+  });
 
   modify.on('modifyend', evt => {
     updateForm(this, evt.features.getArray(), true)
   })
 
   this.map.addInteraction(modify)
-  this.map.notification.show(this.i18n.messages.modify_start,7000);
 
   const mainbar = new Bar()
   mainbar.setPosition("top-left" as position)
@@ -198,6 +206,20 @@ export function setControls(types: Array<string>) {
     })
 
     draw.on('drawstart', evt => {
+      // Change the style of existing features to light gray and transparent and dashed line
+      this.vector.getSource().getFeatures().forEach((feature: any) => {
+        feature.setStyle(new Style({
+          fill: new Fill({
+            color: 'rgba(0, 0, 0, 0.1)'
+          }),
+          stroke: new Stroke({
+            color: 'rgba(0, 0, 0, 0.5)',
+            width: 2,
+            lineDash: [5, 5]
+          })
+        }));
+      });
+
       if (this.contents.measure) {
         tooltip.setFeature(evt.feature)
       }
@@ -231,10 +253,38 @@ export function setControls(types: Array<string>) {
       html: `<i class="mdi ${mdi}" ></i>`,
       title: this.i18n.control[type.toLowerCase()],
       interaction: draw,
-      active: (type === geometryType)
+      active: (type === geometryType),
+      onToggle: (active: boolean) => {
+        modify.setActive(false);
+        if (active) {
+          draw.setActive(true);
+        } else {
+          draw.setActive(false);
+        }
+      }
     })
     editbar.addControl(control)
   })
+
+  const editModeControl = new Toggle({
+    html: '<i class="mdi mdi-pencil"></i>',
+    title: this.i18n.control.edit_mode,
+    active: false,
+    onToggle: (active: boolean) => {
+      if (active) {
+        modify.setActive(true);
+        this.map.getInteractions().forEach((interaction: any) => {
+          if (interaction instanceof Draw) {
+            interaction.setActive(false);
+          }
+        });
+        this.map.notification.show(this.i18n.messages.modify_start);
+      } else {
+        modify.setActive(false);
+      }
+    }
+  });
+  editbar.addControl(editModeControl);
 
   // Add the clear map control
   const clearMapCtrl = new Button({
@@ -246,6 +296,12 @@ export function setControls(types: Array<string>) {
     }
   });
   editbar.addControl(clearMapCtrl);
+
+  // Add the snap interaction
+  const snap = new Snap({
+    source: this.vector.getSource(),
+  });
+  this.map.addInteraction(snap);
 
   // Uses jQuery UI for GeoJSON Upload modal window
   const mapObj = this
