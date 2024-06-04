@@ -253,7 +253,7 @@ export function setControls(types: Array<string>) {
       html: `<i class="mdi ${mdi}" ></i>`,
       title: this.i18n.control[type.toLowerCase()],
       interaction: draw,
-      active: (type === geometryType),
+      active: false,
       onToggle: (active: boolean) => {
         modify.setActive(false);
         if (active) {
@@ -266,6 +266,7 @@ export function setControls(types: Array<string>) {
     editbar.addControl(control)
   })
 
+  // Add the edit control
   const editModeControl = new Toggle({
     html: '<i class="mdi mdi-pencil"></i>',
     title: this.i18n.control.edit_mode,
@@ -285,6 +286,16 @@ export function setControls(types: Array<string>) {
     }
   });
   editbar.addControl(editModeControl);
+
+  // if the vector layer is not empty, set the editModeControl to active
+  if (this.vector.getSource().getFeatures().length > 0) {
+    editModeControl.setActive(true);
+  }
+  // otherwise set the first draw control to active
+  else {
+    const firstControl = editbar.getControls()[0] as Toggle;
+    firstControl.setActive(true);
+  }
 
   // Add the clear map control
   const clearMapCtrl = new Button({
