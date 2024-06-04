@@ -165,6 +165,7 @@ export function setControls(types: Array<string>) {
   })
 
   this.map.addInteraction(modify)
+  this.map.notification.show(this.i18n.messages.modify_start,7000);
 
   const mainbar = new Bar()
   mainbar.setPosition("top-left" as position)

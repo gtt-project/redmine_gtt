@@ -81,6 +81,7 @@ de:
     messages:
       baselayer_missing: "Es ist kein Baselayer verfügbar!"
       zoom_in_more: "Zoomen Sie hinein, um die Objekte zu sehen."
+      modify_start: "Hold down <code>ALT</code> and click on a vertex to delete it."
   gtt_map_rotate_label: Kartenrotation
   gtt_map_rotate_info_html: Halten Sie <code>Shift+Alt</code> gedrückt und ziehen
     Sie die Karte, um sie zu drehen.

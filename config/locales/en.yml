@@ -130,3 +130,4 @@ en:
     messages:
       baselayer_missing: "There is no baselayer available!"
       zoom_in_more: "Zoom in to view objects."
+      modify_start: "Hold down <code>ALT</code> and click on a vertex to delete it."
