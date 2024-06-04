@@ -226,8 +226,16 @@ export function setControls(types: Array<string>) {
     })
 
     draw.on('change:active', evt => {
-      tooltip.removeFeature()
-    })
+      // If the Draw interaction is deactivated
+      if (!evt.target.getActive()) {
+        // Reset the style of existing features
+        this.vector.getSource().getFeatures().forEach((feature: any) => {
+          feature.setStyle(null); // Reset the style to the default style
+        });
+      }
+
+      tooltip.removeFeature();
+    });
 
     draw.on('drawend', evt => {
       tooltip.removeFeature()
