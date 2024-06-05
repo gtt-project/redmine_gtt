@@ -132,3 +132,5 @@ en:
       baselayer_missing: "There is no baselayer available!"
       zoom_in_more: "Zoom in to view objects."
       modify_start: "Hold down <code>ALT</code> and click on a vertex to delete it."
+      modify_start_mac: "Hold down <code>Option</code> and click on a vertex to delete it."
+      modify_start_touch: "Tap on a vertex to delete it."

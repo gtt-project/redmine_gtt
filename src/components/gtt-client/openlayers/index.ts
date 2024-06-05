@@ -17,6 +17,7 @@ import { position } from 'ol-ext/control/control';
 import { GeoJSON } from 'ol/format';
 
 import { getCookie, getMapSize, degreesToRadians, updateForm, formatLength, formatArea } from "../helpers";
+import { isTouchDevice, isMacOS } from "../helpers/platforms";
 
 // Define the types for the Tooltip and the custom methods you added
 interface ExtendedTooltip extends Tooltip {
@@ -305,7 +306,20 @@ export function setControls(types: Array<string>) {
             interaction.setActive(false);
           }
         });
-        this.map.notification.show(this.i18n.messages.modify_start);
+
+        if (this.vector.getSource().getFeatures().length > 0) {
+          const firstFeature = this.vector.getSource().getFeatures()[0];
+          if (firstFeature && firstFeature.getGeometry().getType() !== 'Point') {
+            // Code to execute if the first feature is not a Point
+            let message = this.i18n.messages.modify_start;
+            if (isTouchDevice()) {
+              message = this.i18n.messages.modify_start_touch;
+            } else if (isMacOS()) {
+              message = this.i18n.messages.modify_start_mac;
+            }
+            this.map.notification.show(message);
+          }
+        }
       } else {
         modify.setActive(false);
       }

@@ -127,3 +127,5 @@ ja:
       baselayer_missing: "背景レイヤーが存在しません!"
       zoom_in_more: "地物表示のためズームします。"
       modify_start: "Hold down <code>ALT</code> and click on a vertex to delete it."
+      modify_start_mac: "Hold down <code>Option</code> and click on a vertex to delete it."
+      modify_start_touch: "Tap on a vertex to delete it."
