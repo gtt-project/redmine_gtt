@@ -50,11 +50,14 @@ export function initLayers(this: any): Layer[] {
  */
 function readGeoJSONFeatures(this: any): Feature<Geometry>[] | null {
   if (this.contents.geom && this.contents.geom !== null && this.contents.geom !== 'null') {
-    return new GeoJSON().readFeatures(
+    const features = new GeoJSON().readFeatures(
       JSON.parse(this.contents.geom), {
         featureProjection: 'EPSG:3857'
       }
     );
+
+    // Filter out non-standard features and cast the rest to Feature<Geometry>
+    return features.filter(feature => feature instanceof Feature) as Feature<Geometry>[];
   }
   return null;
 }
@@ -171,18 +174,27 @@ function addBoundsLayer(this: any): void {
  */
 function addVectorLayer(this: any, features: Feature<Geometry>[] | null): void {
   const yOrdering: unknown = Ordering.yOrdering();
-  this.vector = new VectorLayer<VectorSource<Geometry>>({
-    source: new VectorSource({
-      'features': features,
-      'useSpatialIndex': false
-    }),
+
+  // Initialize the VectorSource with the appropriate type and options
+  const vectorSource = new VectorSource<Feature<Geometry>>({
+    useSpatialIndex: false
+  });
+
+  // Add features to the source if they are not null
+  if (features !== null) {
+    vectorSource.addFeatures(features);
+  }
+
+  this.vector = new VectorLayer({
+    source: vectorSource,
     renderOrder: yOrdering as OrderFunction,
     style: getStyle.bind(this),
     minZoom: this.defaults.vectorMinzoom || 0
   });
+
   this.vector.set('title', 'Features');
   this.vector.set('displayInLayerSwitcher', false);
-  this.vector.on('prerender', () => this.map.flushDeclutterItems());
+  // this.vector.on('prerender', () => this.map.flushDeclutterItems());
 
   // Listen to the moveend event and show message when zoom level is too low
   let previousZoom = this.map.getView().getZoom();
@@ -223,20 +235,26 @@ function renderProjectBoundary(this: any): void {
       this.contents.bounds, {
         featureProjection: 'EPSG:3857'
       }
-    );
+    ) as Feature<Geometry>;
+
     this.bounds.getSource().addFeature(boundary);
     if (this.contents.bounds === this.contents.geom) {
       this.vector.setVisible(false);
     }
     this.layerArray.forEach((layer: Layer) => {
       if (layer.get('baseLayer')) {
-        layer.addFilter(new Mask({
-          feature: boundary,
-          inner: false,
-          fill: new Fill({
-            color: [220, 26, 26, 0.1]
-          })
-        }));
+        if (layer.getRenderSource() instanceof olSource.Google) {
+          // currently Google source does not seem to support filters
+        }
+        else {
+          layer.addFilter(new Mask({
+            feature: boundary,
+            inner: false,
+            fill: new Fill({
+              color: [220, 26, 26, 0.1]
+            })
+          }));
+        }
       }
     });
   }
