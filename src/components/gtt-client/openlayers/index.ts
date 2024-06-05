@@ -288,7 +288,9 @@ export function setPopover() {
       title: (ftr: any) => {
         const popup_contents = JSON.parse(this.contents.popup);
         const url = popup_contents.href.replace(/\[(.+?)\]/g, ftr.get('id'));
-        return `${ftr.get('subject').length > 25 ? ftr.get('subject').substring(0, 22) + '…' : ftr.get('subject')} <a href="${url}"><i class="mdi mdi-arrow-right-circle-outline"></i></a>`;
+        const subject = ftr.get('subject');
+        const displaySubject = subject.length > 25 ? `${subject.substring(0, 22)}…` : subject;
+        return `${displaySubject} <a href="${url}"><i class="mdi mdi-arrow-right-circle-outline"></i></a>`;
       },
       attributes: {}
     }
