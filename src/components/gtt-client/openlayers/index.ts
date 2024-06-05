@@ -11,7 +11,7 @@ import ModifyTouch from 'ol-ext/interaction/ModifyTouch';
 import Bar from 'ol-ext/control/Bar';
 import Button from 'ol-ext/control/Button';
 import Toggle from 'ol-ext/control/Toggle';
-import Popup from 'ol-ext/overlay/Popup';
+import PopupFeature from 'ol-ext/overlay/PopupFeature';
 import Tooltip from 'ol-ext/overlay/Tooltip'
 import { position } from 'ol-ext/control/control';
 import { GeoJSON } from 'ol/format';
@@ -417,56 +417,52 @@ export function setControls(types: Array<string>) {
   }
 }
 
+
 /**
  *  Add popup
  */
 export function setPopover() {
-  const popup = new Popup({
-    popupClass: 'default',
-    closeBox: false,
-    onclose: () => {},
-    positioning: 'auto',
-    anim: true
-  })
-  this.map.addOverlay(popup)
 
   // Control Select
   const select = new Select({
     layers: [this.vector],
     style: null,
-    multi: false
-  })
-  this.map.addInteraction(select)
+    multi: false,
+    hitTolerance: 5
+  });
+  this.map.addInteraction(select);
 
-  // On selected => show/hide popup
-  select.getFeatures().on(['add'], (evt: any) => {
-    const feature = evt.element
+  // Popup overlay
+  const popup = new PopupFeature({
+    popupClass: 'default',
+    select: select,
+    canFix: false,
+    closeBox: false,
+    positioning: 'auto',
+    maxChar: 30,
+    template: {
+      title: (ftr: any) => {
+        const popup_contents = JSON.parse(this.contents.popup);
+        const url = popup_contents.href.replace(/\[(.+?)\]/g, ftr.get('id'));
+        const subject = ftr.get('subject');
+        const displaySubject = subject.length > 25 ? `${subject.substring(0, 22)}…` : subject;
+        return `${displaySubject} <a href="${url}"><i class="mdi mdi-arrow-right-circle-outline"></i></a>`;
+      },
+      attributes: {}
+    }
+  });
+  this.map.addOverlay(popup);
 
-    const content: Array<string> = []
-    content.push(`<b>${feature.get('subject')}</b><br/>`)
-    // content.push('<span>Starts at: ' + feature.get("start_date") + '</span> |');
-
-    const popup_contents = JSON.parse(this.contents.popup)
-    const url = popup_contents.href.replace(/\[(.+?)\]/g, feature.get('id'))
-    content.push(`<a href="${url}">Edit</a>`)
-
-    popup.show(feature.getGeometry().getFirstCoordinate(), content.join('') as any)
-  })
-
-  select.getFeatures().on(['remove'], _ => {
-    popup.hide()
-  })
-
-  // change mouse cursor when over marker
+  // Change mouse cursor when over marker
   this.map.on('pointermove', (evt: any) => {
-    if (evt.dragging) return
+    if (evt.dragging) return;
     const hit = this.map.hasFeatureAtPixel(evt.pixel, {
       layerFilter: (layer: any) => {
-        return layer === this.vector
+        return layer === this.vector;
       }
-    })
-    this.map.getTargetElement().style.cursor = hit ? 'pointer' : ''
-  })
+    });
+    this.map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+  });
 }
 
 /**
