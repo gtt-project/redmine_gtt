@@ -123,6 +123,7 @@ en:
       linestring: "Line editor"
       polygon: "Area editor"
       clear_map: "Clear map"
+      remove_point: "Remove point"
       copied_location_to_clipboard: "Copied location to clipboard"
     modal:
       load: "Load"
@@ -130,3 +131,6 @@ en:
     messages:
       baselayer_missing: "There is no baselayer available!"
       zoom_in_more: "Zoom in to view objects."
+      modify_start: "Hold down <code>ALT</code> and click on a vertex to delete it."
+      modify_start_mac: "Hold down <code>Option</code> and click on a vertex to delete it."
+      modify_start_touch: "Tap on a vertex to delete it."

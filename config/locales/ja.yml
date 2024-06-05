@@ -118,6 +118,7 @@ ja:
       linestring: ライン編集
       polygon: エリア編集
       clear_map: "地図をクリア"
+      remove_point: "Remove point"
       copied_location_to_clipboard: 位置情報をクリップボードにコピーしました
     modal:
       load: 読み込み
@@ -125,3 +126,6 @@ ja:
     messages:
       baselayer_missing: "背景レイヤーが存在しません!"
       zoom_in_more: "地物表示のためズームします。"
+      modify_start: "Hold down <code>ALT</code> and click on a vertex to delete it."
+      modify_start_mac: "Hold down <code>Option</code> and click on a vertex to delete it."
+      modify_start_touch: "Tap on a vertex to delete it."
