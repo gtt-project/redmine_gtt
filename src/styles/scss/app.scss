@@ -174,3 +174,21 @@ i[id^='icon_settings_tracker_'] {
   width: 100%;
   height: 300px;
 }
+
+/**
+ * Popup styling
+ */
+ .ol-popup .ol-popup-content h1 {
+  font-size: 1.1rem;
+  padding: 2px;
+  margin: 0;
+}
+
+.ol-popup .ol-popup-content table {
+  display: none;
+}
+
+.ol-popup .ol-popupfeature .ol-zoombt {
+  display: none;
+}
+
