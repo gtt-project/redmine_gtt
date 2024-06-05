@@ -118,3 +118,4 @@ de:
   label_hide_map_for_invalid_geom: Ausblenden der Ausgabekarte für ungültige Geometrie
   gtt_hide_map_for_invalid_geom_info: Bitte bearbeiten Sie die Anfrage und stellen
     Sie die Geometrie ein, um die Karte zu sehen.
+  label_default_measure_enabled: Zeige Steuerung zum Messen von Länge und Fläche
