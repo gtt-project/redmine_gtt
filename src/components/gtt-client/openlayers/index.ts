@@ -1,6 +1,5 @@
 import { Map, Feature, View, Geolocation } from 'ol';
 import { Point } from 'ol/geom';
-import { getCenter } from 'ol/extent';
 import Vector from 'ol/source/Vector'
 import VectorLayer from 'ol/layer/Vector';
 import { Style, Fill, Stroke, Circle } from 'ol/style';
