@@ -24,6 +24,23 @@ interface ExtendedTooltip extends Tooltip {
 }
 
 /**
+ * Helper class to manage the visibility of controls.
+ */
+class ControlManager {
+  static hide(controls: any[]) {
+    controls.forEach(control => {
+      control.element.style.display = 'none';
+    });
+  }
+
+  static show(controls: any[]) {
+    controls.forEach(control => {
+      control.element.style.display = '';
+    });
+  }
+}
+
+/**
  * Get the z-value for a given geometry.
  * If the geometry is a Point, return the z-coordinate of the Point.
  * If the geometry is not a Point, return the average z-coordinate of all the coordinates in the geometry.
@@ -242,6 +259,7 @@ export function setControls(types: Array<string>) {
       this.vector.getSource().clear()
       const feature = setZValueForGeometry(evt.feature, zValue);
       updateForm(this, [feature], true)
+      ControlManager.show([editModeControl, clearMapCtrl]);
     })
 
     // Material design icon
@@ -295,16 +313,6 @@ export function setControls(types: Array<string>) {
   });
   editbar.addControl(editModeControl);
 
-  // if the vector layer is not empty, set the editModeControl to active
-  if (this.vector.getSource().getFeatures().length > 0) {
-    editModeControl.setActive(true);
-  }
-  // otherwise set the first draw control to active
-  else {
-    const firstControl = editbar.getControls()[0] as Toggle;
-    firstControl.setActive(true);
-  }
-
   // Add the clear map control
   const clearMapCtrl = new Button({
     html: '<i class="mdi mdi-delete"></i>',
@@ -312,9 +320,22 @@ export function setControls(types: Array<string>) {
     handleClick: () => {
       this.vector.getSource().clear();
       updateForm(this, null);
+      (editbar.getControls()[0] as Toggle).setActive(true);
+      ControlManager.hide([editModeControl, clearMapCtrl]);
     }
   });
   editbar.addControl(clearMapCtrl);
+
+  // if the vector layer is not empty, set the editModeControl to active
+  if (this.vector.getSource().getFeatures().length > 0) {
+    editModeControl.setActive(true);
+    ControlManager.show([editModeControl, clearMapCtrl]);
+  }
+  // otherwise set the first draw control to active
+  else {
+    (editbar.getControls()[0] as Toggle).setActive(true);
+    ControlManager.hide([editModeControl, clearMapCtrl]);
+  }
 
   // Add the snap interaction
   const snap = new Snap({
