@@ -883,10 +883,10 @@ ol-ext@^4.0.15:
   resolved "https://registry.yarnpkg.com/ol-ext/-/ol-ext-4.0.18.tgz#87e68566bae1a7821e3a1af8b7019409ce922324"
   integrity sha512-zzeTAoCg9IocaM7LlXiLNnVCgVmfxxLzlDTWvYn3Y2gFxtICHSfRrIQl/8vumgBjftBksVl1Fds8P5uFReTmew==
 
-ol-mapbox-style@^12.3.2:
-  version "12.3.2"
-  resolved "https://registry.yarnpkg.com/ol-mapbox-style/-/ol-mapbox-style-12.3.2.tgz#1cad02b1fca019fce4a2e8814049b5706588c1fb"
-  integrity sha512-Qw9I6+WHz9zBsLNm8zWWb707Y/hXrQP1fcwK86pxcX/FklwyDxAhfJAdTkINHncZ331CBEWcqvi2tzoN23dgwg==
+ol-mapbox-style@^12.3.3:
+  version "12.3.3"
+  resolved "https://registry.yarnpkg.com/ol-mapbox-style/-/ol-mapbox-style-12.3.3.tgz#a9b3420a16bf56528b89485317fff33e8baf3440"
+  integrity sha512-Wyb1vSxTl/c09S9yC/Dcr7XWQf5u19/9BriqOiDJRgbjLTAbrWXW8l+5N9E/I0fV2gcTQDE+7iFtvVOvXcTmMA==
   dependencies:
     "@mapbox/mapbox-gl-style-spec" "^13.23.1"
     mapbox-to-css-font "^2.4.1"
@@ -1115,10 +1115,10 @@ sass-loader@^14.2.1:
   dependencies:
     neo-async "^2.6.2"
 
-sass@^1.77.2:
-  version "1.77.2"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.77.2.tgz#18d4ed2eefc260cdc8099c5439ec1303fd5863aa"
-  integrity sha512-eb4GZt1C3avsX3heBNlrc7I09nyT00IUuo4eFhAbeXWU2fvA7oXI53SxODVAA+zgZCk9aunAZgO+losjR3fAwA==
+sass@^1.77.4:
+  version "1.77.4"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.77.4.tgz#92059c7bfc56b827c56eb116778d157ec017a5cd"
+  integrity sha512-vcF3Ckow6g939GMA4PeU7b2K/9FALXk2KF9J87txdHzXbUF9XRQRwSxcAs/fGaTnJeBFd7UoV22j3lzMLdM0Pw==
   dependencies:
     chokidar ">=3.0.0 <4.0.0"
     immutable "^4.0.0"
