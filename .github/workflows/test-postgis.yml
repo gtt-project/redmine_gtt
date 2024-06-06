@@ -12,6 +12,7 @@ on:
     branches:
       - main
       - next
+  workflow_dispatch:
 
 jobs:
   test:
@@ -27,6 +28,10 @@ jobs:
         redmine_version: ${{ fromJSON(vars.PLUGIN_TEST_MATRIX_REDMINE_VERSION) }}
         ruby_version: ${{ fromJSON(vars.PLUGIN_TEST_MATRIX_RUBY_VERSION) }}
         db_version: [12-3.0, 15-3.3]
+        include:
+          - system_test: true
+            redmine_version: 5.1-stable
+            ruby_version: '3.2'
         exclude:
           - redmine_version: 5.0-stable
             ruby_version: '3.2'
@@ -44,14 +49,14 @@ jobs:
 
     steps:
       - name: Checkout Redmine
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: redmine/redmine
           ref: ${{ matrix.redmine_version }}
           path: redmine
 
       - name: Checkout Plugin
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: redmine/plugins/${{ env.PLUGIN_NAME }}
 
@@ -59,10 +64,17 @@ jobs:
         run: apt-get update --yes --quiet
 
       - name: Install package dependencies
-        run: >
-          apt-get install --yes --quiet
-          postgresql-client
-          gcc libpq-dev make patch libgeos-dev curl
+        run: |
+          apt-get install --yes --quiet \
+            postgresql-client \
+            gcc libpq-dev make patch libgeos-dev curl
+          # For system test
+          if [ ${{ matrix.system_test }} = "true" ]; then
+            wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+            sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+            apt-get -y update
+            apt-get install -y google-chrome-stable
+          fi
 
       - name: Install Node/Yarn packages
         run: |
@@ -126,8 +138,16 @@ jobs:
       - name: Run tests
         env:
           RAILS_ENV: test
+          # For system test in plugin
+          GOOGLE_CHROME_OPTS_ARGS: "headless,disable-gpu,no-sandbox,disable-dev-shm-usage"
         working-directory: redmine
-        run: bundle exec rake redmine:plugins:test NAME=${{ env.PLUGIN_NAME }} RUBYOPT="-W0"
+        run: |
+          bundle exec rake redmine:plugins:test:units NAME=${{ env.PLUGIN_NAME }} RUBYOPT="-W0"
+          bundle exec rake redmine:plugins:test:functionals NAME=${{ env.PLUGIN_NAME }} RUBYOPT="-W0"
+          bundle exec rake redmine:plugins:test:integration NAME=${{ env.PLUGIN_NAME }} RUBYOPT="-W0"
+          if [ ${{ matrix.system_test }} = "true" ]; then
+            bundle exec rake redmine:plugins:test:system NAME=${{ env.PLUGIN_NAME }} RUBYOPT="-W0"
+          fi
 
       - name: Run uninstall test
         env:
