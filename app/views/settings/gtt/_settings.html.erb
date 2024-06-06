@@ -4,9 +4,33 @@
   { :name => :geocoder, :partial => 'settings/gtt/geocoder', :label => :gtt_settings_label_geocoder }
 ] %>
 
-
 <%= render_tabs plugin_tabs %>
 
 <%= javascript_tag do %>
+  // Read query parameter
+  function getQueryParam(param) {
+    var urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  // Activate tab by name
+  function activateTab(tabName) {
+    var tabLinks = document.querySelectorAll('.tabs a');
+    tabLinks.forEach(function(link) {
+      if (link.href.includes('tab=' + tabName)) {
+        link.click();
+      }
+    });
+  }
+
+  // Activate tab if it is specified in the URL
+  document.addEventListener('DOMContentLoaded', function() {
+    var tab = getQueryParam('tab');
+    if (tab) {
+      activateTab(tab);
+    }
+  });
+
+  // Apply settings
   window.gtt_setting()
 <% end %>

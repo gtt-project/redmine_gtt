@@ -6,15 +6,40 @@ import { Style, Fill, Stroke, Circle } from 'ol/style';
 import { createEmpty, extend, containsCoordinate } from 'ol/extent';
 import { transform, fromLonLat } from 'ol/proj';
 
-import { Modify, Draw, Select } from 'ol/interaction'
+import { Draw, Select, Snap } from 'ol/interaction'
+import ModifyTouch from 'ol-ext/interaction/ModifyTouch';
 import Bar from 'ol-ext/control/Bar';
 import Button from 'ol-ext/control/Button';
 import Toggle from 'ol-ext/control/Toggle';
-import Popup from 'ol-ext/overlay/Popup';
+import PopupFeature from 'ol-ext/overlay/PopupFeature';
+import Tooltip from 'ol-ext/overlay/Tooltip'
 import { position } from 'ol-ext/control/control';
 import { GeoJSON } from 'ol/format';
 
-import { getCookie, getMapSize, degreesToRadians, updateForm } from "../helpers";
+import { getCookie, getMapSize, degreesToRadians, updateForm, formatLength, formatArea } from "../helpers";
+import { isTouchDevice, isMacOS } from "../helpers/platforms";
+
+// Define the types for the Tooltip and the custom methods you added
+interface ExtendedTooltip extends Tooltip {
+  prevHTML?: string;
+}
+
+/**
+ * Helper class to manage the visibility of controls.
+ */
+class ControlManager {
+  static hide(controls: any[]) {
+    controls.forEach(control => {
+      control.element.style.display = 'none';
+    });
+  }
+
+  static show(controls: any[]) {
+    controls.forEach(control => {
+      control.element.style.display = '';
+    });
+  }
+}
 
 /**
  * Get the z-value for a given geometry.
@@ -134,13 +159,33 @@ function setZValueForGeometry(feature: any, zValue: number): any {
 }
 
 /**
+ * Create extended tooltip control
+ * @returns
+ */
+function createTooltip(): ExtendedTooltip {
+  return new Tooltip({
+    maximumFractionDigits: 2,
+    formatLength,
+    formatArea
+  }) as ExtendedTooltip;
+}
+
+/**
  *  Add editing tools
  */
 export function setControls(types: Array<string>) {
   // Make vector features editable
-  const modify = new Modify({
+  const modify = new ModifyTouch({
+    title: this.i18n.control.remove_point,
     features: this.vector.getSource().getFeaturesCollection()
-  })
+  } as any)
+
+  modify.on('showpopup', evt => {
+    const geometryType = evt.feature.getGeometry().getType();
+    if (geometryType === 'Point') {
+      modify.removePoint(); // don't show the popup
+    }
+  });
 
   modify.on('modifyend', evt => {
     updateForm(this, evt.features.getArray(), true)
@@ -165,6 +210,11 @@ export function setControls(types: Array<string>) {
     zValue = getZValueForGeometry(ftr.getGeometry());
   });
 
+  // Create tooltip
+  const tooltip = createTooltip();
+  this.map.addOverlay(tooltip);
+
+  // Add the draw controls
   types.forEach((type: any, idx) => {
 
     const draw = new Draw({
@@ -173,10 +223,44 @@ export function setControls(types: Array<string>) {
       geometryLayout: 'XYZ'
     })
 
+    draw.on('drawstart', evt => {
+      // Change the style of existing features to light gray and transparent and dashed line
+      this.vector.getSource().getFeatures().forEach((feature: any) => {
+        feature.setStyle(new Style({
+          fill: new Fill({
+            color: 'rgba(0, 0, 0, 0.1)'
+          }),
+          stroke: new Stroke({
+            color: 'rgba(0, 0, 0, 0.5)',
+            width: 2,
+            lineDash: [5, 5]
+          })
+        }));
+      });
+
+      if (this.contents.measure) {
+        tooltip.setFeature(evt.feature)
+      }
+    })
+
+    draw.on('change:active', evt => {
+      // If the Draw interaction is deactivated
+      if (!evt.target.getActive()) {
+        // Reset the style of existing features
+        this.vector.getSource().getFeatures().forEach((feature: any) => {
+          feature.setStyle(null); // Reset the style to the default style
+        });
+      }
+
+      tooltip.removeFeature();
+    });
+
     draw.on('drawend', evt => {
+      tooltip.removeFeature()
       this.vector.getSource().clear()
       const feature = setZValueForGeometry(evt.feature, zValue);
       updateForm(this, [feature], true)
+      ControlManager.show([editModeControl, clearMapCtrl]);
     })
 
     // Material design icon
@@ -196,10 +280,82 @@ export function setControls(types: Array<string>) {
       html: `<i class="mdi ${mdi}" ></i>`,
       title: this.i18n.control[type.toLowerCase()],
       interaction: draw,
-      active: (type === geometryType)
+      active: false,
+      onToggle: (active: boolean) => {
+        modify.setActive(false);
+        if (active) {
+          draw.setActive(true);
+        } else {
+          draw.setActive(false);
+        }
+      }
     })
     editbar.addControl(control)
   })
+
+  // Add the edit control
+  const editModeControl = new Toggle({
+    html: '<i class="mdi mdi-pencil"></i>',
+    title: this.i18n.control.edit_mode,
+    active: false,
+    onToggle: (active: boolean) => {
+      if (active) {
+        modify.setActive(true);
+        this.map.getInteractions().forEach((interaction: any) => {
+          if (interaction instanceof Draw) {
+            interaction.setActive(false);
+          }
+        });
+
+        if (this.vector.getSource().getFeatures().length > 0) {
+          const firstFeature = this.vector.getSource().getFeatures()[0];
+          if (firstFeature && firstFeature.getGeometry().getType() !== 'Point') {
+            // Code to execute if the first feature is not a Point
+            let message = this.i18n.messages.modify_start;
+            if (isTouchDevice()) {
+              message = this.i18n.messages.modify_start_touch;
+            } else if (isMacOS()) {
+              message = this.i18n.messages.modify_start_mac;
+            }
+            this.map.notification.show(message);
+          }
+        }
+      } else {
+        modify.setActive(false);
+      }
+    }
+  });
+  editbar.addControl(editModeControl);
+
+  // Add the clear map control
+  const clearMapCtrl = new Button({
+    html: '<i class="mdi mdi-delete"></i>',
+    title: this.i18n.control.clear_map,
+    handleClick: () => {
+      this.vector.getSource().clear();
+      updateForm(this, null);
+      (editbar.getControls()[0] as Toggle).setActive(true);
+      ControlManager.hide([editModeControl, clearMapCtrl]);
+    }
+  });
+  editbar.addControl(clearMapCtrl);
+
+  // if the vector layer is not empty, set the editModeControl to active
+  if (this.vector.getSource().getFeatures().length > 0) {
+    editModeControl.setActive(true);
+    ControlManager.show([editModeControl, clearMapCtrl]);
+  }
+  // otherwise set the first draw control to active
+  else {
+    (editbar.getControls()[0] as Toggle).setActive(true);
+    ControlManager.hide([editModeControl, clearMapCtrl]);
+  }
+
+  // Add the snap interaction
+  const snap = new Snap({
+    source: this.vector.getSource(),
+  });
+  this.map.addInteraction(snap);
 
   // Uses jQuery UI for GeoJSON Upload modal window
   const mapObj = this
@@ -261,56 +417,52 @@ export function setControls(types: Array<string>) {
   }
 }
 
+
 /**
  *  Add popup
  */
 export function setPopover() {
-  const popup = new Popup({
-    popupClass: 'default',
-    closeBox: false,
-    onclose: () => {},
-    positioning: 'auto',
-    anim: true
-  })
-  this.map.addOverlay(popup)
 
   // Control Select
   const select = new Select({
     layers: [this.vector],
     style: null,
-    multi: false
-  })
-  this.map.addInteraction(select)
+    multi: false,
+    hitTolerance: 5
+  });
+  this.map.addInteraction(select);
 
-  // On selected => show/hide popup
-  select.getFeatures().on(['add'], (evt: any) => {
-    const feature = evt.element
+  // Popup overlay
+  const popup = new PopupFeature({
+    popupClass: 'default',
+    select: select,
+    canFix: false,
+    closeBox: false,
+    positioning: 'auto',
+    maxChar: 30,
+    template: {
+      title: (ftr: any) => {
+        const popup_contents = JSON.parse(this.contents.popup);
+        const url = popup_contents.href.replace(/\[(.+?)\]/g, ftr.get('id'));
+        const subject = ftr.get('subject');
+        const displaySubject = subject.length > 25 ? `${subject.substring(0, 22)}…` : subject;
+        return `${displaySubject} <a href="${url}"><i class="mdi mdi-arrow-right-circle-outline"></i></a>`;
+      },
+      attributes: {}
+    }
+  });
+  this.map.addOverlay(popup);
 
-    const content: Array<string> = []
-    content.push(`<b>${feature.get('subject')}</b><br/>`)
-    // content.push('<span>Starts at: ' + feature.get("start_date") + '</span> |');
-
-    const popup_contents = JSON.parse(this.contents.popup)
-    const url = popup_contents.href.replace(/\[(.+?)\]/g, feature.get('id'))
-    content.push(`<a href="${url}">Edit</a>`)
-
-    popup.show(feature.getGeometry().getFirstCoordinate(), content.join('') as any)
-  })
-
-  select.getFeatures().on(['remove'], _ => {
-    popup.hide()
-  })
-
-  // change mouse cursor when over marker
+  // Change mouse cursor when over marker
   this.map.on('pointermove', (evt: any) => {
-    if (evt.dragging) return
+    if (evt.dragging) return;
     const hit = this.map.hasFeatureAtPixel(evt.pixel, {
       layerFilter: (layer: any) => {
-        return layer === this.vector
+        return layer === this.vector;
       }
-    })
-    this.map.getTargetElement().style.cursor = hit ? 'pointer' : ''
-  })
+    });
+    this.map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+  });
 }
 
 /**
@@ -471,6 +623,7 @@ export function setGeolocation(currentMap: Map) {
     onToggle: (active: boolean) => {
       geolocation.setTracking(active)
       geolocationLayer.setVisible(active)
+      this.map.notification.show((active ? this.i18n.control.geolocation_activated : this.i18n.control.geolocation_deactivated), 2000)
     }
   })
   this.toolbar.addControl(geolocationCtrl)

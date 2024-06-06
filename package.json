@@ -33,6 +33,7 @@
     "@types/geojson": "^7946.0.14",
     "@types/jquery": "^3.5.30",
     "@types/jqueryui": "^1.12.22",
+    "@types/google.maps": "^3.55.9",
     "@types/ol-ext": "npm:@siedlerchr/types-ol-ext",
     "css-loader": "^7.1.2",
     "sass": "^1.77.2",

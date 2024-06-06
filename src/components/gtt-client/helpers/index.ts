@@ -104,12 +104,16 @@ export const getObjectPathValue = (obj: any, path: string | Array<string>, def: 
  * @param updateAddressFlag - A flag to update the address field with reverse geocoding, default is false.
  */
 export function updateForm(mapObj: any, features: FeatureLike[] | null, updateAddressFlag: boolean = false):void {
-  if (features == null) {
-    return
-  }
-  const geom = document.querySelector('#geom') as HTMLInputElement
+
+  const geom = document.querySelector('#geom') as HTMLInputElement;
   if (!geom) {
-    return
+    return;
+  }
+
+  if (features == null) {
+    // Clear the geom input field
+    geom.value = '';
+    return;
   }
 
   const writer = new GeoJSON()
@@ -269,4 +273,31 @@ export function parseHistory() {
     }
   });
 }
+
+/**
+ * Format length in meters or kilometers.
+ * @param length
+ * @returns
+ */
+export function formatLength(length: number): string {
+  if (length < 1000) {
+    return length.toFixed(0) + ' m';
+  } else {
+    return (length / 1000).toFixed(2) + ' km';
+  }
+}
+
+/**
+ * Format area in square meters or square kilometers.
+ * @param area
+ * @returns
+ */
+export function formatArea(area: number): string {
+  if (area < 10000) {
+    return area.toFixed(1) + ' m<sup>2</sup>';
+  } else {
+    return (area / 1000000).toFixed(2) + ' km<sup>2</sup>';
+  }
+}
+
 
