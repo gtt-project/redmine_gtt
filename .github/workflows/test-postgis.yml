@@ -60,97 +60,45 @@ jobs:
         with:
           path: redmine/plugins/${{ env.PLUGIN_NAME }}
 
-      - name: Update package archives
-        run: apt-get update --yes --quiet
-
-      - name: Install package dependencies
-        run: |
-          apt-get install --yes --quiet \
-            postgresql-client \
-            gcc libpq-dev make patch libgeos-dev curl
-          # For system test
-          if [ ${{ matrix.system_test }} = "true" ]; then
-            wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-            sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-            apt-get -y update
-            apt-get install -y google-chrome-stable
-          fi
-
-      - name: Install Node/Yarn packages
-        run: |
-          curl -sL https://deb.nodesource.com/setup_20.x | bash -
-          curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-          echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-          apt-get update --yes --quiet
-          apt-get install --yes --quiet --no-install-recommends nodejs yarn
+      - name: Setup Environment
+        run: ./setup_environment.sh
 
       - name: Prepare Plugin
-        working-directory: redmine/plugins/redmine_gtt
-        run: |
-          yarn
-          npx webpack
+        working-directory: redmine/plugins/${{ env.PLUGIN_NAME }}
+        run: ./prepare_plugin.sh
 
       - name: Prepare Redmine source
         working-directory: redmine
-        run: |
-          cat <<EOF > config/database.yml
-            test:
-              adapter: postgis
-              database: redmine
-              host: postgres
-              username: postgres
-              password: postgres
-              encoding: utf8
-          EOF
+        run: ./prepare_redmine.sh
 
       - name: Adjust Gem environment
-        run: |
-          case "${{ matrix.redmine_version }}" in
-            master)
-              echo "GEM_ACTIVERECORD_POSTGIS_ADAPTER_VERSION=9.0.1" >> ${GITHUB_ENV}
-              ;;
-          esac
+        run: ./adjust_gem_env.sh
 
       - name: Install Ruby dependencies
         working-directory: redmine
-        run: |
-          bundle config set --local without 'development'
-          bundle install --jobs=4 --retry=3
+        run: ./install_ruby_dependencies.sh
 
       - name: Run Redmine rake tasks
         env:
           RAILS_ENV: test
         working-directory: redmine
-        run: |
-          bundle exec rake generate_secret_token
-          bundle exec rake db:create db:migrate redmine:plugins:migrate
+        run: ./run_rake_tasks.sh
 
       - name: Zeitwerk check
         env:
           RAILS_ENV: test
         working-directory: redmine
-        run: |
-          if grep -q zeitwerk config/application.rb ; then
-            bundle exec rake zeitwerk:check
-          fi
-        shell: bash
+        run: ./zeitwerk_check.sh
 
       - name: Run tests
         env:
           RAILS_ENV: test
-          # For system test in plugin
           GOOGLE_CHROME_OPTS_ARGS: "headless,disable-gpu,no-sandbox,disable-dev-shm-usage"
         working-directory: redmine
-        run: |
-          bundle exec rake redmine:plugins:test:units NAME=${{ env.PLUGIN_NAME }} RUBYOPT="-W0"
-          bundle exec rake redmine:plugins:test:functionals NAME=${{ env.PLUGIN_NAME }} RUBYOPT="-W0"
-          bundle exec rake redmine:plugins:test:integration NAME=${{ env.PLUGIN_NAME }} RUBYOPT="-W0"
-          if [ ${{ matrix.system_test }} = "true" ]; then
-            bundle exec rake redmine:plugins:test:system NAME=${{ env.PLUGIN_NAME }} RUBYOPT="-W0"
-          fi
+        run: ./run_tests.sh
 
       - name: Run uninstall test
         env:
           RAILS_ENV: test
         working-directory: redmine
-        run: bundle exec rake redmine:plugins:migrate NAME=${{ env.PLUGIN_NAME }} VERSION=0
+        run: ./run_uninstall_test.sh
