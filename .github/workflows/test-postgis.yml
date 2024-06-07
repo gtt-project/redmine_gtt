@@ -57,44 +57,44 @@ jobs:
           path: redmine/plugins/${{ env.PLUGIN_NAME }}
 
       - name: Setup Environment
-        run: ./.github/workflow/setup_environment.sh
+        run: ./scripts/setup_environment.sh
 
       - name: Prepare Plugin
         working-directory: redmine/plugins/${{ env.PLUGIN_NAME }}
-        run: ./.github/workflow/prepare_plugin.sh
+        run: ./scripts/prepare_plugin.sh
 
       - name: Prepare Redmine source
         working-directory: redmine
-        run: ./.github/workflow/prepare_redmine.sh
+        run: ./scripts/prepare_redmine.sh
 
       - name: Adjust Gem environment
-        run: ./.github/workflow/adjust_gem_env.sh
+        run: ./scripts/adjust_gem_env.sh
 
       - name: Install Ruby dependencies
         working-directory: redmine
-        run: ./.github/workflow/install_ruby_dependencies.sh
+        run: ./scripts/install_ruby_dependencies.sh
 
       - name: Run Redmine rake tasks
         env:
           RAILS_ENV: test
         working-directory: redmine
-        run: ./.github/workflow/run_rake_tasks.sh
+        run: ./scripts/run_rake_tasks.sh
 
       - name: Zeitwerk check
         env:
           RAILS_ENV: test
         working-directory: redmine
-        run: ./.github/workflow/zeitwerk_check.sh
+        run: ./scripts/zeitwerk_check.sh
 
       - name: Run tests
         env:
           RAILS_ENV: test
           GOOGLE_CHROME_OPTS_ARGS: "headless,disable-gpu,no-sandbox,disable-dev-shm-usage"
         working-directory: redmine
-        run: ./.github/workflow/run_tests.sh
+        run: ./scripts/run_tests.sh
 
       - name: Run uninstall test
         env:
           RAILS_ENV: test
         working-directory: redmine
-        run: ./.github/workflow/run_uninstall_test.sh
+        run: ./scripts/run_uninstall_test.sh
