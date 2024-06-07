@@ -50,13 +50,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Show current directory
+        run: pwd
+
       - name: Set script permissions
         run: chmod +x /scripts/*.sh
-        shell: bash
 
       - name: List scripts directory for debugging
         run: ls -l ./scripts
-        shell: bash
 
       - name: Checkout Redmine
         uses: actions/checkout@v4
@@ -72,40 +73,33 @@ jobs:
 
       - name: Setup Environment
         run: /scripts/setup_environment.sh
-        shell: bash
 
       - name: Prepare Plugin
         working-directory: redmine/plugins/${{ env.PLUGIN_NAME }}
         run: /scripts/prepare_plugin.sh
-        shell: bash
 
       - name: Prepare Redmine source
         working-directory: redmine
         run: /scripts/prepare_redmine.sh
-        shell: bash
 
       - name: Adjust Gem environment
         run: /scripts/adjust_gem_env.sh
-        shell: bash
 
       - name: Install Ruby dependencies
         working-directory: redmine
         run: /scripts/install_ruby_dependencies.sh
-        shell: bash
 
       - name: Run Redmine rake tasks
         env:
           RAILS_ENV: test
         working-directory: redmine
         run: /scripts/run_rake_tasks.sh
-        shell: bash
 
       - name: Zeitwerk check
         env:
           RAILS_ENV: test
         working-directory: redmine
         run: /scripts/zeitwerk_check.sh
-        shell: bash
 
       - name: Run tests
         env:
@@ -113,11 +107,9 @@ jobs:
           GOOGLE_CHROME_OPTS_ARGS: "headless,disable-gpu,no-sandbox,disable-dev-shm-usage"
         working-directory: redmine
         run: /scripts/run_tests.sh
-        shell: bash
 
       - name: Run uninstall test
         env:
           RAILS_ENV: test
         working-directory: redmine
         run: /scripts/run_uninstall_test.sh
-        shell: bash
