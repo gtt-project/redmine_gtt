@@ -33,15 +33,15 @@
     "@types/geojson": "^7946.0.14",
     "@types/jquery": "^3.5.30",
     "@types/jqueryui": "^1.12.22",
-    "@types/google.maps": "^3.55.9",
+    "@types/google.maps": "^3.55.10",
     "@types/ol-ext": "npm:@siedlerchr/types-ol-ext",
     "css-loader": "^7.1.2",
-    "sass": "^1.77.4",
+    "sass": "^1.77.6",
     "sass-loader": "^14.2.1",
     "style-loader": "^4.0.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.4.5",
-    "webpack": "^5.91.0",
+    "webpack": "^5.92.0",
     "webpack-cli": "^5.1.4"
   }
 }
