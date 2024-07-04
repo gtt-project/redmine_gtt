@@ -43,9 +43,9 @@ function setSearchControl(instance: any): void {
       if (response.reverse) {
         // Add copy to clipboard functionality, if available
         if (navigator.clipboard) {
-          // strip htmls from response title
+          // Sanitize response title and remove all HTML tags
           const sanitizedTitle = DOMPurify.sanitize(response.title, { ALLOWED_TAGS: [] });
-          const text = sanitizedTitle.replace(/<[^>]*>?/gm, '');
+          const text = sanitizedTitle.replace(/<\/?[^>]+(>|$)/g, '');
           navigator.clipboard.writeText(text);
           instance.map.notification.show(instance.i18n.control.copied_location_to_clipboard);
         }
