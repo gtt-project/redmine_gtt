@@ -443,11 +443,22 @@ export function setPopover() {
     template: {
       title: (ftr: any) => {
         const popup_contents = JSON.parse(this.contents.popup);
-        const url = popup_contents.href.replace(/\[(.+?)\]/g, ftr.get('id'));
         const subject = ftr.get('subject');
         const displaySubject = subject.length > 25 ? `${subject.substring(0, 22)}…` : subject;
+
+        const replacePlaceholders = (str: string, replacement: string): string => {
+          return str.split('[').map(part => {
+            const endIndex = part.indexOf(']');
+            if (endIndex !== -1) {
+              return replacement + part.substring(endIndex + 1);
+            }
+            return part;
+          }).join('');
+        };
+
+        const url = replacePlaceholders(popup_contents.href, ftr.get('id'));
         return `${displaySubject} <a href="${url}"><i class="mdi mdi-arrow-right-circle-outline"></i></a>`;
-      },
+        },
       attributes: {}
     }
   });

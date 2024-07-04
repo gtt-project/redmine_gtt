@@ -8,6 +8,7 @@ import Target from 'ol-ext/control/Target';
 import Hover from  'ol-ext/interaction/Hover';
 import Notification from 'ol-ext/control/Notification';
 import { position } from 'ol-ext/control/control';
+import DOMPurify from 'dompurify';
 
 import { radiansToDegrees, degreesToRadians, parseHistory, formatLength, formatArea } from "../helpers";
 import { zoomToExtent, setGeolocation, setView, setControls, setPopover } from "../openlayers";
@@ -43,7 +44,8 @@ function setSearchControl(instance: any): void {
         // Add copy to clipboard functionality, if available
         if (navigator.clipboard) {
           // strip htmls from response title
-          const text = response.title.replace(/<[^>]*>?/gm, '');
+          const sanitizedTitle = DOMPurify.sanitize(response.title, { ALLOWED_TAGS: [] });
+          const text = sanitizedTitle.replace(/<[^>]*>?/gm, '');
           navigator.clipboard.writeText(text);
           instance.map.notification.show(instance.i18n.control.copied_location_to_clipboard);
         }
