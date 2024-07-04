@@ -2,6 +2,7 @@ import { Map, Geolocation } from 'ol';
 import { Geometry } from 'ol/geom';
 import { Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource } from 'ol/source';
+import Feature from 'ol/Feature';
 
 import { IGttClientOption, IFilterOption } from './interfaces';
 
@@ -24,8 +25,8 @@ export default class GttClient {
   contents: DOMStringMap;
   i18n: any;
   filters: IFilterOption;
-  vector: VectorLayer<VectorSource<Geometry>>;
-  bounds: VectorLayer<VectorSource<Geometry>>;
+  vector: VectorLayer<VectorSource<Feature<Geometry>>>;
+  bounds: VectorLayer<VectorSource<Feature<Geometry>>>;
   geolocations: Array<Geolocation>;
 
   /**

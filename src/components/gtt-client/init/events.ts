@@ -82,17 +82,17 @@ function handleIssueSelection(this: any): void {
 
 
 /**
- * Handles the click event on the edit icon to update the map size when the editable form is made visible.
+ * Handles the click event on the edit/comment icon to update the map size when the editable form is made visible.
  */
 function handleEditIcon(this: any): void {
-  document.querySelectorAll('div.contextual a.icon-edit').forEach((element: HTMLAnchorElement) => {
+  document.querySelectorAll('div.contextual a.icon-edit, div.contextual a.icon-comment').forEach((element: HTMLAnchorElement) => {
     element.addEventListener('click', () => {
       setTimeout(() => {
         this.maps.forEach((m: any) => {
           m.updateSize();
         });
         zoomToExtent.call(this);
-      }, 200);
+      }, 500);
     });
   });
 }

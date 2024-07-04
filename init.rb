@@ -8,7 +8,7 @@ Redmine::Plugin.register :redmine_gtt do
   author_url 'https://github.com/georepublic'
   url 'https://github.com/gtt-project/redmine_gtt'
   description 'Adds location-based task management and maps'
-  version '5.0.1'
+  version '5.1.0'
 
   requires_redmine :version_or_higher => '5.0.0'
 
@@ -30,10 +30,13 @@ Redmine::Plugin.register :redmine_gtt do
       'default_map_maxzoom_level' => 19,
       'default_map_fit_maxzoom_level' => 17,
       'vector_minzoom_level' => 0,
+      'default_target_enabled' => false,
+      'default_measure_enabled' => false,
       'default_geocoder_options' => '{}',
       'editable_geometry_types_on_issue_map' => ["Point"],
       'enable_geojson_upload_on_issue_map' => false,
-      'enable_geocoding_on_map' => false
+      'enable_geocoding_on_map' => false,
+      'hide_map_for_invalid_geom' => false
     },
     partial: 'settings/gtt/settings'
   )

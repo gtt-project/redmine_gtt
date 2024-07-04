@@ -1,7 +1,8 @@
 # English strings go here for Rails i18n
 en:
   error_invalid_json: Must be valid JSON
-  error_unable_to_update_project_gtt_settings: "Unable to update project GTT settings (%{value})"
+  error_unable_to_update_project_gtt_settings: "Unable to update project GTT settings
+    (%{value})"
 
   field_geometry: "Geometry"
   field_location: "Location"
@@ -28,10 +29,13 @@ en:
   label_tab_general: "General"
   label_tab_geocoder: "Geocoder"
 
-  geocoder_options: "Geocoder Options"
+  geocoder_provider: "Provider"
+  geocoder_options: "Options"
+  geocoder_load_example: "Load example options"
 
   gtt_map_rotate_label: "Map rotation"
-  gtt_map_rotate_info_html: "Hold down <code>Shift+Alt</code> and drag the map to rotate."
+  gtt_map_rotate_info_html: "Hold down <code>Shift+Alt</code> and drag the map to
+    rotate."
 
   gtt_settings_general_center_lon: "Default map center longitude"
   gtt_settings_general_center_lat: "Default map center latitude"
@@ -51,6 +55,13 @@ en:
   label_editable_geometry_types_on_issue_map: "Editable geometry types on issue map"
   label_enable_geojson_upload_on_issue_map: "Enable GeoJSON upload on issue map"
   label_enable_geocoding_on_map: "Enable geocoding on map"
+  label_default_target_enabled: "Show target on map center"
+  label_default_measure_enabled: "Show control for measuring length and area"
+
+  select_other_gtt_settings: "Other GTT settings"
+  label_hide_map_for_invalid_geom: "Hide issue map for invalid geometry"
+  gtt_hide_map_for_invalid_geom_info: "Please edit the issue and set the geometry
+    to see the map."
 
   select_default_tracker_icon: "Select default tracker icon:"
   select_default_status_color: "Select default status color:"
@@ -63,7 +74,8 @@ en:
   permission_view_gtt_settings: "View GTT settings"
 
   title_geojson_upload: "Import GeoJSON"
-  placeholder_geojson_upload: "Please paste a GeoJSON geometry here, or import the GeoJSON data from a file."
+  placeholder_geojson_upload: "Please paste a GeoJSON geometry here, or import the
+    GeoJSON data from a file."
 
   map_layer:
     title: "Map Layers"
@@ -96,6 +108,11 @@ en:
     control:
       geocoding: "Location search"
       geolocation: "My location"
+      search_location: "Search location"
+      reverse_location: "Click on the map to get location…"
+      search_placeholder: "Type a location…"
+      geolocation_activated: "Geolocation activated"
+      geolocation_deactivated: "Geolocation deactivated"
       maximize: "Zoom to all features"
       upload: "Upload GeoJSON"
       fullscreen: "Toggle full-screen"
@@ -105,9 +122,15 @@ en:
       point: "Point editor"
       linestring: "Line editor"
       polygon: "Area editor"
+      clear_map: "Clear map"
+      remove_point: "Remove point"
+      copied_location_to_clipboard: "Copied location to clipboard"
     modal:
       load: "Load"
       cancel: "Cancel"
     messages:
       baselayer_missing: "There is no baselayer available!"
       zoom_in_more: "Zoom in to view objects."
+      modify_start: "Hold down <code>ALT</code> and click on a vertex to delete it."
+      modify_start_mac: "Hold down <code>Option</code> and click on a vertex to delete it."
+      modify_start_touch: "Tap on a vertex to delete it."
