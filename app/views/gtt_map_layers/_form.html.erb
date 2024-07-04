@@ -11,7 +11,7 @@
   <p>
     <%= f.select :layer,
       options_for_select(
-        ['Image','Tile','MapboxVector','Vector','VectorTile'],
+        ['Image','Tile','MapboxVector','Vector','VectorTile','WebGLTile'],
         selected: f.object.layer ),
       { include_blank: t('map_layer.layer_options_select'), required: true }
     %>
@@ -22,7 +22,7 @@
   <p>
     <%= f.select :source,
       options_for_select(
-        ['BingMaps','CartoDB','ImageStatic','ImageWMS','OSM','Raster','Stamen',
+        ['BingMaps','CartoDB','Google','ImageStatic','ImageWMS','OSM','Raster',
          'TileJSON','TileWMS','UTFGrid','Vector','VectorTile','WMTS','XYZ'],
         selected: f.object.source ),
       { include_blank: t('map_layer.source_options_select') }
@@ -51,10 +51,11 @@
   document.addEventListener('DOMContentLoaded', function() {
     const map_layer_config = {
       'Image': ['ImageStatic','ImageWMS','Raster'],
-      'Tile': ['BingMaps','CartoDB','OSM','Stamen','TileJSON','TileWMS','UTFGrid','WMTS','XYZ'],
+      'Tile': ['BingMaps','CartoDB','OSM','TileJSON','TileWMS','UTFGrid','WMTS','XYZ'],
       'MapboxVector': [],
       'Vector': ['Vector'],
       'VectorTile': ['VectorTile'],
+      'WebGLTile': ['Google'],
     };
 
     const map_format_config = {
@@ -210,6 +211,20 @@
       'attributions': '<a href="https://www.openmaptiles.org/" target="_blank">OpenMapTiles</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap contributors</a>'
     },
     'format': 'ol.format.MVT',
+    'format_options': {}
+  },{
+    'name': 'Google Maps',
+    'layer': 'WebGLTile',
+    'layer_options': {},
+    'source': 'Google',
+    'source_options': {
+      'key': 'YOUR_API_KEY',
+      'mapType': 'roadmap',
+      'language': 'ja_JP',
+      'scale': 'scaleFactor2x',
+      'layerTypes': ['layerTraffic'],
+    },
+    'format': '',
     'format_options': {}
   }];
 </script>

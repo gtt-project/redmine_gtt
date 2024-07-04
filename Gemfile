@@ -16,3 +16,4 @@ gem "pg", "~> #{gem_versions[:pg]}"
 gem "rgeo-activerecord", "~> #{gem_versions[:rgeo_activerecord]}"
 gem 'activerecord-postgis-adapter', "~> #{gem_versions[:activerecord_postgis_adapter]}"
 gem 'rails-controller-testing' # This gem brings back assigns to your controller tests as well as assert_template to both controller and integration tests.
+gem 'blankslate', '~> 3.1.3'
