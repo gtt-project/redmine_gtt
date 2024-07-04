@@ -145,10 +145,10 @@
   resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.14.tgz#319b63ad6df705ee2a65a73ef042c8271e696613"
   integrity sha512-WCfD5Ht3ZesJUsONdhvm84dmzWOiOzOAqOncN0++w0lBw1o8OuDNJF2McvvCef/yBqb/HYRahp1BYtODFQ8bRg==
 
-"@types/google.maps@^3.55.10":
-  version "3.55.10"
-  resolved "https://registry.yarnpkg.com/@types/google.maps/-/google.maps-3.55.10.tgz#ce4a8c375b84990a0e9eec9f151c3494cbe5bf2c"
-  integrity sha512-XbDu2MIvcKgN+MBrufjWcsQRtXTbrBGBKperbhMLnPSq4770+pvlR66Oqq/Ub4AVkmGc9QciCfwPZpVCLaKAOw==
+"@types/google.maps@^3.55.11":
+  version "3.55.11"
+  resolved "https://registry.yarnpkg.com/@types/google.maps/-/google.maps-3.55.11.tgz#a8227bfc30df54973dc7046b01f8eff5bb9fc63e"
+  integrity sha512-F3VuPtjKj4UGuyym75pqmgPBOHbT/i7I6/D+4DdtSzbeu2aWZG1ENwpbZOd46uO+PSAz9flJEhxxi+b4MVb4gQ==
 
 "@types/jquery@*":
   version "3.5.16"
@@ -164,10 +164,10 @@
   dependencies:
     "@types/sizzle" "*"
 
-"@types/jqueryui@^1.12.22":
-  version "1.12.22"
-  resolved "https://registry.yarnpkg.com/@types/jqueryui/-/jqueryui-1.12.22.tgz#6cd7ac3e2ad6e10286c5f2fc06329d715202bd8e"
-  integrity sha512-4r7ROoUJ5gaIWvQa2qAHyrhskJcUNM62Md8M9+4DtabEiIQ9Y0pVlW88ojyXvn4M1HNUc/47KpFJaXhrk8P/rg==
+"@types/jqueryui@^1.12.23":
+  version "1.12.23"
+  resolved "https://registry.yarnpkg.com/@types/jqueryui/-/jqueryui-1.12.23.tgz#06882d3fd91834f87c40320a0897b2d3fe17de35"
+  integrity sha512-pm1yVNVI29B9IGw41anCEzA5eR2r1pYc7flqD471ZT7B0yUXIY7YNe/zq7LGpihIGXNzWyG+Q4YQSzv2AF3fNA==
   dependencies:
     "@types/jquery" "*"
 
@@ -883,10 +883,10 @@ ol-ext@^4.0.15:
   resolved "https://registry.yarnpkg.com/ol-ext/-/ol-ext-4.0.18.tgz#87e68566bae1a7821e3a1af8b7019409ce922324"
   integrity sha512-zzeTAoCg9IocaM7LlXiLNnVCgVmfxxLzlDTWvYn3Y2gFxtICHSfRrIQl/8vumgBjftBksVl1Fds8P5uFReTmew==
 
-ol-mapbox-style@^12.3.3:
-  version "12.3.3"
-  resolved "https://registry.yarnpkg.com/ol-mapbox-style/-/ol-mapbox-style-12.3.3.tgz#a9b3420a16bf56528b89485317fff33e8baf3440"
-  integrity sha512-Wyb1vSxTl/c09S9yC/Dcr7XWQf5u19/9BriqOiDJRgbjLTAbrWXW8l+5N9E/I0fV2gcTQDE+7iFtvVOvXcTmMA==
+ol-mapbox-style@^12.3.4:
+  version "12.3.4"
+  resolved "https://registry.yarnpkg.com/ol-mapbox-style/-/ol-mapbox-style-12.3.4.tgz#ecdc544f8f5c9a27b7b84710ba39145a27e22c08"
+  integrity sha512-TxGJZw4hmvc6n5dHSyAE8ZpgALJ6hVG5Q9yl0j2Q1KmLS9iq4wMpb383TAitWiG86SvJV4oDkWMGkyyMLfVyew==
   dependencies:
     "@mapbox/mapbox-gl-style-spec" "^13.23.1"
     mapbox-to-css-font "^2.4.1"
@@ -1291,10 +1291,10 @@ ts-loader@^9.5.1:
     semver "^7.3.4"
     source-map "^0.7.4"
 
-typescript@^5.4.5:
-  version "5.4.5"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.4.5.tgz#42ccef2c571fdbd0f6718b1d1f5e6e5ef006f611"
-  integrity sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==
+typescript@^5.5.3:
+  version "5.5.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.5.3.tgz#e1b0a3c394190838a0b168e771b0ad56a0af0faa"
+  integrity sha512-/hreyEujaB0w76zKo6717l3L0o/qEUtRgdvUBvlkhoWeOVMjMuHNHk0BRBzikzuGDqNmPQbg5ifMEqsHLiIUcQ==
 
 update-browserslist-db@^1.0.13:
   version "1.0.13"
