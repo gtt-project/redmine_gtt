@@ -543,10 +543,10 @@ cssesc@^3.0.0:
   resolved "https://registry.npmjs.org/cssesc/-/cssesc-3.0.0.tgz"
   integrity sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==
 
-dompurify@^3.1.5:
-  version "3.1.5"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.1.5.tgz#2c6a113fc728682a0f55684b1388c58ddb79dc38"
-  integrity sha512-lwG+n5h8QNpxtyrJW/gJWckL+1/DQiYMX8f7t8Z2AZTPw1esVrqjI63i7Zc2Gz0aKzLVMYC1V1PL/ky+aY/NgA==
+dompurify@^3.1.6:
+  version "3.1.6"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.1.6.tgz#43c714a94c6a7b8801850f82e756685300a027e2"
+  integrity sha512-cTOAhc36AalkjtBpfG6O8JimdTMWNXjiePT2xQH/ppBGi/4uIpmj8eKyIkMJErXWARyINV/sB38yf8JCLF5pbQ==
 
 earcut@^2.2.3:
   version "2.2.4"
@@ -900,10 +900,10 @@ normalize-path@^3.0.0, normalize-path@~3.0.0:
   resolved "https://registry.npmjs.org/normalize-path/-/normalize-path-3.0.0.tgz"
   integrity sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==
 
-ol-ext@^4.0.15:
-  version "4.0.18"
-  resolved "https://registry.yarnpkg.com/ol-ext/-/ol-ext-4.0.18.tgz#87e68566bae1a7821e3a1af8b7019409ce922324"
-  integrity sha512-zzeTAoCg9IocaM7LlXiLNnVCgVmfxxLzlDTWvYn3Y2gFxtICHSfRrIQl/8vumgBjftBksVl1Fds8P5uFReTmew==
+ol-ext@^4.0.19:
+  version "4.0.19"
+  resolved "https://registry.yarnpkg.com/ol-ext/-/ol-ext-4.0.19.tgz#774d368b82791f59ebda44c08d038ca3eb54afff"
+  integrity sha512-QMhmys/ux7eYKZFtca6CeK+l9YgZb5yL5hHFJLKkiObw/qz6xKu+gy+SSnF/QyvJbfAJDleuFHf2mqkYqC9hZQ==
 
 ol-mapbox-style@^12.3.4:
   version "12.3.4"
