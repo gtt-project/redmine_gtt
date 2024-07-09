@@ -22,11 +22,11 @@
   "dependencies": {
     "@juggle/resize-observer": "^3.4.0",
     "@mdi/font": "^7.4.47",
-    "dompurify": "^3.1.5",
+    "dompurify": "^3.1.6",
     "fontfaceobserver": "^2.3.0",
     "geojson": "^0.5.0",
     "ol": "^9.1.0",
-    "ol-ext": "^4.0.15",
+    "ol-ext": "^4.0.19",
     "ol-mapbox-style": "^12.3.4"
   },
   "devDependencies": {
