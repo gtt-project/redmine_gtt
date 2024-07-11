@@ -12,8 +12,11 @@ module RedmineGtt
             attr_reader :distance
             safe_attributes "geojson",
               if: ->(issue, user){
-                perm = issue.new_record? ? :add_issues : :edit_issues
-                user.allowed_to? perm, issue.project
+                if issue.new_record?
+                  user.allowed_to? :add_issues, issue.project
+                else
+                  issue.attributes_editable?(user)
+                end
               }
             before_update :ignore_small_geom_change, if: :geom_changed?
           end

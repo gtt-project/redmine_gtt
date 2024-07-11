@@ -1,6 +1,6 @@
 <% if (@project.nil? or @project.module_enabled?(:gtt)) &&
       ((issue.new_record? && User.current.allowed_to?(:add_issues, issue.project)) ||
-        User.current.allowed_to?(:edit_issues, issue.project))
+        issue.attributes_editable?(User.current))
 %>
   <%= map_form_field form, issue.map, bounds: issue.project.map.bounds,
         edit_mode: Setting.plugin_redmine_gtt['editable_geometry_types_on_issue_map'] && Setting.plugin_redmine_gtt['editable_geometry_types_on_issue_map'].join(' '),

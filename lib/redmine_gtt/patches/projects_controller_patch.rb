@@ -10,14 +10,20 @@ module RedmineGtt
       def index
         respond_to do |format|
           format.api {
+            retrieve_project_query
+            scope = project_scope
             @include_geometry = params[:include] == 'geometry'
-            query = RedmineGtt::SpatialProjectsQuery.new(
-              contains: params[:contains],
-              geometry: @include_geometry,
-              projects: Project.visible.sorted
-            )
-            scope = query.scope
-            @project_count = query.count
+            if @include_geometry || params[:contains].present?
+              query = RedmineGtt::SpatialProjectsQuery.new(
+                contains: params[:contains],
+                geometry: @include_geometry,
+                projects: scope
+              )
+              scope = query.scope
+              @project_count = query.count
+            else
+              @project_count = scope.count
+            end
             @offset, @limit = api_offset_and_limit
             @projects = scope.offset(@offset).limit(@limit).to_a
           }

@@ -232,7 +232,7 @@ var App = (function ($, publ) {
             return;
           }
           var mapDiv = mutation.target;
-          if (mapDiv && mapDiv.style.display === 'block') {
+          if (mapDiv && (mapDiv.style.display === 'block' || mapDiv.style.display === '')) {
             self.zoomToExtent(true);
             collapsedObserver.disconnect();
           }
@@ -289,9 +289,6 @@ var App = (function ($, publ) {
       if ($("tr#tr_distance").length > 0) {
         filters.distance = true;
       }
-      $("fieldset#location legend").click(function(){
-        toggleAndLoadMap(this)
-      })
       publ.zoomToExtent();
       map.on('moveend', publ.updateFilter);
     });
@@ -554,7 +551,7 @@ var App = (function ($, publ) {
    */
   publ.parseHistory = function () {
     $('div#history ul.details i').each( function (idx,item) {
-      var regex = new RegExp(/\w+[\s]?(\((-?\d+.\d+\s?-?\d+.\d+,?)+\))+/g);
+      var regex = /\b(?:POINT|LINESTRING|POLYGON)\b\s?\({1,}[-]?\d+([,. ]\s?[-]?\d+)*\){1,}/gi;
       var match = $(item).text().match(regex);
       if (match !== null) {
         var feature = new ol.format.WKT().readFeature(
@@ -1115,16 +1112,6 @@ var App = (function ($, publ) {
         }
     }
     return "";
-  }
-
-  function toggleAndLoadMap(el) {
-    var fieldset = $(el).parents('fieldset').first();
-    fieldset.toggleClass('collapsed');
-    fieldset.children('legend').toggleClass('icon-expended icon-collapsed');
-    fieldset.children('div').toggle();
-    maps.forEach(function (m) {
-      m.updateSize();
-    });
   }
 
   function getMapSize(map) {
