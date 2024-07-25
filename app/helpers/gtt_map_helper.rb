@@ -70,13 +70,6 @@ module GttMapHelper
             window.createGttClient(target);
             contentObserver();
           }, { once: true });
-          var target = document.getElementById('#{uid}');
-          if (
-            document.readyState === 'complete'
-            && !target.hasChildNodes()
-          ) {
-            window.createGttClient(target);
-          }
         }
         document.addEventListener('DOMContentLoaded', function(){
           var target = document.getElementById('#{uid}');
