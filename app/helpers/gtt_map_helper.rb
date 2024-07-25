@@ -67,9 +67,18 @@ module GttMapHelper
         if (!#{show}) {
           document.addEventListener('contentUpdated', function(){
             var target = document.getElementById('#{uid}');
+            target.classList.add('map-editable');
             window.createGttClient(target);
             contentObserver();
           }, { once: true });
+          var target = document.getElementById('#{uid}');
+          if (
+            document.readyState === 'complete'
+            && !target.hasChildNodes()
+            && document.getElementsByClassName('map-editable').length === 1
+          ) {
+            window.createGttClient(target);
+          }
         }
         document.addEventListener('DOMContentLoaded', function(){
           var target = document.getElementById('#{uid}');
