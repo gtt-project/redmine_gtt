@@ -65,11 +65,6 @@ module GttMapHelper
           observer.observe(document.body, config);
         }
         if (!#{show}) {
-          document.addEventListener('contentUpdated', function(){
-            var target = document.getElementById('#{uid}');
-            window.createGttClient(target);
-            contentObserver();
-          }, { once: true });
           var target = document.getElementById('#{uid}');
           if (
             document.readyState === 'complete'
