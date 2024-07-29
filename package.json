@@ -25,8 +25,8 @@
     "dompurify": "^3.1.6",
     "fontfaceobserver": "^2.3.0",
     "geojson": "^0.5.0",
-    "ol": "^9.1.0",
-    "ol-ext": "^4.0.21",
+    "ol": "^10.0.0",
+    "ol-ext": "4.0.18",
     "ol-mapbox-style": "^12.3.4"
   },
   "devDependencies": {
