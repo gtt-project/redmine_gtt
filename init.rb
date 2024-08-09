@@ -58,9 +58,10 @@ RGeo::ActiveRecord::SpatialFactoryStore.instance.tap do |config|
 end
 
 if Rails.version > '6.0' && Rails.autoloaders.zeitwerk_enabled?
-  require File.expand_path('../app/overrides/issues', __FILE__)
-  require File.expand_path('../app/overrides/projects', __FILE__)
-  require File.expand_path('../app/overrides/users', __FILE__)
+  Dir.glob("#{Rails.root}/plugins/redmine_gtt/app/overrides/**/*.rb").each do |path|
+    Rails.autoloaders.main.ignore(path)
+    load File.expand_path(path, __FILE__)
+  end
   RedmineGtt.setup_normal_patches
   Rails.application.config.after_initialize do
     RedmineGtt.setup_controller_patches
