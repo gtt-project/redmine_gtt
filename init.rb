@@ -60,7 +60,7 @@ end
 if Rails.version > '6.0' && Rails.autoloaders.zeitwerk_enabled?
   Dir.glob("#{Rails.root}/plugins/redmine_gtt/app/overrides/**/*.rb").each do |path|
     Rails.autoloaders.main.ignore(path)
-    load File.expand_path(path, __FILE__)
+    require path
   end
   RedmineGtt.setup_normal_patches
   Rails.application.config.after_initialize do
