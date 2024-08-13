@@ -890,10 +890,10 @@ normalize-path@^3.0.0, normalize-path@~3.0.0:
   resolved "https://registry.npmjs.org/normalize-path/-/normalize-path-3.0.0.tgz"
   integrity sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==
 
-ol-ext@4.0.18:
-  version "4.0.18"
-  resolved "https://registry.yarnpkg.com/ol-ext/-/ol-ext-4.0.18.tgz#87e68566bae1a7821e3a1af8b7019409ce922324"
-  integrity sha512-zzeTAoCg9IocaM7LlXiLNnVCgVmfxxLzlDTWvYn3Y2gFxtICHSfRrIQl/8vumgBjftBksVl1Fds8P5uFReTmew==
+ol-ext@^4.0.22:
+  version "4.0.22"
+  resolved "https://registry.yarnpkg.com/ol-ext/-/ol-ext-4.0.22.tgz#6cc5453df31e9ec7df0303749b969e5ad56a09a8"
+  integrity sha512-ljujTaJK3TX9jzjAqyDw9vl5WRGTMpNLfTS2GsFeKZqohByHb8OurvnOwGlJtQExnSHEjqyyqh9K57TYqxoRDA==
 
 ol-mapbox-style@^12.3.4:
   version "12.3.4"
