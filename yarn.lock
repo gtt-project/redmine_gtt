@@ -116,27 +116,6 @@
   dependencies:
     "@types/trusted-types" "*"
 
-"@types/eslint-scope@^3.7.3":
-  version "3.7.4"
-  resolved "https://registry.npmjs.org/@types/eslint-scope/-/eslint-scope-3.7.4.tgz"
-  integrity sha512-9K4zoImiZc3HlIp6AVUDE4CWYx22a+lhSZMYNpbjW04+YF0KWj4pJXnEMjdnFTiQibFFmElcsasJXDbdI/EPhA==
-  dependencies:
-    "@types/eslint" "*"
-    "@types/estree" "*"
-
-"@types/eslint@*":
-  version "8.37.0"
-  resolved "https://registry.npmjs.org/@types/eslint/-/eslint-8.37.0.tgz"
-  integrity sha512-Piet7dG2JBuDIfohBngQ3rCt7MgO9xCO4xIMKxBThCq5PNRB91IjlJ10eJVwfoNtvTErmxLzwBZ7rHZtbOMmFQ==
-  dependencies:
-    "@types/estree" "*"
-    "@types/json-schema" "*"
-
-"@types/estree@*":
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/@types/estree/-/estree-1.0.1.tgz"
-  integrity sha512-LG4opVs2ANWZ1TJoKc937iMmNstM/d0ae1vNbnBvBhqCSezgVUOzcLCqbI5elV8Vy6WKwKjaqR+zO9VKirBBCA==
-
 "@types/estree@^1.0.5":
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.5.tgz#a6ce3e556e00fd9895dd872dd172ad0d4bd687f4"
@@ -178,7 +157,7 @@
   dependencies:
     "@types/jquery" "*"
 
-"@types/json-schema@*", "@types/json-schema@^7.0.8":
+"@types/json-schema@^7.0.8":
   version "7.0.11"
   resolved "https://registry.npmjs.org/@types/json-schema/-/json-schema-7.0.11.tgz"
   integrity sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==
@@ -192,6 +171,11 @@
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/@siedlerchr/types-ol-ext/-/types-ol-ext-3.4.0.tgz#e57292b89fc6b00226a751479c41e78d266c283a"
   integrity sha512-LtS9YNitiQ2UZV+RHVOS0Pehlkpcsp6qX9Sa2I33l4ZNqFCRB0T8YefGj0Se4SP8cPr1jc9+q1UU86BjFpg8ww==
+
+"@types/rbush@^3.0.3":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@types/rbush/-/rbush-3.0.4.tgz#265d84ec76dc48e464e95ae4f58e085f28f0a227"
+  integrity sha512-knSt9cCW8jj1ZSFcFeBZaX++OucmfPxxHiRwTahZfJlnQsek7O0bazTJHWD2RVj9LEoejUYF2de3/stf+QXcXw==
 
 "@types/sizzle@*":
   version "2.3.3"
@@ -566,10 +550,10 @@ enhanced-resolve@^5.0.0:
     graceful-fs "^4.2.4"
     tapable "^2.2.0"
 
-enhanced-resolve@^5.17.0:
-  version "5.17.0"
-  resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-5.17.0.tgz#d037603789dd9555b89aaec7eb78845c49089bc5"
-  integrity sha512-dwDPwZL0dmye8Txp2gzFmA6sxALaSvdRDjPH0viLcKrtlOL3tw62nWWweVD1SdILDTJrbrL6tdWVN58Wo6U3eA==
+enhanced-resolve@^5.17.1:
+  version "5.17.1"
+  resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-5.17.1.tgz#67bfbbcc2f81d511be77d686a90267ef7f898a15"
+  integrity sha512-LMHl3dXhTcfv8gM4kEzIUeTQ+7fpdA0l2tUf34BddXPkz2A5xJ5L/Pchd5BL6rdccM9QGvu0sWZzK1Z1t4wwyg==
   dependencies:
     graceful-fs "^4.2.4"
     tapable "^2.2.0"
@@ -890,24 +874,25 @@ normalize-path@^3.0.0, normalize-path@~3.0.0:
   resolved "https://registry.npmjs.org/normalize-path/-/normalize-path-3.0.0.tgz"
   integrity sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==
 
-ol-ext@^4.0.22:
-  version "4.0.22"
-  resolved "https://registry.yarnpkg.com/ol-ext/-/ol-ext-4.0.22.tgz#6cc5453df31e9ec7df0303749b969e5ad56a09a8"
-  integrity sha512-ljujTaJK3TX9jzjAqyDw9vl5WRGTMpNLfTS2GsFeKZqohByHb8OurvnOwGlJtQExnSHEjqyyqh9K57TYqxoRDA==
+ol-ext@^4.0.23:
+  version "4.0.23"
+  resolved "https://registry.yarnpkg.com/ol-ext/-/ol-ext-4.0.23.tgz#13b405451f7696ce4d0a6bd466ce5b6b69786c1b"
+  integrity sha512-g1TBIEC9je2SoPx0qz8w4emCIRcOhz87eYxeszoLSWm6HMAbCQcymjmEIqpOHxL+R9BVKs4ar5KJShobv6510g==
 
-ol-mapbox-style@^12.3.4:
-  version "12.3.4"
-  resolved "https://registry.yarnpkg.com/ol-mapbox-style/-/ol-mapbox-style-12.3.4.tgz#ecdc544f8f5c9a27b7b84710ba39145a27e22c08"
-  integrity sha512-TxGJZw4hmvc6n5dHSyAE8ZpgALJ6hVG5Q9yl0j2Q1KmLS9iq4wMpb383TAitWiG86SvJV4oDkWMGkyyMLfVyew==
+ol-mapbox-style@^12.3.5:
+  version "12.3.5"
+  resolved "https://registry.yarnpkg.com/ol-mapbox-style/-/ol-mapbox-style-12.3.5.tgz#8653890ce9f1ee2c0fc98cad6857bd0ca1e64628"
+  integrity sha512-1tdq+jpzJ7BuqCeRpNV5u90X369MXDbHKpPPt0BNpbzi+4UEJ2dJIrd3eFQV9VbqvZeEIioEjyK7qOqXsUZs8w==
   dependencies:
     "@mapbox/mapbox-gl-style-spec" "^13.23.1"
     mapbox-to-css-font "^2.4.1"
 
-ol@^10.0.0:
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/ol/-/ol-10.0.0.tgz#2d37ca13a18375b20b873a4264d69feda3936d8d"
-  integrity sha512-Gzfh61cQAxseCWL97VpGwbF91R2D69y3ABUewTl2H1Hjy6ipCtnoKshgO+n3WBrjsbsyS8QnkfmiJZNQGQNeOA==
+ol@^10.1.0:
+  version "10.1.0"
+  resolved "https://registry.yarnpkg.com/ol/-/ol-10.1.0.tgz#f163fc57585c454c149a87f201c207fe642d2f46"
+  integrity sha512-/efepydpzhFoeczA9KAN5t7G0WpFhP46ZXEfSl6JbZ7ipQZ2axpkYB2qt0qcOUlPFYMt7/XQFApH652KB08tTg==
   dependencies:
+    "@types/rbush" "^3.0.3"
     color-rgba "^3.0.0"
     color-space "^2.0.1"
     earcut "^3.0.0"
@@ -1119,10 +1104,10 @@ safe-buffer@^5.1.0:
   resolved "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.2.1.tgz"
   integrity sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==
 
-sass-loader@^16.0.0:
-  version "16.0.0"
-  resolved "https://registry.yarnpkg.com/sass-loader/-/sass-loader-16.0.0.tgz#9b8d497e24bc176dc368df2b5b9e90b4ad24bf4e"
-  integrity sha512-n13Z+3rU9A177dk4888czcVFiC8CL9dii4qpXWUg3YIIgZEvi9TCFKjOQcbK0kJM7DJu9VucrZFddvNfYCPwtw==
+sass-loader@^16.0.1:
+  version "16.0.1"
+  resolved "https://registry.yarnpkg.com/sass-loader/-/sass-loader-16.0.1.tgz#57049c1787076e923b21a1dccc612546ecaf4295"
+  integrity sha512-xACl1ToTsKnL9Ce5yYpRxrLj9QUDCnwZNhzpC7tKiFyA8zXsd3Ap+HGVnbCgkdQcm43E+i6oKAWBsvGA6ZoiMw==
   dependencies:
     neo-async "^2.6.2"
 
@@ -1372,12 +1357,11 @@ webpack-sources@^3.2.3:
   resolved "https://registry.npmjs.org/webpack-sources/-/webpack-sources-3.2.3.tgz"
   integrity sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==
 
-webpack@^5.93.0:
-  version "5.93.0"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.93.0.tgz#2e89ec7035579bdfba9760d26c63ac5c3462a5e5"
-  integrity sha512-Y0m5oEY1LRuwly578VqluorkXbvXKh7U3rLoQCEO04M97ScRr44afGVkI0FQFsXzysk5OgFAxjZAb9rsGQVihA==
+webpack@^5.94.0:
+  version "5.94.0"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.94.0.tgz#77a6089c716e7ab90c1c67574a28da518a20970f"
+  integrity sha512-KcsGn50VT+06JH/iunZJedYGUJS5FGjow8wb9c0v5n1Om8O1g4L6LjtfxwlXIATopoQu+vOXXa7gYisWxCoPyg==
   dependencies:
-    "@types/eslint-scope" "^3.7.3"
     "@types/estree" "^1.0.5"
     "@webassemblyjs/ast" "^1.12.1"
     "@webassemblyjs/wasm-edit" "^1.12.1"
@@ -1386,7 +1370,7 @@ webpack@^5.93.0:
     acorn-import-attributes "^1.9.5"
     browserslist "^4.21.10"
     chrome-trace-event "^1.0.2"
-    enhanced-resolve "^5.17.0"
+    enhanced-resolve "^5.17.1"
     es-module-lexer "^1.2.1"
     eslint-scope "5.1.1"
     events "^3.2.0"
