@@ -8,7 +8,7 @@ Redmine::Plugin.register :redmine_gtt do
   author_url 'https://github.com/georepublic'
   url 'https://github.com/gtt-project/redmine_gtt'
   description 'Adds location-based task management and maps'
-  version '5.1.0'
+  version '5.1.2'
 
   requires_redmine :version_or_higher => '5.0.0'
 
@@ -58,9 +58,10 @@ RGeo::ActiveRecord::SpatialFactoryStore.instance.tap do |config|
 end
 
 if Rails.version > '6.0' && Rails.autoloaders.zeitwerk_enabled?
-  require File.expand_path('../app/overrides/issues', __FILE__)
-  require File.expand_path('../app/overrides/projects', __FILE__)
-  require File.expand_path('../app/overrides/users', __FILE__)
+  Dir.glob("#{Rails.root}/plugins/redmine_gtt/app/overrides/**/*.rb").each do |path|
+    Rails.autoloaders.main.ignore(path)
+    require path
+  end
   RedmineGtt.setup_normal_patches
   Rails.application.config.after_initialize do
     RedmineGtt.setup_controller_patches
