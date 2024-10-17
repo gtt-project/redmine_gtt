@@ -9,7 +9,7 @@
     <p>
       <%= f.select :gtt_tile_source_ids,
         options_from_collection_for_select(GttTileSource.sorted, :id, :name, selected: @form.gtt_tile_source_ids),
-        {}, { multiple: true, size: 5 } %>
+        { :label => t(:field_gtt_tile_source_ids) }, { multiple: true, size: 5 } %>
       <br /><em><%= t :gtt_tile_sources_info %></em>
     </p>
   </div>
