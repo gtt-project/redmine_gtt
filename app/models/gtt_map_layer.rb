@@ -1,7 +1,7 @@
 # Map layer model
 #
 # Configuration is stored as json
-class GttMapLayer < ActiveRecord::Base
+class GttMapLayer < (defined?(ApplicationRecord) == 'constant' ? ApplicationRecord : ActiveRecord::Base)
   self.inheritance_column = 'none'
 
   validates :name, presence: true
