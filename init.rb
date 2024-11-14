@@ -1,6 +1,4 @@
-# Global Hooks
-require File.expand_path('../lib/redmine_gtt/hooks/view_layouts_base_html_head_hook', __FILE__)
-require File.expand_path('../lib/redmine_gtt/view_hooks', __FILE__)
+require_relative 'lib/redmine_gtt/view_hooks'
 
 Redmine::Plugin.register :redmine_gtt do
   name 'Redmine GTT plugin'
@@ -8,7 +6,7 @@ Redmine::Plugin.register :redmine_gtt do
   author_url 'https://github.com/georepublic'
   url 'https://github.com/gtt-project/redmine_gtt'
   description 'Adds location-based task management and maps'
-  version '5.1.2'
+  version '6.0.0'
 
   requires_redmine :version_or_higher => '5.0.0'
 

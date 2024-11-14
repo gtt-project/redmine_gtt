@@ -7300,11 +7300,16 @@ const iconMappings: { [key: string]: any } = {
   "zodiac-virgo": "\u{F0A88}",
 };
 
+// Read the meta tag for MDI webfont
+const mdiWebfontMeta = document.querySelector('meta[name="gtt-font-mdi-webfont"]');
+const mdiWebfontUrl = mdiWebfontMeta ? mdiWebfontMeta.getAttribute('content') : 'data:application/font-woff2;base64,'; // Provide a data URL for an empty font
+
 // Define the font face
-let customFont = new FontFace('materialdesignicons', 'url(/plugin_assets/redmine_gtt/materialdesignicons-webfont.woff2)');
+let mdiFont: FontFace;
+mdiFont = new FontFace('materialdesignicons', `url(${mdiWebfontUrl})`);
 
 // Load the font
-const fontPromise = customFont.load().then((font) => {
+const fontPromise = mdiFont.load().then((font) => {
   // Add the loaded font to the document
   document.fonts.add(font);
 
@@ -7314,13 +7319,13 @@ const fontPromise = customFont.load().then((font) => {
       font: 'Material Design Icons',
       name: 'Material Design Icons',
       copyright: 'Apache-2.0',
-      prefix:  'mdi'
+      prefix: 'mdi',
     },
     iconMappings
   );
 
   // Create a FontFaceObserver instance
-  const observer = new FontFaceObserver('custom-icons');
+  const observer = new FontFaceObserver('materialdesignicons');
 
   // Use the observer to wait for the font to be loaded
   return observer.load();
