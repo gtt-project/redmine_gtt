@@ -8,8 +8,27 @@ const iconMappings: { [key: string]: any } = {
   'waste': '\uf104'
 };
 
+// Read the meta tag for custom-icons
+const customIconsMeta = document.querySelector('meta[name="gtt-font-custom-icons"]');
+const customIconsUrl = customIconsMeta ? customIconsMeta.getAttribute('content') : 'data:application/font-woff2;base64,'; // Provide a data URL for an empty font
+
+// Dynamically create the @font-face rule
+const style = document.createElement('style');
+style.type = 'text/css';
+style.innerHTML = `
+  @font-face {
+    font-family: 'custom-icons';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url(${customIconsUrl}) format('woff2');
+  }
+`;
+document.head.appendChild(style);
+
 // Define the font face
-let customFont = new FontFace('custom-icons', 'url(/plugin_assets/redmine_gtt/custom-icons.woff2)');
+let customFont: FontFace;
+customFont = new FontFace('custom-icons', `url(${customIconsUrl})`);
 
 // Load the font
 const fontPromise = customFont.load().then((font) => {
