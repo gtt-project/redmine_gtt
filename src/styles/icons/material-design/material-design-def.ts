@@ -7304,6 +7304,19 @@ const iconMappings: { [key: string]: any } = {
 const mdiWebfontMeta = document.querySelector('meta[name="gtt-font-mdi-webfont"]');
 const mdiWebfontUrl = mdiWebfontMeta ? mdiWebfontMeta.getAttribute('content') : 'data:application/font-woff2;base64,'; // Provide a data URL for an empty font
 
+// Dynamically create the @font-face rule
+const style = document.createElement('style');
+style.type = 'text/css';
+style.innerHTML = `
+  @font-face {
+    font-family: 'Material Design Icons';
+    src: url(${mdiWebfontUrl}) format('woff2');
+    font-weight: normal;
+    font-style: normal;
+  }
+`;
+document.head.appendChild(style);
+
 // Define the font face
 let mdiFont: FontFace;
 mdiFont = new FontFace('materialdesignicons', `url(${mdiWebfontUrl})`);
