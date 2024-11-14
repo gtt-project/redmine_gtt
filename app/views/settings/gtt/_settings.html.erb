@@ -23,14 +23,17 @@
     });
   }
 
-  // Activate tab if it is specified in the URL
   document.addEventListener('DOMContentLoaded', function() {
+
+    // Activate tab if it is specified in the URL
     var tab = getQueryParam('tab');
     if (tab) {
       activateTab(tab);
     }
-  });
 
-  // Apply settings
-  window.gtt_setting();
+    // Apply GTT settings
+    if (typeof window.gtt_setting === 'function') {
+      window.gtt_setting();
+    }
+  });
 <% end %>
