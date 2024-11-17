@@ -25,16 +25,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        redmine_version: [5.0-stable, 5.1-stable, master]
-        ruby_version: ['3.0', '3.1', '3.2']
-        db_version: [12-3.4, 16-3.4]
+        redmine_version: [5.1-stable, 6.0-stable, master]
+        ruby_version: ['3.1', '3.2', '3.3']
+        db_version: [13-3.4, 17-3.5]
         include:
           - system_test: true
-            redmine_version: 5.1-stable
-            ruby_version: '3.2'
+            redmine_version: 6.0-stable
+            ruby_version: '3.3'
         exclude:
-          - redmine_version: 5.0-stable
-            ruby_version: '3.2'
+          - redmine_version: 5.1-stable
+            ruby_version: '3.3'
           - redmine_version: master
 
     services:
@@ -106,8 +106,9 @@ jobs:
       - name: Adjust Gem environment
         run: |
           case "${{ matrix.redmine_version }}" in
-            master)
-              echo "GEM_ACTIVERECORD_POSTGIS_ADAPTER_VERSION=9.0.1" >> ${GITHUB_ENV}
+            5.1-stable)
+              echo "GEM_RGEO_ACTIVERECORD_VERSION=7.0.1" >> ${GITHUB_ENV}
+              echo "GEM_ACTIVERECORD_POSTGIS_ADAPTER_VERSION=7.1.1" >> ${GITHUB_ENV}
               ;;
           esac
 
@@ -142,11 +143,11 @@ jobs:
           GOOGLE_CHROME_OPTS_ARGS: "headless,disable-gpu,no-sandbox,disable-dev-shm-usage"
         working-directory: redmine
         run: |
-          bundle exec rake redmine:plugins:test:units NAME=${{ env.PLUGIN_NAME }} RUBYOPT="-W0"
-          bundle exec rake redmine:plugins:test:functionals NAME=${{ env.PLUGIN_NAME }} RUBYOPT="-W0"
-          bundle exec rake redmine:plugins:test:integration NAME=${{ env.PLUGIN_NAME }} RUBYOPT="-W0"
+          bundle exec rails test plugins/redmine_gtt/test/unit
+          bundle exec rails test plugins/redmine_gtt/test/functional
+          bundle exec rails test plugins/redmine_gtt/test/integration
           if [ ${{ matrix.system_test }} = "true" ]; then
-            bundle exec rake redmine:plugins:test:system NAME=${{ env.PLUGIN_NAME }} RUBYOPT="-W0"
+            bundle exec rails test plugins/redmine_gtt/test/system
           fi
 
       - name: Run uninstall test
