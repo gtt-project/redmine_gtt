@@ -69,6 +69,8 @@ en:
   select_edit_geometry_settings: "Set edit geometry settings:"
   select_default_geocoder_settings: "Set Geocoder settings:"
 
+  select_other_style_settings: "Other style settings"
+
   project_module_gtt: "GTT"
   permission_manage_gtt_settings: "Manage GTT settings"
   permission_view_gtt_settings: "View GTT settings"

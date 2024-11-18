@@ -13,12 +13,18 @@ api.array :users, api_meta(:total_count => @user_count, :offset => @offset, :lim
       api.passwd_changed_on user.passwd_changed_on
       api.avatar_url gravatar_url(user.mail, {rating: nil, size: nil, default: Setting.gravatar_default}) if Setting.gravatar_enabled?
       api.twofa_scheme user.twofa_scheme
+      api.status user.status
 
       if user.geom
         api.geojson (params[:format] == "json") ? user.geojson : user.geojson.to_json
       else
         api.geojson nil
       end
+
+      api.auth_source do
+        api.id user.auth_source.id
+        api.name user.auth_source.name
+      end if include_in_api_response?('auth_source') && user.auth_source.present?
 
       render_api_custom_values user.visible_custom_field_values, api
     end

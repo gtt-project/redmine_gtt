@@ -16,7 +16,7 @@ const imageLoaders = {
   test: /\.(png|svg|jpg|jpeg|gif)$/i,
   type: 'asset/resource',
   generator: {
-    filename: '[name][ext]', // Keep the original file name and extension
+    filename: '../images/[name][ext]', // Keep the original file name and extension
   },
 };
 
@@ -25,7 +25,7 @@ const fontLoaders = {
   test: /\.(woff|woff2|eot|ttf|otf)$/i,
   type: 'asset/resource',
   generator: {
-    filename: '[name][ext]', // Keep the original file name and extension
+    filename: '../fonts/[name][ext]', // Keep the original file name and extension
   },
 };
 
@@ -55,7 +55,7 @@ module.exports = {
   },
   output: {
     filename: 'main.js',
-    path: path.resolve(__dirname, 'assets'),
+    path: path.resolve(__dirname, 'assets/javascripts'),
     assetModuleFilename: '[name].[ext]',
   },
 };
