@@ -56,37 +56,12 @@ RGeo::ActiveRecord::SpatialFactoryStore.instance.tap do |config|
   config.register RGeo::Cartesian.preferred_factory(has_z_coordinate: true, srid: 4326), geo_type: 'geometry', sql_type: "geometry", srid: 4326
 end
 
-if Rails.version > '6.0' && Rails.autoloaders.zeitwerk_enabled?
-  Dir.glob("#{Rails.root}/plugins/redmine_gtt/app/overrides/**/*.rb").each do |path|
-    Rails.autoloaders.main.ignore(path)
-    require path
-  end
-  RedmineGtt.setup_normal_patches
-  Rails.application.config.after_initialize do
-    RedmineGtt.setup_controller_patches
-  end
-else
-  require 'redmine_gtt'
-  # Configure View Overrides
-  Rails.application.paths["app/overrides"] ||= []
-  Rails.application.paths["app/overrides"] << File.expand_path("../app/overrides", __FILE__)
+Dir.glob("#{Rails.root}/plugins/redmine_gtt/app/overrides/**/*.rb").each do |path|
+  Rails.autoloaders.main.ignore(path)
+  require path
+end
 
-  ActiveSupport::Reloader.to_prepare do
-    RedmineGtt.setup_normal_patches
-
-    # ActiveRecord::Base.include_root_in_json = true
-    # module RGeo
-    #   module Feature
-    #     module Point
-    #       def as_json(params)
-    #         ::RGeo::GeoJSON.encode(self)
-    #       end
-    #     end
-    #   end
-    # end
-  end
-
-  Rails.configuration.to_prepare do
-    RedmineGtt.setup_controller_patches
-  end
+RedmineGtt.setup_normal_patches
+Rails.application.config.after_initialize do
+  RedmineGtt.setup_controller_patches
 end
