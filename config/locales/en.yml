@@ -80,10 +80,10 @@ en:
     GeoJSON data from a file."
 
   map_layer:
-    title: "Map Layers"
-    plural: "Map Layers"
-    new: "New Map Layer"
-    ids: "Map Layers"
+    title: "Map layers"
+    plural: "Map layers"
+    new: "New map layer"
+    ids: "Map layers"
     project:
       info: "Select the map layers that should be available in this project."
     layer_options_select: "-- Select layer type --"
