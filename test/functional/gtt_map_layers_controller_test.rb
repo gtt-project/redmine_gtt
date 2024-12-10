@@ -18,14 +18,14 @@ class GttMapLayersControllerTest < ActionController::TestCase
     get :index
     assert_response :success
     assert_template 'index'
-    assert_select 'h2', 'Map Layers'
+    assert_select 'h2', 'Map layers'
   end
 
   test 'should get new' do
     get :new
     assert_response :success
     assert_template 'new'
-    assert_select 'h2', /New Map Layer/
+    assert_select 'h2', 'Map layers » New map layer'
   end
 
   test 'should create map layer' do
