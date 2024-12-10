@@ -1,6 +1,6 @@
 <% if @project.nil? or @project.module_enabled?(:gtt) %>
 <div class="projectmap box">
-  <h3 class="icon icon-gtt-map"><%= l(:label_project_map) %></h3>
+  <h3 class="icon icon-gtt-map"><%= (Redmine::VERSION.to_s >= '6.0.0') ? sprite_icon('gtt-map', l(:label_project_map), plugin: 'redmine_gtt') : l(:label_project_map) %></h3>
 
   <%= map_tag map: @project.map, rotation: @project.map_rotation %>
 </div>
