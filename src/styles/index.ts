@@ -8,7 +8,7 @@ import 'ol-ext/dist/ol-ext.min.css';
 import './scss/app.scss';
 
 // Import custom icons CSS file for adding custom icon designs in the application
-import './icons/custom/custom-icons.css';
+import './icons/custom/custom-icons.scss';
 
 // Import custom icons definition JS file to define icon names, sizes, and variations
 import './icons/custom/custom-icons-def';
