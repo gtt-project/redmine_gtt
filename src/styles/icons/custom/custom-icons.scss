@@ -1,4 +1,4 @@
-$custom-icons-path: unquote('RAILS_ASSET_URL("custom-icons.woff2")');
+$custom-icons-path: 'RAILS_ASSET_URL("custom-icons.woff2")';
 
 @font-face {
   font-family: "custom-icons";
