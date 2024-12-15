@@ -8,37 +8,7 @@ const iconMappings: { [key: string]: any } = {
   'waste': '\uf104'
 };
 
-// Read the meta tag for custom-icons
-const customIconsMeta = document.querySelector('meta[name="gtt-font-custom-icons"]');
-const customIconsUrl = customIconsMeta ? customIconsMeta.getAttribute('content') : 'data:application/font-woff2;base64,'; // Provide a data URL for an empty font
-
-// Dynamically create the @font-face rule
-if (customIconsUrl) {
-  // Remove the existing @font-face rule
-  const styleSheets = document.styleSheets;
-  for (let i = 0; i < styleSheets.length; i++) {
-    const cssRules = styleSheets[i].cssRules || styleSheets[i].rules;
-    for (let j = 0; j < cssRules.length; j++) {
-      const rule = cssRules[j];
-      if (rule instanceof CSSFontFaceRule && rule.style.fontFamily === 'custom-icons') {
-        styleSheets[i].deleteRule(j);
-        break;
-      }
-    }
-  }
-
-  const style = document.createElement('style');
-  style.innerHTML = `
-    @font-face {
-      font-family: 'custom-icons';
-      font-style: normal;
-      font-weight: 400;
-      font-display: block;
-      src: url(${customIconsUrl}) format('woff2');
-    }
-  `;
-  document.head.appendChild(style);
-}
+const customIconsUrl = 'RAILS_ASSET_URL("custom-icons.woff2")';
 
 // Define the font face
 let customFont: FontFace;

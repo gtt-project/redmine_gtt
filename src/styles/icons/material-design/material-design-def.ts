@@ -7300,13 +7300,11 @@ const iconMappings: { [key: string]: any } = {
   "zodiac-virgo": "\u{F0A88}",
 };
 
-// Read the meta tag for MDI webfont
-const mdiWebfontMeta = document.querySelector('meta[name="gtt-font-mdi-webfont"]');
-const mdiWebfontUrl = mdiWebfontMeta ? mdiWebfontMeta.getAttribute('content') : 'data:application/font-woff2;base64,'; // Provide a data URL for an empty font
+const mdiWebfontUrl = 'RAILS_ASSET_URL("materialdesignicons-webfont.woff2")';
 
 // Dynamically create the @font-face rule
 const style = document.createElement('style');
-style.type = 'text/css';
+// style.type = 'text/css';
 style.innerHTML = `
   @font-face {
     font-family: 'Material Design Icons';

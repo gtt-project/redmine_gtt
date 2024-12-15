@@ -22,12 +22,12 @@
   "dependencies": {
     "@juggle/resize-observer": "^3.4.0",
     "@mdi/font": "^7.4.47",
-    "dompurify": "^3.2.2",
+    "dompurify": "^3.2.3",
     "fontfaceobserver": "^2.3.0",
     "geojson": "^0.5.0",
     "ol": "^10.3.1",
     "ol-ext": "^4.0.24",
-    "ol-mapbox-style": "^12.3.5"
+    "ol-mapbox-style": "^12.4.0"
   },
   "devDependencies": {
     "@types/dompurify": "^3.2.0",
@@ -38,7 +38,7 @@
     "@types/jqueryui": "^1.12.23",
     "@types/ol-ext": "npm:@siedlerchr/types-ol-ext",
     "css-loader": "^7.1.2",
-    "sass": "^1.82.0",
+    "sass": "^1.83.0",
     "sass-loader": "^16.0.4",
     "style-loader": "^4.0.0",
     "ts-loader": "^9.5.1",

@@ -616,10 +616,17 @@ detect-libc@^1.0.3:
   resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-1.0.3.tgz#fa137c4bd698edf55cd5cd02ac559f91a4c4ba9b"
   integrity sha512-pGjwhsmsp4kL2RTz08wcOlGN83otlqHeD/Z5T8GXZB+/YcpQ/dgo+lbU8ZsGxV0HIvqqxo9l7mqYwyYMD9bKDg==
 
-dompurify@*, dompurify@^3.2.2:
+dompurify@*:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.2.2.tgz#6c0518745e81686c74a684f5af1e5613e7cc0246"
   integrity sha512-YMM+erhdZ2nkZ4fTNRTSI94mb7VG7uVF5vj5Zde7tImgnhZE3R6YW/IACGIHb2ux+QkEXMhe591N+5jWOmL4Zw==
+  optionalDependencies:
+    "@types/trusted-types" "^2.0.7"
+
+dompurify@^3.2.3:
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.2.3.tgz#05dd2175225324daabfca6603055a09b2382a4cd"
+  integrity sha512-U1U5Hzc2MO0oW3DF+G9qYN0aT7atAou4AgI0XjWz061nyBPbdxkfdhfy5uMgGn6+oLFCfn44ZGbdDqCzVmlOWA==
   optionalDependencies:
     "@types/trusted-types" "^2.0.7"
 
@@ -960,10 +967,10 @@ ol-ext@^4.0.24:
   resolved "https://registry.yarnpkg.com/ol-ext/-/ol-ext-4.0.24.tgz#86f3bb662fc9932ee16481604b2cbce87d96d28f"
   integrity sha512-VEf1+mjvbe35mMsszVsugqcvWfeGcU8TwS+GgXm3nGYqiHR7CckX2DWmM9B94QCDnrJWKKXBicfInbkoe2xT7w==
 
-ol-mapbox-style@^12.3.5:
-  version "12.3.5"
-  resolved "https://registry.yarnpkg.com/ol-mapbox-style/-/ol-mapbox-style-12.3.5.tgz#8653890ce9f1ee2c0fc98cad6857bd0ca1e64628"
-  integrity sha512-1tdq+jpzJ7BuqCeRpNV5u90X369MXDbHKpPPt0BNpbzi+4UEJ2dJIrd3eFQV9VbqvZeEIioEjyK7qOqXsUZs8w==
+ol-mapbox-style@^12.4.0:
+  version "12.4.0"
+  resolved "https://registry.yarnpkg.com/ol-mapbox-style/-/ol-mapbox-style-12.4.0.tgz#775deb25994ae6fe36cb0748582712c9d61a698e"
+  integrity sha512-P8Jg9AXSG6FpUNrADejpwMG0HbmHTZOJQQocACzaDL0QrU4kzmCvj06xUIKhTxT5mtC413pCVAbyXJ4mx0XFnQ==
   dependencies:
     "@mapbox/mapbox-gl-style-spec" "^13.23.1"
     mapbox-to-css-font "^2.4.1"
@@ -1195,10 +1202,10 @@ sass-loader@^16.0.4:
   dependencies:
     neo-async "^2.6.2"
 
-sass@^1.82.0:
-  version "1.82.0"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.82.0.tgz#30da277af3d0fa6042e9ceabd0d984ed6d07df70"
-  integrity sha512-j4GMCTa8elGyN9A7x7bEglx0VgSpNUG4W4wNedQ33wSMdnkqQCT8HTwOaVSV4e6yQovcu/3Oc4coJP/l0xhL2Q==
+sass@^1.83.0:
+  version "1.83.0"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.83.0.tgz#e36842c0b88a94ed336fd16249b878a0541d536f"
+  integrity sha512-qsSxlayzoOjdvXMVLkzF84DJFc2HZEL/rFyGIKbbilYtAvlCxyuzUeff9LawTn4btVnLKg75Z8MMr1lxU1lfGw==
   dependencies:
     chokidar "^4.0.0"
     immutable "^5.0.2"
