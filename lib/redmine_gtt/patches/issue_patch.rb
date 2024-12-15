@@ -33,7 +33,7 @@ module RedmineGtt
       # (i.e. [140.1250590699026,35.6097256061325] vs [140.1250590699026,35.60972560613251])
 
       def ignore_small_geom_change
-        unless geom_change[0].nil?
+        unless geom_change[0].nil? || geom_change[1].nil?
           if geom_change[0].geometry_type == geom_change[1].geometry_type
             old_value = geom_change[0].coordinates
             new_value = geom_change[1].coordinates
