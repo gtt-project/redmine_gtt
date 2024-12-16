@@ -1,9 +1,11 @@
+$custom-icons-path: 'RAILS_ASSET_URL("custom-icons.woff2")';
+
 @font-face {
   font-family: "custom-icons";
   font-style: normal;
   font-weight: 400;
   font-display: block;
-  src: url("./custom-icons.woff2") format("woff2");
+  src: url(#{$custom-icons-path}) format("woff2");
 }
 
 .custom-icons {

@@ -3,9 +3,14 @@ const path = require('path');
 // Define loaders
 // Loaders for processing Sass files
 const sassLoaders = [
-  'style-loader', // Creates `style` nodes from JS strings
-  'css-loader', // Translates CSS into CommonJS
-  'sass-loader', // Compiles Sass to CSS
+  'style-loader',
+  {
+    loader: 'css-loader',
+    options: {
+      url: false, // Prevent css-loader from interpreting URLs
+    },
+  },
+  'sass-loader',
 ];
 
 // Loaders for processing CSS files
