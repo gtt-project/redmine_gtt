@@ -2,7 +2,7 @@ Deface::Override.new(
   :virtual_path => "issues/show",
   :name => "deface_view_issues_show_map",
   :insert_before => "div.attributes",
-  :original => 'c56981aa84b0fee66ff43ea773cf1444193a2862',
+  :original => '3364fc9db3ce98b8afdee409b64625b9b22be393',
   :partial => "issues/show/map"
 )
 
