@@ -76,14 +76,15 @@ function createLayers(this: any): void {
     if (config.source) {
       const SourceClass = olSource[config.source as keyof typeof olSource] as typeof olSource.Source;
       const sourceOptions = config.source_options;
+      if (config.format) {
+        const FormatClass = olFormat[config.format as keyof typeof olFormat] as any;
+        const formatOptions = config.format_options;
+        layerOptions['format'] = new FormatClass(formatOptions);
+        (sourceOptions as { format?: any })['format'] = layerOptions['format'];
+      }
       layerOptions['source'] = new SourceClass(sourceOptions);
     }
 
-    if (config.format) {
-      const FormatClass = olFormat[config.format as keyof typeof olFormat] as any;
-      const formatOptions = config.format_options;
-      layerOptions['format'] = new FormatClass(formatOptions);
-    }
 
     const layer = new LayerClass(layerOptions);
 
