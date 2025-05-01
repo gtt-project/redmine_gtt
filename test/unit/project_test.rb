@@ -5,7 +5,7 @@ class ProjectTest < GttTest
 
   setup do
     @p = Project.find 'ecookbook'
-    @p.update_attribute :geojson, test_geojson
+    @p.update_attribute :geojson, example_geojson
   end
 
   test 'should have geojson and geom attribute' do

@@ -6,7 +6,7 @@ class IssueTest < GttTest
   setup do
     @project = Project.find 'ecookbook'
     @issue = @project.issues.last
-    @issue.update_attribute :geojson, test_geojson
+    @issue.update_attribute :geojson, example_geojson
     @issue = Issue.find @issue.id
   end
 
@@ -83,7 +83,7 @@ class IssueTest < GttTest
   end
 
   test 'should ignore small linestring geom changes' do
-    coordinates = test_coordinates[0]
+    coordinates = example_coordinates[0]
 
     @issue.update_attribute :geojson, linestring_geojson(coordinates)
     @issue.instance_variable_set "@geojson", nil
@@ -107,7 +107,7 @@ class IssueTest < GttTest
   end
 
   test 'should ignore small polygon geom changes' do
-    coordinates = test_coordinates
+    coordinates = example_coordinates
 
     @issue.update_attribute :geojson, polygon_geojson(coordinates)
     @issue.instance_variable_set "@geojson", nil
