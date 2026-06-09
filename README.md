@@ -17,10 +17,11 @@ The Geo-Task-Tracker (GTT) plugin adds spatial capabilities to Redmine:
 Redmine GTT plugins **require PostgreSQL/PostGIS** and will not work with SQLite
 or MariaDB/MySQL!!!
 
-- Redmine >= 5.1.0
-- PostgreSQL >= 13
-- PostGIS >= 3.0
-- NodeJS v18
+- Redmine >= 6.0.0
+- Ruby >= 3.3
+- PostgreSQL >= 15
+- PostGIS >= 3.4
+- NodeJS >= 22
 - yarn
 
 ## Installation
