@@ -65,6 +65,8 @@ en:
 
   select_default_tracker_icon: "Select default tracker icon:"
   select_default_status_color: "Select default status color:"
+  gtt_icon_search_placeholder: "Search icons (e.g. bike, tree)..."
+  gtt_icon_paste_label: "Paste SVG markup"
   select_default_map_settings: "Set default map settings:"
   select_edit_geometry_settings: "Set edit geometry settings:"
   select_default_geocoder_settings: "Set Geocoder settings:"

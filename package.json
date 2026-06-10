@@ -37,7 +37,6 @@
     "@types/geojson": "^7946.0.15",
     "@types/google.maps": "^3.58.1",
     "@types/jquery": "^3.5.3",
-    "@types/jqueryui": "^1.12.23",
     "@types/ol-ext": "npm:@siedlerchr/types-ol-ext",
     "sass": "^1.83.0",
     "typescript": "^5.7.2",

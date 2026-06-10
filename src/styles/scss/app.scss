@@ -163,21 +163,75 @@ i[id^='icon_settings_tracker_'] {
   font-size: inherit;
 }
 
-/* JQuery UI styles */
-.select-overflow {
-  height: 300px;
-}
+/** Tracker icon picker (plugin settings) */
+.gtt-icon-picker {
+  // Mirrors core's .tabular p row geometry so the floated labels
+  // (margin-inline-start: -180px from .tabular label) line up correctly.
+  margin: 0;
+  padding-block: 3px;
+  padding-inline: 180px 0;
 
-.ui-selectmenu-menu .ui-menu.customicons li.ui-menu-item,
-.ui-selectmenu-menu .ui-menu.customicons li.ui-menu-item div {
-  display: inline;
-  font-size: 1.5em;
-}
+  .gtt-icon-preview {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    margin-right: 0.5em;
 
-.ui-selectmenu-menu .ui-menu.customicons .ui-menu-item .ui-icons {
-  height: 24px;
-  width: 24px;
-  padding-right: 0.2em;
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    &.gtt-icon-preview--empty::after {
+      content: '\2014';
+      color: #999;
+    }
+  }
+
+  .gtt-icon-search {
+    width: 280px;
+    margin-right: 0.5em;
+  }
+
+  .gtt-icon-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 32px);
+    gap: 4px;
+    margin: 4px 0;
+    max-width: 560px;
+
+    .gtt-icon-result {
+      width: 32px;
+      height: 32px;
+      padding: 4px;
+      cursor: pointer;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      &:hover {
+        border-color: #628db6;
+        background: #eef5fd;
+      }
+    }
+  }
+
+  .gtt-icon-paste {
+    margin: 2px 0 4px;
+    max-width: 560px;
+
+    textarea {
+      display: block;
+      width: 100%;
+      margin: 4px 0;
+    }
+  }
 }
 
 .ui-widget.ui-widget-content {

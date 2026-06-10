@@ -1,11 +1,30 @@
 <h3><%= l(:select_default_tracker_icon) %></h3>
 
+<%# One picker per tracker (gtt-icon-picker Stimulus controller): search the
+    Iconify API across all open icon sets, or paste raw SVG markup. The
+    picked icon is stored as JSON {id, svg}; the server sanitizes on save. %>
 <% Tracker.sorted.each do |t| %>
-<p>
+<div class="gtt-icon-picker" data-controller="gtt-icon-picker">
   <%= content_tag :label, t.name %>
-  <%= select_tag "settings[tracker_#{t.id}]", "<option>#{@settings["tracker_#{t.id}"]}</option>".html_safe %>
-  <i id="icon_settings_tracker_<%= t.id %>"></i>
-</p>
+  <span class="gtt-icon-preview" data-gtt-icon-picker-target="preview"></span>
+  <%# keydown.enter searches immediately instead of submitting the form %>
+  <input type="search" class="gtt-icon-search"
+         data-gtt-icon-picker-target="query"
+         data-action="input->gtt-icon-picker#search keydown.enter->gtt-icon-picker#searchNow:prevent"
+         placeholder="<%= l(:gtt_icon_search_placeholder) %>" />
+  <a href="#" data-action="click->gtt-icon-picker#clear"><%= l(:button_clear) %></a>
+  <div class="gtt-icon-results" data-gtt-icon-picker-target="results"
+       data-action="click->gtt-icon-picker#select"></div>
+  <details class="gtt-icon-paste">
+    <summary><%= l(:gtt_icon_paste_label) %></summary>
+    <textarea rows="3" data-gtt-icon-picker-target="paste"
+              placeholder="<svg viewBox=&quot;0 0 24 24&quot;>...</svg>"></textarea>
+    <button type="button" data-action="click->gtt-icon-picker#applyPaste"><%= l(:button_apply) %></button>
+  </details>
+  <%= hidden_field_tag "settings[tracker_#{t.id}]", @settings["tracker_#{t.id}"],
+        id: "settings_tracker_#{t.id}",
+        data: { 'gtt-icon-picker-target': 'value' } %>
+</div>
 <% end %>
 
 <br>
