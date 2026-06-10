@@ -74,8 +74,9 @@ module RedmineGtt
 
 
       # Comparison operators accepted for the distance filter besides the
-      # specially handled *, !* and ><. Anything else must not end up in SQL.
-      DISTANCE_OPERATORS = %w(= >= <= > <).freeze
+      # specially handled *, !* and ><. Mirrors the operators Redmine offers
+      # for :float filters; anything else must not end up in SQL.
+      DISTANCE_OPERATORS = %w(= >= <=).freeze
 
       def sql_for_distance_field(field, operator, value)
         case operator
@@ -98,7 +99,7 @@ module RedmineGtt
             value.first.to_i
           ])
         else
-          raise ::Query::StatementInvalid, "Unknown distance operator #{operator}"
+          raise ::Query::StatementInvalid, "Unknown distance operator #{operator.inspect}"
         end
       end
 
@@ -136,7 +137,8 @@ module RedmineGtt
 
       def distance_query(lng, lat)
         # ST_MakePoint instead of ST_GeomFromText: no textual geometry to
-        # assemble, the coordinates bind as plain numeric parameters.
+        # assemble. sanitize_sql_array quotes the coordinates as SQL literals
+        # (it does not create prepared-statement bind parameters).
         Arel.sql(Issue.send(:sanitize_sql_array, [
           "ST_DistanceSphere(#{Issue.table_name}.geom, ST_SetSRID(ST_MakePoint(?, ?), 4326))",
           lng.to_f, lat.to_f
