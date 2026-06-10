@@ -43,6 +43,16 @@ class TrackerIconTest < ActiveSupport::TestCase
     assert_nil RedmineGtt::SvgSanitizer.sanitize(nil)
   end
 
+  def test_sanitize_does_not_expand_entities
+    bomb = '<?xml version="1.0"?>' \
+           '<!DOCTYPE svg [<!ENTITY a "aaaaaaaaaa"><!ENTITY b "&a;&a;&a;&a;&a;&a;&a;&a;&a;&a;">]>' \
+           '<svg viewBox="0 0 24 24"><title>&b;</title><path d="M0 0z"/></svg>'
+    result = RedmineGtt::SvgSanitizer.sanitize(bomb)
+    # Entities stay unexpanded; the repeated payload must not appear.
+    refute_includes result.to_s, 'aaaaaaaaaa'
+    assert_includes result.to_s, '<path'
+  end
+
   def test_normalize_passes_legacy_glyph_names_through
     assert_equal 'lobsta', RedmineGtt::TrackerIcon.normalize('lobsta')
     assert_equal 'mdi-home', RedmineGtt::TrackerIcon.normalize('mdi-home')

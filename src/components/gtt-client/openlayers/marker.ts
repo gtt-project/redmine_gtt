@@ -37,10 +37,11 @@ function glyphMarkup(glyph: SvgGlyph | null, color: string): string {
   if (!glyph) {
     return '';
   }
-  // Fit the glyph into a 22x22 box centered in the 36x36 badge body.
-  const [, , w, h] = glyph.viewBox.split(/\s+/).map(Number);
+  // Fit the glyph into a 22x22 box centered in the 36x36 badge body,
+  // translating away a non-zero viewBox origin first.
+  const [minX, minY, w, h] = glyph.viewBox.split(/\s+/).map(Number);
   const scale = 22 / Math.max(w || 24, h || 24);
-  return `<g transform="translate(7 6.5) scale(${scale})" fill="${color}">${glyph.body}</g>`;
+  return `<g transform="translate(7 6.5) scale(${scale}) translate(${-(minX || 0)} ${-(minY || 0)})" fill="${color}">${glyph.body}</g>`;
 }
 
 export function markerSvg(options: MarkerStyleOptions): string {

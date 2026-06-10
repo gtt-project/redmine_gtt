@@ -30,7 +30,10 @@ module RedmineGtt
     def sanitize(svg)
       return nil if svg.blank?
 
-      doc = Nokogiri::XML(svg.to_s) { |config| config.nonet.noent }
+      # nonet blocks external fetches; entities are deliberately NOT
+      # substituted (no noent), so entity-expansion tricks stay inert
+      # references instead of being expanded into the output.
+      doc = Nokogiri::XML(svg.to_s) { |config| config.nonet }
       root = doc.root
       return nil unless root && root.name.casecmp('svg').zero?
 

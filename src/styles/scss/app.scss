@@ -163,17 +163,6 @@ i[id^='icon_settings_tracker_'] {
   font-size: inherit;
 }
 
-/* JQuery UI styles */
-.select-overflow {
-  height: 300px;
-}
-
-.ui-selectmenu-menu .ui-menu.customicons li.ui-menu-item,
-.ui-selectmenu-menu .ui-menu.customicons li.ui-menu-item div {
-  display: inline;
-  font-size: 1.5em;
-}
-
 /** Tracker icon picker (plugin settings) */
 .gtt-icon-picker {
   // Mirrors core's .tabular p row geometry so the floated labels
