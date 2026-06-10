@@ -1,3 +1,4 @@
+import IconPickerController from './icon_picker_controller';
 import MapController from './map_controller';
 import SettingsController from './settings_controller';
 import SortableController from './sortable_controller';
@@ -17,6 +18,7 @@ import SortableController from './sortable_controller';
  * DOMContentLoaded) and gives up loudly after ~5s.
  */
 function register(): void {
+  window.Stimulus.register('gtt-icon-picker', IconPickerController);
   window.Stimulus.register('gtt-map', MapController);
   window.Stimulus.register('gtt-settings', SettingsController);
   window.Stimulus.register('gtt-sortable', SortableController);

@@ -14,7 +14,7 @@ import './styles';
 // Redmine core JS integration (buildFilterRow wrapper for spatial filters)
 import './components/gtt-client/redmine';
 
-// Stimulus controllers: gtt-map, gtt-settings
+// Stimulus controllers (gtt-map, gtt-settings, gtt-icon-picker, ...)
 import './controllers';
 
 import { GttClient } from './components/gtt-client';

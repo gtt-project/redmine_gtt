@@ -62,6 +62,8 @@ ja:
 
   select_default_tracker_icon: "トラッカーアイコンを選択:"
   select_default_status_color: "ステータス色を選択:"
+  gtt_icon_search_placeholder: "アイコンを検索 (例: bike, tree, hydrant)..."
+  gtt_icon_paste_label: "SVGマークアップを貼り付け"
   select_default_map_settings: "地図の初期値を設定:"
   select_edit_geometry_settings: "ジオメトリ編集時の設定:"
   select_default_geocoder_settings: "ジオコーダの設定:"

@@ -45,9 +45,6 @@ importers:
       '@types/jquery':
         specifier: ^3.5.3
         version: 3.5.32
-      '@types/jqueryui':
-        specifier: ^1.12.23
-        version: 1.12.23
       '@types/ol-ext':
         specifier: npm:@siedlerchr/types-ol-ext
         version: '@siedlerchr/types-ol-ext@3.6.8'
@@ -313,9 +310,6 @@ packages:
 
   '@types/jquery@3.5.32':
     resolution: {integrity: sha512-b9Xbf4CkMqS02YH8zACqN1xzdxc3cO735Qe5AbSUFmyOiaWAbcpqh9Wna+Uk0vgACvoQHpWDg2rGdHkYPLmCiQ==}
-
-  '@types/jqueryui@1.12.23':
-    resolution: {integrity: sha512-pm1yVNVI29B9IGw41anCEzA5eR2r1pYc7flqD471ZT7B0yUXIY7YNe/zq7LGpihIGXNzWyG+Q4YQSzv2AF3fNA==}
 
   '@types/rbush@4.0.0':
     resolution: {integrity: sha512-+N+2H39P8X+Hy1I5mC6awlTX54k3FhiUmvt7HWzGJZvF+syUAAxP/stwppS8JE84YHqFgRMv6fCy31202CMFxQ==}
@@ -828,10 +822,6 @@ snapshots:
   '@types/jquery@3.5.32':
     dependencies:
       '@types/sizzle': 2.3.3
-
-  '@types/jqueryui@1.12.23':
-    dependencies:
-      '@types/jquery': 3.5.32
 
   '@types/rbush@4.0.0': {}
 
