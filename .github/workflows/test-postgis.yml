@@ -84,19 +84,20 @@ jobs:
             apt-get install -y google-chrome-stable
           fi
 
-      - name: Install Node/Yarn packages
+      - name: Install Node and pnpm
         run: |
           curl -sL https://deb.nodesource.com/setup_22.x | bash -
-          curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-          echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-          apt-get update --yes --quiet
-          apt-get install --yes --quiet --no-install-recommends nodejs yarn
+          apt-get install --yes --quiet --no-install-recommends nodejs
+          # corepack picks the pnpm version pinned in package.json
+          corepack enable pnpm
 
       - name: Prepare Plugin
         working-directory: redmine/plugins/redmine_gtt
+        env:
+          COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
         run: |
-          yarn
-          yarn build
+          pnpm install --frozen-lockfile
+          pnpm build
 
       - name: Prepare Redmine source
         working-directory: redmine

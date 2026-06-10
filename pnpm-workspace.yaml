@@ -1,0 +1,12 @@
+# pnpm settings (single-package repo; no workspace packages).
+#
+# Supply-chain cooldown: refuse to install package versions published less
+# than 7 days ago (in minutes), matching the cooldown windows used for
+# Dependabot and pinact. Malicious releases are usually yanked within days.
+minimumReleaseAge: 10080
+
+# Dependency build scripts are blocked by default. @parcel/watcher is an
+# optional native file watcher pulled in by sass; the build uses Vite's own
+# watcher, so its install script stays disabled.
+allowBuilds:
+  '@parcel/watcher': false
