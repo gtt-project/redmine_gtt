@@ -132,5 +132,6 @@ class IssuesTest < Redmine::IntegrationTest
     get "/issues/#{issue.id}.pdf"
     assert_response :success
     assert_equal 'application/pdf', response.media_type
+    assert response.body.start_with?('%PDF-'), 'response body should be a PDF document'
   end
 end
