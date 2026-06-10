@@ -1,5 +1,6 @@
 import MapController from './map_controller';
 import SettingsController from './settings_controller';
+import SortableController from './sortable_controller';
 
 /**
  * Registers the plugin's Stimulus controllers against the application
@@ -18,6 +19,7 @@ import SettingsController from './settings_controller';
 function register(): void {
   window.Stimulus.register('gtt-map', MapController);
   window.Stimulus.register('gtt-settings', SettingsController);
+  window.Stimulus.register('gtt-sortable', SortableController);
 }
 
 let attempts = 0;
