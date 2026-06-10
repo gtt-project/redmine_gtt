@@ -55,9 +55,6 @@ module RedmineGtt
       end
 
 
-      # weiter: use 'On map' option tag to hold current map extent
-      # - wenn filter hinzugefügt befüllen (dom hook oder so?)
-      # - on map move / zoom updaten (app.map.js)
       def initialize_available_filters()
         super
         if project and project.module_enabled?('gtt')
@@ -76,24 +73,32 @@ module RedmineGtt
       end
 
 
+      # Comparison operators accepted for the distance filter besides the
+      # specially handled *, !* and ><. Anything else must not end up in SQL.
+      DISTANCE_OPERATORS = %w(= >= <= > <).freeze
+
       def sql_for_distance_field(field, operator, value)
         case operator
         when '*'
           "#{Issue.table_name}.geom IS NOT NULL"
         when '!*'
           "#{Issue.table_name}.geom IS NULL"
-        else
-          # value has to be ['meters_min', 'lng', 'lat']
-          # or ['meters_min', 'meters_max', 'lng', 'lat'] if op == '><'
+        when '><'
+          # value has to be ['meters_min', 'meters_max', 'lng', 'lat']
           lng, lat = value.last(2).map(&:to_f)
-          distance = value.first.to_i
-          sql = +"ST_DistanceSphere(#{Issue.table_name}.geom, ST_GeomFromText('POINT(#{lng} #{lat})',4326))"
-          if operator == '><'
-            distance_max = value[1].to_i
-            sql << " BETWEEN #{distance} AND #{distance_max}"
-          else
-            sql << " #{operator} #{distance}"
-          end
+          Issue.send(:sanitize_sql_array, [
+            "#{distance_query(lng, lat)} BETWEEN ? AND ?",
+            value.first.to_i, value[1].to_i
+          ])
+        when *DISTANCE_OPERATORS
+          # value has to be ['meters', 'lng', 'lat']
+          lng, lat = value.last(2).map(&:to_f)
+          Issue.send(:sanitize_sql_array, [
+            "#{distance_query(lng, lat)} #{operator} ?",
+            value.first.to_i
+          ])
+        else
+          raise ::Query::StatementInvalid, "Unknown distance operator #{operator}"
         end
       end
 
@@ -111,25 +116,14 @@ module RedmineGtt
           value = value.split('|')
         end
 
-        # sanitize the coordinate values:
-        lng1,lat1,lng2,lat2 = value.map(&:to_f)
+        lng1, lat1, lng2, lat2 = value.map(&:to_f)
 
-        # TODO
-        # First I tried this, but it continued to complain about mixing
-        # different SRIDs:
-        # coordinates = [
-        #  [lng1,lat1], [lng2,lat1], [lng2,lat2], [lng1,lat2]
-        # ].map{|a| a.join ' '}.join(',')
-        # box = "ST_Polygon(ST_GeomFromText('LINESTRING(#{coordinates})'), 4326)"
-        # "#{not_in}ST_Contains(#{box}, ST_SetSRID(#{db_table}.geom, 4326))"
-
-
-        # So instead, I came up with this:
-        # "#{not_in}ST_MakeEnvelope(#{lng1},#{lat1},#{lng2},#{lat2}, 4326) ~ #{Issue.table_name}.geom"
-        #
-        # And then with this, which also handles geometries that are not simple
-        # points:
-        "#{not_in} ST_Intersects(#{Issue.table_name}.geom, ST_MakeEnvelope(#{lng1},#{lat1},#{lng2},#{lat2}, 4326))"
+        # ST_Intersects (rather than envelope containment) also matches
+        # geometries that are not simple points.
+        envelope = Issue.send(:sanitize_sql_array, [
+          "ST_MakeEnvelope(?, ?, ?, ?, 4326)", lng1, lat1, lng2, lat2
+        ])
+        "#{not_in} ST_Intersects(#{Issue.table_name}.geom, #{envelope})"
       end
 
       private
@@ -141,7 +135,12 @@ module RedmineGtt
       end
 
       def distance_query(lng, lat)
-        Arel.sql("ST_DistanceSphere(#{Issue.table_name}.geom, ST_GeomFromText('POINT(#{lng.to_f} #{lat.to_f})',4326))")
+        # ST_MakePoint instead of ST_GeomFromText: no textual geometry to
+        # assemble, the coordinates bind as plain numeric parameters.
+        Arel.sql(Issue.send(:sanitize_sql_array, [
+          "ST_DistanceSphere(#{Issue.table_name}.geom, ST_SetSRID(ST_MakePoint(?, ?), 4326))",
+          lng.to_f, lat.to_f
+        ]))
       end
 
       def load_distances(issues, center_point)
