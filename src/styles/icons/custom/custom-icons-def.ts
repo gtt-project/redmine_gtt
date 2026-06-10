@@ -1,4 +1,3 @@
-import FontFaceObserver from 'fontfaceobserver';
 import FontSymbol from 'ol-ext/style/FontSymbol';
 
 const iconMappings: { [key: string]: any } = {
@@ -14,7 +13,10 @@ const customIconsUrl = 'RAILS_ASSET_URL("custom-icons.woff2")';
 let customFont: FontFace;
 customFont = new FontFace('custom-icons', `url(${customIconsUrl})`);
 
-// Load the font
+// Load the font. After FontFace.load() resolves and the face is added to
+// document.fonts it is usable for canvas drawing; no extra observer needed
+// (the former FontFaceObserver step could stall for its full timeout in
+// headless browsers and delayed the first map render).
 const fontPromise = customFont.load().then((font) => {
   // Add the loaded font to the document
   document.fonts.add(font);
@@ -29,12 +31,6 @@ const fontPromise = customFont.load().then((font) => {
     },
     iconMappings
   );
-
-  // Create a FontFaceObserver instance
-  const observer = new FontFaceObserver('custom-icons');
-
-  // Use the observer to wait for the font to be loaded
-  return observer.load();
 }).catch((error) => {
   console.error('Error loading font:', error);
 });

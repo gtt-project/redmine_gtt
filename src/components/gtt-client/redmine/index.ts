@@ -1,4 +1,3 @@
-import GttClient from '../GttClient';
 import { buildDistanceFilterRow } from './filters';
 
 export { buildDistanceFilterRow, syncSpatialFilters } from './filters';
@@ -6,6 +5,11 @@ export { buildDistanceFilterRow, syncSpatialFilters } from './filters';
 /**
  * Extend core Redmine's buildFilterRow method so the distance filter gets its
  * custom row (distance bounds + hidden search center).
+ *
+ * (A replaceIssueFormWith wrapper used to live here to re-create the map
+ * after AJAX form reloads, but it was never assigned to the window object.
+ * The gtt-map Stimulus controller now reconnects automatically when the map
+ * div re-enters the DOM, which covers that case properly.)
  */
 window.buildFilterRowWithoutDistanceFilter = window.buildFilterRow;
 window.buildFilterRow = function (field, operator, values) {
@@ -13,18 +17,5 @@ window.buildFilterRow = function (field, operator, values) {
     buildDistanceFilterRow(operator, values);
   } else {
     window.buildFilterRowWithoutDistanceFilter(field, operator, values);
-  }
-};
-
-window.replaceIssueFormWithInitMap = window.replaceIssueFormWith;
-export const replaceIssueFormWithInitMap = window.replaceIssueFormWith;
-
-export const replaceIssueFormWith = (html: any): void => {
-  window.replaceIssueFormWithInitMap(html);
-  const ol_maps = document.querySelector(
-    "form[class$='_issue'] div.ol-map"
-  ) as HTMLDivElement;
-  if (ol_maps) {
-    new GttClient({ target: ol_maps });
   }
 };

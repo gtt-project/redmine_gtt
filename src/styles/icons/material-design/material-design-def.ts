@@ -1,4 +1,3 @@
-import FontFaceObserver from 'fontfaceobserver';
 import FontSymbol from 'ol-ext/style/FontSymbol';
 
 const iconMappings: { [key: string]: any } = {
@@ -7334,12 +7333,6 @@ const fontPromise = mdiFont.load().then((font) => {
     },
     iconMappings
   );
-
-  // Create a FontFaceObserver instance
-  const observer = new FontFaceObserver('materialdesignicons');
-
-  // Use the observer to wait for the font to be loaded
-  return observer.load();
 }).catch((error) => {
   console.error('Error loading font:', error);
 });

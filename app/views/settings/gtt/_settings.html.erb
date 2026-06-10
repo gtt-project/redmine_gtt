@@ -4,36 +4,8 @@
   { :name => :geocoder, :partial => 'settings/gtt/geocoder', :label => :gtt_settings_label_geocoder }
 ] %>
 
-<%= render_tabs plugin_tabs %>
-
-<%= javascript_tag do %>
-  // Read query parameter
-  function getQueryParam(param) {
-    var urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(param);
-  }
-
-  // Activate tab by name
-  function activateTab(tabName) {
-    var tabLinks = document.querySelectorAll('.tabs a');
-    tabLinks.forEach(function(link) {
-      if (link.href.includes('tab=' + tabName)) {
-        link.click();
-      }
-    });
-  }
-
-  document.addEventListener('DOMContentLoaded', function() {
-
-    // Activate tab if it is specified in the URL
-    var tab = getQueryParam('tab');
-    if (tab) {
-      activateTab(tab);
-    }
-
-    // Apply GTT settings
-    if (typeof window.gtt_setting === 'function') {
-      window.gtt_setting();
-    }
-  });
-<% end %>
+<%# The gtt-settings Stimulus controller activates the tab from the ?tab=
+    query parameter and initializes the icon pickers. %>
+<div data-controller="gtt-settings">
+  <%= render_tabs plugin_tabs %>
+</div>
