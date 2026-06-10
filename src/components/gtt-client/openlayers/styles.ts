@@ -1,56 +1,32 @@
 import { Feature } from 'ol';
 import { Geometry } from 'ol/geom';
 import { Style, Fill, Stroke } from 'ol/style';
-import FontSymbol from 'ol-ext/style/FontSymbol';
-import Shadow from 'ol-ext/style/Shadow';
+
+import { markerIcon, SvgGlyph } from './marker';
+
+// Spike glyph: MDI 'home'. The per-tracker SVG lookup arrives with the
+// settings storage; until then every point renders this glyph.
+const DEFAULT_GLYPH: SvgGlyph = {
+  viewBox: '0 0 24 24',
+  body: '<path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"/>',
+};
 
 /**
- * Creates and returns a shadow style.
- *
- * @returns {Style} - The shadow style.
- */
-function applyShadow(): Style {
-  return new Style({
-    image: new Shadow({
-      radius: 15,
-      blur: 5,
-      offsetX: 0,
-      offsetY: 0,
-      fill: new Fill({
-        color: 'rgba(0,0,0,0.5)',
-      }),
-    }),
-  });
-}
-
-/**
- * Creates and returns a font style for a given feature.
+ * Creates the marker style for a given feature: an SVG badge with the
+ * tracker glyph, anchored at the feature position, plus stroke/fill for
+ * non-point geometries.
  *
  * @param {any} mapObj - The map object containing default settings.
- * @param {Feature<Geometry>} feature - The map feature for which the font style is being generated.
- * @returns {Style} - The font style.
+ * @param {Feature<Geometry>} feature - The map feature for which the style is being generated.
+ * @returns {Style} - The marker style.
  */
-function applyFontStyle(mapObj: any, feature: Feature<Geometry>): Style {
-
-  const fontStyle = new Style({
-    image: new FontSymbol({
-      form: 'blazon',
-      gradient: false,
-      glyph: getSymbol(mapObj, feature),
-      fontSize: 0.7,
-      radius: 18,
-      offsetY: -18,
-      rotation: 0,
-      rotateWithView: false,
-      color: getFontColor(),
-      fill: new Fill({
-        color: getColor(mapObj, feature),
-      }),
-      stroke: new Stroke({
-        color: '#333333',
-        width: 1,
-      }),
-      opacity: 1,
+function applyMarkerStyle(mapObj: any, feature: Feature<Geometry>): Style {
+  return new Style({
+    image: markerIcon({
+      glyph: DEFAULT_GLYPH,
+      fill: getColor(mapObj, feature),
+      stroke: '#333333',
+      glyphColor: getFontColor(),
     }),
     stroke: new Stroke({
       width: 4,
@@ -60,8 +36,6 @@ function applyFontStyle(mapObj: any, feature: Feature<Geometry>): Style {
       color: getColor(mapObj, feature, true),
     }),
   });
-
-  return fontStyle;
 }
 
 /**
@@ -72,7 +46,7 @@ function applyFontStyle(mapObj: any, feature: Feature<Geometry>): Style {
  * @returns {Style[]} - An array of styles to be applied on the feature.
  */
 export function getStyle(feature: Feature<Geometry>, _: unknown): Style[] {
-  return [applyShadow(), applyFontStyle(this, feature)];
+  return [applyMarkerStyle(this, feature)];
 }
 
 /**
