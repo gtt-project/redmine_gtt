@@ -176,13 +176,11 @@ i[id^='icon_settings_tracker_'] {
 
 /** Tracker icon picker (plugin settings) */
 .gtt-icon-picker {
-  margin-bottom: 8px;
-
-  > label {
-    display: inline-block;
-    width: 160px;
-    vertical-align: middle;
-  }
+  // Mirrors core's .tabular p row geometry so the floated labels
+  // (margin-inline-start: -180px from .tabular label) line up correctly.
+  margin: 0;
+  padding-block: 3px;
+  padding-inline: 180px 0;
 
   .gtt-icon-preview {
     display: inline-block;
@@ -203,7 +201,7 @@ i[id^='icon_settings_tracker_'] {
   }
 
   .gtt-icon-search {
-    width: 240px;
+    width: 280px;
     margin-right: 0.5em;
   }
 
@@ -211,7 +209,7 @@ i[id^='icon_settings_tracker_'] {
     display: grid;
     grid-template-columns: repeat(auto-fill, 32px);
     gap: 4px;
-    margin: 4px 0 4px 166px;
+    margin: 4px 0;
     max-width: 560px;
 
     .gtt-icon-result {
@@ -236,7 +234,7 @@ i[id^='icon_settings_tracker_'] {
   }
 
   .gtt-icon-paste {
-    margin: 2px 0 4px 166px;
+    margin: 2px 0 4px;
     max-width: 560px;
 
     textarea {

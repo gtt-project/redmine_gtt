@@ -7,9 +7,10 @@
 <div class="gtt-icon-picker" data-controller="gtt-icon-picker">
   <%= content_tag :label, t.name %>
   <span class="gtt-icon-preview" data-gtt-icon-picker-target="preview"></span>
+  <%# keydown.enter searches immediately instead of submitting the form %>
   <input type="search" class="gtt-icon-search"
          data-gtt-icon-picker-target="query"
-         data-action="input->gtt-icon-picker#search"
+         data-action="input->gtt-icon-picker#search keydown.enter->gtt-icon-picker#searchNow:prevent"
          placeholder="<%= l(:gtt_icon_search_placeholder) %>" />
   <a href="#" data-action="gtt-icon-picker#clear"><%= l(:button_clear) %></a>
   <div class="gtt-icon-results" data-gtt-icon-picker-target="results"

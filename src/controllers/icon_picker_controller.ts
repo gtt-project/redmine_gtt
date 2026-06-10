@@ -48,6 +48,16 @@ export default class IconPickerController extends Controller<HTMLElement> {
     }, SEARCH_DEBOUNCE_MS);
   }
 
+  // Enter in the search field (wired with :prevent so it does not submit
+  // the surrounding settings form): search right away.
+  searchNow(): void {
+    window.clearTimeout(this.debounceTimer);
+    const query = this.queryTarget.value.trim();
+    if (query.length >= 2) {
+      void this.runSearch(query);
+    }
+  }
+
   select(event: Event): void {
     const button = (event.target as HTMLElement).closest('button[data-icon-id]') as HTMLButtonElement | null;
     if (!button) {
