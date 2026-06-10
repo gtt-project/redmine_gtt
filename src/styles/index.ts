@@ -20,5 +20,5 @@ import '@mdi/font/css/materialdesignicons.css';
 // Import Material Design icons definition JS file to define icon names and variations
 import './icons/material-design/material-design-def';
 
-// Import plugin SVG icons to make them available in assets/images
-import './images/icons.svg';
+// The plugin SVG sprite (images/icons.svg) and the custom icon font are
+// emitted by the build itself (see emitStaticAssets in vite.config.ts).

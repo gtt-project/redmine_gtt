@@ -41,7 +41,7 @@ cd path/to/plugin/directory
 git clone https://github.com/gtt-project/redmine_gtt.git
 cd redmine_gtt
 yarn
-npx webpack
+yarn build
 ```
 
 Optionally export to override the [default GEM version](./Gemfile)
@@ -97,7 +97,7 @@ Help us to translate GTT Project using [OSGeo Weblate](https://weblate.osgeo.org
 You can debug frontend by running the following command on another console:
 
 ```sh
-npx webpack --watch --mode=development --devtool=source-map
+yarn watch
 ```
 
 ### How to run test

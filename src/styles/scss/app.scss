@@ -142,11 +142,6 @@ $data-uri: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/
 /** SVG icons */
 .icon-gtt-map:not(:has(svg)) { background-image: $data-uri; }
 
-// to make webpack copy the SVG file to the output directory
-.dummy-svg-sprite {
-  background-image: url('../images/icons.svg');
-}
-
 div.usermap h3 {
   background: $data-uri no-repeat 0% 50%;
   padding-left: 20px;

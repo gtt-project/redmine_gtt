@@ -96,7 +96,7 @@ jobs:
         working-directory: redmine/plugins/redmine_gtt
         run: |
           yarn
-          npx webpack
+          yarn build
 
       - name: Prepare Redmine source
         working-directory: redmine
