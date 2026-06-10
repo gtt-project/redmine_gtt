@@ -28,6 +28,9 @@ export default class GttClient {
   vector: VectorLayer<VectorSource<Feature<Geometry>>>;
   bounds: VectorLayer<VectorSource<Feature<Geometry>>>;
   geolocations: Array<Geolocation>;
+  // True once the user moved the map (drag, scroll zoom, control buttons);
+  // programmatic view changes don't set it. See trackUserMapInteraction.
+  userMovedMap: boolean;
 
   /**
    * Constructs a new GttClient instance.

@@ -3,7 +3,7 @@ import { Geometry, Point } from 'ol/geom';
 import { GeoJSON, WKT } from 'ol/format';
 import { FeatureCollection } from 'geojson';
 import { FeatureLike } from 'ol/Feature';
-import { transform, transformExtent } from 'ol/proj';
+import { transform } from 'ol/proj';
 
 /**
  * Get the value of a cookie by its name.
@@ -187,51 +187,23 @@ export function updateForm(mapObj: any, features: FeatureLike[] | null, updateAd
 }
 
 /**
- * Update the map settings for the Redmine filter.
+ * Store the current map view (zoom/center/rotation) as permalink cookie so
+ * the view can be restored on the next page load (see zoomToExtent).
+ *
+ * The spatial filter synchronisation that used to live here moved to
+ * redmine/filters.ts (syncSpatialFilters).
  */
-export function updateFilter() {
-  let center = this.map.getView().getCenter()
-  let extent = this.map.getView().calculateExtent(this.map.getSize())
-
-  center = transform(center,'EPSG:3857','EPSG:4326')
-  // console.log("Map Center (WGS84): ", center);
-  const fieldset = document.querySelector('fieldset#location') as HTMLFieldSetElement
-  if (fieldset) {
-    fieldset.dataset.center = JSON.stringify(center)
-  }
-  const value_distance_3 = document.querySelector('#tr_distance #values_distance_3') as HTMLInputElement
-  if (value_distance_3) {
-    value_distance_3.value = center[0].toString()
-  }
-  const value_distance_4 = document.querySelector('#tr_distance #values_distance_4') as HTMLInputElement
-  if (value_distance_4) {
-    value_distance_4.value = center[1].toString()
-  }
-
-  // Set Permalink as Cookie
-  const cookie = []
-  const hash = this.map.getView().getZoom() + '/' +
+export function updatePermalinkCookie(this: any): void {
+  const view = this.map.getView()
+  const center = transform(view.getCenter(), 'EPSG:3857', 'EPSG:4326')
+  const hash = view.getZoom() + '/' +
     Math.round(center[0] * 1000000) / 1000000 + '/' +
     Math.round(center[1] * 1000000) / 1000000 + '/' +
-    this.map.getView().getRotation()
-  cookie.push("_redmine_gtt_permalink=" + hash)
-  cookie.push("path=" + window.location.pathname)
-  document.cookie = cookie.join(";")
-
-  const extent_str = transformExtent(extent,'EPSG:3857','EPSG:4326').join('|')
-  // console.log("Map Extent (WGS84): ",extent);
-  const bbox = document.querySelector('select[name="v[bbox][]"]')
-  if (bbox) {
-    const option = bbox.querySelector('option') as HTMLOptionElement
-    option.value = extent_str
-  }
-  // adjust the value of the 'On map' option tag
-  // Also adjust the JSON data that's the basis for building the filter row
-  // html (this is relevant if the map is moved first and then the filter is
-  // added.)
-  if(window.availableFilters && window.availableFilters.bbox) {
-    window.availableFilters.bbox.values = [['On map', extent]]
-  }
+    view.getRotation()
+  document.cookie = [
+    '_redmine_gtt_permalink=' + hash,
+    'path=' + window.location.pathname
+  ].join(';')
 }
 
 /**
