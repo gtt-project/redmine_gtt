@@ -4,12 +4,47 @@ import { Style, Fill, Stroke } from 'ol/style';
 
 import { markerIcon, SvgGlyph } from './marker';
 
-// Spike glyph: MDI 'home'. The per-tracker SVG lookup arrives with the
-// settings storage; until then every point renders this glyph.
+// Fallback glyph (MDI 'home'): used when a tracker has no icon configured
+// or still carries a legacy icon-font glyph name.
 const DEFAULT_GLYPH: SvgGlyph = {
   viewBox: '0 0 24 24',
   body: '<path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"/>',
 };
+
+// Tracker icon settings hold JSON {id, svg} (see RedmineGtt::TrackerIcon).
+// Parsed glyphs are cached by their raw setting value.
+const glyphCache = new Map<string, SvgGlyph | null>();
+
+function parseGlyph(value: string): SvgGlyph | null {
+  if (glyphCache.has(value)) {
+    return glyphCache.get(value);
+  }
+  let glyph: SvgGlyph | null = null;
+  try {
+    const data = JSON.parse(value);
+    if (data && typeof data.svg === 'string') {
+      const root = new DOMParser()
+        .parseFromString(data.svg, 'image/svg+xml')
+        .documentElement;
+      if (root && root.nodeName.toLowerCase() === 'svg') {
+        glyph = {
+          viewBox: root.getAttribute('viewBox') || '0 0 24 24',
+          body: root.innerHTML,
+        };
+      }
+    }
+  } catch {
+    // Legacy glyph names (icon-font era) and malformed values fall through
+    // to the default glyph.
+  }
+  glyphCache.set(value, glyph);
+  return glyph;
+}
+
+function glyphForFeature(mapObj: any, feature: Feature<Geometry>): SvgGlyph {
+  const value = getSymbol(mapObj, feature);
+  return (value && parseGlyph(value)) || DEFAULT_GLYPH;
+}
 
 /**
  * Creates the marker style for a given feature: an SVG badge with the
@@ -23,7 +58,7 @@ const DEFAULT_GLYPH: SvgGlyph = {
 function applyMarkerStyle(mapObj: any, feature: Feature<Geometry>): Style {
   return new Style({
     image: markerIcon({
-      glyph: DEFAULT_GLYPH,
+      glyph: glyphForFeature(mapObj, feature),
       fill: getColor(mapObj, feature),
       stroke: '#333333',
       glyphColor: getFontColor(),

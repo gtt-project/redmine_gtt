@@ -9,6 +9,7 @@ module RedmineGtt
     RedmineGtt::Patches::UserPatch.apply
 
     RedmineGtt::Patches::ProjectsHelperPatch.apply
+    RedmineGtt::Patches::PluginSettingPatch.apply
   end
 
   def self.setup_controller_patches
