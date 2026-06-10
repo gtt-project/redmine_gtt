@@ -8,12 +8,14 @@ module RedmineGtt
     module GeometryAsCustomFieldPatch
 
       class GeometryFieldFormat
-        # Must return a String: for non-String values Redmine's format_object
-        # recurses and queries CustomField methods the fake GeometryCustomField
-        # does not implement (e.g. thousands_delimiter? since Redmine 6.1,
-        # which made PDF export fail with a 500 for issues with geometry).
+        # Must return a UTF-8 String: for non-String values Redmine's
+        # format_object recurses and queries CustomField methods the fake
+        # GeometryCustomField does not implement (e.g. thousands_delimiter?
+        # since Redmine 6.1), and RGeo's WKT comes back US-ASCII encoded,
+        # which the CommonMark pipeline behind the PDF export rejects.
+        # Either made PDF export fail with a 500 for issues with geometry.
         def formatted_custom_value(view, object, html)
-          object.value.to_s
+          object.value.to_s.encode(Encoding::UTF_8)
         end
       end
 
