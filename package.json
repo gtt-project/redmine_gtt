@@ -23,6 +23,7 @@
   "homepage": "https://github.com/gtt-project/redmine_gtt#readme",
   "packageManager": "pnpm@11.5.3",
   "dependencies": {
+    "@hotwired/stimulus": "^3.2.2",
     "@juggle/resize-observer": "^3.4.0",
     "@mdi/font": "^7.4.47",
     "dompurify": "^3.2.3",

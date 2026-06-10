@@ -1,8 +1,13 @@
+import type { Application } from '@hotwired/stimulus';
+
 declare global {
   interface Window {
     /**
      * Redmine functions
      */
+
+    /** The Stimulus application started by Redmine core */
+    Stimulus: Application;
 
     /** An object containing available filters */
     availableFilters: any;
@@ -48,29 +53,16 @@ declare global {
     buildFilterRow(field: any, operator: any, values: any): void;
 
     /**
-     * Replaces the issue form with the given HTML.
-     * @param {any} html - The HTML to replace the issue form with.
-     */
-    replaceIssueFormWith(html: any): void;
-
-    /**
-     * Replaces the issue form with the given HTML and initializes the map.
-     * @param {any} html - The HTML to replace the issue form with.
-     */
-    replaceIssueFormWithInitMap(html: any): void;
-
-    /**
      * Gtt functions
      */
 
     /**
      * Creates a GttClient instance for the given target.
+     * @deprecated Maps attach via the gtt-map Stimulus controller; this shim
+     * remains for other gtt-project plugins that bootstrap maps manually.
      * @param {HTMLDivElement} target - The HTMLDivElement for which the GttClient will be created.
      */
     createGttClient(target: HTMLDivElement): void;
-
-    /** A function to handle GTT settings */
-    gtt_setting(): void;
   }
 }
 

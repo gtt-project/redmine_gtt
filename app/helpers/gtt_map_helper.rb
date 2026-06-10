@@ -5,17 +5,20 @@ module GttMapHelper
   def map_form_field(form, map, field: :geojson, bounds: nil, edit_mode: nil, upload: true, rotation: 0)
     safe_join [
       form.hidden_field(field, id: 'geom'),
-      map_tag(map: map, bounds: bounds, edit: edit_mode, upload: upload, rotation: rotation, show: false)
+      map_tag(map: map, bounds: bounds, edit: edit_mode, upload: upload, rotation: rotation)
     ]
   end
 
+  # Renders the map container. The gtt-map Stimulus controller bootstraps the
+  # OpenLayers client when the element connects, including after AJAX form
+  # reloads; no inline script is involved.
   def map_tag(map: nil, layers: map&.layers,
               geom: map.json, bounds: map.bounds,
               edit: nil, popup: nil, upload: true,
-              collapsed: false, rotation: map&.rotation,
-              show: true)
+              collapsed: false, rotation: map&.rotation)
 
     data = {
+      controller: 'gtt-map',
       geom: geom.is_a?(String) ? geom : geom.to_json,
       rotation: rotation
     }
@@ -36,50 +39,8 @@ module GttMapHelper
     data[:measure] = true if Setting.plugin_redmine_gtt['default_measure_enabled'] == 'true'
     data[:target] = true if Setting.plugin_redmine_gtt['default_target_enabled'] == 'true'
 
-    uid = "ol-" + rand(36**8).to_s(36)
-
-    safe_join [
-      content_tag(:div, "", data: data, id: uid, class: 'ol-map',
-        style: (collapsed ? "display: none" : "display: block")),
-      javascript_tag("
-        var contentObserver = () => {
-          const target = document.getElementById('#{uid}');
-          const observerCallback = function(mutations) {
-            mutations.forEach(function(mutation) {
-              if (mutation.removedNodes.length) {
-                mutation.removedNodes.forEach(function(node) {
-                  if (node === target) {
-                    observer.disconnect();
-                    let event = new Event('contentUpdated');
-                    document.dispatchEvent(event);
-                  }
-                });
-              }
-            });
-          };
-          const observer = new MutationObserver(observerCallback);
-          const config = {
-            childList: true,
-            subtree: true
-          };
-          observer.observe(document.body, config);
-        }
-        if (!#{show}) {
-          var target = document.getElementById('#{uid}');
-          if (
-            document.readyState === 'complete'
-            && !target.hasChildNodes()
-          ) {
-            window.createGttClient(target);
-          }
-        }
-        document.addEventListener('DOMContentLoaded', function(){
-          var target = document.getElementById('#{uid}');
-          window.createGttClient(target);
-          contentObserver();
-        });
-      ")
-    ]
+    content_tag(:div, "", data: data, class: 'ol-map',
+      style: (collapsed ? "display: none" : "display: block"))
   end
 
 end
