@@ -17,15 +17,11 @@
       <th></th>
     </tr>
   </thead>
-  <tbody>
+  <tbody data-controller="gtt-sortable">
     <%= render collection: @map_layers, partial: 'map_layer' %>
   </tbody>
 </table>
 
 <% else %>
 <p class="nodata"><%= l :label_no_data %></p>
-<% end %>
-
-<%= javascript_tag do %>
-  $(function() { $("table.map_layers tbody").positionedItems(); });
 <% end %>
