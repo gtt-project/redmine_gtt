@@ -14,8 +14,12 @@ module RedmineGtt
             :filename => "#{@issue.id}.geojson")
           }
           format.pdf {
-            # pretend the geometry is a custom field to have it rendered
-            @issue.class_eval{prepend GeometryAsCustomFieldPatch}
+            # Pretend the geometry is a custom field to have it rendered.
+            # Prepend to the singleton class so only this one instance is
+            # patched. (The previous @issue.class_eval relied on ActiveSupport
+            # delegating Kernel#class_eval to the singleton class, which is
+            # easy to misread as patching the Issue class globally.)
+            @issue.singleton_class.prepend(GeometryAsCustomFieldPatch)
             super
           }
           format.any { super }

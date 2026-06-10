@@ -1,6 +1,8 @@
 require_relative '../test_helper'
 
 class IssuesTest < Redmine::IntegrationTest
+  include GttTestData
+
   fixtures :projects,
            :users, :email_addresses,
            :roles,
@@ -114,5 +116,21 @@ class IssuesTest < Redmine::IntegrationTest
 
     # check issue geometry
     assert_equal geo['geometry'].to_json, issue.geom.to_json
+  end
+
+  # Regression test: the geometry is rendered into the PDF as a fake custom
+  # field. Redmine 6.1 started calling CustomField#thousands_delimiter? when
+  # the formatted value is not a String, which made this request fail with a
+  # 500 for issues with geometry.
+  test 'should export issue with geometry as pdf' do
+    log_user('jsmith', 'jsmith')
+
+    issue = Issue.find(1)
+    issue.geojson = point_geojson([135.0, 35.0, 0.0])
+    issue.save!
+
+    get "/issues/#{issue.id}.pdf"
+    assert_response :success
+    assert_equal 'application/pdf', response.media_type
   end
 end
