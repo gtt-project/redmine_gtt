@@ -6,6 +6,7 @@ import Feature from 'ol/Feature';
 
 import { IGttClientOption, IFilterOption } from './interfaces';
 
+import { fontsReady } from '../../styles/fonts';
 import { initDefaults, initFilters } from './init/defaults';
 import { initContents, setTabIndex } from './init/contents';
 import { initMap } from './init/map';
@@ -58,5 +59,13 @@ export default class GttClient {
 
     // Add the initialized map to the maps array
     this.maps.push(this.map);
+
+    // The map builds synchronously so it is usable right away; feature
+    // symbols are font glyphs (FontSymbol defs register when the icon fonts
+    // finish loading), so re-render the vector layers once that happened.
+    fontsReady().then(() => {
+      this.vector?.changed();
+      this.bounds?.changed();
+    });
   }
 }

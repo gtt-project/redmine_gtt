@@ -8,10 +8,12 @@ import SettingsController from './settings_controller';
  * The bundled @hotwired/stimulus matches the version Redmine ships; only the
  * Controller base class is bundled, the running application is core's.
  *
- * Core's bootstrap is an importmap module and therefore runs after this
- * classic script, so window.Stimulus is usually not set yet at evaluation
- * time. Retry briefly instead of relying on a specific event order; gives up
- * loudly after ~5s.
+ * Core's bootstrap is an importmap module and runs after this classic
+ * script but before DOMContentLoaded, so the usual path is the
+ * DOMContentLoaded branch; registering there keeps map construction within
+ * the page load (maps exist when the load event fires). The polling branch
+ * only covers pathological orders (e.g. this bundle injected after
+ * DOMContentLoaded) and gives up loudly after ~5s.
  */
 function register(): void {
   window.Stimulus.register('gtt-map', MapController);
@@ -22,6 +24,8 @@ let attempts = 0;
 function registerWhenReady(): void {
   if (window.Stimulus) {
     register();
+  } else if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', registerWhenReady, { once: true });
   } else if (attempts++ < 50) {
     setTimeout(registerWhenReady, 100);
   } else {

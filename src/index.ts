@@ -18,13 +18,11 @@ import './components/gtt-client/redmine';
 import './controllers';
 
 import { GttClient } from './components/gtt-client';
-import { fontsReady } from './styles/fonts';
 
 /**
  * @deprecated Maps attach via the gtt-map Stimulus controller. This shim
  * remains for other gtt-project plugins that bootstrap maps manually.
  */
-window.createGttClient = async (target: HTMLDivElement) => {
-  await fontsReady();
+window.createGttClient = (target: HTMLDivElement) => {
   new GttClient({ target });
 };
