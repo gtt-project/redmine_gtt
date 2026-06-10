@@ -11,11 +11,24 @@ import { fontsReady } from '../styles/fonts';
  * the global window.gtt_setting bootstrap.
  */
 export default class SettingsController extends Controller<HTMLElement> {
+  // Invalidates a pending connect() continuation on disconnect, so the icon
+  // pickers are never initialized against a stale DOM (Stimulus does not
+  // await connect()).
+  private connectionToken = 0;
+
   async connect(): Promise<void> {
+    const token = ++this.connectionToken;
     this.activateTabFromUrl();
     // The icon pickers render font glyphs; wait for the icon fonts.
     await fontsReady();
+    if (token !== this.connectionToken || !this.element.isConnected) {
+      return;
+    }
     gtt_setting();
+  }
+
+  disconnect(): void {
+    this.connectionToken++;
   }
 
   // Redmine renders the settings tabs client-side; activate the tab named in

@@ -15,14 +15,24 @@ import { fontsReady } from '../styles/fonts';
 export default class MapController extends Controller<HTMLDivElement> {
   client: GttClient | null = null;
 
+  // Stimulus does not await connect(); the token invalidates a pending
+  // continuation when the element disconnects (or reconnects) while the
+  // fonts are still loading, so no client is built for a stale node.
+  private connectionToken = 0;
+
   async connect(): Promise<void> {
+    const token = ++this.connectionToken;
     // Map symbols are font glyphs; wait for the icon fonts so features
     // render correctly on the first paint.
     await fontsReady();
+    if (token !== this.connectionToken || !this.element.isConnected) {
+      return;
+    }
     this.client = new GttClient({ target: this.element });
   }
 
   disconnect(): void {
+    this.connectionToken++;
     // Detach OpenLayers from the DOM node so a replaced div does not keep a
     // dangling map instance alive.
     this.client?.maps.forEach((map) => map.setTarget(undefined));
