@@ -1,5 +1,13 @@
 import { Controller } from '@hotwired/stimulus';
 
+// Redmine core's drag-reorder jQuery helper (application-legacy.js); typed
+// here because @types/jquery cannot know about core's extensions.
+declare global {
+  interface JQuery {
+    positionedItems(options?: unknown): JQuery;
+  }
+}
+
 /**
  * Makes the admin map layer list drag-sortable:
  * <tbody data-controller="gtt-sortable">.
@@ -10,9 +18,10 @@ import { Controller } from '@hotwired/stimulus';
  */
 export default class SortableController extends Controller<HTMLElement> {
   connect(): void {
-    const jq = (window as any).$;
-    if (typeof jq?.fn?.positionedItems === 'function') {
-      jq(this.element).positionedItems();
+    // jQuery and the helper come from Redmine core; no-op if absent.
+    if (typeof $ === 'undefined' || typeof $.fn.positionedItems !== 'function') {
+      return;
     }
+    $(this.element).positionedItems();
   }
 }
