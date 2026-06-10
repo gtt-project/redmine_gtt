@@ -14,8 +14,14 @@ module RedmineGtt
             :filename => "#{@issue.id}.geojson")
           }
           format.pdf {
-            # pretend the geometry is a custom field to have it rendered
-            @issue.class_eval{prepend GeometryAsCustomFieldPatch}
+            # Pretend the geometry is a custom field to have it rendered.
+            # Prepend to the singleton class so only this one instance is
+            # patched. (The previous @issue.class_eval spelling only worked
+            # because ActiveSupport adds a class_eval method to Kernel that
+            # delegates to the object's singleton class; plain Ruby defines
+            # class_eval on Module only, and it read as if it patched the
+            # Issue class globally.)
+            @issue.singleton_class.prepend(GeometryAsCustomFieldPatch)
             super
           }
           format.any { super }
