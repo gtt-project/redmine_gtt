@@ -1,4 +1,4 @@
-import * as FontFaceObserver from 'fontfaceobserver';
+import FontFaceObserver from 'fontfaceobserver';
 import FontSymbol from 'ol-ext/style/FontSymbol';
 
 const iconMappings: { [key: string]: any } = {

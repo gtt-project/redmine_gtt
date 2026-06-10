@@ -1,1 +1,4 @@
 <% # Header hook %>
+<%# The build extracts all styles (OpenLayers, ol-ext, plugin SCSS, icon
+    fonts) into one stylesheet instead of injecting them from main.js. %>
+<%= stylesheet_link_tag 'main', plugin: 'redmine_gtt' %>

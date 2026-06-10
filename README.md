@@ -22,7 +22,7 @@ or MariaDB/MySQL!!!
 - PostgreSQL >= 15
 - PostGIS >= 3.4
 - NodeJS >= 22
-- yarn
+- pnpm (via `corepack enable pnpm`; the version is pinned in package.json)
 
 ## Installation
 
@@ -40,8 +40,8 @@ installation plugins directory!
 cd path/to/plugin/directory
 git clone https://github.com/gtt-project/redmine_gtt.git
 cd redmine_gtt
-yarn
-npx webpack
+pnpm install
+pnpm build
 ```
 
 Optionally export to override the [default GEM version](./Gemfile)
@@ -97,7 +97,7 @@ Help us to translate GTT Project using [OSGeo Weblate](https://weblate.osgeo.org
 You can debug frontend by running the following command on another console:
 
 ```sh
-npx webpack --watch --mode=development --devtool=source-map
+pnpm watch
 ```
 
 ### How to run test

@@ -3,6 +3,8 @@
   "version": "6.0.2",
   "description": "Plugin that adds spatial capabilities to Redmine",
   "scripts": {
+    "build": "vite build",
+    "watch": "vite build --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +21,7 @@
     "url": "https://github.com/gtt-project/redmine_gtt/issues"
   },
   "homepage": "https://github.com/gtt-project/redmine_gtt#readme",
+  "packageManager": "pnpm@11.5.3",
   "dependencies": {
     "@juggle/resize-observer": "^3.4.0",
     "@mdi/font": "^7.4.47",
@@ -37,13 +40,8 @@
     "@types/jquery": "^3.5.3",
     "@types/jqueryui": "^1.12.23",
     "@types/ol-ext": "npm:@siedlerchr/types-ol-ext",
-    "css-loader": "^7.1.2",
     "sass": "^1.83.0",
-    "sass-loader": "^16.0.4",
-    "style-loader": "^4.0.0",
-    "ts-loader": "^9.5.1",
     "typescript": "^5.7.2",
-    "webpack": "^5.97.1",
-    "webpack-cli": "^5.1.4"
+    "vite": "^8.0.16"
   }
 }

@@ -1,6 +1,5 @@
-import * as FontFaceObserver from 'fontfaceobserver';
+import FontFaceObserver from 'fontfaceobserver';
 import FontSymbol from 'ol-ext/style/FontSymbol';
-import './custom-icons.woff2';
 
 const iconMappings: { [key: string]: any } = {
   'lobsta': '\uf101',

@@ -5,3 +5,7 @@ node_modules/
 # Ignore webpack generated files
 assets/*
 !assets/.keep
+
+# pnpm content-addressable store (created next to node_modules in the dev
+# container; never commit it)
+.pnpm-store/
