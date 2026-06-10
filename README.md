@@ -44,6 +44,14 @@ pnpm install
 pnpm build
 ```
 
+Alternatively, each [GitHub release](https://github.com/gtt-project/redmine_gtt/releases)
+ships a prebuilt `redmine_gtt-vX.Y.Z.tar.gz` archive with the frontend assets
+already compiled, so no Node toolchain is needed:
+
+```sh
+tar -xzf redmine_gtt-vX.Y.Z.tar.gz -C path/to/plugin/directory/
+```
+
 Optionally export to override the [default GEM version](./Gemfile)
 
 ```sh
