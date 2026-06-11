@@ -2,7 +2,7 @@
 
 <p>
   <%= content_tag(:label, l(:label_default_collapsed_issues_page_map)) %>
-  <%= check_box_tag 'settings[default_collapsed_issues_page_map]', true, @settings[:default_collapsed_issues_page_map] %>
+  <%= check_box_tag 'settings[default_collapsed_issues_page_map]', true, @settings['default_collapsed_issues_page_map'] %>
 </p>
 
 <p>
@@ -58,7 +58,7 @@
 
 <p>
   <%= content_tag(:label, l(:label_enable_geojson_upload_on_issue_map)) %>
-  <%= check_box_tag 'settings[enable_geojson_upload_on_issue_map]', true, @settings[:enable_geojson_upload_on_issue_map] %>
+  <%= check_box_tag 'settings[enable_geojson_upload_on_issue_map]', true, @settings['enable_geojson_upload_on_issue_map'] %>
 </p>
 
 <br>
@@ -67,12 +67,12 @@
 
 <p>
   <%= content_tag(:label, l(:label_default_target_enabled)) %>
-  <%= check_box_tag 'settings[default_target_enabled]', true, @settings[:default_target_enabled] %>
+  <%= check_box_tag 'settings[default_target_enabled]', true, @settings['default_target_enabled'] %>
 </p>
 
 <p>
   <%= content_tag(:label, l(:label_default_measure_enabled)) %>
-  <%= check_box_tag 'settings[default_measure_enabled]', true, @settings[:default_measure_enabled] %>
+  <%= check_box_tag 'settings[default_measure_enabled]', true, @settings['default_measure_enabled'] %>
 </p>
 
 <p>
