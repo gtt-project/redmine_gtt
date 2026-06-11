@@ -51,7 +51,12 @@ export default class GttClient {
     this.defaults = initDefaults();
     this.filters = initFilters();
     this.contents = initContents(target);
-    this.i18n = JSON.parse(this.defaults.i18n ?? '{}');
+    if (!this.defaults.i18n) {
+      // Fail fast: without the #gtt-defaults i18n payload every later
+      // this.i18n access would crash with a far less actionable error.
+      throw new Error('[GTT] Missing i18n data on the #gtt-defaults element');
+    }
+    this.i18n = JSON.parse(this.defaults.i18n);
 
     // Initialize map, layers, controls, and event listeners
     this.map = initMap(target, this.i18n);

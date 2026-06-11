@@ -150,8 +150,9 @@ export function setGeocoding(this: any, currentMap: Map): void {
                 window.showModal('ajax-model', '400px')
                 document.querySelector("p.buttons input[type='submit']")?.addEventListener('click', () => {
                   const input = findFieldInput(geocoder.place_search_field_name)
-                  if (input) {
-                    input.value = (document.querySelector("div#places input[type='radio']:checked") as HTMLInputElement).value
+                  const selected = document.querySelector<HTMLInputElement>("div#places input[type='radio']:checked")
+                  if (input && selected) {
+                    input.value = selected.value
                   }
                 })
               } else {
