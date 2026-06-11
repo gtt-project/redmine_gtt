@@ -66,6 +66,12 @@ export function setUploadControl(instance: any, editbar: Bar): void {
         featureProjection: 'EPSG:3857'
       });
       instance.vector.getSource().clear();
+      if (features.length === 0) {
+        // Valid GeoJSON without features clears the geometry explicitly;
+        // updateForm would otherwise write "undefined" into the form field.
+        updateForm(instance, null);
+        return;
+      }
       instance.vector.getSource().addFeatures(features);
       updateForm(instance, features);
       zoomToExtent.call(instance);
