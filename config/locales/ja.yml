@@ -130,6 +130,7 @@ ja:
     messages:
       baselayer_missing: "背景レイヤーが存在しません!"
       zoom_in_more: "地物表示のためズームします。"
+      invalid_geojson: "GeoJSONとして読み込めませんでした。入力内容を確認してもう一度お試しください。"
       modify_start: "<code>ALT</code> を押しながら頂点をクリックして削除します。"
       modify_start_mac: "<code>Option</code> を押しながら頂点をクリックして削除します。"
       modify_start_touch: "頂点をタップして削除します。"

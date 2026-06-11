@@ -69,7 +69,7 @@ export function setUploadControl(instance: any, editbar: Bar): void {
       zoomToExtent.call(instance);
     } catch (error) {
       console.error('Failed to read GeoJSON:', error);
-      instance.map.notification.show(String(error));
+      instance.map.notification.show(instance.i18n.messages.invalid_geojson);
     }
   });
 
