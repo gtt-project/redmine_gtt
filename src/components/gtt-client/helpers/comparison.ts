@@ -37,6 +37,17 @@ function parseOperand(value: any): any {
   if (/^'.*'$/.test(trimmed)) {
     return trimmed.slice(1, -1);
   }
+  if (trimmed === 'undefined') {
+    return undefined;
+  }
+  // Number() accepts the JS numeric forms JSON does not ('+1', '.5',
+  // '08', '0x10', 'Infinity', 'NaN'); non-numeric strings fall through.
+  if (trimmed !== '') {
+    const numeric = Number(trimmed);
+    if (!Number.isNaN(numeric) || trimmed === 'NaN') {
+      return numeric;
+    }
+  }
   try {
     return JSON.parse(trimmed);
   } catch {
