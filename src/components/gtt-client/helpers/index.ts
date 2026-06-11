@@ -5,6 +5,9 @@ import { FeatureCollection } from 'geojson';
 import { FeatureLike } from 'ol/Feature';
 import { transform } from 'ol/proj';
 
+import { evaluateComparison } from './comparison';
+export { evaluateComparison };
+
 /**
  * Get the value of a cookie by its name.
  *
@@ -62,23 +65,6 @@ export const getMapSize = (map: Map): number[] => {
   }
 
   return [width, height];
-};
-
-/**
- * Evaluate a comparison between two values with a specified operator.
- *
- * @param left - The left-hand side value of the comparison.
- * @param operator - The operator to use in the comparison.
- * @param right - The right-hand side value of the comparison.
- * @returns The result of the comparison.
- */
-export const evaluateComparison = (left: any, operator: any, right: any): any => {
-  if (typeof left == 'object') {
-    left = JSON.stringify(left);
-    return Function('"use strict";return (JSON.parse(\'' + left + '\')' + operator + right + ')')();
-  } else {
-    return Function('"use strict";return (' + left + operator + right + ')')();
-  }
 };
 
 /**
