@@ -19,18 +19,21 @@ import { initEventListeners } from './init/events';
  * layers, controls, and event listeners.
  */
 export default class GttClient {
-  readonly map: Map;
-  maps: Array<Map>;
-  defaults: DOMStringMap;
-  contents: DOMStringMap;
+  // The definite-assignment assertions cover the early constructor
+  // return for a missing target; with a target everything is assigned
+  // by the constructor and the init helpers it calls.
+  readonly map!: Map;
+  maps!: Array<Map>;
+  defaults!: DOMStringMap;
+  contents!: DOMStringMap;
   i18n: any;
-  filters: IFilterOption;
-  vector: VectorLayer<VectorSource<Feature<Geometry>>>;
-  bounds: VectorLayer<VectorSource<Feature<Geometry>>>;
-  geolocations: Array<Geolocation>;
+  filters!: IFilterOption;
+  vector!: VectorLayer<VectorSource<Feature<Geometry>>>;
+  bounds!: VectorLayer<VectorSource<Feature<Geometry>>>;
+  geolocations!: Array<Geolocation>;
   // True once the user moved the map (drag, scroll zoom, control buttons);
   // programmatic view changes don't set it. See trackUserMapInteraction.
-  userMovedMap: boolean;
+  userMovedMap!: boolean;
 
   /**
    * Constructs a new GttClient instance.
@@ -48,7 +51,7 @@ export default class GttClient {
     this.defaults = initDefaults();
     this.filters = initFilters();
     this.contents = initContents(target);
-    this.i18n = JSON.parse(this.defaults.i18n);
+    this.i18n = JSON.parse(this.defaults.i18n ?? '{}');
 
     // Initialize map, layers, controls, and event listeners
     this.map = initMap(target, this.i18n);

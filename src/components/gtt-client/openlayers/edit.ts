@@ -46,7 +46,7 @@ export function setControls(this: any, types: Array<string>): void {
   } as any)
 
   modify.on('showpopup', evt => {
-    const geometryType = evt.feature.getGeometry().getType();
+    const geometryType = evt.feature?.getGeometry()?.getType();
     if (geometryType === 'Point') {
       modify.removePoint(); // don't show the popup
     }

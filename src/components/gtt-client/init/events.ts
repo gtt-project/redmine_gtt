@@ -64,7 +64,7 @@ function handleResize(this: any): void {
  * Handles issue selection to zoom to selected map features when a table row is clicked.
  */
 function handleIssueSelection(this: any): void {
-  document.querySelectorAll('table.issues tbody tr').forEach((element: HTMLTableRowElement) => {
+  document.querySelectorAll<HTMLTableRowElement>('table.issues tbody tr').forEach((element) => {
     element.addEventListener('click', (evt) => {
       const currentTarget = evt.currentTarget as HTMLTableRowElement;
       const id = currentTarget.id.split('-')[1];
@@ -87,7 +87,7 @@ function handleIssueSelection(this: any): void {
  * Handles the click event on the edit/comment icon to update the map size when the editable form is made visible.
  */
 function handleEditIcon(this: any): void {
-  document.querySelectorAll('div.contextual a.icon-edit, div.contextual a.icon-comment').forEach((element: HTMLAnchorElement) => {
+  document.querySelectorAll<HTMLAnchorElement>('div.contextual a.icon-edit, div.contextual a.icon-comment').forEach((element) => {
     element.addEventListener('click', () => {
       setTimeout(() => {
         this.maps.forEach((m: any) => {

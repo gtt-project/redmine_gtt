@@ -20,9 +20,9 @@ import { getStyle } from "../openlayers/styles";
 
 /**
  * Initializes layers for the OpenLayers map and adds them to the layerArray.
- * @returns {Layer[]} Array of layers added to the map.
+ * @returns {Layer[] | undefined} Array of layers added to the map.
  */
-export function initLayers(this: any): Layer[] {
+export function initLayers(this: any): Layer[] | undefined {
   this.layerArray = [];
 
   const features = readGeoJSONFeatures.call(this);

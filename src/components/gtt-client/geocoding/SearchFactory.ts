@@ -43,7 +43,7 @@ function extendHandleSelect(searchControl: any, handleSelectCallback: (response:
  * @param handleSelectCallback - Custom callback function to handle the selected feature.
  * @returns
  */
-export function createSearchControl(options: any, handleSelectCallback: (feature: Feature) => void): any {
+export function createSearchControl(options: any, handleSelectCallback: (response: object) => void): any {
   let searchControl: any;
 
   // Create search control instance based on the provider

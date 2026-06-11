@@ -97,6 +97,7 @@ jobs:
           COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
         run: |
           pnpm install --frozen-lockfile
+          pnpm typecheck
           pnpm build
 
       - name: Prepare Redmine source

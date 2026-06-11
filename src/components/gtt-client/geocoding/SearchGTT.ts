@@ -9,7 +9,8 @@ interface SearchGTTOptions extends SearchOptions {
  * Use this as a starting point for supporting a new geocoding service.
  */
 class SearchGTT extends Search {
-  public button: HTMLButtonElement;
+  // Assigned by applyCustomButton after construction.
+  public button!: HTMLButtonElement;
 
   constructor(options: SearchGTTOptions = {}) {
     options = options || {};
