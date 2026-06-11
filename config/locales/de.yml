@@ -73,6 +73,7 @@ de:
       polygon: Flächeneditor
       clear_map: "Kartenlayer leeren"
       remove_point: "Punkt entfernen"
+      edit_mode: "Geometrien bearbeiten"
       geolocation_activated: Geolokalisierung aktiviert
       geolocation_deactivated: Geolokalisierung deaktiviert
       copied_location_to_clipboard: Standort in die Zwischenablage kopiert

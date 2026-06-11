@@ -122,6 +122,7 @@ ja:
       polygon: エリア編集
       clear_map: "地図をクリア"
       remove_point: "頂点を削除"
+      edit_mode: "地物を編集"
       copied_location_to_clipboard: 位置情報をクリップボードにコピーしました
     modal:
       load: 読み込み

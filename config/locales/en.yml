@@ -128,6 +128,7 @@ en:
       polygon: "Area editor"
       clear_map: "Clear map"
       remove_point: "Remove point"
+      edit_mode: "Edit features"
       copied_location_to_clipboard: "Copied location to clipboard"
     modal:
       load: "Load"
