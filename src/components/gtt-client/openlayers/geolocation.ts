@@ -24,7 +24,7 @@ export function setGeolocation(this: any, currentMap: Map): void {
 
   const accuracyFeature = new Feature()
   geolocation.on('change:accuracyGeometry', () => {
-    accuracyFeature.setGeometry(geolocation.getAccuracyGeometry())
+    accuracyFeature.setGeometry(geolocation.getAccuracyGeometry() ?? undefined)
   })
 
   const positionFeature = new Feature()
@@ -43,7 +43,7 @@ export function setGeolocation(this: any, currentMap: Map): void {
 
   geolocation.on('change:position', () => {
     const position = geolocation.getPosition()
-    positionFeature.setGeometry(position ? new Point(position) : null)
+    positionFeature.setGeometry(position ? new Point(position) : undefined)
     if (!position) {
       return
     }

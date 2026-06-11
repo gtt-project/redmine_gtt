@@ -7,12 +7,12 @@ import Bar from 'ol-ext/control/Bar';
 import Toggle from 'ol-ext/control/Toggle';
 import TextButton from 'ol-ext/control/TextButton';
 
-import { evaluateComparison, getObjectPathValue } from '../helpers';
+import { evaluateComparison, getObjectPathValue, findFieldInput } from '../helpers';
 
 /**
  * Add Geocoding functionality
  */
-export function setGeocoding(currentMap: Map):void {
+export function setGeocoding(this: any, currentMap: Map): void {
 
   // Hack to add Geocoding buttons to text fields
   // There should be a better way to do this
@@ -22,7 +22,7 @@ export function setGeocoding(currentMap: Map):void {
       document.querySelectorAll("#issue-form #attributes button.btn-geocode").length == 0)
   {
     document.querySelectorAll(`#issue-form #attributes label`).forEach(element => {
-      if (element.textContent.includes(geocoder.address_field_name)) {
+      if (element.textContent?.includes(geocoder.address_field_name)) {
         element.querySelectorAll('p').forEach(p_element => {
           const button = document.createElement('button') as HTMLButtonElement
           button.name = 'button'
@@ -38,8 +38,9 @@ export function setGeocoding(currentMap: Map):void {
       element.addEventListener('click', (evt) => {
         // Geocode address and add/update icon on map
         const button = evt.currentTarget as HTMLButtonElement
-        if (button.previousElementSibling.querySelector('input').value != '') {
-          const address = button.previousElementSibling.querySelector('input').value
+        const addressInput = button.previousElementSibling?.querySelector('input')
+        if (addressInput && addressInput.value != '') {
+          const address = addressInput.value
           const geocode_url = geocoder.geocode_url.replace("{address}", encodeURIComponent(address))
           fetch(geocode_url)
             .then(response => response.json())
@@ -63,13 +64,7 @@ export function setGeocoding(currentMap: Map):void {
                 this.updateForm(this.vector.getSource().getFeatures())
                 this.zoomToExtent(true)
 
-                const _districtInput = document.querySelectorAll(`#issue-form #attributes label`)
-                let districtInput: HTMLInputElement = null
-                _districtInput.forEach(element => {
-                  if (element.innerHTML.includes(geocoder.district_field_name)) {
-                    districtInput = element.parentNode.querySelector('p').querySelector('input')
-                  }
-                })
+                const districtInput = findFieldInput(geocoder.district_field_name)
                 let foundDistrict = false
                 if (districtInput) {
                   const district = getObjectPathValue(data, geocoder.geocode_result_district_path)
@@ -114,11 +109,14 @@ export function setGeocoding(currentMap: Map):void {
     document.querySelectorAll("button.btn-placesearch").forEach(element => {
       element.addEventListener('click', () => {
         if (this.vector.getSource().getFeatures().length > 0) {
-          let coords = null
+          let coords: number[] | null = null
           this.vector.getSource().getFeatures().forEach((feature: any) => {
             // Todo: only works with point geometries for now for the last geometry
             coords = getCenter(feature.getGeometry().getExtent())
           })
+          if (!coords) {
+            return
+          }
           coords = transform(coords, 'EPSG:3857', 'EPSG:4326')
           const place_search_url = geocoder.place_search_url.replace("{lon}", coords[0].toString()).replace("{lat}", coords[1].toString())
           fetch(place_search_url)
@@ -150,24 +148,15 @@ export function setGeocoding(currentMap: Map):void {
                   }
                 })
                 window.showModal('ajax-model', '400px')
-                document.querySelector("p.buttons input[type='submit']").addEventListener('click', () => {
-                  let input: HTMLInputElement = null
-                  document.querySelectorAll(`#issue-form #attributes label`).forEach(element => {
-                    if (element.innerHTML.includes(geocoder.place_search_field_name)) {
-                      input = element.parentNode.querySelector('p').querySelector('input') as HTMLInputElement
-                    }
-                  })
-                  if (input) {
-                    input.value = (document.querySelector("div#places input[type='radio']:checked") as HTMLInputElement).value
+                document.querySelector("p.buttons input[type='submit']")?.addEventListener('click', () => {
+                  const input = findFieldInput(geocoder.place_search_field_name)
+                  const selected = document.querySelector<HTMLInputElement>("div#places input[type='radio']:checked")
+                  if (input && selected) {
+                    input.value = selected.value
                   }
                 })
               } else {
-                let input: HTMLInputElement = null
-                document.querySelectorAll(`#issue-form #attributes label`).forEach(element => {
-                  if (element.innerHTML.includes(geocoder.place_search_field_name)) {
-                    input = element.parentNode.querySelector('p').querySelector('input') as HTMLInputElement
-                  }
-                })
+                const input = findFieldInput(geocoder.place_search_field_name)
                 if (input) {
                   input.value = geocoder.empty_field_value
                 }
@@ -197,7 +186,7 @@ export function setGeocoding(currentMap: Map):void {
       } else {
         text.blur()
         const button = document.querySelector<HTMLButtonElement>("div#" + mapId + " .ctl-geocoding button")
-        button.blur()
+        button?.blur()
       }
     },
     bar: new Bar({
@@ -211,7 +200,7 @@ export function setGeocoding(currentMap: Map):void {
   this.toolbar.addControl(geocodingCtrl)
 
   // Make Geocoding API request
-  document.querySelector<HTMLInputElement>("div#" + mapId + " .ctl-geocoding div input").addEventListener('keydown', (evt) => {
+  document.querySelector<HTMLInputElement>("div#" + mapId + " .ctl-geocoding div input")?.addEventListener('keydown', (evt) => {
     if (evt.keyCode === 13) {
       evt.preventDefault()
       evt.stopPropagation()

@@ -57,7 +57,7 @@ export const degreesToRadians = (degrees: number): number => degrees * (Math.PI 
  * @returns An array containing the width and height of the map.
  */
 export const getMapSize = (map: Map): number[] => {
-  const [width, height] = map.getSize();
+  const [width, height] = map.getSize() ?? [0, 0];
 
   if (width <= 0 || height <= 0) {
     const target = map.getTarget() as HTMLElement;
@@ -66,6 +66,23 @@ export const getMapSize = (map: Map): number[] => {
 
   return [width, height];
 };
+
+/**
+ * Find the input of the issue form attribute whose label contains the
+ * given field name.
+ *
+ * @param fieldName - The (localized) field name to look for in the labels.
+ * @returns The input element or null if no label matches.
+ */
+export function findFieldInput(fieldName: string): HTMLInputElement | null {
+  let input: HTMLInputElement | null = null;
+  document.querySelectorAll(`#issue-form #attributes label`).forEach(element => {
+    if (element.innerHTML.includes(fieldName)) {
+      input = element.parentNode?.querySelector('p')?.querySelector('input') ?? null;
+    }
+  });
+  return input;
+}
 
 /**
  * Get the value of a nested property in an object using a path.
@@ -116,12 +133,7 @@ export function updateForm(mapObj: any, features: FeatureLike[] | null, updateAd
 
   const geocoder = JSON.parse(mapObj.defaults.geocoder)
   if (updateAddressFlag && geocoder.address_field_name && features && features.length > 0) {
-    let addressInput: HTMLInputElement = null
-    document.querySelectorAll(`#issue-form #attributes label`).forEach(element => {
-      if (element.innerHTML.includes(geocoder.address_field_name)) {
-        addressInput = element.parentNode.querySelector('p').querySelector('input') as HTMLInputElement
-      }
-    })
+    const addressInput = findFieldInput(geocoder.address_field_name)
     if (addressInput) {
       // Todo: only works with point geometries for now for the last geometry
       const geom = features[features.length - 1].getGeometry() as Point
@@ -137,12 +149,7 @@ export function updateForm(mapObj: any, features: FeatureLike[] | null, updateAd
           const check = evaluateComparison(getObjectPathValue(data, geocoder.reverse_geocode_result_check_path),
             geocoder.reverse_geocode_result_check_operator,
             geocoder.reverse_geocode_result_check_value)
-          let districtInput: HTMLInputElement = null
-          document.querySelectorAll(`#issue-form #attributes label`).forEach(element => {
-            if (element.innerHTML.includes(geocoder.district_field_name)) {
-              districtInput = element.parentNode.querySelector('p').querySelector('input') as HTMLInputElement
-            }
-          })
+          const districtInput = findFieldInput(geocoder.district_field_name)
           const address = getObjectPathValue(data, geocoder.reverse_geocode_result_address_path)
           let foundDistrict = false
           if (check && address) {

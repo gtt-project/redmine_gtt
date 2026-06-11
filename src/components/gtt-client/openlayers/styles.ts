@@ -1,4 +1,5 @@
 import { Feature } from 'ol';
+import { FeatureLike } from 'ol/Feature';
 import { Geometry } from 'ol/geom';
 import { Style, Fill, Stroke } from 'ol/style';
 
@@ -17,7 +18,7 @@ const glyphCache = new Map<string, SvgGlyph | null>();
 
 function parseGlyph(value: string): SvgGlyph | null {
   if (glyphCache.has(value)) {
-    return glyphCache.get(value);
+    return glyphCache.get(value) ?? null;
   }
   let glyph: SvgGlyph | null = null;
   try {
@@ -75,13 +76,15 @@ function applyMarkerStyle(mapObj: any, feature: Feature<Geometry>): Style {
 
 /**
  * Get an array of styles to be applied to a given feature.
+ * Matches OpenLayers' StyleFunction signature so it can be bound and
+ * passed to a vector layer directly.
  *
- * @param {Feature<Geometry>} feature - The map feature for which the styles are being generated.
- * @param {unknown} _ - Unused parameter.
+ * @param {FeatureLike} feature - The map feature for which the styles are being generated.
+ * @param {number} _resolution - Unused view resolution.
  * @returns {Style[]} - An array of styles to be applied on the feature.
  */
-export function getStyle(feature: Feature<Geometry>, _: unknown): Style[] {
-  return [applyMarkerStyle(this, feature)];
+export function getStyle(this: any, feature: FeatureLike, _resolution: number): Style[] {
+  return [applyMarkerStyle(this, feature as Feature<Geometry>)];
 }
 
 /**
@@ -97,7 +100,7 @@ export function getColor(mapObj: any, feature: Feature<Geometry>, isFill: boolea
   const DEFAULT_COLOR = '#000000';
   const LINE_AND_POLYGON_COLOR = '#FFD700';
 
-  let color = feature.getGeometry().getType() !== 'Point' ? LINE_AND_POLYGON_COLOR : DEFAULT_COLOR;
+  let color = feature.getGeometry()?.getType() !== 'Point' ? LINE_AND_POLYGON_COLOR : DEFAULT_COLOR;
   const pluginSettings = JSON.parse(mapObj.defaults.pluginSettings);
   const statusInput = document.querySelector('#issue_status_id') as HTMLInputElement;
 
