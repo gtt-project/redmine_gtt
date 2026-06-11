@@ -73,6 +73,7 @@ de:
       polygon: Flächeneditor
       clear_map: "Kartenlayer leeren"
       remove_point: "Punkt entfernen"
+      edit_mode: "Geometrien bearbeiten"
       geolocation_activated: Geolokalisierung aktiviert
       geolocation_deactivated: Geolokalisierung deaktiviert
       copied_location_to_clipboard: Standort in die Zwischenablage kopiert
@@ -82,6 +83,7 @@ de:
     messages:
       baselayer_missing: "Es ist kein Baselayer verfügbar!"
       zoom_in_more: "Zoomen Sie hinein, um die Objekte zu sehen."
+      invalid_geojson: "Der Text konnte nicht als GeoJSON gelesen werden. Bitte überprüfen Sie die Eingabe und versuchen Sie es erneut."
       modify_start: "Halten Sie <code>ALT</code> gedrückt und klicken Sie auf einen
         Punkt, um ihn zu löschen."
       modify_start_mac: "Halten Sie <code>Option</code> gedrückt und klicken Sie auf

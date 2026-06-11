@@ -1,7 +1,14 @@
-<div id="dialog-geojson-upload" title="<%= l(:title_geojson_upload) %>" style="display:none;">
-  <textarea name="<%= l(:title_geojson_upload) %>" placeholder="<%= l(:placeholder_geojson_upload) %>" class="ui-widget ui-state-default ui-corner-all"></textarea>
-  <input type="file" id="file-selector" accept=".json,.geojson">
-</div>
+<dialog id="dialog-geojson-upload" class="gtt-dialog" aria-labelledby="dialog-geojson-upload-title">
+  <form method="dialog">
+    <h3 class="title" id="dialog-geojson-upload-title"><%= l(:title_geojson_upload) %></h3>
+    <textarea name="<%= l(:title_geojson_upload) %>" placeholder="<%= l(:placeholder_geojson_upload) %>"></textarea>
+    <input type="file" id="file-selector" accept=".json,.geojson">
+    <p class="buttons">
+      <button value="load"><%= l('gtt_js.modal.load') %></button>
+      <button value="cancel"><%= l('gtt_js.modal.cancel') %></button>
+    </p>
+  </form>
+</dialog>
 
 <%= javascript_include_tag 'main', plugin: 'redmine_gtt' %>
 
