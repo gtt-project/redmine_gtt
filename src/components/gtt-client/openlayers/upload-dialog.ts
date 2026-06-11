@@ -36,8 +36,10 @@ export function setUploadControl(instance: any, editbar: Bar): void {
     if (!file) {
       return;
     }
-    // Check if the file is GeoJSON.
-    if (file.type && !file.type.startsWith('application/geo')) {
+    // Check if the file is GeoJSON. Browsers report .json files as
+    // application/json and .geojson files as application/geo+json or
+    // with an empty type, so accept any JSON-ish type.
+    if (file.type && !/json/i.test(file.type)) {
       console.warn('File is not a GeoJSON document.', file.type, file);
       return;
     }

@@ -44,6 +44,9 @@ export function setGeolocation(this: any, currentMap: Map): void {
   geolocation.on('change:position', () => {
     const position = geolocation.getPosition()
     positionFeature.setGeometry(position ? new Point(position) : null)
+    if (!position) {
+      return
+    }
 
     const extent = currentMap.getView().calculateExtent(currentMap.getSize())
     if (!containsCoordinate(extent, position)) {

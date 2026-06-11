@@ -11,20 +11,25 @@ import { getCookie, getMapSize, degreesToRadians } from '../helpers';
 
 export function setView(this: any): void {
   const center = fromLonLat([parseFloat(this.defaults.lon), parseFloat(this.defaults.lat)])
+  // data-rotation may be absent; fall back to 0 instead of NaN
+  const rotation = parseInt(this.map.getTargetElement().getAttribute("data-rotation")) || 0
   const view = new View({
     // Avoid flicker (map move)
     center: center,
     zoom: parseInt(this.defaults.zoom),
     maxZoom: parseInt(this.defaults.maxzoom), // applies for Mierune Tiles
-    rotation: degreesToRadians(parseInt(this.map.getTargetElement().getAttribute("data-rotation")))
+    rotation: degreesToRadians(rotation)
   })
   this.map.setView(view)
 }
 
 export function zoomToExtent(this: any, force: boolean = true): void {
-  if (!force && (this.filters.distance || this.filters.location)) {
+  // Without a permalink cookie there is no previous extent to restore;
+  // fall through to the regular zoom-to-features logic.
+  const permalink = getCookie("_redmine_gtt_permalink");
+  if (!force && (this.filters.distance || this.filters.location) && permalink.split("/").length >= 4) {
     // Do not zoom to extent but show the previous extent stored as cookie
-    const parts = (getCookie("_redmine_gtt_permalink")).split("/");
+    const parts = permalink.split("/");
     this.maps.forEach((m: Map) => {
       m.getView().setZoom(parseInt(parts[0], 10))
       m.getView().setCenter(transform([
