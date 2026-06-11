@@ -159,8 +159,11 @@ i[id^='icon_settings_tracker_'] {
   top: 0.5em;
 }
 
-.ol-control button .material-design-icons {
-  font-size: inherit;
+.ol-control button .gtt-button-icon,
+.ol-popup .gtt-button-icon {
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: -0.2em;
 }
 
 /** Tracker icon picker (plugin settings) */

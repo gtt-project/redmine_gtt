@@ -25,7 +25,6 @@
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
     "@juggle/resize-observer": "^3.4.0",
-    "@mdi/font": "^7.4.47",
     "dompurify": "^3.2.3",
     "geojson": "^0.5.0",
     "ol": "^10.9.0",
@@ -33,6 +32,7 @@
     "ol-mapbox-style": "^13.4.1"
   },
   "devDependencies": {
+    "@mdi/js": "^7.4.47",
     "@types/dompurify": "^3.2.0",
     "@types/geojson": "^7946.0.15",
     "@types/google.maps": "^3.58.1",

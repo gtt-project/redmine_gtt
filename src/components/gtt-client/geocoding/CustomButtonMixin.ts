@@ -1,4 +1,5 @@
 import ol_ext_element from 'ol-ext/util/element';
+import { icons, buttonIcon } from '../icons';
 
 export function applyCustomButton(searchControl: any, options: any) {
   // Remove the default button if it exists
@@ -11,7 +12,7 @@ export function applyCustomButton(searchControl: any, options: any) {
   searchControl.button = ol_ext_element.create('BUTTON', {
     className: 'ol-search-gtt',
     title: options.title || 'Search',
-    html: options.html || '<i class="mdi mdi-map-search-outline"></i>',
+    html: options.html || buttonIcon(icons.search),
     parent: searchControl.element,
     click: function () {
       searchControl.element.classList.toggle('ol-collapsed');
