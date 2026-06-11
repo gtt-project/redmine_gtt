@@ -444,7 +444,7 @@ export function setPopover() {
     template: {
       title: (ftr: any) => {
         const popup_contents = JSON.parse(this.contents.popup);
-        const subject = ftr.get('subject');
+        const subject = String(ftr.get('subject') ?? '');
         const displaySubject = subject.length > 25 ? `${subject.substring(0, 22)}…` : subject;
 
         const replacePlaceholders = (str: string, replacement: string): string => {
@@ -457,8 +457,17 @@ export function setPopover() {
           }).join('');
         };
 
-        const url = replacePlaceholders(popup_contents.href, ftr.get('id'));
-        return `${displaySubject} <a href="${url}">${buttonIcon(icons.popupLink)}</a>`;
+        // The subject is user-controlled issue data: escape it (and the url)
+        // before interpolating into the popup HTML. The subject doubles as
+        // the accessible name of the icon-only link.
+        const escapeHtml = (text: string): string => {
+          const div = document.createElement('div');
+          div.textContent = text;
+          return div.innerHTML.replace(/"/g, '&quot;');
+        };
+
+        const url = replacePlaceholders(popup_contents.href, String(ftr.get('id')));
+        return `${escapeHtml(displaySubject)} <a href="${escapeHtml(url)}" aria-label="${escapeHtml(subject)}" title="${escapeHtml(subject)}">${buttonIcon(icons.popupLink)}</a>`;
         },
       attributes: {}
     }
