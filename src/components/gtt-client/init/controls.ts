@@ -11,6 +11,7 @@ import { position } from 'ol-ext/control/control';
 import DOMPurify from 'dompurify';
 
 import { radiansToDegrees, degreesToRadians, parseHistory, formatLength, formatArea } from "../helpers";
+import { icons, buttonIcon } from "../icons";
 import { zoomToExtent, setGeolocation, setView, setControls, setPopover } from "../openlayers";
 import { createSearchControl } from '../geocoding/SearchFactory';
 
@@ -58,8 +59,8 @@ function setSearchControl(instance: any): void {
 
     // Options for creating the search control
     const options = {
-      html: '<i class="mdi mdi-map-search-outline"></i>',
-      html_reverse: '<i class="mdi mdi-map-marker-question-outline"></i>',
+      html: buttonIcon(icons.search),
+      html_reverse: buttonIcon(icons.reverseSearch),
       title: instance.i18n.control.search_location,
       provider: geocoder.provider,
       providerOptions: {
@@ -103,7 +104,7 @@ function addFullScreenAndRotateControls(instance: any): void {
  */
 function addMaximizeControl(instance: any): void {
   const maximizeCtrl = new Button({
-    html: '<i class="mdi mdi-arrow-expand-all"></i>',
+    html: buttonIcon(icons.maximize),
     title: instance.i18n.control.maximize,
     handleClick: () => {
       zoomToExtent.call(instance, true);

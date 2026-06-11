@@ -1,4 +1,5 @@
 import { Map, Feature } from 'ol';
+import { icons, buttonIcon } from '../icons';
 import { Point } from 'ol/geom';
 import { transform, fromLonLat } from 'ol/proj';
 import { getCenter } from 'ol/extent';
@@ -186,7 +187,7 @@ export function setGeocoding(currentMap: Map):void {
 
   // Control button
   const geocodingCtrl = new Toggle({
-    html: '<i class="mdi mdi-map-search-outline"></i>',
+    html: buttonIcon(icons.search),
     title: this.i18n.control.geocoding,
     className: "ctl-geocoding",
     onToggle: (active: boolean) => {

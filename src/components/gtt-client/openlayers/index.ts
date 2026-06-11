@@ -16,6 +16,7 @@ import Tooltip from 'ol-ext/overlay/Tooltip'
 import { position } from 'ol-ext/control/control';
 import { GeoJSON } from 'ol/format';
 
+import { icons, buttonIcon } from '../icons';
 import { getCookie, getMapSize, degreesToRadians, updateForm, formatLength, formatArea } from "../helpers";
 import { isTouchDevice, isMacOS } from "../helpers/platforms";
 
@@ -263,21 +264,21 @@ export function setControls(types: Array<string>) {
       ControlManager.show([editModeControl, clearMapCtrl]);
     })
 
-    // Material design icon
-    let mdi = 'mdi-map-marker-outline'
+    // Draw tool icon per geometry type
+    let drawIcon: string = icons.drawPoint
 
     switch (type.toLowerCase()) {
         case 'linestring':
-        mdi = 'mdi-vector-polyline'
+        drawIcon = icons.drawLine
         break;
 
       case 'polygon':
-        mdi = 'mdi-vector-polygon'
+        drawIcon = icons.drawPolygon
         break;
       }
 
     const control = new Toggle({
-      html: `<i class="mdi ${mdi}" ></i>`,
+      html: buttonIcon(drawIcon),
       title: this.i18n.control[type.toLowerCase()],
       interaction: draw,
       active: false,
@@ -295,7 +296,7 @@ export function setControls(types: Array<string>) {
 
   // Add the edit control
   const editModeControl = new Toggle({
-    html: '<i class="mdi mdi-pencil"></i>',
+    html: buttonIcon(icons.edit),
     title: this.i18n.control.edit_mode,
     active: false,
     onToggle: (active: boolean) => {
@@ -329,7 +330,7 @@ export function setControls(types: Array<string>) {
 
   // Add the clear map control
   const clearMapCtrl = new Button({
-    html: '<i class="mdi mdi-delete"></i>',
+    html: buttonIcon(icons.remove),
     title: this.i18n.control.clear_map,
     handleClick: () => {
       this.vector.getSource().clear();
@@ -408,7 +409,7 @@ export function setControls(types: Array<string>) {
     });
 
     editbar.addControl(new Button({
-      html: '<i class="mdi mdi-file-upload"></i>',
+      html: buttonIcon(icons.upload),
       title: this.i18n.control.upload,
       handleClick: () => {
         dialog.dialog('open')
@@ -443,7 +444,7 @@ export function setPopover() {
     template: {
       title: (ftr: any) => {
         const popup_contents = JSON.parse(this.contents.popup);
-        const subject = ftr.get('subject');
+        const subject = String(ftr.get('subject') ?? '');
         const displaySubject = subject.length > 25 ? `${subject.substring(0, 22)}…` : subject;
 
         const replacePlaceholders = (str: string, replacement: string): string => {
@@ -456,8 +457,17 @@ export function setPopover() {
           }).join('');
         };
 
-        const url = replacePlaceholders(popup_contents.href, ftr.get('id'));
-        return `${displaySubject} <a href="${url}"><i class="mdi mdi-arrow-right-circle-outline"></i></a>`;
+        // The subject is user-controlled issue data: escape it (and the url)
+        // before interpolating into the popup HTML. The subject doubles as
+        // the accessible name of the icon-only link.
+        const escapeHtml = (text: string): string => {
+          const div = document.createElement('div');
+          div.textContent = text;
+          return div.innerHTML.replace(/"/g, '&quot;');
+        };
+
+        const url = replacePlaceholders(popup_contents.href, String(ftr.get('id')));
+        return `${escapeHtml(displaySubject)} <a href="${escapeHtml(url)}" aria-label="${escapeHtml(subject)}" title="${escapeHtml(subject)}">${buttonIcon(icons.popupLink)}</a>`;
         },
       attributes: {}
     }
@@ -628,7 +638,7 @@ export function setGeolocation(currentMap: Map) {
 
   // Control button
   const geolocationCtrl = new Toggle({
-    html: '<i class="mdi mdi-crosshairs-gps"></i>',
+    html: buttonIcon(icons.geolocate),
     title: this.i18n.control.geolocation,
     active: false,
     onToggle: (active: boolean) => {

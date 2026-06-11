@@ -12,8 +12,8 @@ import { GttClient } from '../components/gtt-client';
  * window.createGttClient bootstrap.
  *
  * The client builds synchronously, so the map exists as soon as the element
- * connects; GttClient re-renders the font-glyph symbols itself once the icon
- * fonts finish loading.
+ * connects. Marker glyphs and control icons are inline SVG; no fonts are
+ * involved.
  */
 export default class MapController extends Controller<HTMLDivElement> {
   client: GttClient | null = null;

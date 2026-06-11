@@ -14,9 +14,6 @@ importers:
       '@juggle/resize-observer':
         specifier: ^3.4.0
         version: 3.4.0
-      '@mdi/font':
-        specifier: ^7.4.47
-        version: 7.4.47
       dompurify:
         specifier: ^3.2.3
         version: 3.2.3
@@ -33,6 +30,9 @@ importers:
         specifier: ^13.4.1
         version: 13.4.1(ol@10.9.0)
     devDependencies:
+      '@mdi/js':
+        specifier: ^7.4.47
+        version: 7.4.47
       '@types/dompurify':
         specifier: ^3.2.0
         version: 3.2.0
@@ -86,8 +86,8 @@ packages:
     resolution: {integrity: sha512-EzEJmMt6thioRH7GI9LWS7ahXTcAhAPGWCe6oTP2Ps4YnsXOOAfeqx854lZaiDnwURfHmcCKV1mr6oo0i23x6w==}
     hasBin: true
 
-  '@mdi/font@7.4.47':
-    resolution: {integrity: sha512-43MtGpd585SNzHZPcYowu/84Vz2a2g31TvPMTm9uTiCSWzaheQySUcSyUH/46fPnuPQWof2yd0pGBtzee/IQWw==}
+  '@mdi/js@7.4.47':
+    resolution: {integrity: sha512-KPnNOtm5i2pMabqZxpUz7iQf+mfrYZyKCZ8QNz85czgEt7cuHcGorWfdzUMWYA0SD+a6Hn4FmJ+YhzzzjkTZrQ==}
 
   '@napi-rs/wasm-runtime@1.1.4':
     resolution: {integrity: sha512-3NQNNgA1YSlJb/kMH1ildASP9HW7/7kYnRI2szWJaofaS1hWmbGI4H+d3+22aGzXXN9IJ+n+GiFVcGipJP18ow==}
@@ -679,7 +679,7 @@ snapshots:
       quickselect: 3.0.0
       tinyqueue: 3.0.0
 
-  '@mdi/font@7.4.47': {}
+  '@mdi/js@7.4.47': {}
 
   '@napi-rs/wasm-runtime@1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
     dependencies:
