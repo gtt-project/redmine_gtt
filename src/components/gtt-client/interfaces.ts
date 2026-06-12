@@ -23,6 +23,12 @@ export interface ILayerObject {
   name: string;
 
   /**
+   * The layer factory type used to construct this layer. Defaults to 'ol'
+   * (construction from OpenLayers class names) when not given.
+   */
+  type?: string;
+
+  /**
    * The type of the layer.
    */
   layer: string;
