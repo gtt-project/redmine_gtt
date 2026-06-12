@@ -1,8 +1,8 @@
 // src/components/gtt-client/layers/registry.ts
 import { Layer } from 'ol/layer';
 
-import { ILayerObject } from '../interfaces';
-import { LayerTypeSchema } from './schema';
+import type { ILayerObject } from '../interfaces';
+import type { LayerTypeSchema } from './schema';
 
 /**
  * A layer factory takes one layer configuration (a row from the map-layer
@@ -36,8 +36,13 @@ const schemas = new Map<string, LayerTypeSchema>();
  */
 export function registerLayerFactory(type: string, factory: LayerFactory, schema?: LayerTypeSchema): void {
   registry.set(type, factory);
+  // Drop any schema from a previously registered factory of the same name so
+  // an override without a schema does not leave a stale one behind. When a
+  // schema is given, key it by the registration type so the two cannot
+  // disagree.
+  schemas.delete(type);
   if (schema) {
-    schemas.set(type, schema);
+    schemas.set(type, { ...schema, type });
   }
 }
 

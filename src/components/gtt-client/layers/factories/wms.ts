@@ -18,6 +18,12 @@ registerLayerFactory(
     if (!options.layers) {
       throw new Error('wms layer requires a "layers" option');
     }
+    // Only merge extra params when they are a plain object; spreading e.g. a
+    // string would scatter its characters into numeric keys.
+    const extraParams =
+      options.params && typeof options.params === 'object' && !Array.isArray(options.params)
+        ? options.params
+        : {};
     return new TileLayer({
       visible: false,
       source: new TileWMS({
@@ -28,7 +34,7 @@ registerLayerFactory(
           VERSION: options.version ?? '1.3.0',
           FORMAT: options.format ?? 'image/png',
           TRANSPARENT: options.transparent ?? true,
-          ...(options.params ?? {}),
+          ...extraParams,
         },
       }),
     });
@@ -49,6 +55,12 @@ registerLayerFactory(
       { name: 'format', type: 'string', label: 'Image format', default: 'image/png' },
       { name: 'transparent', type: 'boolean', label: 'Transparent', default: true },
       { name: 'attributions', type: 'string', label: 'Attributions' },
+      {
+        name: 'params',
+        type: 'json',
+        label: 'Additional request parameters',
+        help: 'Merged into the WMS request, e.g. {"STYLES": "default"}',
+      },
     ],
   }
 );

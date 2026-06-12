@@ -2,9 +2,10 @@
 
 /**
  * The kind of value a layer option holds. Used by the (upcoming) layer admin
- * UI to pick an input widget and coerce the stored value.
+ * UI to pick an input widget and coerce the stored value. 'json' holds a
+ * nested object edited as raw JSON (e.g. extra WMS request parameters).
  */
-export type LayerOptionType = 'string' | 'number' | 'boolean' | 'url';
+export type LayerOptionType = 'string' | 'number' | 'boolean' | 'url' | 'json';
 
 /**
  * One configurable option of a named layer type.
