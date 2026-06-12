@@ -4,6 +4,10 @@
 class GttMapLayer < (defined?(ApplicationRecord) == 'constant' ? ApplicationRecord : ActiveRecord::Base)
   self.inheritance_column = 'none'
 
+  # The admin form submits type="" for the advanced (OpenLayers classes)
+  # mode; store NULL so the column has a single representation of it.
+  before_validation { self.type = nil if type.blank? }
+
   validates :name, presence: true
   # Named layer types (type column set) carry their configuration in
   # layer_options; only the default OpenLayers-classes mode needs a layer

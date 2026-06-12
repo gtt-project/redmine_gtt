@@ -105,19 +105,33 @@ export default class LayerFormController extends Controller<HTMLElement> {
 
   private schemas: LayerTypeSchema[] = [];
 
+  // Bound handlers kept as fields so disconnect() can remove exactly what
+  // connect() added; a reconnect (AJAX re-render) must not stack listeners.
+  private readonly handleTypeChange = (): void => this.onTypeChange();
+  private readonly handleLayerChange = (): void => this.updateSourceOptions();
+  private readonly handleSourceChange = (): void => this.updateFormatOptions();
+  private readonly handleSubmit = (): void => this.onSubmit();
+
   connect(): void {
     this.schemas = listLayerSchemas();
     this.populateTypeSelect();
-    this.typeTarget.addEventListener('change', () => this.onTypeChange());
+    this.typeTarget.addEventListener('change', this.handleTypeChange);
 
-    this.layerSelect?.addEventListener('change', () => this.updateSourceOptions());
-    this.sourceSelect?.addEventListener('change', () => this.updateFormatOptions());
+    this.layerSelect?.addEventListener('change', this.handleLayerChange);
+    this.sourceSelect?.addEventListener('change', this.handleSourceChange);
     this.appendExampleLinks();
 
-    this.element.closest('form')?.addEventListener('submit', () => this.onSubmit());
+    this.element.closest('form')?.addEventListener('submit', this.handleSubmit);
 
     this.onTypeChange();
     this.updateSourceOptions();
+  }
+
+  disconnect(): void {
+    this.typeTarget.removeEventListener('change', this.handleTypeChange);
+    this.layerSelect?.removeEventListener('change', this.handleLayerChange);
+    this.sourceSelect?.removeEventListener('change', this.handleSourceChange);
+    this.element.closest('form')?.removeEventListener('submit', this.handleSubmit);
   }
 
   // --- element accessors -------------------------------------------------
@@ -220,6 +234,7 @@ export default class LayerFormController extends Controller<HTMLElement> {
       textarea.dataset.optionType = field.type;
       textarea.rows = 4;
       textarea.cols = 60;
+      if (field.required) textarea.required = true;
       textarea.value = value !== undefined ? JSON.stringify(value, null, 2) : '';
       return textarea;
     }
@@ -275,6 +290,13 @@ export default class LayerFormController extends Controller<HTMLElement> {
     if (sourceOptions) sourceOptions.value = '{}';
     const formatOptions = this.textArea('map_layer_format_options_string');
     if (formatOptions) formatOptions.value = '{}';
+
+    // The dependent-select logic may have disabled some of these controls,
+    // and disabled controls are not submitted; re-enable them so the cleared
+    // values actually reach the server.
+    [this.sourceSelect, this.formatSelect, sourceOptions, formatOptions].forEach((el) => {
+      if (el) el.disabled = false;
+    });
   }
 
   // --- advanced mode: dependent selects (ported from the old inline script)
@@ -301,7 +323,9 @@ export default class LayerFormController extends Controller<HTMLElement> {
     } else if (!autoSelect) {
       sourceSelect.value = '';
       const sourceOptions = this.textArea('map_layer_source_options_string');
-      if (sourceOptions) sourceOptions.value = '';
+      // '{}' rather than '': the server parses this column as JSON, and the
+      // textarea may be re-enabled later by another layer choice.
+      if (sourceOptions) sourceOptions.value = '{}';
     }
 
     sourceSelect.disabled = available.length === 0;
@@ -333,7 +357,8 @@ export default class LayerFormController extends Controller<HTMLElement> {
     } else if (!autoSelect) {
       formatSelect.value = '';
       const formatOptions = this.textArea('map_layer_format_options_string');
-      if (formatOptions) formatOptions.value = '';
+      // '{}' rather than '': see updateSourceOptions.
+      if (formatOptions) formatOptions.value = '{}';
     }
 
     formatSelect.disabled = available.length === 0;
