@@ -37,9 +37,14 @@ registerLayerFactory(
       })
       .then((text) => {
         const capabilities = new WMTSCapabilities().read(text);
+        // Without an explicit matrix set, select one by the map projection;
+        // otherwise services listing multiple matrix sets may resolve to a
+        // tile grid in the wrong CRS. The GTT map view is Web Mercator.
         const sourceOptions = optionsFromCapabilities(capabilities, {
           layer: options.layer,
-          matrixSet: options.matrixSet,
+          ...(options.matrixSet
+            ? { matrixSet: options.matrixSet }
+            : { projection: 'EPSG:3857' }),
           format: options.format,
           style: options.style,
         });

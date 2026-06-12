@@ -62,8 +62,18 @@ registerLayerFactory(
       },
       { name: 'attributions', type: 'string', label: 'Attributions' },
       { name: 'declutter', type: 'boolean', label: 'Declutter labels', default: true },
-      { name: 'maxZoom', type: 'number', label: 'Max zoom' },
-      { name: 'minZoom', type: 'number', label: 'Min zoom' },
+      {
+        name: 'maxZoom',
+        type: 'number',
+        label: 'Max tile zoom',
+        help: 'Highest zoom level tiles are available at; the map overzooms beyond it',
+      },
+      {
+        name: 'minZoom',
+        type: 'number',
+        label: 'Min tile zoom',
+        help: 'Lowest zoom level tiles are available at',
+      },
     ],
   }
 );
