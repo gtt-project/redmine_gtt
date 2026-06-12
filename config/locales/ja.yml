@@ -86,6 +86,7 @@ ja:
     source_options_select: "-- ソース種別を選択 --"
     format_options_select: "-- フォーマット種別を選択 --"
     load_example: "例: "
+    type_advanced: "高度な設定（OpenLayersクラス）"
 
   # Workaround to easily customize field labels
   field_name: "名称"

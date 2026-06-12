@@ -92,6 +92,7 @@ en:
     source_options_select: "-- Select source type --"
     format_options_select: "-- Select format type --"
     load_example: "Examples: "
+    type_advanced: "Advanced (OpenLayers classes)"
 
   # Workaround to easily customize field labels
   field_name: "Name"
