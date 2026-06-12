@@ -6,3 +6,6 @@
 // the factories import the registry). Host applications can register
 // additional factories via registerLayerFactory (see ../registry).
 import './ol';
+import './osm';
+import './xyz';
+import './wms';
