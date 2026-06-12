@@ -69,7 +69,7 @@ function readGeoJSONFeatures(this: any): Feature<Geometry>[] | null {
  * layer does not take down the whole map.
  */
 function createLayers(this: any): void {
-  const layers = JSON.parse(this.contents.layers) as [ILayerObject];
+  const layers = JSON.parse(this.contents.layers) as ILayerObject[];
   layers.forEach((config) => {
     const layer = createLayer(config);
 
