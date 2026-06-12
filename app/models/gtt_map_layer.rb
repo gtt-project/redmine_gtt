@@ -5,7 +5,10 @@ class GttMapLayer < (defined?(ApplicationRecord) == 'constant' ? ApplicationReco
   self.inheritance_column = 'none'
 
   validates :name, presence: true
-  validates :layer, presence: true
+  # Named layer types (type column set) carry their configuration in
+  # layer_options; only the default OpenLayers-classes mode needs a layer
+  # class name.
+  validates :layer, presence: true, if: -> { type.blank? }
 
   validate :take_json_layer_options
   validate :take_json_source_options

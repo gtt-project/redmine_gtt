@@ -108,6 +108,7 @@ de:
     ids: Karten-Layer
     format_options_select: -- Format-Typ auswählen --
     load_example: 'Beispiele: '
+    type_advanced: "Erweitert (OpenLayers-Klassen)"
   field_format_options_string: Formatoptionen
   field_styles: Style-Einstellungen
   label_source: Source Typ
