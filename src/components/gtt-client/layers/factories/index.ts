@@ -9,3 +9,5 @@ import './ol';
 import './osm';
 import './xyz';
 import './wms';
+import './wmts';
+import './vectortile';
