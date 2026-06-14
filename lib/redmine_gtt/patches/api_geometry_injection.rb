@@ -21,7 +21,14 @@ module RedmineGtt
 
       # True when the current response is a REST API json/xml body we can edit
       # (not the dedicated .geojson format, nor HTML).
+      #
+      # init.rb registers :geojson as an alias of application/json, so
+      # request.format.json? is also true for .geojson requests; exclude that
+      # format explicitly so we never reparse the FeatureCollection body the
+      # controllers send_data for it.
       def gtt_api_response?
+        return false if request.format.to_sym == :geojson
+
         request.format.json? || request.format.xml?
       end
 
