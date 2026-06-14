@@ -8,6 +8,8 @@ import { transform } from 'ol/proj';
 import { evaluateComparison } from './comparison';
 export { evaluateComparison };
 
+import { GttEvent } from '../events';
+
 /**
  * Get the value of a cookie by its name.
  *
@@ -106,7 +108,7 @@ export const getObjectPathValue = (obj: any, path: string | Array<string>, def: 
  * @param features - The features to update the form with.
  * @param updateAddressFlag - A flag to update the address field with reverse geocoding, default is false.
  */
-export function updateForm(mapObj: any, features: FeatureLike[] | null, updateAddressFlag: boolean = false):void {
+export function updateForm(mapObj: any, features: FeatureLike[] | null, updateAddressFlag: boolean = false, emitEvent: boolean = true):void {
 
   const geom = document.querySelector('#geom') as HTMLInputElement;
   if (!geom) {
@@ -116,6 +118,14 @@ export function updateForm(mapObj: any, features: FeatureLike[] | null, updateAd
   if (features == null) {
     // Clear the geom input field
     geom.value = '';
+    if (emitEvent) {
+      mapObj.events?.emit(GttEvent.GeometryChange, {
+        client: mapObj,
+        map: mapObj.map,
+        feature: null,
+        features: [],
+      });
+    }
     return;
   }
 
@@ -130,6 +140,15 @@ export function updateForm(mapObj: any, features: FeatureLike[] | null, updateAd
   })
   const geojson = JSON.parse(geojson_str) as FeatureCollection
   geom.value = JSON.stringify(geojson.features[0])
+
+  if (emitEvent) {
+    mapObj.events?.emit(GttEvent.GeometryChange, {
+      client: mapObj,
+      map: mapObj.map,
+      feature: geojson.features[0] ?? null,
+      features: features as Feature[],
+    });
+  }
 
   const geocoder = JSON.parse(mapObj.defaults.geocoder)
   if (updateAddressFlag && geocoder.address_field_name && features && features.length > 0) {

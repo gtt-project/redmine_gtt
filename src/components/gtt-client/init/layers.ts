@@ -26,7 +26,9 @@ export function initLayers(this: any): Layer[] | undefined {
   this.layerArray = [];
 
   const features = readGeoJSONFeatures.call(this);
-  updateForm(this, features);
+  // Hydration, not a user edit: write existing geometry into the form field
+  // without emitting geometry:change (which would fire before map:ready).
+  updateForm(this, features, false, false);
 
   if (this.contents.layers) {
     createLayers.call(this);

@@ -1,6 +1,9 @@
 // Export all members from the 'redmine' module file.
 export * from './redmine';
 
+// Event bus public surface (GttEvent, GttEventBus, types).
+export * from './events';
+
 // Import OpenLayers and OpenLayers-Extensions styles
 import 'ol/ol.css';
 import 'ol-ext/dist/ol-ext.min.css';
