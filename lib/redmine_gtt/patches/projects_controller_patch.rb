@@ -2,8 +2,31 @@ module RedmineGtt
   module Patches
 
     module ProjectsControllerPatch
+      include ApiGeometryInjection
+
       def self.apply
-        ProjectsController.prepend self unless ProjectsController < self
+        return if ProjectsController < self
+
+        ProjectsController.prepend self
+        # Inject geojson (when geometry is requested) and rotation into core's
+        # rendered REST API response instead of shadowing projects/*.api.rsb.
+        ProjectsController.after_action :gtt_inject_project_geometry, only: %i[show index]
+      end
+
+      def gtt_inject_project_geometry
+        return unless gtt_api_response?
+
+        if action_name == 'show' && @project
+          gtt_inject_api_fields('project', 'projects',
+            @project.id => { geojson: gtt_geojson_value(@project), rotation: @project.map_rotation })
+        elsif action_name == 'index' && @projects
+          extra = @projects.each_with_object({}) do |project, hash|
+            fields = { rotation: project.map_rotation }
+            fields[:geojson] = gtt_geojson_value(project) if @include_geometry
+            hash[project.id] = fields
+          end
+          gtt_inject_api_fields('project', 'projects', extra)
+        end
       end
 
       # overrides index action to add spatial filtering to projects API listing
