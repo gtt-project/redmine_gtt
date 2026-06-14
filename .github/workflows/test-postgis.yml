@@ -43,7 +43,7 @@ jobs:
 
   test:
     name: redmine:${{ matrix.redmine_version }} ruby:${{ matrix.ruby_version }} postgis:${{ matrix.db_version }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     container:
       image: ruby:${{ matrix.ruby_version }}-bullseye
