@@ -24,7 +24,10 @@ module RedmineGtt
       module ClassMethods
 
         def geojson_attribute_select
-          "ST_AsGeoJson(#{table_name}.geom) as db_geojson"
+          # maxdecimaldigits keeps coordinate precision (and payload size) in
+          # check; RedmineGtt.geojson_precision returns a clamped Integer so
+          # the interpolation is injection-safe.
+          "ST_AsGeoJson(#{table_name}.geom, #{RedmineGtt.geojson_precision}) as db_geojson"
         end
 
         def array_to_geojson(array, include_properties: false)
