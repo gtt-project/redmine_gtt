@@ -15,9 +15,35 @@ on:
   workflow_dispatch:
 
 jobs:
+  frontend:
+    name: Frontend (typecheck + unit tests)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Plugin
+        uses: actions/checkout@v6
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        env:
+          COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
+        run: |
+          corepack enable pnpm
+          pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Unit tests
+        run: pnpm test
+
   test:
     name: redmine:${{ matrix.redmine_version }} ruby:${{ matrix.ruby_version }} postgis:${{ matrix.db_version }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     container:
       image: ruby:${{ matrix.ruby_version }}-bullseye
@@ -86,7 +112,7 @@ jobs:
 
       - name: Install Node and pnpm
         run: |
-          curl -sL https://deb.nodesource.com/setup_22.x | bash -
+          curl -sL https://deb.nodesource.com/setup_24.x | bash -
           apt-get install --yes --quiet --no-install-recommends nodejs
           # corepack picks the pnpm version pinned in package.json
           corepack enable pnpm
@@ -95,9 +121,10 @@ jobs:
         working-directory: redmine/plugins/redmine_gtt
         env:
           COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
+        # typecheck + unit tests run once in the frontend job; here we only
+        # build the assets the Ruby tests need.
         run: |
           pnpm install --frozen-lockfile
-          pnpm typecheck
           pnpm build
 
       - name: Prepare Redmine source
