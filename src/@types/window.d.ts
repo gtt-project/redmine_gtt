@@ -1,4 +1,5 @@
 import type { Application } from '@hotwired/stimulus';
+import type { GttEvent } from '../components/gtt-client/events';
 
 declare global {
   interface Window {
@@ -63,6 +64,12 @@ declare global {
      * @param {HTMLDivElement} target - The HTMLDivElement for which the GttClient will be created.
      */
     createGttClient(target: HTMLDivElement): void;
+
+    /**
+     * Names of the DOM CustomEvents the GttClient dispatches. Sibling plugins
+     * listen via document.addEventListener(window.GttEvent.MapReady, ...).
+     */
+    GttEvent: typeof GttEvent;
   }
 }
 

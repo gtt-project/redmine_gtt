@@ -2,6 +2,7 @@ import { Select } from 'ol/interaction';
 import PopupFeature from 'ol-ext/overlay/PopupFeature';
 
 import { icons, buttonIcon } from '../icons';
+import { GttEvent } from '../events';
 
 /**
  * Add popup
@@ -16,6 +17,17 @@ export function setPopover(this: any): void {
     hitTolerance: 5
   });
   this.map.addInteraction(select);
+
+  // Publish selections so external consumers can react without hooking the
+  // PopupFeature overlay or the Select interaction directly.
+  select.on('select', (evt: any) => {
+    this.events?.emit(GttEvent.FeatureSelect, {
+      client: this,
+      map: this.map,
+      selected: evt.selected ?? [],
+      deselected: evt.deselected ?? [],
+    });
+  });
 
   // Popup overlay
   const popup = new PopupFeature({

@@ -17,7 +17,7 @@ import './components/gtt-client/redmine';
 // Stimulus controllers (gtt-map, gtt-settings, gtt-icon-picker, ...)
 import './controllers';
 
-import { GttClient } from './components/gtt-client';
+import { GttClient, GttEvent } from './components/gtt-client';
 
 /**
  * @deprecated Maps attach via the gtt-map Stimulus controller. This shim
@@ -26,3 +26,12 @@ import { GttClient } from './components/gtt-client';
 window.createGttClient = (target: HTMLDivElement) => {
   new GttClient({ target });
 };
+
+/**
+ * Event name constants for sibling plugins and host scripts that listen for
+ * the bubbling DOM CustomEvents the client dispatches, e.g.
+ *   document.addEventListener(window.GttEvent.MapReady, e => e.detail.map)
+ * Exposed on window because those consumers are separate bundles without
+ * access to this module graph.
+ */
+window.GttEvent = GttEvent;
