@@ -45,9 +45,6 @@ jobs:
     name: redmine:${{ matrix.redmine_version }} ruby:${{ matrix.ruby_version }} postgis:${{ matrix.db_version }}
     runs-on: ubuntu-latest
 
-    container:
-      image: ruby:${{ matrix.ruby_version }}-bullseye
-
     strategy:
       fail-fast: false
       matrix:
@@ -94,36 +91,32 @@ jobs:
         with:
           path: redmine/plugins/${{ env.PLUGIN_NAME }}
 
-      - name: Update package archives
-        run: apt-get update --yes --quiet
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby_version }}
 
-      - name: Install package dependencies
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Install native gem system libraries
+        # The runner image ships gcc/make/patch and Chrome (for the system
+        # test); only the pg and rgeo-geos gems' headers still need apt, which
+        # here hits Ubuntu's mirrors rather than a Debian container's.
         run: |
-          apt-get install --yes --quiet \
-            postgresql-client \
-            gcc libpq-dev make patch libgeos-dev curl
-          # For system test
-          if [ ${{ matrix.system_test }} = "true" ]; then
-            wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-            sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-            apt-get -y update
-            apt-get install -y google-chrome-stable
-          fi
+          sudo apt-get update --yes --quiet
+          sudo apt-get install --yes --quiet --no-install-recommends libpq-dev libgeos-dev
 
-      - name: Install Node and pnpm
-        run: |
-          curl -sL https://deb.nodesource.com/setup_24.x | bash -
-          apt-get install --yes --quiet --no-install-recommends nodejs
-          # corepack picks the pnpm version pinned in package.json
-          corepack enable pnpm
-
-      - name: Prepare Plugin
+      - name: Build plugin assets
         working-directory: redmine/plugins/redmine_gtt
         env:
           COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
         # typecheck + unit tests run once in the frontend job; here we only
         # build the assets the Ruby tests need.
         run: |
+          corepack enable pnpm
           pnpm install --frozen-lockfile
           pnpm build
 
@@ -134,7 +127,7 @@ jobs:
             test:
               adapter: postgis
               database: redmine
-              host: postgres
+              host: 127.0.0.1
               username: postgres
               password: postgres
               encoding: utf8
