@@ -110,7 +110,7 @@ jobs:
           sudo apt-get install --yes --quiet --no-install-recommends libpq-dev libgeos-dev
 
       - name: Build plugin assets
-        working-directory: redmine/plugins/redmine_gtt
+        working-directory: redmine/plugins/${{ env.PLUGIN_NAME }}
         env:
           COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
         # typecheck + unit tests run once in the frontend job; here we only
@@ -164,11 +164,11 @@ jobs:
           GOOGLE_CHROME_OPTS_ARGS: "headless,disable-gpu,no-sandbox,disable-dev-shm-usage"
         working-directory: redmine
         run: |
-          bundle exec rails test plugins/redmine_gtt/test/unit
-          bundle exec rails test plugins/redmine_gtt/test/functional
-          bundle exec rails test plugins/redmine_gtt/test/integration
+          bundle exec rails test plugins/${{ env.PLUGIN_NAME }}/test/unit
+          bundle exec rails test plugins/${{ env.PLUGIN_NAME }}/test/functional
+          bundle exec rails test plugins/${{ env.PLUGIN_NAME }}/test/integration
           if [ ${{ matrix.system_test }} = "true" ]; then
-            bundle exec rails test plugins/redmine_gtt/test/system
+            bundle exec rails test plugins/${{ env.PLUGIN_NAME }}/test/system
           fi
 
       - name: Run uninstall test
