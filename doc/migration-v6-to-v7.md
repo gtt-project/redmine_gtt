@@ -17,7 +17,9 @@ No change to the minimum versions, but the toolchain for building the frontend
 is different (see [Build & installation](#build--installation)):
 
 - Redmine >= 6.0.0, Ruby >= 3.3, PostgreSQL >= 15, PostGIS >= 3.4
-- Node.js >= 22 (24 LTS recommended) and pnpm via `corepack enable pnpm`
+- Node.js >= 22 (24 LTS recommended) and pnpm via `corepack enable pnpm` —
+  **only needed to build the frontend from source**; installing from a
+  prebuilt release archive requires no Node toolchain
 
 ## Build & installation
 

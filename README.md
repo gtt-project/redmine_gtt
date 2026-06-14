@@ -110,9 +110,11 @@ pnpm watch
 
 ### How to run test
 
-Frontend unit tests (Vitest) run without a Redmine environment:
+Frontend unit tests (Vitest) run without a Redmine environment (install
+dependencies first if you haven't, see [Installation](#installation)):
 
 ```sh
+pnpm install
 pnpm test
 ```
 
