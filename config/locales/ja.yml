@@ -58,6 +58,8 @@ ja:
 
   select_other_gtt_settings: "GTTのその他の設定"
   label_hide_map_for_invalid_geom: "位置情報が登録されていない時に地図を隠す"
+  label_geojson_precision: "GeoJSON座標の小数点桁数"
+  text_geojson_precision_info: "GeoJSON出力（EPSG:4326）の座標の小数点以下の桁数。6桁で約0.11m。小さくするとデータ量を削減できます。"
   gtt_hide_map_for_invalid_geom_info: "地図を見るにはチケットを編集して位置情報を登録してください。"
 
   select_default_tracker_icon: "トラッカーアイコンを選択:"

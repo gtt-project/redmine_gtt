@@ -60,6 +60,8 @@ en:
 
   select_other_gtt_settings: "Other GTT settings"
   label_hide_map_for_invalid_geom: "Hide issue map for invalid geometry"
+  label_geojson_precision: "GeoJSON coordinate precision"
+  text_geojson_precision_info: "Decimal places for coordinates in GeoJSON output (EPSG:4326). 6 is about 0.11 m; lower values shrink the payload."
   gtt_hide_map_for_invalid_geom_info: "Please edit the issue and set the geometry
     to see the map."
 

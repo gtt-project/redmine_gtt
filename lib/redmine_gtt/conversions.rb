@@ -10,24 +10,52 @@ module RedmineGtt
   module Conversions
 
     class GeomToJson
-      def initialize()
+      # RGeo's GeoJSON encoder emits full float precision and offers no
+      # rounding option (see gtt-project/redmine_gtt#7), so coordinates are
+      # rounded after encoding. Defaults to the configured plugin precision.
+      def initialize(precision: RedmineGtt.geojson_precision)
         @factory = RGeo::GeoJSON::EntityFactory.instance
+        @precision = precision
       end
 
       def to_json(object, id: nil, properties: nil)
-        RGeo::GeoJSON.encode feature(object, id, properties)
+        round_coordinates RGeo::GeoJSON.encode(feature(object, id, properties))
       end
 
       def collection_to_json(data)
-        RGeo::GeoJSON.encode @factory.feature_collection(
+        round_coordinates RGeo::GeoJSON.encode(@factory.feature_collection(
           data.map{|object, id, properties| feature(object, id, properties)}
-        )
+        ))
       end
 
       private
 
       def feature(object, id, properties = nil)
         @factory.feature object, id, (properties || {})
+      end
+
+      # Walks the encoded GeoJSON and rounds the numbers under any
+      # "coordinates" key to @precision decimal places, leaving everything
+      # else (notably "properties") untouched.
+      def round_coordinates(node)
+        case node
+        when Hash
+          node.each_with_object({}) do |(key, value), result|
+            result[key] = key == 'coordinates' ? round_numbers(value) : round_coordinates(value)
+          end
+        when Array
+          node.map { |element| round_coordinates(element) }
+        else
+          node
+        end
+      end
+
+      def round_numbers(value)
+        case value
+        when Array then value.map { |element| round_numbers(element) }
+        when Numeric then value.round(@precision)
+        else value
+        end
       end
     end
 

@@ -121,6 +121,8 @@ de:
   field_format: Format-Typ
   select_other_gtt_settings: Andere GTT-Einstellungen
   label_hide_map_for_invalid_geom: Ausblenden der Ausgabekarte für ungültige Geometrie
+  label_geojson_precision: "GeoJSON-Koordinatengenauigkeit"
+  text_geojson_precision_info: "Nachkommastellen der Koordinaten in der GeoJSON-Ausgabe (EPSG:4326). 6 entspricht etwa 0,11 m; kleinere Werte verringern die Datenmenge."
   gtt_hide_map_for_invalid_geom_info: Bitte bearbeiten Sie die Anfrage und stellen
     Sie die Geometrie ein, um die Karte zu sehen.
   label_default_measure_enabled: Zeige Steuerung zum Messen von Länge und Fläche

@@ -74,12 +74,12 @@ class IssueTest < GttTest
     new_coordinates = old_coordinates.map{|c| c + 0.000000001}
     @issue.update_attribute :geojson, point_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
-    assert_equal old_coordinates, @issue.geojson["geometry"]["coordinates"]
+    assert_equal_coordinates old_coordinates, @issue.geojson["geometry"]["coordinates"]
 
     new_coordinates = [old_coordinates[0] + 0.2, old_coordinates[1], old_coordinates[2]]
     @issue.update_attribute :geojson, point_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
-    assert_equal new_coordinates, @issue.geojson["geometry"]["coordinates"]
+    assert_equal_coordinates new_coordinates, @issue.geojson["geometry"]["coordinates"]
   end
 
   test 'should ignore small linestring geom changes' do
@@ -92,18 +92,18 @@ class IssueTest < GttTest
     new_coordinates = old_coordinates.map{|c| [c[0] + 0.000000001, c[1] + 0.000000001, c[2]]}
     @issue.update_attribute :geojson, linestring_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
-    assert_equal old_coordinates, @issue.geojson["geometry"]["coordinates"]
+    assert_equal_coordinates old_coordinates, @issue.geojson["geometry"]["coordinates"]
 
     new_coordinates = old_coordinates.map{|c| [c[0] + 0.2, c[1], c[2]]}
     @issue.update_attribute :geojson, linestring_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
-    assert_equal new_coordinates, @issue.geojson["geometry"]["coordinates"]
+    assert_equal_coordinates new_coordinates, @issue.geojson["geometry"]["coordinates"]
 
     new_coordinates = old_coordinates.map{|c| [c[0], c[1], c[2]]}
     new_coordinates.delete_at(1)
     @issue.update_attribute :geojson, linestring_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
-    assert_equal new_coordinates, @issue.geojson["geometry"]["coordinates"]
+    assert_equal_coordinates new_coordinates, @issue.geojson["geometry"]["coordinates"]
   end
 
   test 'should ignore small polygon geom changes' do
@@ -116,17 +116,17 @@ class IssueTest < GttTest
     new_coordinates = [old_coordinates[0].map{|c| [c[0] + 0.000000001, c[1] + 0.000000001, c[2]]}]
     @issue.update_attribute :geojson, polygon_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
-    assert_equal old_coordinates, @issue.geojson["geometry"]["coordinates"]
+    assert_equal_coordinates old_coordinates, @issue.geojson["geometry"]["coordinates"]
 
     new_coordinates = [old_coordinates[0].map{|c| [c[0] + 0.2, c[1], c[2]]}]
     @issue.update_attribute :geojson, polygon_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
-    assert_equal new_coordinates, @issue.geojson["geometry"]["coordinates"]
+    assert_equal_coordinates new_coordinates, @issue.geojson["geometry"]["coordinates"]
 
     new_coordinates = [old_coordinates[0].map{|c| [c[0], c[1], c[2]]}]
     new_coordinates[0].insert(2, [135.301041779,34.680969984,0.0])
     @issue.update_attribute :geojson, polygon_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
-    assert_equal new_coordinates, @issue.geojson["geometry"]["coordinates"]
+    assert_equal_coordinates new_coordinates, @issue.geojson["geometry"]["coordinates"]
   end
 end

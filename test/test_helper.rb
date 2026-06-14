@@ -44,7 +44,13 @@ class GttTest < ActiveSupport::TestCase
   end
 
   def assert_equal_coordinates(a, b)
-    assert_equal a.flatten.map{|f|f.round 5}, b.flatten.map{|f|f.round 5}
+    # Compare at the precision GeoJSON output is actually rounded to (follows
+    # the configured setting, so it stays correct if a test changes it).
+    # Comparing at a lower precision than the output uses would double-round
+    # boundary values (e.g. 135.2528349 -> round(6) 135.252835 -> round(5)
+    # 135.25284, while a direct round(5) gives 135.25283).
+    precision = RedmineGtt.geojson_precision
+    assert_equal a.flatten.map{|f|f.round precision}, b.flatten.map{|f|f.round precision}
   end
 
   def assert_geojson_collection(json)

@@ -34,7 +34,10 @@ Redmine::Plugin.register :redmine_gtt do
       'editable_geometry_types_on_issue_map' => ["Point"],
       'enable_geojson_upload_on_issue_map' => false,
       'enable_geocoding_on_map' => false,
-      'hide_map_for_invalid_geom' => false
+      'hide_map_for_invalid_geom' => false,
+      # Keep in sync with RedmineGtt::DEFAULT_GEOJSON_PRECISION (literal here to
+      # avoid autoloading the module during plugin registration).
+      'geojson_precision' => 6
     },
     partial: 'settings/gtt/settings'
   )
