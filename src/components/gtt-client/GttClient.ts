@@ -72,7 +72,7 @@ export default class GttClient {
     this.events.emit(GttEvent.LayersReady, {
       client: this,
       map: this.map,
-      layers: this.map.getLayers().getArray() as any,
+      layers: this.map.getLayers().getArray(),
     });
     initControls.call(this);
     initEventListeners.call(this);

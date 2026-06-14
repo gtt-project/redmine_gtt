@@ -1,7 +1,7 @@
 // src/components/gtt-client/events/types.ts
 import type { Map } from 'ol';
 import type Feature from 'ol/Feature';
-import type { Layer } from 'ol/layer';
+import type BaseLayer from 'ol/layer/Base';
 import type { Feature as GeoJSONFeature } from 'geojson';
 
 import type GttClient from '../GttClient';
@@ -38,7 +38,7 @@ interface GttEventBase {
  */
 export interface GttEventMap {
   [GttEvent.MapReady]: GttEventBase & { target: HTMLElement };
-  [GttEvent.LayersReady]: GttEventBase & { layers: Layer[] };
+  [GttEvent.LayersReady]: GttEventBase & { layers: BaseLayer[] };
   [GttEvent.GeometryChange]: GttEventBase & {
     /** GeoJSON Feature for the current geometry, or null when cleared. */
     feature: GeoJSONFeature | null;
