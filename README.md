@@ -110,7 +110,15 @@ pnpm watch
 
 ### How to run test
 
-You can run the plugin test on rails test environment by the following command:
+Frontend unit tests (Vitest) run without a Redmine environment (install
+dependencies first if you haven't, see [Installation](#installation)):
+
+```sh
+pnpm install
+pnpm test
+```
+
+The Ruby tests run on the Rails test environment:
 
 ```sh
 bundle exec rake db:create
@@ -123,6 +131,9 @@ RAILS_ENV=test NAME=redmine_gtt bundle exec rake redmine:plugins:test
 
 See [all releases](https://github.com/gtt-project/redmine_gtt/releases) with
 release notes.
+
+Upgrading from 6.x to 7.0? See the
+[migration guide](doc/migration-v6-to-v7.md).
 
 ## Authors
 
