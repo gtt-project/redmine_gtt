@@ -15,7 +15,8 @@ module RedmineGtt
         # which the CommonMark pipeline behind the PDF export rejects.
         # Either made PDF export fail with a 500 for issues with geometry.
         def formatted_custom_value(view, object, html)
-          object.value.to_s.encode(Encoding::UTF_8)
+          # Round the WKT for display; the stored geometry keeps full precision.
+          RedmineGtt.round_wkt(object.value.to_s).encode(Encoding::UTF_8)
         end
       end
 

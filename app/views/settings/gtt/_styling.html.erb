@@ -1,50 +1,52 @@
-<h3><%= l(:select_default_tracker_icon) %></h3>
+<fieldset class="box tabular">
+  <legend><%= l(:select_default_tracker_icon) %></legend>
 
-<%# One picker per tracker (gtt-icon-picker Stimulus controller): search the
-    Iconify API across all open icon sets, or paste raw SVG markup. The
-    picked icon is stored as JSON {id, svg}; the server sanitizes on save. %>
-<% Tracker.sorted.each do |t| %>
-<div class="gtt-icon-picker" data-controller="gtt-icon-picker">
-  <%= content_tag :label, t.name %>
-  <span class="gtt-icon-preview" data-gtt-icon-picker-target="preview"></span>
-  <%# keydown.enter searches immediately instead of submitting the form %>
-  <input type="search" class="gtt-icon-search"
-         data-gtt-icon-picker-target="query"
-         data-action="input->gtt-icon-picker#search keydown.enter->gtt-icon-picker#searchNow:prevent"
-         placeholder="<%= l(:gtt_icon_search_placeholder) %>" />
-  <a href="#" data-action="click->gtt-icon-picker#clear"><%= l(:button_clear) %></a>
-  <div class="gtt-icon-results" data-gtt-icon-picker-target="results"
-       data-action="click->gtt-icon-picker#select"></div>
-  <details class="gtt-icon-paste">
-    <summary><%= l(:gtt_icon_paste_label) %></summary>
-    <textarea rows="3" data-gtt-icon-picker-target="paste"
-              placeholder="<svg viewBox=&quot;0 0 24 24&quot;>...</svg>"></textarea>
-    <button type="button" data-action="click->gtt-icon-picker#applyPaste"><%= l(:button_apply) %></button>
-  </details>
-  <%= hidden_field_tag "settings[tracker_#{t.id}]", @settings["tracker_#{t.id}"],
-        id: "settings_tracker_#{t.id}",
-        data: { 'gtt-icon-picker-target': 'value' } %>
-</div>
-<% end %>
+  <%# One picker per tracker (gtt-icon-picker Stimulus controller): search the
+      Iconify API across all open icon sets, or paste raw SVG markup. The
+      picked icon is stored as JSON {id, svg}; the server sanitizes on save. %>
+  <% Tracker.sorted.each do |t| %>
+  <div class="gtt-icon-picker" data-controller="gtt-icon-picker">
+    <%= content_tag :label, t.name %>
+    <span class="gtt-icon-preview" data-gtt-icon-picker-target="preview"></span>
+    <%# keydown.enter searches immediately instead of submitting the form %>
+    <input type="search" class="gtt-icon-search"
+           data-gtt-icon-picker-target="query"
+           data-action="input->gtt-icon-picker#search keydown.enter->gtt-icon-picker#searchNow:prevent"
+           placeholder="<%= l(:gtt_icon_search_placeholder) %>" />
+    <a href="#" data-action="click->gtt-icon-picker#clear"><%= l(:button_clear) %></a>
+    <div class="gtt-icon-results" data-gtt-icon-picker-target="results"
+         data-action="click->gtt-icon-picker#select"></div>
+    <details class="gtt-icon-paste">
+      <summary><%= l(:gtt_icon_paste_label) %></summary>
+      <textarea rows="3" data-gtt-icon-picker-target="paste"
+                placeholder="<svg viewBox=&quot;0 0 24 24&quot;>...</svg>"></textarea>
+      <button type="button" data-action="click->gtt-icon-picker#applyPaste"><%= l(:button_apply) %></button>
+    </details>
+    <%= hidden_field_tag "settings[tracker_#{t.id}]", @settings["tracker_#{t.id}"],
+          id: "settings_tracker_#{t.id}",
+          data: { 'gtt-icon-picker-target': 'value' } %>
+  </div>
+  <% end %>
+</fieldset>
 
-<br>
+<fieldset class="box tabular">
+  <legend><%= l(:select_default_status_color) %></legend>
 
-<h3><%= l(:select_default_status_color) %></h3>
+  <% IssueStatus.sorted.each do |t| %>
+  <p>
+    <%= content_tag :label, t.name %>
+    <%= color_field_tag "settings[status_#{t.id}]", @settings["status_#{t.id}"] %>
+  </p>
+  <% end %>
+</fieldset>
 
-<% IssueStatus.sorted.each do |t| %>
-<p>
-  <%= content_tag :label, t.name %>
-  <%= color_field_tag "settings[status_#{t.id}]", @settings["status_#{t.id}"] %>
-</p>
-<% end %>
+<fieldset class="box tabular">
+  <legend><%= l(:select_other_style_settings) %></legend>
 
-<br>
-
-<h3><%= l(:select_other_style_settings) %></h3>
-
-<p>
-  <%= content_tag(:label, l(:gtt_settings_vector_minzoom_level)) %>
-  <%= text_field_tag('settings[vector_minzoom_level]',
-      @settings['vector_minzoom_level'],
-      :size => 10 ) %>
-</p>
+  <p>
+    <%= content_tag(:label, l(:gtt_settings_vector_minzoom_level)) %>
+    <%= number_field_tag('settings[vector_minzoom_level]',
+        @settings['vector_minzoom_level'],
+        min: 0, max: 28, step: 1) %>
+  </p>
+</fieldset>
