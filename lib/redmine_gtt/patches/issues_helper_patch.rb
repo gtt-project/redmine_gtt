@@ -18,7 +18,9 @@ module RedmineGtt
           detail.value = RedmineGtt.round_wkt(detail.value)
           detail.old_value = RedmineGtt.round_wkt(detail.old_value)
         end
-        super
+        # Pass the (possibly duplicated) detail explicitly so the rounded copy
+        # is the one rendered, rather than relying on bare `super` forwarding.
+        super(detail, no_html, options)
       end
 
     end

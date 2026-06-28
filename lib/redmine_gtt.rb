@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'bigdecimal'
+
 module RedmineGtt
 
   # Number of decimal places GeoJSON coordinates are rounded to on output
@@ -20,10 +22,18 @@ module RedmineGtt
   # Rounds the numeric literals in a WKT string to the configured precision,
   # for DISPLAY only (issue history, notification emails, PDF). The geometry
   # is stored at full precision; only the human-facing text is shortened. The
-  # WKT structure and any integer tokens are left untouched.
+  # WKT structure and any integer tokens are left untouched. BigDecimal does
+  # the rounding so the output stays plain decimal: no Float last-digit drift,
+  # no scientific notation, and no negative-zero ("-0.0") for tiny values.
   def self.round_wkt(wkt, precision = geojson_precision)
     return wkt unless wkt.is_a?(String)
-    wkt.gsub(/-?\d+\.\d+(?:[eE][+-]?\d+)?/) { |number| number.to_f.round(precision).to_s }
+    wkt.gsub(/-?\d+\.\d+(?:[eE][+-]?\d+)?/) do |number|
+      rounded = BigDecimal(number).round(precision)
+      rounded = rounded.abs if rounded.zero?    # never render "-0.0"
+      # BigDecimal#round returns an Integer when precision <= 0; coerce back so
+      # #to_s('F') (plain decimal, no scientific notation) always applies.
+      BigDecimal(rounded).to_s('F')
+    end
   end
 
   def self.setup_normal_patches
