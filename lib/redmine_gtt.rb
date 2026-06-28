@@ -17,6 +17,15 @@ module RedmineGtt
     value.clamp(GEOJSON_PRECISION_RANGE.min, GEOJSON_PRECISION_RANGE.max)
   end
 
+  # Rounds the numeric literals in a WKT string to the configured precision,
+  # for DISPLAY only (issue history, notification emails, PDF). The geometry
+  # is stored at full precision; only the human-facing text is shortened. The
+  # WKT structure and any integer tokens are left untouched.
+  def self.round_wkt(wkt, precision = geojson_precision)
+    return wkt unless wkt.is_a?(String)
+    wkt.gsub(/-?\d+\.\d+(?:[eE][+-]?\d+)?/) { |number| number.to_f.round(precision).to_s }
+  end
+
   def self.setup_normal_patches
     RedmineGtt::Patches::IssuePatch.apply
     RedmineGtt::Patches::IssueQueryPatch.apply
@@ -32,6 +41,7 @@ module RedmineGtt
     RedmineGtt::Patches::IssuesControllerPatch.apply
     RedmineGtt::Patches::ProjectsControllerPatch.apply
     RedmineGtt::Patches::UsersControllerPatch.apply
+    RedmineGtt::Patches::IssuesHelperPatch.apply
 
     [
       IssuesController,
