@@ -95,21 +95,21 @@ module RedmineGtt
       GeomToJson.new.to_json(object, id: id, properties: properties)
     end
 
-    # Turn geometry attribute string (GeoJSON) into Rgeo object for database
-    # use
+    # Turn a geometry attribute into an Rgeo object for database use. The input
+    # may be a GeoJSON String or an already-parsed GeoJSON object (a Hash, or
+    # the ActionController::Parameters a JSON API request delivers).
     def self.to_geom(geometry)
-      geojson = JSON.parse(geometry)
       RGeo::GeoJSON.decode(
-        geojson,
+        coerce_geojson(geometry),
         json_parser: :json,
         geo_factory: RGeo::Cartesian.preferred_factory(has_z_coordinate: true, srid: 4326)
       ).geometry
     end
 
-    # Turn geometry attribute string into WKB for database use
+    # Turn a geometry attribute into WKB for database use. Accepts the same
+    # String or already-parsed object as .to_geom.
     def self.to_wkb(geometry)
-      geojson = JSON.parse(geometry)
-      feature = RGeo::GeoJSON.decode(geojson, json_parser: :json)
+      feature = RGeo::GeoJSON.decode(coerce_geojson(geometry), json_parser: :json)
       ewkb = RGeo::WKRep::WKBGenerator.new(
         type_format: :ewkb,
         emit_ewkb_srid: true,
@@ -117,7 +117,18 @@ module RedmineGtt
       )
       ewkb.generate feature.geometry
     rescue JSON::ParserError
-      # The Gemetry is likely to be already in WKB format
+      # The geometry is likely already in WKB format
+      geometry
+    end
+
+    # Accept a GeoJSON String or an already-parsed object. A nested object
+    # previously reached JSON.parse(Hash) and raised a TypeError (surfacing as
+    # HTTP 500 on the REST API); both forms now decode. Mirrors the String
+    # guard already used in .to_feature.
+    def self.coerce_geojson(geometry)
+      return JSON.parse(geometry) if geometry.is_a?(String)
+      return geometry.to_unsafe_h if geometry.respond_to?(:to_unsafe_h)
+
       geometry
     end
 

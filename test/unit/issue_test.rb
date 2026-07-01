@@ -14,6 +14,19 @@ class IssueTest < GttTest
     assert @issue.geom.present?
   end
 
+  test 'should accept geojson as a parsed object, not only a string' do
+    # A JSON API request delivers geojson as an already-parsed object; this used
+    # to reach JSON.parse(Hash) in Conversions.to_geom and raise (HTTP 500).
+    feature = JSON.parse(example_geojson)
+    assert feature.is_a?(Hash)
+
+    issue = @project.issues.last
+    issue.geojson = feature
+    assert issue.geom.present?, 'geom should be set from a GeoJSON object'
+    assert issue.save
+    assert_geojson Issue.find(issue.id).geojson
+  end
+
   test 'should load geojson' do
     @issue = Issue.find @issue.id
     assert j = @issue.geojson
