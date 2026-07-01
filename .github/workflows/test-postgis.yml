@@ -45,28 +45,34 @@ jobs:
     name: redmine:${{ matrix.redmine_version }} ruby:${{ matrix.ruby_version }} postgis:${{ matrix.db_version }}
     runs-on: ubuntu-latest
 
+    continue-on-error: ${{ matrix.experimental == true }}
+
     strategy:
       fail-fast: false
+      # Curated matrix instead of a full redmine x ruby x postgis cross-product,
+      # split into two concerns so coverage stays broad but the job count small:
+      #   * compat   - each supported Redmine/Ruby pair once, on the ceiling DB.
+      #                Supported Rubies per
+      #                https://redmine.jp/tech_note/supported-rubies/ (Rubies
+      #                still in upstream support): 6.0 -> 3.3, 6.1 -> 3.3/3.4,
+      #                7.0 -> 3.4/4.0.
+      #   * database - the PostGIS variants (PG 15/17/18, PostGIS 3.4/3.5/3.6),
+      #                pinned to the known-stable 6.1/3.4 pair to isolate DB
+      #                issues from Redmine-7/Ruby-4 newness.
+      # Redmine 7 / Ruby 4 rows are experimental (continue-on-error) during
+      # rollout: their result is visible but does not block. Drop `experimental`
+      # once they are consistently green.
       matrix:
-        # Test each Redmine version against the Ruby versions it supports
-        # (https://redmine.jp/tech_note/supported-rubies/), limited to Rubies
-        # still in upstream support (3.1 EOL 2025-03, 3.2 EOL 2026-03):
-        #   6.0-stable -> 3.3
-        #   6.1-stable -> 3.3, 3.4
-        # (5.1-stable dropped: no currently supported Ruby.)
-        redmine_version: [6.0-stable, 6.1-stable]
-        ruby_version: ['3.3', '3.4']
-        # postgis/postgis tags spanning PG 15/17/18 and PostGIS 3.4/3.5/3.6
-        # (floor -> ceiling; ceiling matches the PG18 + PostGIS 3.6 runtime).
-        db_version: [15-3.4, 17-3.5, 18-3.6]
         include:
-          - system_test: true
-            redmine_version: 6.1-stable
-            ruby_version: '3.4'
-        exclude:
-          # Redmine 6.0 supports Ruby up to 3.3 only.
-          - redmine_version: 6.0-stable
-            ruby_version: '3.4'
+          # compat (DB pinned to the 18-3.6 ceiling)
+          - { redmine_version: 6.0-stable, ruby_version: '3.3', db_version: 18-3.6 }
+          - { redmine_version: 6.1-stable, ruby_version: '3.3', db_version: 18-3.6 }
+          - { redmine_version: 6.1-stable, ruby_version: '3.4', db_version: 18-3.6, system_test: true }
+          - { redmine_version: 7.0-stable, ruby_version: '3.4', db_version: 18-3.6, experimental: true }
+          - { redmine_version: 7.0-stable, ruby_version: '4.0', db_version: 18-3.6, system_test: true, experimental: true }
+          # database coverage (pinned to the known-stable 6.1/3.4 pair)
+          - { redmine_version: 6.1-stable, ruby_version: '3.4', db_version: 15-3.4 }
+          - { redmine_version: 6.1-stable, ruby_version: '3.4', db_version: 17-3.5 }
 
     services:
       postgres:
@@ -167,7 +173,7 @@ jobs:
           bundle exec rails test plugins/${{ env.PLUGIN_NAME }}/test/unit
           bundle exec rails test plugins/${{ env.PLUGIN_NAME }}/test/functional
           bundle exec rails test plugins/${{ env.PLUGIN_NAME }}/test/integration
-          if [ ${{ matrix.system_test }} = "true" ]; then
+          if [ "${{ matrix.system_test }}" = "true" ]; then
             bundle exec rails test plugins/${{ env.PLUGIN_NAME }}/test/system
           fi
 
