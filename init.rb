@@ -14,8 +14,9 @@ Redmine::Plugin.register :redmine_gtt do
   menu :admin_menu, :redmine_gtt_settings,
     { controller: 'settings', action: 'plugin', id: 'redmine_gtt' },
     caption: :label_gtt_admin_settings,
-    icon: 'settings',
-    html: { class: 'icon icon-settings' }
+    icon: 'gtt-map-settings',
+    plugin: :redmine_gtt,
+    html: { class: 'icon icon-gtt-map-settings' }
 
   project_module :gtt do
     permission :manage_gtt_settings, {
