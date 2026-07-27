@@ -7,7 +7,8 @@ source 'https://rubygems.org'
 #   Redmine 6.x (Rails 7.2) -> activerecord-postgis-adapter 10.x + rgeo-activerecord 8.0.x
 #   Redmine 7.0 (Rails 8.1) -> activerecord-postgis-adapter 11.1.x + rgeo-activerecord 8.1.x
 geo_gem_requirement = lambda do |env_var, *default_requirement|
-  ENV[env_var] ? ["~> #{ENV[env_var]}"] : default_requirement
+  pin = ENV[env_var].to_s.strip
+  pin.empty? ? default_requirement : ["~> #{pin}"]
 end
 
 gem 'deface'
