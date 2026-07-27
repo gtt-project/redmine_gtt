@@ -13,13 +13,20 @@ relevant to custom integrations.
 
 ## Requirements
 
-No change to the minimum versions, but the toolchain for building the frontend
-is different (see [Build & installation](#build--installation)):
+The minimum versions are unchanged, and **Redmine 7.0 is now supported** (the
+CI matrix covers Redmine 6.0, 6.1 and 7.0). The toolchain for building the
+frontend is different (see [Build & installation](#build--installation)):
 
-- Redmine >= 6.0.0, Ruby >= 3.3, PostgreSQL >= 15, PostGIS >= 3.4
+- Redmine 6.0 – 7.0, Ruby >= 3.3 (Redmine 7.0: Ruby 3.4 or 4.0),
+  PostgreSQL >= 15, PostGIS >= 3.4
 - Node.js >= 22 (24 LTS recommended) and pnpm via `corepack enable pnpm` —
   **only needed to build the frontend from source**; installing from a
   prebuilt release archive requires no Node toolchain
+
+When upgrading the host Redmine to 7.0 (Rails 8.1), `bundle install` now
+resolves the matching geo gem stack (activerecord-postgis-adapter 11.1.x,
+rgeo-activerecord 8.1.x) automatically. If your deployment pins the stack via
+the `GEM_*` environment variables, update or unset them before upgrading.
 
 ## Build & installation
 
@@ -135,7 +142,9 @@ fields are injected into core's rendered response instead, so:
 
 GeoJSON coordinate precision is now configurable (default 6 decimal places,
 ~0.11 m in EPSG:4326) via the `geojson_precision` plugin setting, which keeps
-API and map payloads small for large geometries.
+API and map payloads small for large geometries. The same precision is applied
+to WKT coordinates **for display** (issue history, notification emails, PDF
+export); stored geometries keep their full precision.
 
 ## Summary checklist
 
