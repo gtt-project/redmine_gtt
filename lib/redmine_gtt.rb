@@ -53,6 +53,7 @@ module RedmineGtt
     RedmineGtt::Patches::ProjectsControllerPatch.apply
     RedmineGtt::Patches::UsersControllerPatch.apply
     RedmineGtt::Patches::IssuesHelperPatch.apply
+    RedmineGtt::Patches::QueriesHelperPatch.apply
 
     [
       IssuesController,
