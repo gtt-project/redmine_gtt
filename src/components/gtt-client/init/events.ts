@@ -12,7 +12,6 @@ export function initEventListeners(this: any): void {
   handleCollapsed.call(this);
   handleResize.call(this);
   handleIssueSelection.call(this);
-  handleEditIcon.call(this);
   handleGttTabActivation.call(this);
   trackUserMapInteraction.call(this);
   handleFilters.call(this);
@@ -50,12 +49,24 @@ function handleCollapsed(this: any): void {
 
 /**
  * Handles map resizing for multiple maps by observing the map target element.
+ * When the element transitions from hidden (zero size, e.g. inside the
+ * initially hidden issue edit form) to visible, the map is additionally
+ * zoomed to its features — this replaces the former edit/comment icon click
+ * handler with its 500 ms setTimeout guess (#323): the observer reacts to
+ * the actual size change, however the form was opened.
  */
 function handleResize(this: any): void {
-  const resizeObserver = new ResizeObserver((entries, observer) => {
+  let wasHidden = false;
+  const resizeObserver = new ResizeObserver((entries) => {
+    const rect = entries[entries.length - 1].contentRect;
+    const hidden = rect.width === 0 || rect.height === 0;
     this.maps.forEach((m: any) => {
       m.updateSize();
     });
+    if (wasHidden && !hidden) {
+      zoomToExtent.call(this);
+    }
+    wasHidden = hidden;
   });
   resizeObserver.observe(this.map.getTargetElement());
 }
@@ -82,22 +93,6 @@ function handleIssueSelection(this: any): void {
   });
 }
 
-
-/**
- * Handles the click event on the edit/comment icon to update the map size when the editable form is made visible.
- */
-function handleEditIcon(this: any): void {
-  document.querySelectorAll<HTMLAnchorElement>('div.contextual a.icon-edit, div.contextual a.icon-comment').forEach((element) => {
-    element.addEventListener('click', () => {
-      setTimeout(() => {
-        this.maps.forEach((m: any) => {
-          m.updateSize();
-        });
-        zoomToExtent.call(this);
-      }, 500);
-    });
-  });
-}
 
 /**
  * Handles GTT tab activation to redraw the map when the tab is clicked.
