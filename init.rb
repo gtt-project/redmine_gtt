@@ -10,6 +10,13 @@ Redmine::Plugin.register :redmine_gtt do
 
   requires_redmine :version_or_higher => '6.0.0'
 
+  # Shortcut to the plugin settings in the administration sidebar (#309).
+  menu :admin_menu, :redmine_gtt_settings,
+    { controller: 'settings', action: 'plugin', id: 'redmine_gtt' },
+    caption: :label_gtt_settings_headline,
+    icon: 'settings',
+    html: { class: 'icon icon-settings' }
+
   project_module :gtt do
     permission :manage_gtt_settings, {
       projects: [ :update_gtt_configuration ]
