@@ -2,6 +2,14 @@
 
 module GttMapHelper
 
+  # Whether GTT content should render in the current view context (#278):
+  # inside a project the gtt module must be enabled; global pages (no
+  # project) always render it. Use project&.module_enabled?(:gtt) instead
+  # when the content strictly requires a project.
+  def gtt_module_active?(project)
+    project.nil? || project.module_enabled?(:gtt)
+  end
+
   def map_form_field(form, map, field: :geojson, bounds: nil, edit_mode: nil, upload: true, rotation: 0)
     safe_join [
       form.hidden_field(field, id: 'geom'),

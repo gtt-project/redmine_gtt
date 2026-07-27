@@ -1,5 +1,10 @@
 name: Test with PostGIS
 
+# The workflow only checks out code and runs tests; the GITHUB_TOKEN
+# needs nothing beyond reading the repositories.
+permissions:
+  contents: read
+
 env:
   PLUGIN_NAME: ${{ github.event.repository.name }}
 

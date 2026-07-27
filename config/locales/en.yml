@@ -64,6 +64,20 @@ en:
   text_geojson_precision_info: "Decimal places for coordinates in GeoJSON output (EPSG:4326). 6 is about 0.11 m; lower values shrink the payload."
   gtt_hide_map_for_invalid_geom_info: "Please edit the issue and set the geometry
     to see the map."
+  label_distance_unit: "Distance display unit"
+  text_distance_unit_info: "Unit for distances shown and entered in the UI (distance filter, distance column, watch radius)."
+  label_api_distance_unit: "API distance unit"
+  text_api_distance_unit_info: "The REST API always uses meters in this version."
+  gtt_distance_unit_m: "Meters (m)"
+  gtt_distance_unit_km: "Kilometers (km)"
+  gtt_distance_unit_ft: "Feet (ft)"
+  gtt_distance_unit_mi: "Miles (mi)"
+  gtt_distance_unit_nm: "Nautical miles (nm)"
+
+  gtt_label_watch_nearby_legend: "Auto watch: nearby issues"
+  gtt_label_watch_nearby: "Watch new issues near my location"
+  gtt_label_watch_nearby_radius: "Distance"
+  gtt_text_watch_nearby_requires_location: "Set your location on the map above to enable this."
 
   select_default_tracker_icon: "Select default tracker icon:"
   select_default_status_color: "Select default status color:"
@@ -74,6 +88,7 @@ en:
   select_default_geocoder_settings: "Set Geocoder settings:"
 
   select_other_style_settings: "Other style settings"
+  label_gtt_admin_settings: "Map settings"
 
   project_module_gtt: "GTT"
   permission_manage_gtt_settings: "Manage GTT settings"

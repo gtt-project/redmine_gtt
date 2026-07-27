@@ -6,9 +6,17 @@ Redmine::Plugin.register :redmine_gtt do
   author_url 'https://github.com/gtt-project'
   url 'https://github.com/gtt-project/redmine_gtt'
   description 'Adds location-based task management and maps'
-  version '7.0.0'
+  version '7.1.0'
 
   requires_redmine :version_or_higher => '6.0.0'
+
+  # Shortcut to the plugin settings in the administration sidebar (#309).
+  menu :admin_menu, :redmine_gtt_settings,
+    { controller: 'settings', action: 'plugin', id: 'redmine_gtt' },
+    caption: :label_gtt_admin_settings,
+    icon: 'gtt-map-settings',
+    plugin: :redmine_gtt,
+    html: { class: 'icon icon-gtt-map-settings' }
 
   project_module :gtt do
     permission :manage_gtt_settings, {
@@ -37,7 +45,9 @@ Redmine::Plugin.register :redmine_gtt do
       'hide_map_for_invalid_geom' => false,
       # Keep in sync with RedmineGtt::DEFAULT_GEOJSON_PRECISION (literal here to
       # avoid autoloading the module during plugin registration).
-      'geojson_precision' => 6
+      'geojson_precision' => 6,
+      'distance_unit' => 'm',
+      'api_distance_unit' => 'm'
     },
     partial: 'settings/gtt/settings'
   )

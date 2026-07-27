@@ -51,6 +51,7 @@ de:
   select_edit_geometry_settings: 'Einstellungen für die Geometriebearbeitung:'
   select_default_geocoder_settings: 'Geocoder-Einstellungen:'
   select_other_style_settings: "Weitere Stileinstellungen"
+  label_gtt_admin_settings: "Karteneinstellungen"
   project_module_gtt: GTT
   permission_manage_gtt_settings: Konfiguration der GTT-Einstellungen
   field_baselayer: Basislayer
@@ -129,3 +130,16 @@ de:
   gtt_hide_map_for_invalid_geom_info: Bitte bearbeiten Sie die Anfrage und stellen
     Sie die Geometrie ein, um die Karte zu sehen.
   label_default_measure_enabled: Zeige Steuerung zum Messen von Länge und Fläche
+  label_distance_unit: "Anzeigeeinheit für Entfernungen"
+  text_distance_unit_info: "Einheit für angezeigte und eingegebene Entfernungen (Distanzfilter, Distanzspalte, Beobachtungsradius)."
+  label_api_distance_unit: "API-Entfernungseinheit"
+  text_api_distance_unit_info: "Die REST-API verwendet in dieser Version immer Meter."
+  gtt_distance_unit_m: "Meter (m)"
+  gtt_distance_unit_km: "Kilometer (km)"
+  gtt_distance_unit_ft: "Fuß (ft)"
+  gtt_distance_unit_mi: "Meilen (mi)"
+  gtt_distance_unit_nm: "Seemeilen (nm)"
+  gtt_label_watch_nearby_legend: "Automatisch beobachten: Tickets in der Nähe"
+  gtt_label_watch_nearby: "Neue Tickets in der Nähe meines Standorts beobachten"
+  gtt_label_watch_nearby_radius: "Entfernung"
+  gtt_text_watch_nearby_requires_location: "Legen Sie zuerst Ihren Standort auf der Karte oben fest, um dies zu aktivieren."

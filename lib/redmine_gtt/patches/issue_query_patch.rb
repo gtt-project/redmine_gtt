@@ -43,7 +43,8 @@ module RedmineGtt
               caption: :field_geom
             )
             columns << QueryColumn.new(:distance,
-              caption: :label_gtt_distance,
+              # header shows the configured display unit, e.g. "Distance (km)"
+              caption: -> { "#{l(:label_gtt_distance)} (#{DistanceUnit.current})" },
               sortable: lambda{
                 lng, lat = find_center_point
                 distance_query lng, lat

@@ -1,0 +1,36 @@
+<%# Opt-in to automatically watch new issues near the user's stored
+    location (#14). Rendered right below the User Map fieldset that sets
+    the location, so the "needs a location" dependency is visible in place.
+    Like _user_map.html.erb, this closes the fieldset left open above and
+    opens its own, which core's my/account view closes. %>
+</fieldset>
+
+<fieldset class="box tabular">
+  <legend><%= l(:gtt_label_watch_nearby_legend) %></legend>
+  <% location_set = user.geom.present? %>
+  <p>
+    <label for="pref_gtt_watch_nearby"><%= l(:gtt_label_watch_nearby) %></label>
+    <%# The unchecked-checkbox hidden field is only rendered while the
+        controls are enabled; with no location both are disabled, nothing
+        submits, and the stored preference stays untouched. %>
+    <%= hidden_field_tag 'pref[gtt_watch_nearby]', '0', id: nil if location_set %>
+    <%= check_box_tag 'pref[gtt_watch_nearby]', '1', user.pref.gtt_watch_nearby?,
+          id: 'pref_gtt_watch_nearby', disabled: !location_set %>
+  </p>
+  <p>
+    <label for="pref_gtt_watch_radius"><%= l(:gtt_label_watch_nearby_radius) %></label>
+    <%# entered in the configured display unit, stored in meters (#10) %>
+    <%# min = 1 meter expressed in the unit: the server treats smaller
+        values as unset, so don't offer them %>
+    <%= number_field_tag 'pref[gtt_watch_radius_in_unit]', user.pref.gtt_watch_radius_in_unit,
+          id: 'pref_gtt_watch_radius', step: 'any',
+          min: RedmineGtt::DistanceUnit.from_meters(1).round(6),
+          max: RedmineGtt::DistanceUnit.from_meters(
+            RedmineGtt::Patches::UserPreferencePatch::NEARBY_WATCH_MAX_RADIUS_M
+          ).ceil,
+          disabled: !location_set %>
+    <%= RedmineGtt::DistanceUnit.current %>
+  </p>
+  <% unless location_set %>
+    <p><em class="info"><%= l(:gtt_text_watch_nearby_requires_location) %></em></p>
+  <% end %>

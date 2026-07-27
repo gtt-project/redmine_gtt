@@ -1,4 +1,4 @@
-<% if issue.project && issue.project.module_enabled?(:gtt) &&
+<% if issue.project&.module_enabled?(:gtt) &&
       ((issue.new_record? && User.current.allowed_to?(:add_issues, issue.project)) ||
         User.current.allowed_to?(:edit_issues, issue.project))
 %>

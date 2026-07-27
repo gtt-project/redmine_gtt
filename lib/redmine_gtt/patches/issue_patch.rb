@@ -16,8 +16,24 @@ module RedmineGtt
                 user.allowed_to? perm, issue.project
               }
             before_update :ignore_small_geom_change, if: :geom_changed?
+            # Runs inside the save transaction, so the watchers are in place
+            # before core's after_create_commit notification collects its
+            # recipients. Covers creation with geometry as well as geometry
+            # added or moved later (add_watcher is idempotent).
+            after_save :gtt_subscribe_nearby_watchers,
+              if: -> { saved_change_to_geom? && geom.present? }
           end
         end
+      end
+
+      # A failure here must never roll back the issue itself: log and move on.
+      def gtt_subscribe_nearby_watchers
+        RedmineGtt::NearbyWatchers.subscribe(self)
+      rescue StandardError => e
+        Rails.logger.error(
+          "[GTT] Nearby watcher subscription failed for issue ##{id}: " \
+          "#{e.class}: #{e.message}"
+        )
       end
 
       def map

@@ -1,6 +1,6 @@
 {
   "name": "redmine_gtt",
-  "version": "7.0.0",
+  "version": "7.1.0",
   "description": "Plugin that adds spatial capabilities to Redmine",
   "scripts": {
     "build": "vite build",
