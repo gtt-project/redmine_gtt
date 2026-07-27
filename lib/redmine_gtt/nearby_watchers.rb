@@ -19,9 +19,9 @@ module RedmineGtt
 
     def self.nearby_users(issue)
       candidates(issue).select do |user|
-        radius_km = user.pref.gtt_watch_nearby? && user.pref.gtt_watch_radius_km
-        radius_km &&
-          user['gtt_distance_m'].to_f <= radius_km * 1000 &&
+        radius_m = user.pref.gtt_watch_nearby? && user.pref.gtt_watch_radius_m
+        radius_m &&
+          user['gtt_distance_m'].to_f <= radius_m &&
           issue.visible?(user)
       end
     end
@@ -30,7 +30,7 @@ module RedmineGtt
     # The issue geometry is bound as an EWKB hex parameter; the distance is
     # measured on the geography type (meters, any geometry type).
     def self.candidates(issue)
-      max_meters = Patches::UserPreferencePatch::NEARBY_WATCH_MAX_RADIUS_KM * 1000
+      max_meters = Patches::UserPreferencePatch::NEARBY_WATCH_MAX_RADIUS_M
       distance = User.send(:sanitize_sql_array, [
         "ST_Distance(#{User.table_name}.geom::geography, ?::geometry::geography)",
         ewkb_hex(issue.geom)

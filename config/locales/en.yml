@@ -77,7 +77,6 @@ en:
   gtt_label_watch_nearby_legend: "Auto watch: nearby issues"
   gtt_label_watch_nearby: "Watch new issues near my location"
   gtt_label_watch_nearby_radius: "Distance"
-  gtt_label_watch_nearby_radius_unit: "km"
   gtt_text_watch_nearby_requires_location: "Set your location on the map above to enable this."
 
   select_default_tracker_icon: "Select default tracker icon:"
