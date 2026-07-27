@@ -58,7 +58,7 @@ export class SearchEvent extends BaseEvent {
  *  @param {string | undefined} options.location_type filter the results to match a specific location type (only Reverse Geocoding)
  */
 class SearchGoogle extends SearchJSON {
-  constructor(options: SearchGoogleOptions = { apiKey: null }) {
+  constructor(options: SearchGoogleOptions = { apiKey: '' }) {
     options.className = options.className || 'google';
     options.url = options.url || 'https://maps.googleapis.com/maps/api/geocode/json';
     super(options);
@@ -141,7 +141,7 @@ class SearchGoogle extends SearchJSON {
     var c = [f.geometry.location.lng, f.geometry.location.lat];
     // Add coordinate to the event
     try {
-      c = ol_proj_transform(c, 'EPSG:4326', this.getMap().getView().getProjection());
+      c = ol_proj_transform(c, 'EPSG:4326', this.getMap()!.getView().getProjection());
     } catch (e) { /* ok */ }
     this.dispatchEvent(new SearchEvent("select", f, c));
   }
@@ -151,7 +151,7 @@ class SearchGoogle extends SearchJSON {
    *  @api
    */
   reverseGeocode(coord: any, cback: (results: google.maps.GeocoderResult[]) => void) {
-    const lonlat = ol_proj_transform(coord, this.getMap().getView().getProjection(), 'EPSG:4326');
+    const lonlat = ol_proj_transform(coord, this.getMap()!.getView().getProjection(), 'EPSG:4326');
     const baseUrl = this.get('url');
 
     // Manually construct the query parameters to avoid double encoding the comma
@@ -180,7 +180,7 @@ class SearchGoogle extends SearchJSON {
     this.ajax(
       url,
       {},
-      function (resp: any) {
+      function (this: any, resp: any) {
         if (cback) {
           cback.call(this, resp.results);
         } else {

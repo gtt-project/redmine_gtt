@@ -1,10 +1,9 @@
 // src/components/gtt-client/geocoding/SearchFactory.ts
 import { Feature } from 'ol';
 import { applyCustomButton } from './CustomButtonMixin';
-import SearchGTT from './SearchGTT';
-import SearchGoogle from './SearchGoogle';
-import SearchNominatim from 'ol-ext/control/SearchNominatim';
-import SearchPhoton from 'ol-ext/control/SearchPhoton';
+import { getGeocoderProvider, listGeocoderProviders } from './registry';
+// Side-effect import: registers all built-in geocoder providers.
+import './providers';
 
 /**
  * Function signature for the handleSelect function.
@@ -43,54 +42,23 @@ function extendHandleSelect(searchControl: any, handleSelectCallback: (response:
  * @param handleSelectCallback - Custom callback function to handle the selected feature.
  * @returns
  */
-export function createSearchControl(options: any, handleSelectCallback: (feature: Feature) => void): any {
-  let searchControl: any;
-
-  // Create search control instance based on the provider
-  switch (options.provider) {
-    // Apply settings for Nomatim provider
-    case 'nominatim':
-      options.providerOptions = {
-        reverse: true, // Enable reverse geocoding
-        typing: -1, // Disable typing delay (see Nominatim policy!)
-        ...options.providerOptions,
-      };
-      searchControl = new SearchNominatim(options.providerOptions);
-      break;
-    // Apply settings for Photon provider
-    case 'photon':
-      options.providerOptions = {
-        // lang: 'en', // Force preferred language
-        reverse: true, // Enable reverse geocoding
-        position: true, // Priority to position
-        ...options.providerOptions,
-      };
-      searchControl = new SearchPhoton(options.providerOptions);
-      break;
-    // Apply settings for Google provider
-    case 'google':
-      options.providerOptions = {
-        reverse: true, // Enable reverse geocoding
-        ...options.providerOptions,
-      };
-      searchControl = new SearchGoogle(options.providerOptions);
-      break;
-
-    case 'custom':
-      options.providerOptions = {
-        ...options.providerOptions,
-      };
-      searchControl = new SearchGTT(options.providerOptions);
-      break;
-    // Add cases for new providers here
-    default:
-      // Throw an error if the provider is not supported
-      throw new Error(`Unsupported provider: ${options.provider}`);
-      break;
+export function createSearchControl(options: any, handleSelectCallback: (response: object) => void): any {
+  // Look up the provider factory in the registry. Built-in providers are
+  // registered via the './providers' side-effect import above; host
+  // applications can add more with registerGeocoderProvider.
+  const factory = getGeocoderProvider(options.provider);
+  if (!factory) {
+    throw new Error(
+      `Unsupported provider: ${options.provider}. Registered providers: ${listGeocoderProviders().join(', ')}`
+    );
   }
 
-  // Apply custom button implementation
-  applyCustomButton(searchControl, options);
+  const { control: searchControl, providerOptions } = factory(options.providerOptions ?? {});
+
+  // Apply custom button implementation. Pass the resolved providerOptions so the
+  // reverse-button decision sees the provider defaults (e.g. reverse: true), not
+  // just the raw admin configuration.
+  applyCustomButton(searchControl, { ...options, providerOptions });
 
   // Extend the handleSelect function with the custom callback
   extendHandleSelect(searchControl, handleSelectCallback);

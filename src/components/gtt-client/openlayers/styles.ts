@@ -1,56 +1,68 @@
 import { Feature } from 'ol';
+import { FeatureLike } from 'ol/Feature';
 import { Geometry } from 'ol/geom';
 import { Style, Fill, Stroke } from 'ol/style';
-import FontSymbol from 'ol-ext/style/FontSymbol';
-import Shadow from 'ol-ext/style/Shadow';
 
-/**
- * Creates and returns a shadow style.
- *
- * @returns {Style} - The shadow style.
- */
-function applyShadow(): Style {
-  return new Style({
-    image: new Shadow({
-      radius: 15,
-      blur: 5,
-      offsetX: 0,
-      offsetY: 0,
-      fill: new Fill({
-        color: 'rgba(0,0,0,0.5)',
-      }),
-    }),
-  });
+import { markerIcon, SvgGlyph } from './marker';
+
+// Fallback glyph (MDI 'home'): used when a tracker has no icon configured
+// or still carries a legacy icon-font glyph name.
+const DEFAULT_GLYPH: SvgGlyph = {
+  viewBox: '0 0 24 24',
+  body: '<path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z"/>',
+};
+
+// Tracker icon settings hold JSON {id, svg} (see RedmineGtt::TrackerIcon).
+// Parsed glyphs are cached by their raw setting value.
+const glyphCache = new Map<string, SvgGlyph | null>();
+
+function parseGlyph(value: string): SvgGlyph | null {
+  if (glyphCache.has(value)) {
+    return glyphCache.get(value) ?? null;
+  }
+  let glyph: SvgGlyph | null = null;
+  try {
+    const data = JSON.parse(value);
+    if (data && typeof data.svg === 'string') {
+      const root = new DOMParser()
+        .parseFromString(data.svg, 'image/svg+xml')
+        .documentElement;
+      if (root && root.nodeName.toLowerCase() === 'svg') {
+        glyph = {
+          viewBox: root.getAttribute('viewBox') || '0 0 24 24',
+          body: root.innerHTML,
+        };
+      }
+    }
+  } catch {
+    // Legacy glyph names (icon-font era) and malformed values fall through
+    // to the default glyph.
+  }
+  glyphCache.set(value, glyph);
+  return glyph;
+}
+
+function glyphForFeature(mapObj: any, feature: Feature<Geometry>): SvgGlyph {
+  const value = getSymbol(mapObj, feature);
+  return (value && parseGlyph(value)) || DEFAULT_GLYPH;
 }
 
 /**
- * Creates and returns a font style for a given feature.
+ * Creates the marker style for a given feature: an SVG badge with the
+ * tracker glyph, anchored at the feature position, plus stroke/fill for
+ * non-point geometries.
  *
  * @param {any} mapObj - The map object containing default settings.
- * @param {Feature<Geometry>} feature - The map feature for which the font style is being generated.
- * @returns {Style} - The font style.
+ * @param {Feature<Geometry>} feature - The map feature for which the style is being generated.
+ * @returns {Style} - The marker style.
  */
-function applyFontStyle(mapObj: any, feature: Feature<Geometry>): Style {
-
-  const fontStyle = new Style({
-    image: new FontSymbol({
-      form: 'blazon',
-      gradient: false,
-      glyph: getSymbol(mapObj, feature),
-      fontSize: 0.7,
-      radius: 18,
-      offsetY: -18,
-      rotation: 0,
-      rotateWithView: false,
-      color: getFontColor(),
-      fill: new Fill({
-        color: getColor(mapObj, feature),
-      }),
-      stroke: new Stroke({
-        color: '#333333',
-        width: 1,
-      }),
-      opacity: 1,
+function applyMarkerStyle(mapObj: any, feature: Feature<Geometry>): Style {
+  return new Style({
+    image: markerIcon({
+      glyph: glyphForFeature(mapObj, feature),
+      fill: getColor(mapObj, feature),
+      stroke: '#333333',
+      glyphColor: getFontColor(),
     }),
     stroke: new Stroke({
       width: 4,
@@ -60,19 +72,19 @@ function applyFontStyle(mapObj: any, feature: Feature<Geometry>): Style {
       color: getColor(mapObj, feature, true),
     }),
   });
-
-  return fontStyle;
 }
 
 /**
  * Get an array of styles to be applied to a given feature.
+ * Matches OpenLayers' StyleFunction signature so it can be bound and
+ * passed to a vector layer directly.
  *
- * @param {Feature<Geometry>} feature - The map feature for which the styles are being generated.
- * @param {unknown} _ - Unused parameter.
+ * @param {FeatureLike} feature - The map feature for which the styles are being generated.
+ * @param {number} _resolution - Unused view resolution.
  * @returns {Style[]} - An array of styles to be applied on the feature.
  */
-export function getStyle(feature: Feature<Geometry>, _: unknown): Style[] {
-  return [applyShadow(), applyFontStyle(this, feature)];
+export function getStyle(this: any, feature: FeatureLike, _resolution: number): Style[] {
+  return [applyMarkerStyle(this, feature as Feature<Geometry>)];
 }
 
 /**
@@ -88,7 +100,7 @@ export function getColor(mapObj: any, feature: Feature<Geometry>, isFill: boolea
   const DEFAULT_COLOR = '#000000';
   const LINE_AND_POLYGON_COLOR = '#FFD700';
 
-  let color = feature.getGeometry().getType() !== 'Point' ? LINE_AND_POLYGON_COLOR : DEFAULT_COLOR;
+  let color = feature.getGeometry()?.getType() !== 'Point' ? LINE_AND_POLYGON_COLOR : DEFAULT_COLOR;
   const pluginSettings = JSON.parse(mapObj.defaults.pluginSettings);
   const statusInput = document.querySelector('#issue_status_id') as HTMLInputElement;
 

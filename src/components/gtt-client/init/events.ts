@@ -1,6 +1,7 @@
 import { ResizeObserver } from '@juggle/resize-observer';
 
-import { updateFilter } from "../helpers";
+import { updatePermalinkCookie } from "../helpers";
+import { syncSpatialFilters } from "../redmine/filters";
 import { zoomToExtent } from "../openlayers";
 
 /**
@@ -13,6 +14,7 @@ export function initEventListeners(this: any): void {
   handleIssueSelection.call(this);
   handleEditIcon.call(this);
   handleGttTabActivation.call(this);
+  trackUserMapInteraction.call(this);
   handleFilters.call(this);
 }
 
@@ -62,7 +64,7 @@ function handleResize(this: any): void {
  * Handles issue selection to zoom to selected map features when a table row is clicked.
  */
 function handleIssueSelection(this: any): void {
-  document.querySelectorAll('table.issues tbody tr').forEach((element: HTMLTableRowElement) => {
+  document.querySelectorAll<HTMLTableRowElement>('table.issues tbody tr').forEach((element) => {
     element.addEventListener('click', (evt) => {
       const currentTarget = evt.currentTarget as HTMLTableRowElement;
       const id = currentTarget.id.split('-')[1];
@@ -85,7 +87,7 @@ function handleIssueSelection(this: any): void {
  * Handles the click event on the edit/comment icon to update the map size when the editable form is made visible.
  */
 function handleEditIcon(this: any): void {
-  document.querySelectorAll('div.contextual a.icon-edit, div.contextual a.icon-comment').forEach((element: HTMLAnchorElement) => {
+  document.querySelectorAll<HTMLAnchorElement>('div.contextual a.icon-edit, div.contextual a.icon-comment').forEach((element) => {
     element.addEventListener('click', () => {
       setTimeout(() => {
         this.maps.forEach((m: any) => {
@@ -112,20 +114,42 @@ function handleGttTabActivation(this: any): void {
 }
 
 /**
+ * Distinguishes genuine user interaction (drag, scroll zoom, control
+ * buttons) from programmatic view changes such as the initial fit. Spatial
+ * filter values restored from the query must only be overwritten by the
+ * former (see syncSpatialFilters).
+ */
+function trackUserMapInteraction(this: any): void {
+  this.userMovedMap = false;
+  const markMoved = () => { this.userMovedMap = true; };
+  this.map.on('pointerdrag', markMoved);
+  const viewport = this.map.getViewport() as HTMLElement;
+  viewport.addEventListener('wheel', markMoved, { passive: true });
+  viewport.addEventListener('click', (evt: Event) => {
+    if ((evt.target as HTMLElement).closest('.ol-control button')) {
+      markMoved();
+    }
+  });
+}
+
+/**
  * Handles map filters and load event listeners for updating the map view.
  */
 function handleFilters(this: any): void {
   window.addEventListener('load', () => {
-    // Check if location filter is available
-    if (document.querySelectorAll('tr#tr_bbox').length > 0) {
+    // Check for active spatial filter rows. Core Redmine 6.x builds filter
+    // rows as <div id="tr_...">, so don't constrain the element type.
+    if (document.querySelector('#tr_bbox')) {
       this.filters.location = true;
     }
-    // Check if distance filter is available
-    if (document.querySelectorAll('tr#tr_distance').length > 0) {
+    if (document.querySelector('#tr_distance')) {
       this.filters.distance = true;
     }
-    // Call zoomToExtent and updateFilter functions
-    zoomToExtent.call(this);
-    this.map.on('moveend', updateFilter.bind(this));
+    // With active spatial filters, restore the view the user filtered in
+    // (force=false reads the permalink cookie) instead of fitting to the
+    // result features.
+    zoomToExtent.call(this, false);
+    this.map.on('moveend', syncSpatialFilters.bind(this));
+    this.map.on('moveend', updatePermalinkCookie.bind(this));
   });
 }

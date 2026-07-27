@@ -1,4 +1,5 @@
 import ol_ext_element from 'ol-ext/util/element';
+import { icons, buttonIcon } from '../icons';
 
 export function applyCustomButton(searchControl: any, options: any) {
   // Remove the default button if it exists
@@ -8,10 +9,10 @@ export function applyCustomButton(searchControl: any, options: any) {
   }
 
   // Create a custom search button with a custom icon
-  searchControl.button = ol_ext_element.create('BUTTON', {
+  searchControl.button = (ol_ext_element as any).create('BUTTON', {
     className: 'ol-search-gtt',
     title: options.title || 'Search',
-    html: options.html || '<i class="mdi mdi-map-search-outline"></i>',
+    html: options.html || buttonIcon(icons.search),
     parent: searchControl.element,
     click: function () {
       searchControl.element.classList.toggle('ol-collapsed');
@@ -34,7 +35,7 @@ export function applyCustomButton(searchControl: any, options: any) {
     }
 
     // Create a custom reverse button with a custom icon
-    searchControl.reverseButton = ol_ext_element.create('BUTTON', {
+    searchControl.reverseButton = (ol_ext_element as any).create('BUTTON', {
       className: 'ol-search-gtt-reverse ol-revers',
       title: options.providerOptions.reverseTitle || 'Click on the map',
       html: options.html_reverse || 'X',

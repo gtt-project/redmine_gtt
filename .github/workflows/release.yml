@@ -1,0 +1,57 @@
+name: Release tarball
+
+# Builds the frontend and attaches a prebuilt plugin archive to the GitHub
+# release, so the plugin can be installed without a Node toolchain:
+#
+#   tar -xzf redmine_gtt-vX.Y.Z.tar.gz -C path/to/redmine/plugins/
+#
+# The archive contains the tracked plugin files plus the built assets
+# (everything except node_modules and other development-only files), under a
+# top-level redmine_gtt/ directory.
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-attach:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Build assets
+        env:
+          COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
+        run: |
+          corepack enable pnpm
+          pnpm install --frozen-lockfile
+          pnpm build
+
+      - name: Create plugin archive
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          STAGING=$(mktemp -d)
+          mkdir "$STAGING/redmine_gtt"
+          # tracked files only (no node_modules, .git, caches)...
+          git archive HEAD | tar -x -C "$STAGING/redmine_gtt"
+          # ...plus the built assets, which are gitignored
+          cp -R assets "$STAGING/redmine_gtt/"
+          tar -czf "redmine_gtt-$TAG.tar.gz" -C "$STAGING" redmine_gtt
+          tar -tzf "redmine_gtt-$TAG.tar.gz" | head -20
+
+      - name: Attach to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          gh release upload "$TAG" "redmine_gtt-$TAG.tar.gz" --clobber

@@ -3,7 +3,12 @@ import { Geometry, Point } from 'ol/geom';
 import { GeoJSON, WKT } from 'ol/format';
 import { FeatureCollection } from 'geojson';
 import { FeatureLike } from 'ol/Feature';
-import { transform, transformExtent } from 'ol/proj';
+import { transform } from 'ol/proj';
+
+import { evaluateComparison } from './comparison';
+export { evaluateComparison };
+
+import { GttEvent } from '../events';
 
 /**
  * Get the value of a cookie by its name.
@@ -54,7 +59,7 @@ export const degreesToRadians = (degrees: number): number => degrees * (Math.PI 
  * @returns An array containing the width and height of the map.
  */
 export const getMapSize = (map: Map): number[] => {
-  const [width, height] = map.getSize();
+  const [width, height] = map.getSize() ?? [0, 0];
 
   if (width <= 0 || height <= 0) {
     const target = map.getTarget() as HTMLElement;
@@ -65,21 +70,21 @@ export const getMapSize = (map: Map): number[] => {
 };
 
 /**
- * Evaluate a comparison between two values with a specified operator.
+ * Find the input of the issue form attribute whose label contains the
+ * given field name.
  *
- * @param left - The left-hand side value of the comparison.
- * @param operator - The operator to use in the comparison.
- * @param right - The right-hand side value of the comparison.
- * @returns The result of the comparison.
+ * @param fieldName - The (localized) field name to look for in the labels.
+ * @returns The input element or null if no label matches.
  */
-export const evaluateComparison = (left: any, operator: any, right: any): any => {
-  if (typeof left == 'object') {
-    left = JSON.stringify(left);
-    return Function('"use strict";return (JSON.parse(\'' + left + '\')' + operator + right + ')')();
-  } else {
-    return Function('"use strict";return (' + left + operator + right + ')')();
-  }
-};
+export function findFieldInput(fieldName: string): HTMLInputElement | null {
+  let input: HTMLInputElement | null = null;
+  document.querySelectorAll(`#issue-form #attributes label`).forEach(element => {
+    if (element.innerHTML.includes(fieldName)) {
+      input = element.parentNode?.querySelector('p')?.querySelector('input') ?? null;
+    }
+  });
+  return input;
+}
 
 /**
  * Get the value of a nested property in an object using a path.
@@ -103,7 +108,7 @@ export const getObjectPathValue = (obj: any, path: string | Array<string>, def: 
  * @param features - The features to update the form with.
  * @param updateAddressFlag - A flag to update the address field with reverse geocoding, default is false.
  */
-export function updateForm(mapObj: any, features: FeatureLike[] | null, updateAddressFlag: boolean = false):void {
+export function updateForm(mapObj: any, features: FeatureLike[] | null, updateAddressFlag: boolean = false, emitEvent: boolean = true):void {
 
   const geom = document.querySelector('#geom') as HTMLInputElement;
   if (!geom) {
@@ -113,6 +118,14 @@ export function updateForm(mapObj: any, features: FeatureLike[] | null, updateAd
   if (features == null) {
     // Clear the geom input field
     geom.value = '';
+    if (emitEvent) {
+      mapObj.events?.emit(GttEvent.GeometryChange, {
+        client: mapObj,
+        map: mapObj.map,
+        feature: null,
+        features: [],
+      });
+    }
     return;
   }
 
@@ -128,14 +141,18 @@ export function updateForm(mapObj: any, features: FeatureLike[] | null, updateAd
   const geojson = JSON.parse(geojson_str) as FeatureCollection
   geom.value = JSON.stringify(geojson.features[0])
 
+  if (emitEvent) {
+    mapObj.events?.emit(GttEvent.GeometryChange, {
+      client: mapObj,
+      map: mapObj.map,
+      feature: geojson.features[0] ?? null,
+      features: features as Feature[],
+    });
+  }
+
   const geocoder = JSON.parse(mapObj.defaults.geocoder)
   if (updateAddressFlag && geocoder.address_field_name && features && features.length > 0) {
-    let addressInput: HTMLInputElement = null
-    document.querySelectorAll(`#issue-form #attributes label`).forEach(element => {
-      if (element.innerHTML.includes(geocoder.address_field_name)) {
-        addressInput = element.parentNode.querySelector('p').querySelector('input') as HTMLInputElement
-      }
-    })
+    const addressInput = findFieldInput(geocoder.address_field_name)
     if (addressInput) {
       // Todo: only works with point geometries for now for the last geometry
       const geom = features[features.length - 1].getGeometry() as Point
@@ -151,12 +168,7 @@ export function updateForm(mapObj: any, features: FeatureLike[] | null, updateAd
           const check = evaluateComparison(getObjectPathValue(data, geocoder.reverse_geocode_result_check_path),
             geocoder.reverse_geocode_result_check_operator,
             geocoder.reverse_geocode_result_check_value)
-          let districtInput: HTMLInputElement = null
-          document.querySelectorAll(`#issue-form #attributes label`).forEach(element => {
-            if (element.innerHTML.includes(geocoder.district_field_name)) {
-              districtInput = element.parentNode.querySelector('p').querySelector('input') as HTMLInputElement
-            }
-          })
+          const districtInput = findFieldInput(geocoder.district_field_name)
           const address = getObjectPathValue(data, geocoder.reverse_geocode_result_address_path)
           let foundDistrict = false
           if (check && address) {
@@ -187,51 +199,23 @@ export function updateForm(mapObj: any, features: FeatureLike[] | null, updateAd
 }
 
 /**
- * Update the map settings for the Redmine filter.
+ * Store the current map view (zoom/center/rotation) as permalink cookie so
+ * the view can be restored on the next page load (see zoomToExtent).
+ *
+ * The spatial filter synchronisation that used to live here moved to
+ * redmine/filters.ts (syncSpatialFilters).
  */
-export function updateFilter() {
-  let center = this.map.getView().getCenter()
-  let extent = this.map.getView().calculateExtent(this.map.getSize())
-
-  center = transform(center,'EPSG:3857','EPSG:4326')
-  // console.log("Map Center (WGS84): ", center);
-  const fieldset = document.querySelector('fieldset#location') as HTMLFieldSetElement
-  if (fieldset) {
-    fieldset.dataset.center = JSON.stringify(center)
-  }
-  const value_distance_3 = document.querySelector('#tr_distance #values_distance_3') as HTMLInputElement
-  if (value_distance_3) {
-    value_distance_3.value = center[0].toString()
-  }
-  const value_distance_4 = document.querySelector('#tr_distance #values_distance_4') as HTMLInputElement
-  if (value_distance_4) {
-    value_distance_4.value = center[1].toString()
-  }
-
-  // Set Permalink as Cookie
-  const cookie = []
-  const hash = this.map.getView().getZoom() + '/' +
+export function updatePermalinkCookie(this: any): void {
+  const view = this.map.getView()
+  const center = transform(view.getCenter(), 'EPSG:3857', 'EPSG:4326')
+  const hash = view.getZoom() + '/' +
     Math.round(center[0] * 1000000) / 1000000 + '/' +
     Math.round(center[1] * 1000000) / 1000000 + '/' +
-    this.map.getView().getRotation()
-  cookie.push("_redmine_gtt_permalink=" + hash)
-  cookie.push("path=" + window.location.pathname)
-  document.cookie = cookie.join(";")
-
-  const extent_str = transformExtent(extent,'EPSG:3857','EPSG:4326').join('|')
-  // console.log("Map Extent (WGS84): ",extent);
-  const bbox = document.querySelector('select[name="v[bbox][]"]')
-  if (bbox) {
-    const option = bbox.querySelector('option') as HTMLOptionElement
-    option.value = extent_str
-  }
-  // adjust the value of the 'On map' option tag
-  // Also adjust the JSON data that's the basis for building the filter row
-  // html (this is relevant if the map is moved first and then the filter is
-  // added.)
-  if(window.availableFilters && window.availableFilters.bbox) {
-    window.availableFilters.bbox.values = [['On map', extent]]
-  }
+    view.getRotation()
+  document.cookie = [
+    '_redmine_gtt_permalink=' + hash,
+    'path=' + window.location.pathname
+  ].join(';')
 }
 
 /**

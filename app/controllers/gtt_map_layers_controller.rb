@@ -61,7 +61,7 @@ class GttMapLayersController < ApplicationController
     return {} unless params[:map_layer]
 
     params[:map_layer].permit(
-      :name, :default, :global, :baselayer, :position,
+      :name, :type, :default, :global, :baselayer, :position,
       :layer, :layer_options_string,
       :source, :source_options_string,
       :format, :format_options_string,

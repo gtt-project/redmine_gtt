@@ -2,11 +2,11 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../../test/test_helper')
 
 module GttTestData
-  def test_geojson
-    {'type'=>'Feature','geometry'=>{ 'type'=>'Polygon','coordinates'=> test_coordinates}}.to_json
+  def example_geojson
+    {'type'=>'Feature','geometry'=>{ 'type'=>'Polygon','coordinates'=> example_coordinates}}.to_json
   end
 
-  def test_coordinates
+  def example_coordinates
     # [[[135.220734222,34.705690600],[135.302273376,34.699060014],[135.300041779,34.670969984],[135.252834900,34.676052304],[135.194212540,34.676684044],[135.220734222,34.705690600]]]
     [[[135.220734222,34.705690600,0.0],[135.302273376,34.699060014,0.0],[135.300041779,34.670969984,0.0],[135.252834900,34.676052304,0.0],[135.194212540,34.676684044,0.0],[135.220734222,34.705690600,0.0]]]
   end
@@ -27,7 +27,7 @@ module GttTestData
     {'type'=>'Feature','geometry'=>{ 'type'=>'MultiPolygon','coordinates'=> coordinates}}.to_json
   end
 
-  def test_geom
+  def example_geom
     RedmineGtt::Conversions::WkbToGeom.("01030000000100000006000000C84B374110E76040381DD011545A4140C84B3739ACE96040F07E6DCC7A594140C84B37F199E960403CBC2D58E2554140C84B373917E8604098CBC3E188564140C84B37FD36E66040F24C2E959D564140C84B374110E76040381DD011545A4140")
   end
 end
@@ -40,11 +40,17 @@ class GttTest < ActiveSupport::TestCase
     assert_equal 'Feature', json['type']
     assert geom = json['geometry']
     assert_equal 'Polygon', geom['type']
-    assert_equal_coordinates test_coordinates, geom['coordinates']
+    assert_equal_coordinates example_coordinates, geom['coordinates']
   end
 
   def assert_equal_coordinates(a, b)
-    assert_equal a.flatten.map{|f|f.round 5}, b.flatten.map{|f|f.round 5}
+    # Compare at the precision GeoJSON output is actually rounded to (follows
+    # the configured setting, so it stays correct if a test changes it).
+    # Comparing at a lower precision than the output uses would double-round
+    # boundary values (e.g. 135.2528349 -> round(6) 135.252835 -> round(5)
+    # 135.25284, while a direct round(5) gives 135.25283).
+    precision = RedmineGtt.geojson_precision
+    assert_equal a.flatten.map{|f|f.round precision}, b.flatten.map{|f|f.round precision}
   end
 
   def assert_geojson_collection(json)

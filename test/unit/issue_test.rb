@@ -6,12 +6,25 @@ class IssueTest < GttTest
   setup do
     @project = Project.find 'ecookbook'
     @issue = @project.issues.last
-    @issue.update_attribute :geojson, test_geojson
+    @issue.update_attribute :geojson, example_geojson
     @issue = Issue.find @issue.id
   end
 
   test 'should have geom attribute' do
     assert @issue.geom.present?
+  end
+
+  test 'should accept geojson as a parsed object, not only a string' do
+    # A JSON API request delivers geojson as an already-parsed object; this used
+    # to reach JSON.parse(Hash) in Conversions.to_geom and raise (HTTP 500).
+    feature = JSON.parse(example_geojson)
+    assert feature.is_a?(Hash)
+
+    issue = @project.issues.last
+    issue.geojson = feature
+    assert issue.geom.present?, 'geom should be set from a GeoJSON object'
+    assert issue.save
+    assert_geojson Issue.find(issue.id).geojson
   end
 
   test 'should load geojson' do
@@ -74,16 +87,16 @@ class IssueTest < GttTest
     new_coordinates = old_coordinates.map{|c| c + 0.000000001}
     @issue.update_attribute :geojson, point_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
-    assert_equal old_coordinates, @issue.geojson["geometry"]["coordinates"]
+    assert_equal_coordinates old_coordinates, @issue.geojson["geometry"]["coordinates"]
 
     new_coordinates = [old_coordinates[0] + 0.2, old_coordinates[1], old_coordinates[2]]
     @issue.update_attribute :geojson, point_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
-    assert_equal new_coordinates, @issue.geojson["geometry"]["coordinates"]
+    assert_equal_coordinates new_coordinates, @issue.geojson["geometry"]["coordinates"]
   end
 
   test 'should ignore small linestring geom changes' do
-    coordinates = test_coordinates[0]
+    coordinates = example_coordinates[0]
 
     @issue.update_attribute :geojson, linestring_geojson(coordinates)
     @issue.instance_variable_set "@geojson", nil
@@ -92,22 +105,22 @@ class IssueTest < GttTest
     new_coordinates = old_coordinates.map{|c| [c[0] + 0.000000001, c[1] + 0.000000001, c[2]]}
     @issue.update_attribute :geojson, linestring_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
-    assert_equal old_coordinates, @issue.geojson["geometry"]["coordinates"]
+    assert_equal_coordinates old_coordinates, @issue.geojson["geometry"]["coordinates"]
 
     new_coordinates = old_coordinates.map{|c| [c[0] + 0.2, c[1], c[2]]}
     @issue.update_attribute :geojson, linestring_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
-    assert_equal new_coordinates, @issue.geojson["geometry"]["coordinates"]
+    assert_equal_coordinates new_coordinates, @issue.geojson["geometry"]["coordinates"]
 
     new_coordinates = old_coordinates.map{|c| [c[0], c[1], c[2]]}
     new_coordinates.delete_at(1)
     @issue.update_attribute :geojson, linestring_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
-    assert_equal new_coordinates, @issue.geojson["geometry"]["coordinates"]
+    assert_equal_coordinates new_coordinates, @issue.geojson["geometry"]["coordinates"]
   end
 
   test 'should ignore small polygon geom changes' do
-    coordinates = test_coordinates
+    coordinates = example_coordinates
 
     @issue.update_attribute :geojson, polygon_geojson(coordinates)
     @issue.instance_variable_set "@geojson", nil
@@ -116,17 +129,17 @@ class IssueTest < GttTest
     new_coordinates = [old_coordinates[0].map{|c| [c[0] + 0.000000001, c[1] + 0.000000001, c[2]]}]
     @issue.update_attribute :geojson, polygon_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
-    assert_equal old_coordinates, @issue.geojson["geometry"]["coordinates"]
+    assert_equal_coordinates old_coordinates, @issue.geojson["geometry"]["coordinates"]
 
     new_coordinates = [old_coordinates[0].map{|c| [c[0] + 0.2, c[1], c[2]]}]
     @issue.update_attribute :geojson, polygon_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
-    assert_equal new_coordinates, @issue.geojson["geometry"]["coordinates"]
+    assert_equal_coordinates new_coordinates, @issue.geojson["geometry"]["coordinates"]
 
     new_coordinates = [old_coordinates[0].map{|c| [c[0], c[1], c[2]]}]
     new_coordinates[0].insert(2, [135.301041779,34.680969984,0.0])
     @issue.update_attribute :geojson, polygon_geojson(new_coordinates)
     @issue.instance_variable_set "@geojson", nil
-    assert_equal new_coordinates, @issue.geojson["geometry"]["coordinates"]
+    assert_equal_coordinates new_coordinates, @issue.geojson["geometry"]["coordinates"]
   end
 end

@@ -60,11 +60,15 @@ en:
 
   select_other_gtt_settings: "Other GTT settings"
   label_hide_map_for_invalid_geom: "Hide issue map for invalid geometry"
+  label_geojson_precision: "GeoJSON coordinate precision"
+  text_geojson_precision_info: "Decimal places for coordinates in GeoJSON output (EPSG:4326). 6 is about 0.11 m; lower values shrink the payload."
   gtt_hide_map_for_invalid_geom_info: "Please edit the issue and set the geometry
     to see the map."
 
   select_default_tracker_icon: "Select default tracker icon:"
   select_default_status_color: "Select default status color:"
+  gtt_icon_search_placeholder: "Search icons (e.g. bike, tree)..."
+  gtt_icon_paste_label: "Paste SVG markup"
   select_default_map_settings: "Set default map settings:"
   select_edit_geometry_settings: "Set edit geometry settings:"
   select_default_geocoder_settings: "Set Geocoder settings:"
@@ -90,6 +94,7 @@ en:
     source_options_select: "-- Select source type --"
     format_options_select: "-- Select format type --"
     load_example: "Examples: "
+    type_advanced: "Advanced (OpenLayers classes)"
 
   # Workaround to easily customize field labels
   field_name: "Name"
@@ -126,6 +131,7 @@ en:
       polygon: "Area editor"
       clear_map: "Clear map"
       remove_point: "Remove point"
+      edit_mode: "Edit features"
       copied_location_to_clipboard: "Copied location to clipboard"
     modal:
       load: "Load"
@@ -133,6 +139,7 @@ en:
     messages:
       baselayer_missing: "There is no baselayer available!"
       zoom_in_more: "Zoom in to view objects."
+      invalid_geojson: "The text could not be read as GeoJSON. Please check the input and try again."
       modify_start: "Hold down <code>ALT</code> and click on a vertex to delete it."
       modify_start_mac: "Hold down <code>Option</code> and click on a vertex to delete it."
       modify_start_touch: "Tap on a vertex to delete it."

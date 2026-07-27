@@ -36,9 +36,11 @@ class IssuesMapTest < ApplicationSystemTestCase
     log_user('jsmith', 'jsmith')
     visit '/issues/1'
 
-    assert_selector('div.ol-map') do
-      assert_no_selector('canvas')
-      page.has_content?('There is no baselayer available!')
+    # The alert is the contract here. Whether an (empty) canvas exists
+    # underneath is an OpenLayers implementation detail: since ol 10.9 the
+    # map renders its canvas even without layers.
+    within('div.ol-map') do
+      assert_selector('.gtt-map-notification', text: 'There is no baselayer available!')
     end
   end
 

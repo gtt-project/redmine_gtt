@@ -1,7 +1,5 @@
 import { Feature } from 'ol';
-import * as olLayer from 'ol/layer';
 import * as olSource from 'ol/source';
-import * as olFormat from 'ol/format';
 import { Layer, Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource } from 'ol/source';
 import { GeoJSON } from 'ol/format';
@@ -11,22 +9,26 @@ import { OrderFunction } from 'ol/render';
 
 import Ordering from 'ol-ext/render/Ordering';
 import Mask from 'ol-ext/filter/Mask';
-import { applyStyle, applyBackground } from 'ol-mapbox-style';
 
 import { ILayerObject } from '../interfaces';
 import { updateForm } from "../helpers";
 import { setBasemap } from "../openlayers";
 import { getStyle } from "../openlayers/styles";
+import { createLayer } from '../layers/registry';
+// Side-effect import: registers all built-in layer factories.
+import '../layers/factories';
 
 /**
  * Initializes layers for the OpenLayers map and adds them to the layerArray.
- * @returns {Layer[]} Array of layers added to the map.
+ * @returns {Layer[] | undefined} Array of layers added to the map.
  */
-export function initLayers(this: any): Layer[] {
+export function initLayers(this: any): Layer[] | undefined {
   this.layerArray = [];
 
   const features = readGeoJSONFeatures.call(this);
-  updateForm(this, features);
+  // Hydration, not a user edit: write existing geometry into the form field
+  // without emitting geometry:change (which would fire before map:ready).
+  updateForm(this, features, false, false);
 
   if (this.contents.layers) {
     createLayers.call(this);
@@ -64,37 +66,16 @@ function readGeoJSONFeatures(this: any): Feature<Geometry>[] | null {
 
 /**
  * Creates layers based on the input data and adds them to the layerArray.
+ * Construction is delegated to the layer factory registry; configurations
+ * that cannot be built are skipped (the registry logs them) so one broken
+ * layer does not take down the whole map.
  */
 function createLayers(this: any): void {
-  const layers = JSON.parse(this.contents.layers) as [ILayerObject];
+  const layers = JSON.parse(this.contents.layers) as ILayerObject[];
   layers.forEach((config) => {
-
-    const LayerClass = olLayer[config.layer as keyof typeof olLayer] as typeof olLayer.Layer;
-    const layerOptions = config.layer_options as any;
-    layerOptions['visible'] = false;
-
-    if (config.source) {
-      const SourceClass = olSource[config.source as keyof typeof olSource] as typeof olSource.Source;
-      const sourceOptions = config.source_options;
-      if (config.format) {
-        const FormatClass = olFormat[config.format as keyof typeof olFormat] as any;
-        const formatOptions = config.format_options;
-        layerOptions['format'] = new FormatClass(formatOptions);
-        (sourceOptions as { format?: any })['format'] = layerOptions['format'];
-      }
-      layerOptions['source'] = new SourceClass(sourceOptions);
-    }
-
-
-    const layer = new LayerClass(layerOptions);
+    const layer = createLayer(config);
 
     if (layer) {
-      // Apply style URL if provided
-      if ("styleUrl" in layerOptions) {
-        applyStyle(layer as any, layerOptions.styleUrl);
-        applyBackground(layer as any, layerOptions.styleUrl);
-      }
-
       setLayerProperties(layer, config);
       handleLayerVisibilityChange(layer, config);
       this.layerArray.push(layer);

@@ -17,11 +17,12 @@ The Geo-Task-Tracker (GTT) plugin adds spatial capabilities to Redmine:
 Redmine GTT plugins **require PostgreSQL/PostGIS** and will not work with SQLite
 or MariaDB/MySQL!!!
 
-- Redmine >= 5.1.0
-- PostgreSQL >= 13
-- PostGIS >= 3.0
-- NodeJS v18
-- yarn
+- Redmine 6.0 – 7.0 (CI-tested on 6.0, 6.1 and 7.0)
+- Ruby >= 3.3 (Redmine 7.0: Ruby 3.4 or 4.0)
+- PostgreSQL >= 15
+- PostGIS >= 3.4
+- NodeJS >= 22
+- pnpm (via `corepack enable pnpm`; the version is pinned in package.json)
 
 ## Installation
 
@@ -39,8 +40,16 @@ installation plugins directory!
 cd path/to/plugin/directory
 git clone https://github.com/gtt-project/redmine_gtt.git
 cd redmine_gtt
-yarn
-npx webpack
+pnpm install
+pnpm build
+```
+
+Alternatively, each [GitHub release](https://github.com/gtt-project/redmine_gtt/releases)
+ships a prebuilt `redmine_gtt-vX.Y.Z.tar.gz` archive with the frontend assets
+already compiled, so no Node toolchain is needed:
+
+```sh
+tar -xzf redmine_gtt-vX.Y.Z.tar.gz -C path/to/plugin/directory/
 ```
 
 Optionally export to override the [default GEM version](./Gemfile)
@@ -96,12 +105,20 @@ Help us to translate GTT Project using [OSGeo Weblate](https://weblate.osgeo.org
 You can debug frontend by running the following command on another console:
 
 ```sh
-npx webpack --watch --mode=development --devtool=source-map
+pnpm watch
 ```
 
 ### How to run test
 
-You can run the plugin test on rails test environment by the following command:
+Frontend unit tests (Vitest) run without a Redmine environment (install
+dependencies first if you haven't, see [Installation](#installation)):
+
+```sh
+pnpm install
+pnpm test
+```
+
+The Ruby tests run on the Rails test environment:
 
 ```sh
 bundle exec rake db:create
@@ -114,6 +131,9 @@ RAILS_ENV=test NAME=redmine_gtt bundle exec rake redmine:plugins:test
 
 See [all releases](https://github.com/gtt-project/redmine_gtt/releases) with
 release notes.
+
+Upgrading from 6.x to 7.0? See the
+[migration guide](doc/migration-v6-to-v7.md).
 
 ## Authors
 

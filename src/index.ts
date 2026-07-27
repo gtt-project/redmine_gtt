@@ -3,42 +3,35 @@
  * GTT Application Main Module
  * ===========================================
  *
- * This module is responsible for managing
- * the GTT application. Its main tasks include:
- *   - Importing required stylesheets
- *   - Importing components (GttClient and gtt_setting)
- *   - Attaching essential functions to the global window object
+ * Loads the styles, wires the Redmine core integrations (issue filter rows)
+ * and registers the Stimulus controllers that bootstrap maps and the plugin
+ * settings page (see src/controllers/).
  */
 
-// Import application styles from the 'styles' module
+// Application styles (extracted into main.css by the build)
 import './styles';
 
-// Import necessary iconfonts
-import { fontPromise as customIcons } from './styles/icons/custom/custom-icons-def';
-import { fontPromise as materialIcons } from './styles/icons/material-design/material-design-def';
+// Redmine core JS integration (buildFilterRow wrapper for spatial filters)
+import './components/gtt-client/redmine';
 
-// Import GttClient and gtt_setting components from corresponding modules
-import { GttClient } from './components/gtt-client';
-import { gtt_setting } from './components/gtt-settings';
+// Stimulus controllers (gtt-map, gtt-settings, gtt-icon-picker, ...)
+import './controllers';
+
+import { GttClient, GttEvent } from './components/gtt-client';
 
 /**
- * Creates a GttClient instance for the given target.
- * @param target - The HTMLDivElement for which the GttClient will be created.
+ * @deprecated Maps attach via the gtt-map Stimulus controller. This shim
+ * remains for other gtt-project plugins that bootstrap maps manually.
  */
-async function createGttClient(target: HTMLDivElement) {
-  await Promise.all([customIcons, materialIcons]);
+window.createGttClient = (target: HTMLDivElement) => {
   new GttClient({ target });
-}
+};
 
 /**
- * Attaches GTT settings.
+ * Event name constants for sibling plugins and host scripts that listen for
+ * the bubbling DOM CustomEvents the client dispatches, e.g.
+ *   document.addEventListener(window.GttEvent.MapReady, e => e.detail.map)
+ * Exposed on window because those consumers are separate bundles without
+ * access to this module graph.
  */
-async function attachGttSetting() {
-  await Promise.all([customIcons, materialIcons]);
-  gtt_setting();
-}
-
-// Attach the 'createGttClient' and 'attachGttSetting' functions to the global window object
-// This enables them to be called from other parts of the application or directly from the browser console
-(window as any).createGttClient = createGttClient;
-(window as any).gtt_setting = attachGttSetting;
+window.GttEvent = GttEvent;
