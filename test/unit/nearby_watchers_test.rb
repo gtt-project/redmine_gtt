@@ -82,7 +82,10 @@ class NearbyWatchersTest < GttTest
     issue = create_issue_with_geom!(1, nil)
     assert_not_includes issue.watcher_users, @user
 
-    issue.update!(geojson: point_geojson(NEAR_TOKYO))
+    # core's after-create bookkeeping bumps lock_version on the stored row,
+    # so update the reloaded record (as a real request would) to avoid a
+    # StaleObjectError on the in-memory instance
+    issue.reload.update!(geojson: point_geojson(NEAR_TOKYO))
 
     assert_includes issue.reload.watcher_users, @user
   end
