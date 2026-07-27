@@ -55,3 +55,19 @@ jobs:
         run: |
           TAG="${{ github.event.release.tag_name }}"
           gh release upload "$TAG" "redmine_gtt-$TAG.tar.gz" --clobber
+
+      - name: Ensure release announcement discussion
+        # Linking the release to a discussion category makes GitHub create
+        # an announcement post from the release notes (the same effect as
+        # the "Create a discussion for this release" checkbox), so releases
+        # always show up under https://github.com/orgs/gtt-project/discussions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          RELEASE="repos/${{ github.repository }}/releases/${{ github.event.release.id }}"
+          if [ "$(gh api "$RELEASE" --jq '.discussion_url // empty')" = "" ]; then
+            gh api -X PATCH "$RELEASE" -f discussion_category_name=Announcements \
+              --jq '"Created \(.discussion_url)"'
+          else
+            echo "Release already has a linked discussion"
+          fi
