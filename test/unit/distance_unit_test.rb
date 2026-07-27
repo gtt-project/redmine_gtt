@@ -48,6 +48,11 @@ class DistanceUnitTest < GttTest
     assert_equal 25.0, RedmineGtt::DistanceUnit.to_meters(25, 'm')
   end
 
+  test 'conversions treat unknown units as meters instead of raising' do
+    assert_equal 42.0, RedmineGtt::DistanceUnit.from_meters(42, 'parsec')
+    assert_equal 42.0, RedmineGtt::DistanceUnit.to_meters(42, 'parsec')
+  end
+
   test 'conversions honor the configured unit by default' do
     Setting.plugin_redmine_gtt = Setting.plugin_redmine_gtt.merge(
       'distance_unit' => 'km'

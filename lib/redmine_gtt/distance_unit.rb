@@ -36,12 +36,14 @@ module RedmineGtt
       API_UNITS.include?(unit) ? unit : DEFAULT
     end
 
+    # Unknown units fall back to meters instead of raising: the setting can
+    # be edited by hand and callers may pass user-supplied unit strings.
     def self.from_meters(meters, unit = current)
-      meters.to_f / METERS_PER_UNIT.fetch(unit)
+      meters.to_f / METERS_PER_UNIT.fetch(unit, 1.0)
     end
 
     def self.to_meters(value, unit = current)
-      value.to_f * METERS_PER_UNIT.fetch(unit)
+      value.to_f * METERS_PER_UNIT.fetch(unit, 1.0)
     end
 
   end

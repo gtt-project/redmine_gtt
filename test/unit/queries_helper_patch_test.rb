@@ -30,7 +30,8 @@ class QueriesHelperPatchTest < Redmine::HelperTest
     Setting.plugin_redmine_gtt = Setting.plugin_redmine_gtt.merge(
       'distance_unit' => 'km'
     )
-    assert_equal '1.50', csv_value(distance_column, nil, 1500.0)
+    expected = '1.50'.gsub('.', l(:general_csv_decimal_separator))
+    assert_equal expected, csv_value(distance_column, nil, 1500.0)
   end
 
   test 'leaves blank distance values to core' do
