@@ -1,4 +1,4 @@
-<% if @project.nil? or @project.module_enabled?(:gtt) %>
+<% if gtt_module_active?(@project) %>
   <% if @issue.geom.present? or !Setting.plugin_redmine_gtt['hide_map_for_invalid_geom'] %>
     <%= map_tag map: @issue.map,
                 geom: (@issue.as_geojson(include_properties: { only: %i(tracker_id status_id) }) if @issue),
