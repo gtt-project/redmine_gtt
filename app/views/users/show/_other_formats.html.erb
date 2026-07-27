@@ -1,4 +1,4 @@
-<% if @project.nil? or @project.module_enabled?(:gtt) %>
+<% if gtt_module_active?(@project) %>
 <% other_formats_links do |f| %>
   <%= f.link_to 'GeoJSON', :url => params.permit(:format).merge({:format => 'geojson'}) %>
 <% end %>

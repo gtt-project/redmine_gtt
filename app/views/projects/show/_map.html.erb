@@ -1,4 +1,4 @@
-<% if @project.nil? or @project.module_enabled?(:gtt) %>
+<% if gtt_module_active?(@project) %>
 <div class="projectmap box">
   <h3 class="icon icon-gtt-map"><%= (Redmine::VERSION.to_s >= '6.0.0') ? sprite_icon('gtt-map', l(:label_project_map), plugin: 'redmine_gtt') : l(:label_project_map) %></h3>
 
