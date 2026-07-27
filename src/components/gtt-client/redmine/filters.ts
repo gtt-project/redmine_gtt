@@ -113,7 +113,9 @@ function convertDistanceInputOnSubmit(): void {
       if (input && !input.disabled && input.value.trim() !== '') {
         const value = parseFloat(input.value);
         if (isFinite(value)) {
-          // the server truncates to integer meters anyway
+          // Submit whole meters, rounded to nearest: 0.5 mi is 804.672 m
+          // and should become 805, not 804. The server's to_i then leaves
+          // the already-integral value unchanged.
           input.value = String(Math.round(value * factor));
         }
       }
