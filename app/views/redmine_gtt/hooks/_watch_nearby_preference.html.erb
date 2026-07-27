@@ -20,8 +20,11 @@
   <p>
     <label for="pref_gtt_watch_radius"><%= l(:gtt_label_watch_nearby_radius) %></label>
     <%# entered in the configured display unit, stored in meters (#10) %>
+    <%# min = 1 meter expressed in the unit: the server treats smaller
+        values as unset, so don't offer them %>
     <%= number_field_tag 'pref[gtt_watch_radius_in_unit]', user.pref.gtt_watch_radius_in_unit,
-          id: 'pref_gtt_watch_radius', min: 0, step: 'any',
+          id: 'pref_gtt_watch_radius', step: 'any',
+          min: RedmineGtt::DistanceUnit.from_meters(1).round(6),
           max: RedmineGtt::DistanceUnit.from_meters(
             RedmineGtt::Patches::UserPreferencePatch::NEARBY_WATCH_MAX_RADIUS_M
           ).ceil,

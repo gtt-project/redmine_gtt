@@ -77,6 +77,16 @@ class UserPreferencePatchTest < GttTest
     assert_equal 0.5, @pref.gtt_watch_radius_in_unit
   end
 
+  test 'a read-save round trip does not drift the stored meters' do
+    Setting.plugin_redmine_gtt = Setting.plugin_redmine_gtt.merge(
+      'distance_unit' => 'mi'
+    )
+    @pref.gtt_watch_radius = '500' # meters, not a round mile value
+    displayed = @pref.gtt_watch_radius_in_unit
+    @pref.gtt_watch_radius_in_unit = displayed.to_s
+    assert_equal 500, @pref.gtt_watch_radius_m
+  end
+
   test 'the form attribute keeps garbage rejected and blank clearing' do
     @pref.gtt_watch_radius_in_unit = 'abc'
     assert_nil @pref.gtt_watch_radius_m

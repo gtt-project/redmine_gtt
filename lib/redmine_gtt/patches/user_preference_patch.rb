@@ -49,13 +49,15 @@ module RedmineGtt
       end
 
       # Form-facing virtual attribute: the radius in the configured display
-      # unit. Whole numbers render without a decimal part.
+      # unit. Whole numbers render without a decimal part; fractions keep
+      # 6 decimals (enough for 1 m in any supported unit), so a read->save
+      # round trip cannot drift the stored meters.
       def gtt_watch_radius_in_unit
         meters = gtt_watch_radius_m
         return nil unless meters
 
         value = DistanceUnit.from_meters(meters)
-        value == value.to_i ? value.to_i : value.round(3)
+        value == value.to_i ? value.to_i : value.round(6)
       end
 
       def gtt_watch_radius_in_unit=(value)
