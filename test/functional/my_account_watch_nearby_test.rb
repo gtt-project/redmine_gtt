@@ -24,6 +24,20 @@ class MyAccountWatchNearbyTest < Redmine::ControllerTest
     assert_select 'input#pref_gtt_watch_nearby[disabled=disabled]'
     assert_select 'input#pref_gtt_watch_radius[disabled=disabled]'
     assert_select 'em.info', text: I18n.t(:gtt_text_watch_nearby_requires_location)
+    # no hidden '0' fallback while disabled, so saving other account settings
+    # does not overwrite the stored preference
+    assert_select 'input[type=hidden][name=?]', 'pref[gtt_watch_nearby]', count: 0
+  end
+
+  test 'saving other settings without a location leaves the preference untouched' do
+    @user.pref.update(gtt_watch_nearby: '1', gtt_watch_radius: '25')
+
+    put :account, params: { user: { firstname: 'Dave' }, pref: { no_self_notified: '1' } }
+
+    assert_redirected_to '/my/account'
+    pref = User.find(@user.id).pref
+    assert pref.gtt_watch_nearby?
+    assert_equal 25, pref.gtt_watch_radius_km
   end
 
   test 'renders the fieldset enabled once a location is stored' do

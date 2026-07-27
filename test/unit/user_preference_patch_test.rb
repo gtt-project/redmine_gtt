@@ -46,4 +46,10 @@ class UserPreferencePatchTest < GttTest
       assert_nil @pref.gtt_watch_radius_km, "expected #{value.inspect} to be nil"
     end
   end
+
+  test 'gtt_watch_radius_km caps the radius server-side' do
+    @pref.gtt_watch_radius = '999999'
+    assert_equal RedmineGtt::Patches::UserPreferencePatch::NEARBY_WATCH_MAX_RADIUS_KM,
+      @pref.gtt_watch_radius_km
+  end
 end

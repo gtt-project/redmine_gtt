@@ -10,15 +10,19 @@
   <% location_set = user.geom.present? %>
   <p>
     <label for="pref_gtt_watch_nearby"><%= l(:gtt_label_watch_nearby) %></label>
-    <%= hidden_field_tag 'pref[gtt_watch_nearby]', '0', id: nil %>
+    <%# The unchecked-checkbox hidden field is only rendered while the
+        controls are enabled; with no location both are disabled, nothing
+        submits, and the stored preference stays untouched. %>
+    <%= hidden_field_tag 'pref[gtt_watch_nearby]', '0', id: nil if location_set %>
     <%= check_box_tag 'pref[gtt_watch_nearby]', '1', user.pref.gtt_watch_nearby?,
           id: 'pref_gtt_watch_nearby', disabled: !location_set %>
   </p>
   <p>
     <label for="pref_gtt_watch_radius"><%= l(:gtt_label_watch_nearby_radius) %></label>
     <%= number_field_tag 'pref[gtt_watch_radius]', user.pref.gtt_watch_radius,
-          id: 'pref_gtt_watch_radius', min: 1, max: 1000, step: 1,
-          disabled: !location_set %>
+          id: 'pref_gtt_watch_radius', min: 1,
+          max: RedmineGtt::Patches::UserPreferencePatch::NEARBY_WATCH_MAX_RADIUS_KM,
+          step: 1, disabled: !location_set %>
     <%= l(:gtt_label_watch_nearby_radius_unit) %>
   </p>
   <% unless location_set %>
