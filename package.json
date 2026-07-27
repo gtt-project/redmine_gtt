@@ -1,6 +1,6 @@
 {
   "name": "redmine_gtt",
-  "version": "6.0.2",
+  "version": "7.0.0",
   "description": "Plugin that adds spatial capabilities to Redmine",
   "scripts": {
     "build": "vite build",
@@ -17,7 +17,7 @@
     "redmine",
     "geospatial"
   ],
-  "author": "Georepublic",
+  "author": "GTT Project",
   "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/gtt-project/redmine_gtt/issues"
@@ -27,7 +27,7 @@
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
     "@juggle/resize-observer": "^3.4.0",
-    "dompurify": "^3.2.3",
+    "dompurify": "^3.4.12",
     "geojson": "^0.5.0",
     "ol": "^10.9.0",
     "ol-ext": "^4.0.38",
@@ -36,13 +36,13 @@
   "devDependencies": {
     "@mdi/js": "^7.4.47",
     "@types/dompurify": "^3.2.0",
-    "@types/geojson": "^7946.0.15",
-    "@types/google.maps": "^3.58.1",
-    "@types/jquery": "^3.5.3",
-    "@types/ol-ext": "npm:@siedlerchr/types-ol-ext",
-    "sass": "^1.83.0",
+    "@types/geojson": "^7946.0.16",
+    "@types/google.maps": "^3.65.2",
+    "@types/jquery": "^3.5.34",
+    "@types/ol-ext": "npm:@siedlerchr/types-ol-ext@^3.6.8",
+    "sass": "^1.101.0",
     "typescript": "^6.0.3",
-    "vite": "^8.0.16",
-    "vitest": "^4.1.8"
+    "vite": "^8.1.5",
+    "vitest": "^4.1.10"
   }
 }
