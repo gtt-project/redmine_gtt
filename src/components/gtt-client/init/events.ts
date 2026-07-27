@@ -56,19 +56,23 @@ function handleCollapsed(this: any): void {
  * the actual size change, however the form was opened.
  */
 function handleResize(this: any): void {
-  let wasHidden = false;
+  const target = this.map.getTargetElement() as HTMLElement;
+  let wasHidden = target.clientWidth === 0 || target.clientHeight === 0;
   const resizeObserver = new ResizeObserver((entries) => {
-    const rect = entries[entries.length - 1].contentRect;
-    const hidden = rect.width === 0 || rect.height === 0;
     this.maps.forEach((m: any) => {
       m.updateSize();
     });
+    const rect = entries.at(-1)?.contentRect;
+    if (!rect) {
+      return;
+    }
+    const hidden = rect.width === 0 || rect.height === 0;
     if (wasHidden && !hidden) {
       zoomToExtent.call(this);
     }
     wasHidden = hidden;
   });
-  resizeObserver.observe(this.map.getTargetElement());
+  resizeObserver.observe(target);
 }
 
 /**
