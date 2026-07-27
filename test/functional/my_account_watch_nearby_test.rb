@@ -30,14 +30,14 @@ class MyAccountWatchNearbyTest < Redmine::ControllerTest
   end
 
   test 'saving other settings without a location leaves the preference untouched' do
-    @user.pref.update(gtt_watch_nearby: '1', gtt_watch_radius: '25')
+    @user.pref.update(gtt_watch_nearby: '1', gtt_watch_radius: '25000')
 
     put :account, params: { user: { firstname: 'Dave' }, pref: { no_self_notified: '1' } }
 
     assert_redirected_to '/my/account'
     pref = User.find(@user.id).pref
     assert pref.gtt_watch_nearby?
-    assert_equal 25, pref.gtt_watch_radius_km
+    assert_equal 25_000, pref.gtt_watch_radius_m
   end
 
   test 'renders the fieldset enabled once a location is stored' do
@@ -56,18 +56,18 @@ class MyAccountWatchNearbyTest < Redmine::ControllerTest
 
     put :account, params: {
       user: { firstname: @user.firstname },
-      pref: { gtt_watch_nearby: '1', gtt_watch_radius: '25' }
+      pref: { gtt_watch_nearby: '1', gtt_watch_radius_in_unit: '25' }
     }
 
     assert_redirected_to '/my/account'
     pref = User.find(@user.id).pref
     assert pref.gtt_watch_nearby?
-    assert_equal 25, pref.gtt_watch_radius_km
+    assert_equal 25, pref.gtt_watch_radius_m
   end
 
   test 'unchecking the box turns the preference off' do
     @user.update_attribute :geojson, example_geojson
-    @user.pref.update(gtt_watch_nearby: '1', gtt_watch_radius: '25')
+    @user.pref.update(gtt_watch_nearby: '1', gtt_watch_radius: '25000')
 
     put :account, params: {
       user: { firstname: @user.firstname },
@@ -78,6 +78,6 @@ class MyAccountWatchNearbyTest < Redmine::ControllerTest
     pref = User.find(@user.id).pref
     assert_not pref.gtt_watch_nearby?
     # the radius survives so re-enabling does not lose the value
-    assert_equal 25, pref.gtt_watch_radius_km
+    assert_equal 25_000, pref.gtt_watch_radius_m
   end
 end

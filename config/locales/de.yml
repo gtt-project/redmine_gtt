@@ -142,5 +142,4 @@ de:
   gtt_label_watch_nearby_legend: "Automatisch beobachten: Tickets in der Nähe"
   gtt_label_watch_nearby: "Neue Tickets in der Nähe meines Standorts beobachten"
   gtt_label_watch_nearby_radius: "Entfernung"
-  gtt_label_watch_nearby_radius_unit: "km"
   gtt_text_watch_nearby_requires_location: "Legen Sie zuerst Ihren Standort auf der Karte oben fest, um dies zu aktivieren."

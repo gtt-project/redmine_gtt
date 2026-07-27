@@ -74,7 +74,6 @@ ja:
   gtt_label_watch_nearby_legend: "自動ウォッチ: 近くのチケット"
   gtt_label_watch_nearby: "登録した所在地の近くの新しいチケットをウォッチする"
   gtt_label_watch_nearby_radius: "距離"
-  gtt_label_watch_nearby_radius_unit: "km"
   gtt_text_watch_nearby_requires_location: "有効にするには上の地図で所在地を設定してください。"
 
   select_default_tracker_icon: "トラッカーアイコンを選択:"

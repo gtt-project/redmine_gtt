@@ -12,7 +12,7 @@ class NearbyWatchersTest < GttTest
   setup do
     @user = User.find_by_login 'dlopper' # member of the public project 1
     @user.update_attribute :geojson, point_geojson(TOKYO)
-    @user.pref.update(gtt_watch_nearby: '1', gtt_watch_radius: '25')
+    @user.pref.update(gtt_watch_nearby: '1', gtt_watch_radius: '25000')
   end
 
   test 'subscribes an opted-in user within their radius on issue creation' do
@@ -31,7 +31,7 @@ class NearbyWatchersTest < GttTest
 
   test 'subscribes a distant user whose radius is large enough' do
     @user.update_attribute :geojson, point_geojson(OSAKA)
-    @user.pref.update(gtt_watch_radius: '500')
+    @user.pref.update(gtt_watch_radius: '500000')
 
     issue = create_issue_with_geom!(1, NEAR_TOKYO)
 
