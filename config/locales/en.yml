@@ -65,6 +65,12 @@ en:
   gtt_hide_map_for_invalid_geom_info: "Please edit the issue and set the geometry
     to see the map."
 
+  gtt_label_watch_nearby_legend: "Auto watch: nearby issues"
+  gtt_label_watch_nearby: "Watch new issues near my location"
+  gtt_label_watch_nearby_radius: "Distance"
+  gtt_label_watch_nearby_radius_unit: "km"
+  gtt_text_watch_nearby_requires_location: "Set your location on the map above to enable this."
+
   select_default_tracker_icon: "Select default tracker icon:"
   select_default_status_color: "Select default status color:"
   gtt_icon_search_placeholder: "Search icons (e.g. bike, tree)..."

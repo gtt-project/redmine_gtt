@@ -62,6 +62,12 @@ ja:
   text_geojson_precision_info: "GeoJSON出力（EPSG:4326）の座標の小数点以下の桁数。6桁で約0.11m。小さくするとデータ量を削減できます。"
   gtt_hide_map_for_invalid_geom_info: "地図を見るにはチケットを編集して位置情報を登録してください。"
 
+  gtt_label_watch_nearby_legend: "自動ウォッチ: 近くのチケット"
+  gtt_label_watch_nearby: "登録した所在地の近くの新しいチケットをウォッチする"
+  gtt_label_watch_nearby_radius: "距離"
+  gtt_label_watch_nearby_radius_unit: "km"
+  gtt_text_watch_nearby_requires_location: "有効にするには上の地図で所在地を設定してください。"
+
   select_default_tracker_icon: "トラッカーアイコンを選択:"
   select_default_status_color: "ステータス色を選択:"
   gtt_icon_search_placeholder: "アイコンを英語で検索 (例: bike, tree)..."
