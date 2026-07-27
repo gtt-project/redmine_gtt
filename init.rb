@@ -45,7 +45,9 @@ Redmine::Plugin.register :redmine_gtt do
       'hide_map_for_invalid_geom' => false,
       # Keep in sync with RedmineGtt::DEFAULT_GEOJSON_PRECISION (literal here to
       # avoid autoloading the module during plugin registration).
-      'geojson_precision' => 6
+      'geojson_precision' => 6,
+      'distance_unit' => 'm',
+      'api_distance_unit' => 'm'
     },
     partial: 'settings/gtt/settings'
   )

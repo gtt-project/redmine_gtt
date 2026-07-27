@@ -88,4 +88,31 @@
         min: 0, max: 15, step: 1) %>
     <em class="info"><%= l(:text_geojson_precision_info) %></em>
   </p>
+
+  <p>
+    <%= content_tag(:label, l(:label_distance_unit)) %>
+    <%= select_tag 'settings[distance_unit]',
+        options_for_select(
+          RedmineGtt::DistanceUnit::METERS_PER_UNIT.keys.map { |u|
+            [l(:"gtt_distance_unit_#{u}"), u]
+          },
+          RedmineGtt::DistanceUnit.current
+        ) %>
+    <em class="info"><%= l(:text_distance_unit_info) %></em>
+  </p>
+
+  <p>
+    <%= content_tag(:label, l(:label_api_distance_unit)) %>
+    <%# reserved: the API contract is meters-only for now; the setting
+        exists so a later version can offer more units without a
+        settings migration %>
+    <%= select_tag 'settings[api_distance_unit]',
+        options_for_select(
+          RedmineGtt::DistanceUnit::API_UNITS.map { |u|
+            [l(:"gtt_distance_unit_#{u}"), u]
+          },
+          RedmineGtt::DistanceUnit.api_unit
+        ) %>
+    <em class="info"><%= l(:text_api_distance_unit_info) %></em>
+  </p>
 </fieldset>
