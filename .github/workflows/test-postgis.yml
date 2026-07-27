@@ -45,13 +45,6 @@ jobs:
     name: redmine:${{ matrix.redmine_version }} ruby:${{ matrix.ruby_version }} postgis:${{ matrix.db_version }}
     runs-on: ubuntu-latest
 
-    env:
-      # Redmine 7 (Rails 8.1) needs the 8.1-compatible geo gem stack; older
-      # Redmine stays on the Gemfile defaults. The Gemfile reads these env vars.
-      GEM_RGEO_VERSION: ${{ matrix.rgeo || '3.0.1' }}
-      GEM_RGEO_ACTIVERECORD_VERSION: ${{ matrix.rgeo_ar || '8.0.0' }}
-      GEM_ACTIVERECORD_POSTGIS_ADAPTER_VERSION: ${{ matrix.postgis_adapter || '10.0.0' }}
-
     strategy:
       fail-fast: false
       # Curated matrix instead of a full redmine x ruby x postgis cross-product,
@@ -64,17 +57,17 @@ jobs:
       #   * database - the PostGIS variants (PG 15/17/18, PostGIS 3.4/3.5/3.6),
       #                pinned to the known-stable 6.1/3.4 pair to isolate DB
       #                issues from Redmine-7/Ruby-4 newness.
-      # Redmine 7 (Rails 8.1) needs the 8.1 geo gem stack, driven per-row via the
-      # GEM_* env vars below (adapter 11.1, rgeo-activerecord 8.1, rgeo 3.1 for
-      # Ruby 4.0); 6.x stays on the Gemfile defaults.
+      # All rows run the Gemfile's default (unpinned) geo gem ranges, so CI
+      # verifies exactly what a plain `bundle install` resolves per Rails
+      # version; the GEM_* env vars remain available for local debugging.
       matrix:
         include:
           # compat: each supported Redmine/Ruby pair once, on the 18-3.6 ceiling.
           # The 6.1/3.4 pair is exercised by the database rows below.
           - { redmine_version: 6.0-stable, ruby_version: '3.3', db_version: 18-3.6 }
           - { redmine_version: 6.1-stable, ruby_version: '3.3', db_version: 18-3.6 }
-          - { redmine_version: 7.0-stable, ruby_version: '3.4', db_version: 18-3.6, rgeo_ar: '8.1.0', postgis_adapter: '11.1.0' }
-          - { redmine_version: 7.0-stable, ruby_version: '4.0', db_version: 18-3.6, rgeo: '3.1.0', rgeo_ar: '8.1.0', postgis_adapter: '11.1.0', system_test: true }
+          - { redmine_version: 7.0-stable, ruby_version: '3.4', db_version: 18-3.6 }
+          - { redmine_version: 7.0-stable, ruby_version: '4.0', db_version: 18-3.6, system_test: true }
           # database: PG 15/17/18 pinned to the known-stable 6.1/3.4 pair
           - { redmine_version: 6.1-stable, ruby_version: '3.4', db_version: 15-3.4 }
           - { redmine_version: 6.1-stable, ruby_version: '3.4', db_version: 17-3.5 }
