@@ -51,6 +51,7 @@ de:
   select_edit_geometry_settings: 'Einstellungen für die Geometriebearbeitung:'
   select_default_geocoder_settings: 'Geocoder-Einstellungen:'
   select_other_style_settings: "Weitere Stileinstellungen"
+  label_gtt_admin_settings: "Karteneinstellungen"
   project_module_gtt: GTT
   permission_manage_gtt_settings: Konfiguration der GTT-Einstellungen
   field_baselayer: Basislayer

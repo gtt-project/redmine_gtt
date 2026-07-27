@@ -80,6 +80,7 @@ en:
   select_default_geocoder_settings: "Set Geocoder settings:"
 
   select_other_style_settings: "Other style settings"
+  label_gtt_admin_settings: "Map settings"
 
   project_module_gtt: "GTT"
   permission_manage_gtt_settings: "Manage GTT settings"
