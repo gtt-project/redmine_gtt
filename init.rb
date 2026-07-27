@@ -13,7 +13,7 @@ Redmine::Plugin.register :redmine_gtt do
   # Shortcut to the plugin settings in the administration sidebar (#309).
   menu :admin_menu, :redmine_gtt_settings,
     { controller: 'settings', action: 'plugin', id: 'redmine_gtt' },
-    caption: :label_gtt_settings_headline,
+    caption: :label_gtt_admin_settings,
     icon: 'settings',
     html: { class: 'icon icon-settings' }
 
