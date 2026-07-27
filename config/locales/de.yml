@@ -129,3 +129,8 @@ de:
   gtt_hide_map_for_invalid_geom_info: Bitte bearbeiten Sie die Anfrage und stellen
     Sie die Geometrie ein, um die Karte zu sehen.
   label_default_measure_enabled: Zeige Steuerung zum Messen von Länge und Fläche
+  gtt_label_watch_nearby_legend: "Automatisch beobachten: Tickets in der Nähe"
+  gtt_label_watch_nearby: "Neue Tickets in der Nähe meines Standorts beobachten"
+  gtt_label_watch_nearby_radius: "Entfernung"
+  gtt_label_watch_nearby_radius_unit: "km"
+  gtt_text_watch_nearby_requires_location: "Legen Sie zuerst Ihren Standort auf der Karte oben fest, um dies zu aktivieren."
