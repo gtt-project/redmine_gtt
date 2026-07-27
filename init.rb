@@ -2,11 +2,11 @@ require_relative 'lib/redmine_gtt/view_hooks'
 
 Redmine::Plugin.register :redmine_gtt do
   name 'Redmine GTT plugin'
-  author 'Georepublic'
-  author_url 'https://github.com/georepublic'
+  author 'GTT Project'
+  author_url 'https://github.com/gtt-project'
   url 'https://github.com/gtt-project/redmine_gtt'
   description 'Adds location-based task management and maps'
-  version '6.0.3'
+  version '7.0.0'
 
   requires_redmine :version_or_higher => '6.0.0'
 
