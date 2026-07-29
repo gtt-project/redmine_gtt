@@ -157,15 +157,21 @@ jobs:
           bundle exec rake generate_secret_token
           bundle exec rake db:create db:migrate redmine:plugins:migrate
 
+      # Eager-load gate. Test and development environments load lazily, so a
+      # filename/constant mismatch nothing references at boot can still make a
+      # production instance (which eager loads) die with a NameError. That is
+      # what happened to redmine_gtt_sync: green CI, unbootable production.
+      #
+      # This previously ran only `if grep -q zeitwerk config/application.rb`,
+      # which never matches: Redmine configures Zeitwerk in
+      # config/initializers/zeitwerk.rb, not application.rb. The step therefore
+      # passed without ever running the task. The rake task ships with Rails 6+,
+      # so every row in this matrix has it and no guard is needed.
       - name: Zeitwerk check
         env:
           RAILS_ENV: test
         working-directory: redmine
-        run: |
-          if grep -q zeitwerk config/application.rb ; then
-            bundle exec rake zeitwerk:check
-          fi
-        shell: bash
+        run: bundle exec rake zeitwerk:check
 
       - name: Run tests
         env:
