@@ -27,7 +27,7 @@
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
     "@juggle/resize-observer": "^3.4.0",
-    "dompurify": "^3.4.12",
+    "dompurify": "^3.4.13",
     "geojson": "^0.5.0",
     "ol": "^10.9.0",
     "ol-ext": "^4.0.38",
