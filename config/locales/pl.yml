@@ -1,0 +1,160 @@
+# Polish strings go here for Rails i18n
+pl:
+  error_invalid_json: Wymagany poprawny JSON
+  error_unable_to_update_project_gtt_settings: "Nie udało się zapisać ustawień GTT projektu
+    (%{value})"
+
+  field_geometry: "Geometria"
+  field_location: "Lokalizacja"
+  field_geom: "Geometria"
+
+  label_geotask_map: "Mapa zadań"
+  label_global: Globalna
+  label_project_map: "Mapa projektu"
+  label_user_map: "Mapa użytkownika"
+  label_name: Nazwa
+  label_baselayer: Warstwa bazowa
+  label_nearby: "w pobliżu(szer.,dł.)"
+  label_layer: "Typ warstwy"
+  label_source: "Typ źródła"
+  label_config: Konfiguracja
+  label_gtt_settings: GTT
+  label_gtt_settings_headline: Ustawienia GTT
+
+  label_gtt: "GTT"
+  label_gtt_bbox_filter: Lokalizacja
+  label_gtt_distance: Odległość
+  label_gtt_select_icon: Wybierz ikonę
+  label_parameters: Parametry
+  label_tab_general: "Ogólne"
+  label_tab_geocoder: "Geokoder"
+
+  geocoder_provider: "Dostawca"
+  geocoder_options: "Opcje"
+  geocoder_load_example: "Wczytaj przykładowe opcje"
+
+  gtt_map_rotate_label: "Obrót mapy"
+  gtt_map_rotate_info_html: "Przytrzymaj <code>Shift+Alt</code> i przeciągnij mapę, aby ją
+    obrócić."
+
+  gtt_settings_general_center_lon: "Domyślna długość geograficzna środka mapy"
+  gtt_settings_general_center_lat: "Domyślna szerokość geograficzna środka mapy"
+  gtt_settings_general_zoom_level: "Domyślny poziom powiększenia mapy"
+  gtt_settings_general_maxzoom_level: "Domyślny maksymalny poziom powiększenia mapy"
+  gtt_settings_general_fit_maxzoom_level: "Maksymalne powiększenie przy dopasowaniu mapy do obiektów"
+  gtt_settings_vector_minzoom_level: "Minimalny poziom powiększenia"
+
+  gtt_settings_label_general: "Ogólne"
+  gtt_settings_label_styling: "Wygląd"
+  gtt_settings_label_geocoder: "Geokoder"
+
+  label_default_collapsed_issues_page_map: "Domyślnie zwijaj mapę na liście zgłoszeń"
+  label_gtt_point: "Punkt"
+  label_gtt_linestring: "Linia"
+  label_gtt_polygon: "Wielokąt"
+  label_editable_geometry_types_on_issue_map: "Typy geometrii edytowalne na mapie zgłoszenia"
+  label_enable_geojson_upload_on_issue_map: "Włącz import GeoJSON na mapie zgłoszenia"
+  label_enable_geocoding_on_map: "Włącz wyszukiwanie lokalizacji na mapie"
+  label_default_target_enabled: "Pokaż celownik w środku mapy"
+  label_default_measure_enabled: "Pokaż narzędzie do pomiaru długości i powierzchni"
+
+  select_other_gtt_settings: "Inne ustawienia GTT"
+  label_hide_map_for_invalid_geom: "Ukryj mapę zgłoszenia przy niepoprawnej geometrii"
+  label_geojson_precision: "Dokładność współrzędnych GeoJSON"
+  text_geojson_precision_info: "Liczba miejsc po przecinku współrzędnych w wyjściowym GeoJSON (EPSG:4326). 6 to ok. 0,11 m; mniejsze wartości zmniejszają rozmiar danych."
+  gtt_hide_map_for_invalid_geom_info: "Edytuj zgłoszenie i ustaw geometrię,
+    aby zobaczyć mapę."
+  label_distance_unit: "Jednostka wyświetlania odległości"
+  text_distance_unit_info: "Jednostka odległości pokazywanych i wpisywanych w interfejsie (filtr odległości, kolumna odległości, promień obserwacji)."
+  label_api_distance_unit: "Jednostka odległości w API"
+  text_api_distance_unit_info: "W tej wersji REST API zawsze używa metrów."
+  gtt_distance_unit_m: "Metry (m)"
+  gtt_distance_unit_km: "Kilometry (km)"
+  gtt_distance_unit_ft: "Stopy (ft)"
+  gtt_distance_unit_mi: "Mile (mi)"
+  gtt_distance_unit_nm: "Mile morskie (nm)"
+
+  gtt_label_watch_nearby_legend: "Automatyczna obserwacja: zgłoszenia w pobliżu"
+  gtt_label_watch_nearby: "Obserwuj nowe zgłoszenia w pobliżu mojej lokalizacji"
+  gtt_label_watch_nearby_radius: "Odległość"
+  gtt_text_watch_nearby_requires_location: "Ustaw swoją lokalizację na mapie powyżej, aby to włączyć."
+
+  select_default_tracker_icon: "Wybierz domyślną ikonę typu zgłoszenia:"
+  select_default_status_color: "Wybierz domyślny kolor statusu:"
+  gtt_icon_search_placeholder: "Szukaj ikon (np. bike, tree)..."
+  gtt_icon_paste_label: "Wklej kod SVG"
+  select_default_map_settings: "Ustaw domyślne ustawienia mapy:"
+  select_edit_geometry_settings: "Ustaw opcje edycji geometrii:"
+  select_default_geocoder_settings: "Ustaw opcje geokodera:"
+
+  select_other_style_settings: "Inne ustawienia wyglądu"
+  label_gtt_admin_settings: "Ustawienia map"
+
+  project_module_gtt: "GTT"
+  permission_manage_gtt_settings: "Zarządzanie ustawieniami GTT"
+  permission_view_gtt_settings: "Podgląd ustawień GTT"
+
+  title_geojson_upload: "Import GeoJSON"
+  placeholder_geojson_upload: "Wklej tutaj geometrię GeoJSON albo zaimportuj dane
+    GeoJSON z pliku."
+
+  map_layer:
+    title: "Warstwy mapy"
+    plural: "Warstwy mapy"
+    new: "Nowa warstwa mapy"
+    ids: "Warstwy mapy"
+    project:
+      info: "Wybierz warstwy mapy dostępne w tym projekcie."
+    layer_options_select: "-- Wybierz typ warstwy --"
+    source_options_select: "-- Wybierz typ źródła --"
+    format_options_select: "-- Wybierz format --"
+    load_example: "Przykłady: "
+    type_advanced: "Zaawansowane (klasy OpenLayers)"
+
+  # Workaround to easily customize field labels
+  field_name: "Nazwa"
+  field_layer: "Typ warstwy"
+  field_layer_options_string: "Opcje warstwy"
+  field_baselayer: "Warstwa bazowa"
+  field_global: "Dostępna globalnie"
+  field_default: "Domyślna dla nowych projektów"
+  field_source: "Typ źródła"
+  field_source_options_string: "Opcje źródła"
+  field_format: "Format"
+  field_format_options_string: "Opcje formatu"
+  field_styles: "Ustawienia stylu"
+
+  # Localize for use in Javascript
+
+  gtt_js:
+    control:
+      geocoding: "Wyszukiwanie lokalizacji"
+      geolocation: "Moja lokalizacja"
+      search_location: "Szukaj lokalizacji"
+      reverse_location: "Kliknij na mapie, aby pobrać lokalizację…"
+      search_placeholder: "Wpisz lokalizację…"
+      geolocation_activated: "Geolokalizacja włączona"
+      geolocation_deactivated: "Geolokalizacja wyłączona"
+      maximize: "Pokaż wszystkie obiekty"
+      upload: "Wczytaj GeoJSON"
+      fullscreen: "Pełny ekran"
+      rotate: "Zresetuj obrót"
+      zoom_in: "Powiększ"
+      zoom_out: "Pomniejsz"
+      point: "Edycja punktu"
+      linestring: "Edycja linii"
+      polygon: "Edycja obszaru"
+      clear_map: "Wyczyść mapę"
+      remove_point: "Usuń punkt"
+      edit_mode: "Edytuj obiekty"
+      copied_location_to_clipboard: "Skopiowano lokalizację do schowka"
+    modal:
+      load: "Wczytaj"
+      cancel: "Anuluj"
+    messages:
+      baselayer_missing: "Brak dostępnej warstwy bazowej!"
+      zoom_in_more: "Powiększ mapę, aby zobaczyć obiekty."
+      invalid_geojson: "Nie udało się odczytać tekstu jako GeoJSON. Sprawdź dane i spróbuj ponownie."
+      modify_start: "Przytrzymaj <code>ALT</code> i kliknij wierzchołek, aby go usunąć."
+      modify_start_mac: "Przytrzymaj <code>Option</code> i kliknij wierzchołek, aby go usunąć."
+      modify_start_touch: "Dotknij wierzchołka, aby go usunąć."
